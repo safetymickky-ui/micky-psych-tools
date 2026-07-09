@@ -1,7 +1,7 @@
 {
   "name": "plugin-creator",
-  "version": "0.1.0",
-  "description": "Plugin lifecycle toolkit for the micky-psych-tools marketplace: /new-plugin scaffolds a new plugin, /refine-plugin audits and refines an existing one, both ending in validation.",
+  "version": "0.2.0",
+  "description": "Plugin lifecycle + routing toolkit for the micky-psych-tools marketplace: /new-plugin scaffolds a new plugin, /refine-plugin audits and refines an existing one, /route recommends which skill/plugin fits a request. Create and refine keep the generated ROUTING.md router in sync.",
   "author": {
     "name": "Thanawat Suharit (Micky)"
   },
@@ -13,6 +13,8 @@
     "audit",
     "meta",
     "marketplace",
-    "generator"
+    "generator",
+    "route",
+    "router"
   ]
 }

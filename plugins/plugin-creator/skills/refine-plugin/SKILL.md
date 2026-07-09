@@ -66,12 +66,24 @@ python scripts/bump.py <plugin> <level>   # fall back to python3
 `bump.py` raises `plugin.json` + the catalog entry together and validates. If no edits
 were applied, do not bump. For an out-of-marketplace audit-only run, there is no bump.
 
-### 6. Stop before commit
+### 6. Refresh the router
+
+If edits were applied to an in-marketplace target, regenerate the router so any changed
+name, description, or component is reflected:
+
+```
+python scripts/route.py   # fall back to: python3 scripts/route.py
+```
+
+This rewrites the generated `ROUTING.md` (read by `/route`). Skip for an audit-only run
+or when no edits were applied. Never hand-edit `ROUTING.md`.
+
+### 7. Stop before commit
 
 Print the validate output and a suggested conventional commit, e.g.:
 
 ```
-git add plugins/<plugin>
+git add plugins/<plugin> ROUTING.md
 git commit -m "refactor(<plugin>): refine <target>"
 ```
 

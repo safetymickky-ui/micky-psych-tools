@@ -34,7 +34,7 @@
     {
       "name": "plugin-creator",
       "source": "./plugins/plugin-creator",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Plugin lifecycle toolkit for this marketplace. /new-plugin scaffolds a new plugin (elicit checklist, generate component skeleton, register, validate); /refine-plugin audits and refines an existing plugin or skill, then bumps and validates.",
       "category": "productivity",
       "keywords": [

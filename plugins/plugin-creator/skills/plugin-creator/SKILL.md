@@ -81,12 +81,23 @@ python scripts/validate.py   # fall back to: python3 scripts/validate.py
 **Do not claim success unless it prints `all checks passed`.** If it fails, report the
 exact failing checks and the paths written — do not leave a silent half-plugin.
 
-### 6. Stop before commit
+### 6. Refresh the router
+
+Regenerate the marketplace router so the new plugin's skills and commands appear in it:
+
+```
+python scripts/route.py   # fall back to: python3 scripts/route.py
+```
+
+This rewrites the generated `ROUTING.md` at the repo root (which the `/route` command
+reads). Never hand-edit `ROUTING.md` — this step is how it stays in sync.
+
+### 7. Stop before commit
 
 Print the validate output and a suggested conventional commit, e.g.:
 
 ```
-git add plugins/<name> .claude-plugin/marketplace.json
+git add plugins/<name> .claude-plugin/marketplace.json ROUTING.md
 git commit -m "feat: add <name> plugin"
 ```
 
