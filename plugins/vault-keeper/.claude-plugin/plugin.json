@@ -1,0 +1,16 @@
+{
+  "name": "vault-keeper",
+  "version": "0.1.0",
+  "description": "Full manager for the shared Obsidian-style knowledge vault at the marketplace repo root (vault/). The single place any skill's output is saved, indexed, linked, and retrieved. Four jobs: init, save, index, query.",
+  "author": {
+    "name": "Thanawat Suharit"
+  },
+  "keywords": [
+    "vault",
+    "obsidian",
+    "knowledge",
+    "notes",
+    "index",
+    "moc"
+  ]
+}

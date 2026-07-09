@@ -44,6 +44,20 @@
         "marketplace",
         "generator"
       ]
+    },
+    {
+      "name": "vault-keeper",
+      "source": "./plugins/vault-keeper",
+      "version": "0.1.0",
+      "description": "Full manager for the shared Obsidian-style knowledge vault at the repo root (vault/). The single place any skill's output is saved, indexed, linked, and retrieved. Four jobs: init, save, index, query.",
+      "category": "productivity",
+      "keywords": [
+        "vault",
+        "obsidian",
+        "knowledge",
+        "notes",
+        "index"
+      ]
     }
   ]
 }
