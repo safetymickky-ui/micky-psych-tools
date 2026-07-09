@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -22,13 +22,27 @@
     {
       "name": "intent-lock",
       "source": "./plugins/intent-lock",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.",
       "category": "productivity",
       "keywords": [
         "prompting",
         "alignment",
         "elicitation"
+      ]
+    },
+    {
+      "name": "plugin-creator",
+      "source": "./plugins/plugin-creator",
+      "version": "0.1.0",
+      "description": "Scaffolds a new customized plugin into this marketplace: elicits a fixed checklist, generates the component skeleton (skill, command, agent, hooks, or MCP wiring), registers the catalog entry, and validates.",
+      "category": "productivity",
+      "keywords": [
+        "plugin",
+        "scaffold",
+        "meta",
+        "marketplace",
+        "generator"
       ]
     }
   ]

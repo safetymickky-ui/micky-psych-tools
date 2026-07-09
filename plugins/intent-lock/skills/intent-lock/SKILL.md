@@ -9,7 +9,19 @@ The user will not watch you work. They ask, close the tab, and return when the o
 
 So: **the interview is the only correction window.** Not a warm-up, not a courtesy. The last place a misread can be caught for free.
 
-This produces no artifact. It ends with `GOAL UNIFIED` and then you build.
+This produces no artifact. It ends with the goal locked — silently — and then you build.
+
+## What the user sees — the output contract
+
+This skill runs its reasoning **silently**. Exactly three things reach the user, and nothing else:
+
+1. **The option-picker clarifying questions** (Phase 1) — the one visible surface of the whole interview.
+2. **One compact assumptions line** (Phase 3), and only when a material default was actually made.
+3. **The work.**
+
+Everything else this document describes is **internal** — perform it as reasoning, never print it: the cold read, prediction v0, the divergent readings, the defaults list, the per-round price, the revised prediction, the survival probe's wording, the three convergence gates, the `GOAL UNIFIED` marker, and any "applying intent-lock / locking" narration. Where a phase below says *write, show, open with, state, publish,* or *emit* anything other than the three items above, read it as **compute, silently.**
+
+The prediction and readings lose nothing by going dark: they become the picker's options, which is where the user was always meant to shoot them down. The picker *is* the cold read, made tappable. `GOAL UNIFIED` is now a private green light, not an announcement — pass the gates in your head and go straight to the work.
 
 ## What relentless means
 
@@ -80,7 +92,7 @@ One line per item, status first. An item that would not change the output does n
 
 After round 1, show only the **delta**.
 
-The cold read does not get a turn of its own. It is prose — prediction included — and it ends in the same message as round 1's tool call. A turn spent showing your homework is a turn the user may not come back from.
+The cold read does not get a turn of its own, and now it does not get *ink* either. Compute it silently; the only thing that leaves the turn is round 1's picker. A turn spent showing your homework is a turn the user may not come back from — so show none of it.
 
 ## Phase 1 — Rounds
 
@@ -94,17 +106,11 @@ The interview ends on exactly three conditions, and no others:
 2. **The user stops it.** `LOCK`, "stop asking", or silence. Sovereign, instant, mid-round, unargued.
 3. **Degenerate loop.** The guard below fires. Stop and say so.
 
-**Price every round.** With no cap, the user is the only one who can decide the interview has cost too much — so they must be able to see what it costs. Open each round with the count, plainly:
-
-```
-Round 4. Last round resolved 1 item, killed 2 prediction lines. 2 open.
-```
-
-A round that bought nothing says *last round resolved nothing and left the prediction standing.* Never soften that, and never pad it. It is the number on which the user decides whether to keep paying, and an interview that hides its own price has replaced the user's judgement with your appetite.
+**Price every round — to yourself.** Keep the count each round: how many items resolved, how many prediction lines died, how many remain open. This is now an *internal* ledger, never a printed one — the user no longer sees a running price, so the whole discipline it enforced falls on you. A round that bought nothing — *resolved nothing, prediction still standing* — must be named in your own reasoning and fed straight to the degenerate-loop guard. The user still holds the brake without the number: every round is a picker they can answer or abandon, and an abandoned picker is a stop.
 
 **The admission threshold is now the only cap.** This is the pressure point. With rounds unbounded, the standing temptation is to keep the interview alive by promoting sub-threshold items into questions — preferences dressed as forks. Hold the line at Phase 0.3: an unknown earns a question only if the competing readings produce materially different work. **An item that would not change the output is not an item.** Extending the interview by lowering the bar is not thoroughness. It is the interview eating the work it was built to protect.
 
-**Every round opens with the prediction, revised.** Show only the lines that changed, and say what killed them. Questions are the residue of what the revised prediction still cannot settle — they are not the road to it. If a round changed nothing in the prediction, say so plainly: an unrevised prediction is evidence the round bought nothing, and it feeds the degenerate-loop guard.
+**Every round re-derives the prediction, revised — internally.** Track which lines changed and what killed them; none of it prints. Questions are the residue of what the revised prediction still cannot settle — they are not the road to it. A round that changed nothing in the prediction is, in your own count, a round that bought nothing, and it feeds the degenerate-loop guard.
 
 Cycle across these dimensions between rounds — never exhaust one before touching the others, because the load-bearing item is usually the one you haven't reached:
 
@@ -193,7 +199,7 @@ What this forbids is the ad-hoc hatch: telling the user you have run out of road
 
 Agreement is worthless: a person nods at a restatement of their own words and remains misunderstood. Test by trying to fail.
 
-**The gates are a self-test, and a self-test is not output.** Work ships in the same turn the gates pass, so the user cannot object to a gate before the thing it guards already exists. Printed, they are ceremony — a checklist performed at someone who has no move left to make. Run all three. Publish none of them. What reaches the user is `GOAL UNIFIED.`, the Phase 3 preface, and the work.
+**The gates are a self-test, and a self-test is not output.** Work ships in the same turn the gates pass, so the user cannot object to a gate before the thing it guards already exists. Printed, they are ceremony — a checklist performed at someone who has no move left to make. Run all three. Publish none of them. What reaches the user is the one compact assumptions line — only if a material default was made — and the work. No `GOAL UNIFIED`, no gates, no preface block.
 
 Nothing is lost to the silence, because each gate is already visible somewhere the user has been:
 
@@ -203,7 +209,7 @@ Nothing is lost to the silence, because each gate is already visible somewhere t
 
    The old bar — *"yes, and I couldn't have said it better"* — was an invitation to say it better. The bar is now: **"Yes. That is what I said."** Anything the user did not say, and would not have said, is contraband no matter how good it is. Held silently, this restatement is the thing the work gets written against. Printed, it is one more invitation to say it better — and *saying it better* is the move this skill exists to prevent.
 
-Pass all three → emit `GOAL UNIFIED.` alone on its line, then the preface, then the work, in the same turn. Do not ask whether to proceed. Permission was the interview.
+Pass all three → the goal is locked as a private marker, never a printed line. Emit the compact assumptions line if a material default was made, then the work, in the same turn. Do not print `GOAL UNIFIED`. Do not ask whether to proceed. Permission was the interview.
 
 Fail any → the ledger reopens and you run another round. There is no budget to plead. The only gate that can fail unrepaired is one the user stopped you from repairing, and that one becomes an `[UNTESTED]` item in the preface while the work ships. **A gate that cannot be paid for is declared, never waived** — and declared as a label on the output, not as an excuse addressed to the user.
 
@@ -211,18 +217,13 @@ Fail any → the ledger reopens and you run another round. There is no budget to
 
 The user returns to finished output. What you assumed must be the first thing they read, not something they discover.
 
-Preface the delivered work with a short block — no more than a handful of lines:
+Preface the delivered work with **one compact line**, and only when a material default was actually made — never a four-field block, never ceremony. Fold the assumptions, any untested prediction line, and any load-bearing skip into a single sentence the user can scan in one beat:
 
 ```
-Assumed:  <each ASSUMED item, as a decision made for you>
-Untested: <each prediction line that reached the work without surviving a probe>
-Resolved: <each ambiguity you closed → the words of theirs that closed it>
-Skipped:  <anything below the admission threshold that could plausibly bite>
+Assumed: <the material default(s), plainly> — say if wrong.
 ```
 
-There is no `Reframed:` line, because there is no reframe. There is no line explaining why the interview ended where it did — `Untested:` and `Assumed:` say it, as properties of the work rather than as facts about your budget.
-
-Then the work, in the user's normal register. Never bury an assumption inside the body. Never present a guess in the voice of a fact.
+If nothing material was assumed, guessed, or skipped, emit no line at all and ship the work clean. There is no `Reframed:` line, because there is no reframe. Never bury an assumption inside the body, and never present a guess in the voice of a fact — the one line exists so a wrong default is still catchable after the fact, which is the only reason it survives the cut.
 
 ## Phase 4 — When the work comes back wrong
 
@@ -237,7 +238,7 @@ Route immediately to the `misread-capture` skill. Its entire job is to make the 
 This skill has failed if:
 
 - The interview cost more than the misread would have.
-- A round opened without its price: how many items the last round resolved, how many prediction lines it killed, how many remain open.
+- A round's internal price went untracked — you failed to count what the last round resolved and killed — or that count was *printed* to the user instead of kept to yourself.
 - The interview was extended by demoting the admission threshold — a preference promoted to a fork to keep the questions coming.
 - The degenerate-loop guard fired and the interview continued anyway, on the grounds that the user had said to keep asking.
 - An ending was declared on a feeling (*I think I understand now*) rather than on a ledger showing zero open items above threshold and a surviving prediction.
@@ -248,6 +249,9 @@ This skill has failed if:
 - A round opened without a revised prediction.
 - Work began without a final prediction that had either survived an untouched round or been offered to the survival probe — unless the user stopped the interview first, in which case it shipped `[UNTESTED]`.
 - A convergence gate was printed.
+- The cold read, prediction v0, divergent readings, defaults list, revised prediction, per-round price, or the `GOAL UNIFIED` marker reached the user's output. Only the picker questions, one compact assumptions line, and the work may.
+- The Phase 3 preface was printed as a multi-field block, or printed at all when no material default was made.
+- Any "applying intent-lock" / "locking" narration was shown to the user.
 - A round limit was announced to the user, in any words, as the reason for proceeding. There is none.
 - An `[UNTESTED]` line reached the body of the work without appearing in the preface.
 - An assumption reached the output without a label.
