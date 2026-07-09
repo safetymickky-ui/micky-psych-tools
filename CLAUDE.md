@@ -3,6 +3,17 @@
 Personal Claude Code plugin marketplace. Single owner: Thanawat Suharit (Micky).
 This repo is BOTH the marketplace and the home of every plugin in it.
 
+## Routing — pick the right tool first
+
+Before acting on any request one of these plugins could serve, **route it first**:
+consult the generated `ROUTING.md` (or run `/route "<request>"`) and hand off to the
+skill or command it names — do not do the work ad hoc when a plugin already owns it.
+If nothing fits, run `/new-plugin` to build one.
+
+`ROUTING.md` is a GENERATED artifact — never hand-edit it. `scripts/route.py` writes it
+from the catalog + every plugin's components, and `/new-plugin` and `/refine-plugin`
+rerun it automatically, so the router never drifts.
+
 ## Layout
 
 ```
