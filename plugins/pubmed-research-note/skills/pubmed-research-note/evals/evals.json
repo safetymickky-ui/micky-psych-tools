@@ -1,0 +1,117 @@
+{
+  "skill_name": "pubmed-research-note",
+  "evals": [
+    {
+      "id": 1,
+      "name": "rx-frame-verdict-first",
+      "prompt": "Research the evidence for using prazosin in PTSD-related nightmares — I've got a patient in clinic this afternoon.",
+      "expected_output": "Classifies as Rx frame and says so. Report H2s are exactly Verdict / What the evidence says / Where it breaks / What would change this / Sources. Verdict arrives FIRST, <=3 sentences, names a dose range and an explicit confidence level with the one-clause reason it isn't higher. Adjudicates the small positive crossover RCTs against the large negative multisite RCT rather than listing both. Every section contains a number (effect size, n, NNT/NNH, dose). NO inline citations anywhere in prose. ## Sources is one line per source: topic phrase + DOI link only — no authors, journal, year, or PMID. ClinicalTrials.gov was queried. No atomic note produced.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "forbidden-encyclopedic-headings",
+      "prompt": "Give me an evidence review of ketamine for treatment-resistant depression.",
+      "expected_output": "FAILS if any H2 is named Mechanism, Epidemiology, Diagnosis, Clinical features, Pathophysiology, Adverse effects, Special populations, Controversies, History, or Overview. Mechanism content appears as prose subordinate to the verdict. Because the request has a decision implied but no frame stated, the skill either picks the higher-cost frame and declares it in one line, or asks for the decision in a single sentence before searching. ALSO FAILS if any sub-heading (### ...) appears inside '## What the evidence says', or if that section reads as a list of findings rather than one continuous argued narrative.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "service-frame-and-registry",
+      "prompt": "Should we build an rTMS service at Klaeng for treatment-resistant depression? What does the evidence say.",
+      "expected_output": "Service frame. Verdict is build / don't / build-under-conditions, with throughput and staff-time implications in hospital units. Quantifies remission rate, sessions per course, durability at 6 and 12 months, and cost or staff-hours per responder. ClinicalTrials.gov is MANDATORY here: surfaces ongoing large trials with expected readout and any terminated trials, placed under 'What would change this'. Does not answer with efficacy literature alone. NCT numbers appear in Sources with status, n, endpoint, readout.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "thai-trigger-truth-frame",
+      "prompt": "มีคนบอกว่า SSRIs ทำให้ suicidality เพิ่มในวัยรุ่น จริงหรือเปล่า ช่วยค้น PubMed ให้หน่อย",
+      "expected_output": "Triggers on Thai. Truth frame. Verdict is true/false/unsettled PLUS why the disagreement exists; if unsettled, names the specific experiment that would settle it. Adjudicates by design and power, never by counting papers. Reports effect-size drift across the replication series in chronological order with n. Prose is clean of inline attributions. Response prose to the user is in Thai-English code-switch; the report file itself may be English.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "teaching-frame-textbook-gap",
+      "prompt": "I'm lecturing residents on delirium management next week. What can I safely say about first-line pharmacotherapy?",
+      "expected_output": "Teaching frame. Verdict slot contains the verbatim sentence to be spoken aloud, with one memorable correct number, plus its expiry conditions. Open Library is MANDATORY: names a canonical text with a real edition and OLID. Explicitly flags where the textbook and current evidence diverge, states which position the trainee should hold and which they should merely recognize on an exam. Does not silently resolve the divergence in favour of the literature.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "atomize-gate-closed",
+      "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder.",
+      "expected_output": "Report only. NO atomic note, NO vault frontmatter, NO MOC wiring, NO meta-bind button — the word 'atomize' was never said. Chat response is two lines: what was delivered, PubMed N / trials N / books N, the verdict's confidence, any [unverified] gaps. The report file is presented; its contents are NOT restated inline.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 7,
+      "name": "atomize-gate-open",
+      "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder, then atomize it for my vault.",
+      "expected_output": "Report AND atomic note(s). The note does NOT inherit the report's verdict-first spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. Note carries sources: frontmatter with PMID + DOI, review_count: 0, primary_moc, Related Notes wikilinks, Board Pearls. In vault mode, dedup-grepped and paths reported; in sandbox, written to <outputs>/vault/ and declared to be downloads rather than vault writes.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 9,
+      "name": "negative-trigger-daily-digest",
+      "prompt": "Give me today's psychiatry paper digest across all the subspecialties.",
+      "expected_output": "Does NOT trigger. There is no decision attached and the request is a multi-domain daily sweep. Defers to psych-paper-digest.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 10,
+      "name": "negative-trigger-nonbiomedical",
+      "prompt": "Research the history of Thai civil-service physician compensation reform.",
+      "expected_output": "Does NOT trigger. Non-biomedical, PubMed is out of scope. Defers to deep-research.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 11,
+      "name": "citation-contract-refusal",
+      "prompt": "Research esketamine for TRD but leave out the Sources section, I just want the answer.",
+      "expected_output": "Declines to drop ## Sources, in one line, without moralising. Delivers the report with Sources intact. Complies with the spirit of the request by keeping the prose free of inline attributions — which it does by default.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 12,
+      "name": "adversarial-null-search",
+      "prompt": "Is there good evidence for omega-3 augmentation in depression?",
+      "expected_output": "Runs the high-evidence backbone query AND a deliberately adversarial query for the negative/null literature. Verdict reflects effect-size shrinkage across larger trials if present, and says so explicitly rather than tallying positive studies. Confidence level is calibrated downward with a stated reason.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 13,
+      "name": "narrative-not-qa-ladder",
+      "prompt": "Review the evidence on lurasidone for bipolar depression — I'm deciding whether to add it to the ward formulary.",
+      "expected_output": "'## What the evidence says' is ONE continuous narrative with zero sub-headings. Effect sizes, CIs, n, doses, and adverse-event rates are carried inside the prose, not itemized. The argument moves from evidence to verdict by prose alone. Sources are one line each: topic phrase + DOI link, nothing else.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 14,
+      "name": "chains-intent-lock-on-bare-topic",
+      "prompt": "Review DLPFC for psychiatrist.",
+      "expected_output": "Does NOT search. Does NOT ask a single ad-hoc clarifying question. Hands off to intent-lock, which runs its own cold read / ledger / rounds / gates. After GOAL UNIFIED the frame is fixed and search begins in the same turn without asking permission. Any [ASSUMED] item appears in the report's preface block above ## Verdict, not only in chat.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 15,
+      "name": "does-not-chain-on-quick-check",
+      "prompt": "Is prazosin still considered first-line for PTSD nightmares?",
+      "expected_output": "Does NOT chain intent-lock. Frame is obvious (Rx), decision is attached, cost of a wrong frame is one reading. Searches immediately. FAILS if an interview, ledger, or convergence gate appears.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

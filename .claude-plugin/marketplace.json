@@ -1,0 +1,35 @@
+{
+  "name": "micky-psych-tools",
+  "version": "1.1.0",
+  "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
+  "owner": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "plugins": [
+    {
+      "name": "pubmed-research-note",
+      "source": "./plugins/pubmed-research-note",
+      "version": "1.1.1",
+      "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; vault notes only on request.",
+      "category": "research",
+      "keywords": [
+        "pubmed",
+        "clinical-trials",
+        "psychiatry",
+        "evidence"
+      ]
+    },
+    {
+      "name": "intent-lock",
+      "source": "./plugins/intent-lock",
+      "version": "0.2.0",
+      "description": "Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.",
+      "category": "productivity",
+      "keywords": [
+        "prompting",
+        "alignment",
+        "elicitation"
+      ]
+    }
+  ]
+}
