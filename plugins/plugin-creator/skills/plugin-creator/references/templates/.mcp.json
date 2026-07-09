@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "{{SERVER_ID}}": {
+      "type": "{{TYPE e.g. http | sse}}",
+      "url": "{{SERVER_URL — an existing server the user already runs}}"
+    }
+  }
+}

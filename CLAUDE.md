@@ -41,9 +41,10 @@ scripts/bump.py                    # version bump in BOTH manifest + catalog
 
 - **pubmed-research-note** — clinical decision from primary literature; verdict-first evidence reports.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
-- **_(in design)_ plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS
-  marketplace (manifest + skill/command/agent/mcp skeleton + catalog entry + validation).
-  Spec being crafted via the `grilling` skill. Do not finalize structure until the grill converges.
+- **plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS marketplace
+  (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation).
+  Skill + `/new-plugin` command; elicit-first fixed checklist; auto-register + auto-validate,
+  stops before commit. Authoring rules + templates under its `skills/plugin-creator/references/`.
 
 ## Style
 

@@ -1,0 +1,8 @@
+{
+  "name": "{{PLUGIN_NAME}}",
+  "source": "./plugins/{{PLUGIN_NAME}}",
+  "version": "0.1.0",
+  "description": "{{ONE_LINE_PURPOSE}}",
+  "category": "{{CATEGORY e.g. research | productivity}}",
+  "keywords": ["{{KW1}}", "{{KW2}}", "{{KW3}}"]
+}

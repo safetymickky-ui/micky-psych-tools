@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "{{EVENT e.g. PreToolUse | PostToolUse | UserPromptSubmit | Stop}}": [
+      {
+        "matcher": "{{TOOL_NAME_REGEX or omit for events without a matcher}}",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{SHELL_COMMAND or path to a script the hook runs}}"
+          }
+        ]
+      }
+    ]
+  }
+}

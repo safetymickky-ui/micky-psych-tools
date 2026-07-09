@@ -1,0 +1,10 @@
+{
+  "name": "{{PLUGIN_NAME}}",
+  "version": "0.1.0",
+  "description": "{{ONE_LINE_PURPOSE}}",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": ["{{KW1}}", "{{KW2}}", "{{KW3}}"]
+}
