@@ -237,7 +237,7 @@ Route immediately to the `misread-capture` skill. Its entire job is to make the 
 
 This skill has failed if:
 
-- A convergence gate, the `GOAL UNIFIED` marker, or any internal machinery (cold read, prediction, per-round price) reached the user's output — only the picker questions, one compact assumptions line, and the work may.
+- A convergence gate was printed, or the `GOAL UNIFIED` marker, cold read, prediction v0, divergent readings, defaults list, revised prediction, or per-round price reached the user's output — only the picker questions, one compact assumptions line, and the work may.
 - A larger, better, or differently-shaped version of the request was proposed.
 - An option, question, or restatement contained something the user never said and would not have said.
 - The user said LOCK / stop asking / went quiet, and was asked one more question.
