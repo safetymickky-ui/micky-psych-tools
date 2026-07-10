@@ -1,0 +1,53 @@
+{
+  "skill_name": "vault-keeper",
+  "evals": [
+    {
+      "id": 1,
+      "name": "save-routes-type-and-wires-moc",
+      "prompt": "Save this to the vault: a full evidence report on lithium for suicide prevention (long document, read top-to-bottom), and separately this one-idea summary: 'Lithium reduces suicide attempts in bipolar disorder, NNT ~15 over 18 months.'",
+      "expected_output": "Resolves the vault root per Step 0 first. The report lands in artifacts/ with a kebab-case filename; the one-idea summary lands in notes/ named 'Concept — Qualifier' style. Both carry full YAML frontmatter (title, created, type, source, tags, links). Both are wired into a topic MOC named '<Topic> MOC.md' (created if new), and a new MOC is added to index.md. FAILS if either file is unreachable from index.md, or if the MOC is named 'MOC — <Topic>'.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "query-before-save-prevents-duplicate",
+      "prompt": "Add this note to the vault: 'Clozapine requires ANC monitoring weekly for the first 6 months.' (A note titled 'Clozapine — Hematologic Monitoring' already exists in vault/notes/.)",
+      "expected_output": "Runs query (Glob + Grep over the resolved vault root) BEFORE writing. Finds the existing 'Clozapine — Hematologic Monitoring' note and EXTENDS it instead of creating a sibling note. No new file is created. FAILS if a second note on the same idea appears, or if the save skipped the query step.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "init-skipped-when-populated",
+      "prompt": "Initialize the vault for me.",
+      "expected_output": "Checks for vault/index.md at the resolved vault root. Because index.md exists, the vault counts as populated and init is SKIPPED — the skill says so and offers the real jobs instead. FAILS if it re-scaffolds, overwrites index.md, or treats .gitkeep-only directories as reason to re-init.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "refuses-to-author-missing-content",
+      "prompt": "Vault this: a research note on psilocybin for treatment-resistant depression. I haven't written anything yet — just make the note.",
+      "expected_output": "Declines to author the content. States it is a librarian, not an author, and hands back to the source skill (e.g. pubmed-research-note) to produce the content first. Writes NOTHING to the vault. FAILS if it invents note content, fabricates sources, or writes a placeholder file.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "non-root-cwd-still-targets-repo-vault",
+      "prompt": "(cwd is plugins/pubmed-research-note/skills/pubmed-research-note/) Save this atomic note to the vault: 'Prazosin — PTSD Nightmares: alpha-1 blockade reduces nightmare severity.'",
+      "expected_output": "Step 0 fires: walks up from cwd to the directory containing .claude-plugin/marketplace.json and appends vault/, then uses the resolved ABSOLUTE path for every Glob/Grep/Read/Write. The note lands in the repo-root vault/notes/. FAILS if a new vault/ directory is created under the plugin dir or any other cwd-relative location.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "slug-collision-disambiguates",
+      "prompt": "Save this report to the vault as an artifact: a NEW cost analysis of an rTMS service. (vault/artifacts/rtms-service-analysis.md already exists and covers a DIFFERENT topic: clinical efficacy, not cost.)",
+      "expected_output": "Detects that the derived filename rtms-service-analysis.md exists but is NOT the same topic being extended. Applies the collision rule from references/vault-layout.md: writes to 'rtms-service-analysis -2.md' (then ' -3'…) instead of overwriting. The existing file is untouched. FAILS if the existing artifact is overwritten or the new content is force-merged into it.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}
