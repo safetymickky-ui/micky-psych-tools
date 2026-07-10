@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -58,6 +58,21 @@
         "notes",
         "index",
         "moc"
+      ]
+    },
+    {
+      "name": "psych-paper-digest",
+      "source": "./plugins/psych-paper-digest",
+      "version": "0.1.0",
+      "description": "Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.",
+      "category": "research",
+      "keywords": [
+        "pubmed",
+        "digest",
+        "psychiatry",
+        "surveillance",
+        "clinical-trials",
+        "current-awareness"
       ]
     }
   ]
