@@ -107,12 +107,25 @@ def main():
                 check(fm.get("name") == skill, f"skills/{skill}: frontmatter name matches directory")
                 n = len(fm.get("description", ""))
                 check(n <= 1024, f"skills/{skill}: description {n} chars (hard cap 1024)")
-                check(n >= 200, f"skills/{skill}: description {n} chars (too short to trigger reliably)")
+                check(n >= 200, f"skills/{skill}: description {n} chars (min 200 for reliable triggering)")
+                ev = os.path.join(skills_dir, skill, "evals", "evals.json")
+                if os.path.isfile(ev):
+                    json.load(open(ev, encoding="utf-8"))
+                    print(f"  PASS  skills/{skill}/evals/evals.json is valid JSON")
 
-        evals = os.path.join(pdir, "skills", name, "evals", "evals.json")
-        if os.path.isfile(evals):
-            json.load(open(evals, encoding="utf-8"))
-            print("  PASS  evals.json is valid JSON")
+        for comp in ("commands", "agents"):
+            cdir = os.path.join(pdir, comp)
+            if os.path.isdir(cdir):
+                for fname in sorted(os.listdir(cdir)):
+                    if not fname.endswith(".md"):
+                        continue
+                    fm = frontmatter(os.path.join(cdir, fname)) or {}
+                    check(bool(fm.get("description")),
+                          f"{comp}/{fname}: frontmatter description present")
+                    if comp == "agents":
+                        n = len(fm.get("description", ""))
+                        check(200 <= n <= 1024,
+                              f"agents/{fname}: description {n} chars in 200-1024")
 
     print()
     if FAILURES:
