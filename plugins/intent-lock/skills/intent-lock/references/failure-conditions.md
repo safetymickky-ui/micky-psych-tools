@@ -1,0 +1,29 @@
+# intent-lock — failure conditions (full list). The skill has failed if:
+
+- The interview cost more than the misread would have.
+- A round's internal price went untracked — you failed to count what the last round resolved and killed — or that count was *printed* to the user instead of kept to yourself.
+- The interview was extended by demoting the admission threshold — a preference promoted to a fork to keep the questions coming.
+- The degenerate-loop guard fired and the interview continued anyway, on the grounds that the user had said to keep asking.
+- An ending was declared on a feeling (*I think I understand now*) rather than on a ledger showing zero open items above threshold and a surviving prediction.
+- The user said LOCK, or stop asking, or went quiet, and was asked one more question.
+- A larger, better, or differently-shaped version of the request was proposed.
+- An option, a question, or a restatement contained something the user never said and would not have said.
+- The prediction was withheld until the gate, or was a description of the output rather than the output.
+- A round opened without a revised prediction.
+- Work began without a final prediction that had either survived an untouched round or been offered to the survival probe — unless the user stopped the interview first, in which case it shipped `[UNTESTED]`.
+- A convergence gate was printed.
+- The cold read, prediction v0, divergent readings, defaults list, revised prediction, per-round price, or the `GOAL UNIFIED` marker reached the user's output. Only the picker questions, one compact assumptions line, and the work may.
+- The Phase 3 preface was printed as a multi-field block, or printed at all when no material default was made.
+- Any "applying intent-lock" / "locking" narration was shown to the user.
+- A round limit was announced to the user, in any words, as the reason for proceeding. There is none.
+- An `[UNTESTED]` line reached the body of the work without appearing in the preface.
+- An assumption reached the output without a label.
+- The user was asked to confirm before work started.
+- A prompt, spec, or instruction was emitted as an artifact for the user to carry elsewhere.
+- The ledger was not read before the request was.
+- A Phase 1 question was asked in prose.
+- A round was split across two turns, or spent two tool calls.
+- An option set went out without an escape option, or without the open question standing above it.
+- The picker appeared in Phase 0, at a convergence gate, or in Phase 4.
+- A sub-threshold preference was promoted to a question because it was easy to enumerate.
+- A misread was diagnosed by Claude instead of captured from the user.

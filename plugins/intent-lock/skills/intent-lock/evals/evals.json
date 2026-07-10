@@ -1,0 +1,69 @@
+{
+  "skill_name": "intent-lock",
+  "evals": [
+    {
+      "id": 1,
+      "name": "explicit-interview-me-trigger",
+      "prompt": "Interview me before you build this — I want the dashboard redesign spec locked down first.",
+      "expected_output": "Triggers intent-lock. Phase 0 runs silently (cold read, prediction v0, divergent readings, admission-threshold defaults) with nothing but the eventual option-picker reaching the user. No GOAL UNIFIED marker, no convergence-gate text, no per-round price is printed. Round 1 opens with a single option-picker call (max 3 hypotheses + escape) whose preamble states the open question verbatim.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "lock-the-goal-trigger",
+      "prompt": "Lock the goal before we start: I need a migration script from the old schema to the new one.",
+      "expected_output": "Triggers intent-lock. Interview proceeds via option-picker rounds only, uncapped in count but capped at 3 questions per round. Ends only on saturation, LOCK/stop-asking, or the degenerate-loop guard — never on a round-count ceiling.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "thai-trigger-lock-pao-mai",
+      "prompt": "ล็อคเป้าหมายก่อนนะ ผมอยากได้ระบบแจ้งเตือนสำหรับแอปคลินิก",
+      "expected_output": "Triggers on the Thai phrase ล็อคเป้าหมาย. Runs the same silent Phase 0 / picker-round protocol as the English triggers. Response register matches the user's Thai (or Thai-English code-switch) rather than switching to English prose.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "unprompted-offer-expensive-ambiguous-request",
+      "prompt": "Build me the full reporting pipeline — pull from all our data sources, clean it, and generate the exec summary however makes sense.",
+      "expected_output": "No trigger phrase was said. Because the request is expensive (multi-stage pipeline), reusable, and ambiguous (\"however makes sense\", unspecified sources, unspecified summary shape), the skill offers itself unprompted before building — either by opening the interview directly or naming in one line why alignment is warranted first. Does not silently proceed to build a guessed pipeline.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "ask-me-until-you-understand-trigger",
+      "prompt": "Ask me until you understand exactly what I want for this onboarding email sequence — don't guess.",
+      "expected_output": "Triggers intent-lock. No question is ever asked in prose — every Phase 1 question goes through the option-picker with a mandatory escape option. Never proposes a bigger or better version of the onboarding sequence than what was asked. Never emits a portable prompt/spec artifact for the user to copy elsewhere.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "negative-precise-one-line-request",
+      "prompt": "Rename the variable `usrId` to `userId` in src/auth.ts.",
+      "expected_output": "Does NOT trigger intent-lock. The request already has exactly one reading — cost of a wrong reading is near zero and there is nothing to interrogate. FAILS if an interview, option-picker, or ledger read is initiated for a request this precise and cheap.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 7,
+      "name": "negative-post-delivery-complaint-routes-to-misread-capture",
+      "prompt": "You wasted my time — that's not even close to what I asked for.",
+      "expected_output": "Does NOT trigger intent-lock (no forward-looking build to interrogate). This is a post-delivery complaint about work already shipped, so it routes to misread-capture instead: two questions (what was actually wanted, when the tell arrived), captured in the user's own words, with no self-diagnosis or defense of the prior work. FAILS if intent-lock's interview protocol (picker rounds, cold read, convergence gates) is invoked here.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 8,
+      "name": "negative-scaffolding-request-plugin-creator-territory",
+      "prompt": "/new-plugin — I want to scaffold a new plugin for tracking client invoices.",
+      "expected_output": "Does NOT trigger intent-lock. This is a plugin-scaffolding request that belongs to plugin-creator's own elicitation flow, not a pre-build alignment gate on an arbitrary task. FAILS if intent-lock's option-picker interview protocol is invoked instead of deferring to plugin-creator.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

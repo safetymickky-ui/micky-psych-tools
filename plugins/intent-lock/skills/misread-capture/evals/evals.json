@@ -1,0 +1,45 @@
+{
+  "skill_name": "misread-capture",
+  "evals": [
+    {
+      "id": 1,
+      "name": "trigger-this-isnt-what-i-wanted",
+      "prompt": "This isn't what I wanted.",
+      "expected_output": "Triggers misread-capture. Does not defend the work, does not explain what was understood, does not draft a diagnosis. Asks exactly two questions in the user's language: (1) what did you actually want that I didn't give you, (2) when did you know it was wrong. No option-picker unless the user has already named the axis and only two readings of their own words remain.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "trigger-you-misunderstood",
+      "prompt": "You misunderstood — the report was supposed to be for clinicians, not patients.",
+      "expected_output": "Triggers misread-capture. Captures 'clinicians, not patients' as the axis missed in the user's own words, does not rephrase it into Claude's own summary. Asks for the tell-arrival moment (first line / structure / only at the end) before writing the entry. Appends to the misreads.md ledger with the fixed grammar (Asked for / Got / Axis missed / Tell arrived / Prior).",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "trigger-thai-mai-chai-thi-phom-tongkan",
+      "prompt": "ไม่ใช่ที่ผมต้องการ",
+      "expected_output": "Triggers on the Thai phrase. Runs the same two-question capture in Thai (or Thai-English code-switch matching the user). Does not silently translate the entry into English before confirming the axis with the user.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "trigger-you-wasted-my-time",
+      "prompt": "You wasted my time with that draft.",
+      "expected_output": "Triggers misread-capture. 'You wasted my time' is treated as a complaint about the cost, not a stated want or a tell — so the skill asks once more for the want behind it rather than recording 'wasted time' as the Axis missed line. Does not draft the axis on the user's behalf.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "negative-mid-interview-clarification",
+      "prompt": "Wait, actually I meant the staging database, not production — while we're still going back and forth on this.",
+      "expected_output": "Does NOT trigger misread-capture. This is a live, mid-interview correction during an active intent-lock round, not a post-delivery misread — intent-lock handles it in the current round (re-ask or fold into the ledger) rather than routing to misread-capture. FAILS if a ledger entry is appended or the two-question capture protocol is invoked before any work has been delivered.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

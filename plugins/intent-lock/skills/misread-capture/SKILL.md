@@ -1,6 +1,6 @@
 ---
 name: misread-capture
-description: Capture a misread in the user's own words and append it to the misread ledger. Use this skill the moment the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time", "ไม่ใช่ที่ผมต้องการ", "เข้าใจผิด", "ไม่ใช่แบบนี้" — or after any intent-lock session whose output was rejected. Also use when the user asks to record, review, or edit their misread priors. This skill CAPTURES the user's diagnosis; it never produces one. Do not defend the work, do not explain what you understood, do not draft the entry.
+description: Captures a misread in the user's own words and appends it to the misread ledger. Use this skill the moment the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time", "ไม่ใช่ที่ผมต้องการ", "เข้าใจผิด", "ไม่ใช่แบบนี้" — or after any intent-lock session whose output was rejected. Also use when the user asks to record, review, or edit their misread priors. This skill CAPTURES the user's diagnosis; it never produces one. Do not defend the work, do not explain what you understood, do not draft the entry. Not for mid-interview corrections (intent-lock handles those live), and it never drafts the diagnosis itself — the misread is captured from the user, in the user's words.
 ---
 
 # Misread Capture
