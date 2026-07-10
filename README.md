@@ -24,6 +24,9 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
+The examples above install `pubmed-research-note`; swap in `intent-lock`, `plugin-creator`, or
+`vault-keeper` (or any future plugin) by name — the commands are identical for all of them.
+
 ## Update it
 
 ```bash
@@ -48,17 +51,20 @@ python3 scripts/validate.py          # always available
 claude plugin validate .claude-plugin/marketplace.json   # if the CLI is installed
 ```
 
-The validator enforces two things the CLI does not: `SKILL.md` descriptions must be
-200–1024 characters, and every plugin's manifest version must equal its marketplace entry.
+The validator enforces things the CLI does not: `SKILL.md` description length (200–1024
+characters), version parity between a plugin's manifest and its marketplace entry, per-skill
+`evals.json` validity, and that every command/agent carries a frontmatter description.
 
 ## Plugins
 
-- **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
-  quantified, trial-registry-checked. Vault notes only on the word *atomize*.
+Four plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
 
-  **Requires `intent-lock`,** which is not vendored here and never should be — a second copy
-  would drift from the one you maintain and collide on the skill name. If you want both from one
-  command, add a second entry to `.claude-plugin/marketplace.json` whose `source` points at
-  intent-lock's real location (a `github` source, or another relative path if you move it in
-  here as its own plugin). Nothing resolves the dependency automatically; if `intent-lock` is
-  absent, a bare topic will chain into a handoff that goes nowhere and quietly search anyway.
+- **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
+  quantified, trial-registry-checked evidence reports. Chains to `intent-lock` when a request
+  carries no decision, and delegates vault saving to `vault-keeper`.
+- **intent-lock** — pre-build alignment gate. Interrogates a request until it has exactly one
+  reading, then builds it.
+- **plugin-creator** — meta-plugin for this marketplace. Scaffolds new plugins (`/new-plugin`)
+  and refines existing ones (`/refine-plugin`), and regenerates the router (`/route`).
+- **vault-keeper** — shared knowledge-vault manager for the repo-root `vault/`. Other plugins
+  delegate their vault writes to it instead of writing vault files themselves.

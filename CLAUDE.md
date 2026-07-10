@@ -26,6 +26,9 @@ plugins/<name>/
   agents/<agent>.md                # optional — subagents
 scripts/validate.py                # full marketplace + plugin validation
 scripts/bump.py                    # version bump in BOTH manifest + catalog
+scripts/route.py                   # generates ROUTING.md from the catalog + every plugin's components
+ROUTING.md                         # generated router — never hand-edit
+vault/                             # shared knowledge vault — managed by vault-keeper
 ```
 
 ## Hard rules (these have bitten before)
@@ -45,17 +48,27 @@ scripts/bump.py                    # version bump in BOTH manifest + catalog
 1. Scaffold under `plugins/<name>/` following the layout above.
 2. Add the entry to `.claude-plugin/marketplace.json` (name, source, version, description, category, keywords).
 3. `python3 scripts/validate.py` — must print `all checks passed`.
-4. Bump with `scripts/bump.py` when releasing, never by hand.
-5. Commit (conventional commits: `feat:`, `fix:`, `refactor:`…). One logical change per commit.
+4. Regenerate the router: `python3 scripts/route.py` (any change to a skill/command description
+   alters ROUTING.md; `/new-plugin` and `/refine-plugin` do this automatically).
+5. Bump with `scripts/bump.py` when releasing, never by hand.
+6. Commit (conventional commits: `feat:`, `fix:`, `refactor:`…). One logical change per commit.
 
 ## Plugins
 
-- **pubmed-research-note** — clinical decision from primary literature; verdict-first evidence reports.
+- **pubmed-research-note** — clinical decision from primary literature; verdict-first evidence
+  reports; chains to intent-lock when a request carries no decision; delegates vault saving to
+  vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
 - **plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS marketplace
-  (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation).
-  Skill + `/new-plugin` command; elicit-first fixed checklist; auto-register + auto-validate,
-  stops before commit. Authoring rules + templates under its `skills/plugin-creator/references/`.
+  (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation), and
+  refines existing ones. Two skills (`plugin-creator`, `refine-plugin`) + three commands
+  (`/new-plugin`, `/refine-plugin`, `/route`); elicit-first fixed checklist; auto-register +
+  auto-validate, stops before commit. `/route` regenerates ROUTING.md and routes a request to
+  the owning skill or command. Authoring rules + templates under its
+  `skills/plugin-creator/references/`.
+- **vault-keeper** — shared knowledge-vault manager for the repo-root `vault/`; four jobs: init,
+  save, index, query. Other plugins delegate vault writes to it rather than writing vault files
+  themselves.
 
 ## Style
 
