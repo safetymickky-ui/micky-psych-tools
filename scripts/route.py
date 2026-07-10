@@ -51,6 +51,28 @@ def first_sentence(text, cap=160):
     return (cue[: cap - 1].rstrip() + "…") if len(cue) > cap else cue
 
 
+def use_when(desc, cap=200):
+    """Cue for the routing table: the 'Use when...' clause if present, else first sentence.
+
+    Descriptions are written to be self-triggering ("Use when the user says...") — that
+    clause is the actual routing signal, whereas the first sentence is usually a noun-phrase
+    summary ("A pre-build alignment gate.") that tells a router nothing about when to fire.
+    Trigger-phrase lists run long, so truncate on a word boundary rather than first_sentence's
+    hard cutoff — chopping mid-quote ("...you don) reads worse than a slightly longer cue.
+    Also matches "Use this skill the moment..." (misread-capture's primary trigger) — a plain
+    when(ever)-only pattern skips straight to a weaker secondary "Also use when..." clause.
+    """
+    text = " ".join(desc.split())
+    m = re.search(r"[Uu]se (?:this skill |it )?(?:when(ever)?|the moment)\b(.*?)(?:\.(?:\s|$)|$)", text)
+    if not m:
+        return first_sentence(desc, cap=cap)
+    cue = ("when" + (m.group(1) or "") + m.group(2)).strip() + "."
+    if len(cue) <= cap:
+        return cue
+    truncated = cue[:cap].rsplit(" ", 1)[0].rstrip(",;— ")
+    return truncated + "…"
+
+
 def components(pdir):
     """Collect (kind, name, invoke, description) for one plugin, in a stable order."""
     items = []
@@ -110,7 +132,7 @@ def main():
 
     for p in plugins:
         for kind, name, invoke, desc in catalog[p["name"]]:
-            cue = first_sentence(desc) or cell(p["description"])
+            cue = use_when(desc) or cell(p["description"])
             lines.append(f"| {cell(cue)} | {p['name']} | {invoke} |")
 
     lines += ["", "## Plugins", ""]

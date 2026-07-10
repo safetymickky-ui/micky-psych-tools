@@ -8,15 +8,15 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 | Use when the request is about… | Plugin | Route |
 | --- | --- | --- |
-| Answer a clinical decision from primary literature and deliver a verdict-first, quantified evidence report. | pubmed-research-note | skill `pubmed-research-note` |
-| A pre-build alignment gate. | intent-lock | skill `intent-lock` |
-| Capture a misread in the user's own words and append it to the misread ledger. | intent-lock | skill `misread-capture` |
-| Scaffold a new customized plugin into the micky-psych-tools marketplace. | plugin-creator | skill `plugin-creator` |
-| Audit and refine an EXISTING plugin or skill in the micky-psych-tools marketplace. | plugin-creator | skill `refine-plugin` |
+| when asked to "research", "look up the evidence on", "what does the literature say about", "find papers on", "evidence review of", "search PubMed for", "is X actually true", "should I use X for Y"… | pubmed-research-note | skill `pubmed-research-note` |
+| whenever the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ"… | intent-lock | skill `intent-lock` |
+| when the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time"… | intent-lock | skill `misread-capture` |
+| when the user says "make me a plugin", "create a plugin", "scaffold a plugin", "scaffold a skill/command/agent", "new plugin", "add a plugin to the marketplace", or runs /new-plugin. | plugin-creator | skill `plugin-creator` |
+| when the user says "improve my plugin", "refine this skill", "audit my plugin", "audit this skill", "tighten the trigger description", "review my plugin", "fix version parity", "polish this skill"… | plugin-creator | skill `refine-plugin` |
 | Scaffold a new plugin into the micky-psych-tools marketplace | plugin-creator | `/new-plugin` |
 | Audit and refine an existing plugin or skill in the marketplace | plugin-creator | `/refine-plugin` |
 | Recommend which marketplace skill/plugin fits a request, from ROUTING.md | plugin-creator | `/route` |
-| Full manager for the shared Obsidian-style knowledge vault at the marketplace repo root (vault/). | vault-keeper | skill `vault-keeper` |
+| when the user says "save this to the vault", "vault this", "add to my vault", "file this note", "put this in the vault", "index the vault", "rebuild the index", "link these notes", "make a MOC"… | vault-keeper | skill `vault-keeper` |
 
 ## Plugins
 
@@ -39,7 +39,7 @@ Keywords: prompting, alignment, elicitation
 
 ### plugin-creator — productivity  _v0.2.0_
 
-Plugin lifecycle toolkit for this marketplace. /new-plugin scaffolds a new plugin (elicit checklist, generate component skeleton, register, validate); /refine-plugin audits and refines an existing plugin or skill, then bumps and validates.
+Plugin lifecycle toolkit for this marketplace. /new-plugin scaffolds a new plugin (elicit checklist, generate component skeleton, register, validate); /refine-plugin audits and refines an existing plugin or skill, then bumps and validates. /route regenerates ROUTING.md and routes a request to the owning skill or command.
 
 Keywords: plugin, scaffold, meta, marketplace, generator
 

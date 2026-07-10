@@ -6,6 +6,10 @@ argument-hint: [describe what you want to do]
 Read `ROUTING.md` at the marketplace repo root — it is the generated router
 (`scripts/route.py` builds it from the catalog and every plugin's components).
 
+Before consulting the table, always run `python scripts/route.py` first (fall back to
+`python3`) — it is idempotent and cheap, and it is the only way to pick up edited skill
+descriptions (which change ROUTING.md without touching marketplace.json).
+
 If `$ARGUMENTS` is empty, ask the user for one line describing what they want to do.
 
 Match `$ARGUMENTS` against the **Use when** column of the Quick index, then confirm
@@ -19,6 +23,3 @@ against the plugin's fuller entry under **Plugins**. Recommend the single best r
 
 If nothing matches, say so plainly and suggest `/new-plugin` to build one — do not
 force a poor fit.
-
-If `ROUTING.md` is missing or looks stale versus `.claude-plugin/marketplace.json`,
-run `python scripts/route.py` (fall back to `python3`) to regenerate it first.
