@@ -14,4 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-_None yet — the first `save` will add one._
+- [[Depression — Treatment MOC]]

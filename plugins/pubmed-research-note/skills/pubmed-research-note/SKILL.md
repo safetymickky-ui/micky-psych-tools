@@ -8,7 +8,8 @@ description: >-
   service around, or teaching. Thai triggers: "หางานวิจัย", "ทบทวนหลักฐาน", "ค้น PubMed",
   "จริงหรือเปล่า". Orchestrates PubMed (primary evidence), ClinicalTrials.gov (unpublished/ongoing
   evidence), Open Library (textbook gap), Wikipedia (terminology). Chains to intent-lock when a
-  topic is named with no decision attached. Vault notes ONLY when the user says "atomize" /
+  topic is named with no decision attached. By default writes the report, shows it inline in
+  the chat, and files it to the vault via vault-keeper; atomic notes ONLY on "atomize" /
   "ทำโน้ต". NOT for: daily multi-domain literature sweeps (psych-paper-digest); non-biomedical
   research (deep-research); MCQ/CRQ/Essay generation; grading; one-line lookups.
 ---
@@ -16,7 +17,9 @@ description: >-
 # PubMed → Decision Instrument
 
 You are not writing an encyclopedia article about a topic. You are answering a decision a
-psychiatrist is about to make, and then you are throwing the report away. It is read once.
+psychiatrist is about to make. Write it as if it will be read once, under time pressure, at
+the point of decision — even though it is now also shown inline and filed to the vault for
+later reference.
 
 Everything below follows from that single fact. A report that is *comprehensive* but does
 not resolve the decision has failed. A report that resolves the decision in four sentences
@@ -77,19 +80,27 @@ may never be re-asked, and where `[ASSUMED]` lives in the report — is
 
 ## Where output goes
 
-1. **Claude Code (default):** write the report into the working directory
-   (or `report_dir` from `.pubmed-research-note.json` if present).
-2. **Vault mode (only on request):** hand the finished note content to the
-   vault-keeper skill — it owns paths, dedup, MOC wiring, and the index. Pass:
-   title (`Concept — Qualifier`), body, target type (note/artifact), suggested
-   MOC topic, source-skill identity/tags as data, plus optional extra
-   frontmatter fields (sources, board_pearls, review_count, last_reviewed,
-   aliases) as a flat map. The report itself still lands per mode 1 — or is
-   handed to vault-keeper as an artifact if the user wants it kept in the
-   vault. Never emit frontmatter, choose paths, or write into `vault/`
-   directly from this skill.
-3. **No filesystem:** render inline and say explicitly that nothing was written.
+The default is a three-step pipeline — **write → show → file.** Run all three every time
+unless the user opts out of one.
 
+1. **Write (default):** write the report into the working directory (or `report_dir` from
+   `.pubmed-research-note.json` if present).
+2. **Show (default):** render the full report inline in the chat so the user can read it
+   right here — do not merely announce the file path. The file and the inline copy are the
+   same content.
+3. **File (default):** hand the finished report to the vault-keeper skill to save as an
+   **artifact** — it owns paths, dedup, MOC wiring, and the index. Pass: title
+   (`Concept — Qualifier`), body, target type `artifact`, suggested MOC topic, source-skill
+   identity/tags as data, plus optional extra frontmatter fields (sources, board_pearls,
+   review_count, last_reviewed, aliases) as a flat map. Never emit frontmatter, choose paths,
+   or write into `vault/` directly from this skill. Skip this step only if the user says not
+   to save (e.g. "don't vault this" / "no vault").
+
+**No filesystem:** step 2 still applies — render inline — then say explicitly that nothing
+was written and nothing was filed.
+
+Filing the report as an artifact is **not** the same as **atomize**: atomic notes (distilled,
+linkable one-idea notes in `notes/`) stay opt-in and word-gated — see **Atomize** below.
 Never fabricate a write you did not perform. Never invent a vault path.
 
 ## Source engines
@@ -181,19 +192,23 @@ too long: cut it, don't chunk it.
 
 ## Atomize — opt-in, word-gated
 
-Do **not** produce vault notes unless the user literally says **"atomize"**, **"ทำโน้ต"**,
-or explicitly asks for a vault note. The report feeds nothing by default; unrequested
-atomic notes are clutter with a `review_count` nobody increments.
+Filing the finished report to the vault as an **artifact** is a default step (see **Where
+output goes**). Producing **atomic notes** is not. Do **not** distil the report into vault
+notes unless the user literally says **"atomize"**, **"ทำโน้ต"**, or explicitly asks for
+atomic notes. Unrequested atomic notes are clutter with a `review_count` nobody increments —
+the archived report artifact already preserves the decision.
 
 When asked: follow [references/atomic-note-template.md](references/atomic-note-template.md)
-to assemble the note's title and body, then hand both to vault-keeper — see
+to assemble each note's title and body, then hand both to vault-keeper — see
 **Where output goes** above. This skill never resolves vault paths or writes into `vault/`
 itself.
 
 ## Close
 
 Two lines. What was delivered, `PubMed N · trials N · books N`, the verdict's confidence
-level, and any `[unverified]` gap. Nothing else — the file is the deliverable.
+level, and any `[unverified]` gap. Then name where it now lives — the report file, the inline
+copy shown above, and the vault artifact path returned by vault-keeper (or note the vault save
+was skipped). Nothing else.
 
 ## Failure conditions
 
@@ -211,5 +226,8 @@ This skill has failed if:
 - A quick evidence check with an obvious frame was subjected to an interview it did not need.
 - An intent-lock `[ASSUMED]` item reached the report without appearing in the preface block.
 - A question intent-lock already settled was re-asked after `GOAL UNIFIED`.
-- Vault notes were produced without the word *atomize*.
+- Atomic notes were distilled into the vault without the word *atomize* (filing the whole
+  report as an artifact is a default step and is *not* gated this way).
+- The finished report was not rendered inline in the chat, or was not handed to vault-keeper
+  to file — absent an explicit opt-out like "don't vault this".
 - The trial registry went unchecked on an Rx or Service question.
