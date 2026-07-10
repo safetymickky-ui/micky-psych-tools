@@ -9,8 +9,8 @@
     {
       "name": "pubmed-research-note",
       "source": "./plugins/pubmed-research-note",
-      "version": "1.2.0",
-      "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; vault notes only on request. Chains to the intent-lock plugin when the request carries no decision.",
+      "version": "1.3.0",
+      "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; renders the report inline and files it to the vault by default, atomic notes on request. Chains to the intent-lock plugin when the request carries no decision.",
       "category": "research",
       "keywords": [
         "pubmed",

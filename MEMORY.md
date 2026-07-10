@@ -16,7 +16,7 @@ a milestone.
 | item                  | version |
 | --------------------- | ------- |
 | marketplace catalog   | 1.3.0   |
-| pubmed-research-note   | 1.2.0   |
+| pubmed-research-note   | 1.3.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
@@ -28,8 +28,9 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 ## Plugins at a glance
 
 - **pubmed-research-note** — clinical decision from primary literature; verdict-first,
-  quantified, trial-registry-checked evidence reports; vault notes on request only. Chains to
-  intent-lock when a request carries no decision; delegates vault writes to vault-keeper.
+  quantified, trial-registry-checked evidence reports. Default output pipeline: write md →
+  show inline → file to vault as an artifact via vault-keeper; atomic notes on "atomize" only.
+  Chains to intent-lock when a request carries no decision; delegates vault writes to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
   Ships `intent-lock` (the interview) + `misread-capture` (the compounding misread ledger).
 - **plugin-creator** — meta-plugin: `/new-plugin` scaffolds, `/refine-plugin` audits/refines,
@@ -40,6 +41,12 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-10** — pubmed-research-note **1.3.0**: output is now a three-step default
+  pipeline — write the md report, render it inline in the chat, then file it to the vault as
+  an artifact via vault-keeper (was working-directory only, vault opt-in). Atomic-note
+  distillation stays word-gated on "atomize"; failure conditions, Close, manifest + SKILL
+  descriptions and ROUTING.md updated to match. First real report — the difficult-to-treat-
+  depression Rx note — filed to the vault under a new `Depression — Treatment MOC`.
 - **2026-07-10** — Full four-plugin audit produced an 11-task improvement plan
   (`docs/superpowers/plans/2026-07-10-improve-all-plugins.md`), EXECUTED same day (branch
   `improve-all-plugins`, 22 commits). Fixed: intent-lock misread-ledger path collision,
