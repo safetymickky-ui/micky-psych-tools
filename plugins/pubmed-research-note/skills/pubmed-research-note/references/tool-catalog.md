@@ -1,12 +1,21 @@
 # Source Tool Catalog
 
-Read before your first tool call. Four engines, four jobs. Each has an **MCP path**
-(preferred; this plugin declares PubMed and Clinical Trials in its own `.mcp.json`) and a
-**web fallback**. A missing server never blocks the run — except PubMed, whose absence is
-fatal and must be stated rather than worked around.
+Read before your first tool call. Four engines, four jobs. PubMed and ClinicalTrials.gov have
+an **MCP path** — this plugin bundles both servers in its own `.mcp.json` — and a **web
+fallback**. Open Library has **no MCP server wired by this plugin**; it is web-fallback only
+(WebSearch/WebFetch), unless an external Open Library connector happens to be installed. A
+missing server never blocks the run — except PubMed, whose absence is fatal and must be
+stated rather than worked around.
 
-Server prefixes for managed connectors are **hashes** and change between sessions. Never
-hardcode. Resolve at runtime with `ToolSearch` / `tool_search`.
+**Bundled servers have stable prefixes — no hunting required.** This plugin's own two MCP
+servers resolve to fixed tool-name prefixes, not hashes:
+
+- `mcp__plugin_pubmed-research-note_pubmed__<tool>`
+- `mcp__plugin_pubmed-research-note_clinical-trials__<tool>`
+
+Only **external managed connectors** (servers installed outside this plugin, e.g. a
+user-connected Open Library or Wikipedia MCP) get session-varying hashed prefixes — never
+hardcode those; resolve them at runtime with `ToolSearch` / `tool_search`.
 
 ---
 
@@ -83,8 +92,11 @@ Report every NCT you cite in `## Sources` as `NCT NNNNNNNN — status, n, endpoi
 clinical claim — it is to establish *what the trainee has been taught*, so the report can
 name where the canon and the evidence diverge.
 
-MCP prefix `mcp__open-library__<tool>`: `get_book_by_title`, `get_authors_by_name`,
-`get_author_info`, `get_book_by_id`.
+**Web-fallback only — no MCP server is wired for this engine.** `.mcp.json` declares just
+`pubmed` and `clinical-trials`; there is no bundled or preferred `open-library` MCP path.
+Use WebSearch/WebFetch directly. (If the user has separately connected an external Open
+Library MCP connector, its prefix is a session-varying hash — resolve via `ToolSearch`,
+never hardcode it; do not assume it exists.)
 
 **Web fallback.** WebFetch `https://openlibrary.org/search.json?title=<title>` — read
 edition, OLID, ISBN from the JSON.

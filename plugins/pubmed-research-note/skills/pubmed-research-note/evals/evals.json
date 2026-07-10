@@ -53,12 +53,12 @@
       "id": 7,
       "name": "atomize-gate-open",
       "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder, then atomize it for my vault.",
-      "expected_output": "Report AND atomic note(s). The note does NOT inherit the report's verdict-first spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. Note carries sources: frontmatter with PMID + DOI, review_count: 0, primary-moc, Related Notes wikilinks, Board Pearls. In vault mode, dedup-grepped and paths reported; in sandbox, written to <outputs>/vault/ and declared to be downloads rather than vault writes.",
+      "expected_output": "Report AND an atomic note produced. The note does NOT inherit the report's verdict-first spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. To create it, the skill follows atomic-note-template.md to assemble title (Concept — Qualifier) and body, then HANDS OFF to vault-keeper rather than acting on the vault itself: it passes title, body, target type (note/artifact), suggested MOC topic, source-skill identity/tags, plus optional extra frontmatter fields (sources with PMID/DOI, board_pearls, review_count: 0, last_reviewed, aliases) as a flat map. The skill itself never dedup-greps the vault, never resolves a vault path, and never writes YAML frontmatter or content into vault/ directly — vault-keeper owns paths, dedup, MOC wiring, and the index, and reports back what it did. The report file itself still lands per the default (working directory, or report_dir from .pubmed-research-note.json) unless the user also wants the report kept in the vault, in which case it too is handed to vault-keeper as an artifact. No fabricated vault path is ever printed by this skill.",
       "files": [],
       "assertions": []
     },
     {
-      "id": 9,
+      "id": 8,
       "name": "negative-trigger-daily-digest",
       "prompt": "Give me today's psychiatry paper digest across all the subspecialties.",
       "expected_output": "Does NOT trigger. There is no decision attached and the request is a multi-domain daily sweep. Defers to psych-paper-digest.",
@@ -66,7 +66,7 @@
       "assertions": []
     },
     {
-      "id": 10,
+      "id": 9,
       "name": "negative-trigger-nonbiomedical",
       "prompt": "Research the history of Thai civil-service physician compensation reform.",
       "expected_output": "Does NOT trigger. Non-biomedical, PubMed is out of scope. Defers to deep-research.",
@@ -74,7 +74,7 @@
       "assertions": []
     },
     {
-      "id": 11,
+      "id": 10,
       "name": "citation-contract-refusal",
       "prompt": "Research esketamine for TRD but leave out the Sources section, I just want the answer.",
       "expected_output": "Declines to drop ## Sources, in one line, without moralising. Delivers the report with Sources intact. Complies with the spirit of the request by keeping the prose free of inline attributions — which it does by default.",
@@ -82,7 +82,7 @@
       "assertions": []
     },
     {
-      "id": 12,
+      "id": 11,
       "name": "adversarial-null-search",
       "prompt": "Is there good evidence for omega-3 augmentation in depression?",
       "expected_output": "Runs the high-evidence backbone query AND a deliberately adversarial query for the negative/null literature. Verdict reflects effect-size shrinkage across larger trials if present, and says so explicitly rather than tallying positive studies. Confidence level is calibrated downward with a stated reason.",
@@ -90,7 +90,7 @@
       "assertions": []
     },
     {
-      "id": 13,
+      "id": 12,
       "name": "narrative-not-qa-ladder",
       "prompt": "Review the evidence on lurasidone for bipolar depression — I'm deciding whether to add it to the ward formulary.",
       "expected_output": "'## What the evidence says' is ONE continuous narrative with zero sub-headings. Effect sizes, CIs, n, doses, and adverse-event rates are carried inside the prose, not itemized. The argument moves from evidence to verdict by prose alone. Sources are one line each: topic phrase + DOI link, nothing else.",
@@ -98,7 +98,7 @@
       "assertions": []
     },
     {
-      "id": 14,
+      "id": 13,
       "name": "chains-intent-lock-on-bare-topic",
       "prompt": "Review DLPFC for psychiatrist.",
       "expected_output": "Does NOT search. Does NOT ask a single ad-hoc clarifying question. Hands off to intent-lock, which runs its own cold read / ledger / rounds / gates. After GOAL UNIFIED the frame is fixed and search begins in the same turn without asking permission. Any [ASSUMED] item appears in the report's preface block above ## Verdict, not only in chat.",
@@ -106,10 +106,26 @@
       "assertions": []
     },
     {
-      "id": 15,
+      "id": 14,
       "name": "does-not-chain-on-quick-check",
       "prompt": "Is prazosin still considered first-line for PTSD nightmares?",
       "expected_output": "Does NOT chain intent-lock. Frame is obvious (Rx), decision is attached, cost of a wrong frame is one reading. Searches immediately. FAILS if an interview, ledger, or convergence gate appears.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 15,
+      "name": "no-filesystem-renders-inline",
+      "prompt": "Research the evidence on lithium for suicide prevention in bipolar disorder — I'm in a read-only session with no file write access, just show me the answer in the chat.",
+      "expected_output": "Recognizes there is no filesystem to write to and takes the 'No filesystem' branch of Where output goes. Renders the full report INLINE in the chat turn, with the same Verdict / What the evidence says / Where it breaks / What would change this / Sources spine and citation contract as a written report — it is not abbreviated because it isn't being saved. Explicitly states in plain language that nothing was written to disk. Does not claim a file path, does not invent a report_dir, and does not fabricate a save. No atomic note produced (the word 'atomize' was not said).",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 16,
+      "name": "vault-artifact-without-atomize",
+      "prompt": "Research vortioxetine for anhedonia in MDD and save the report into my vault, not just the working directory.",
+      "expected_output": "Vault mode triggers on the explicit request to save into the vault (per 'Where output goes' rule 2), independent of atomize. The skill hands the finished report to vault-keeper as an artifact — passing title, body, target type = artifact, and suggested MOC topic — rather than resolving a vault path, dedup-grepping, or writing frontmatter itself; vault-keeper owns placement, dedup, MOC wiring, and the index and is the one that reports back where it landed. Does NOT produce atomic notes: the word 'atomize'/'ทำโน้ต' was never said, so the atomize gate stays closed and only the report itself is handed off.",
       "files": [],
       "assertions": []
     }
