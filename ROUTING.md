@@ -17,6 +17,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Audit and refine an existing plugin or skill in the marketplace | plugin-creator | `/refine-plugin` |
 | Recommend which marketplace skill/plugin fits a request, from ROUTING.md | plugin-creator | `/route` |
 | when the user says "save this to the vault", "vault this", "add to my vault", "file this note", "put this in the vault", "index the vault", "rebuild the index", "link these notes", "make a MOC"… | vault-keeper | skill `vault-keeper` |
+| when the user says "paper digest", "today's digest", "what's new in the literature", "anything new this week", "อัปเดตงานวิจัย", "มีเปเปอร์ใหม่ไหม", runs /digest, or asks to manage the watchlist… | psych-paper-digest | skill `psych-paper-digest` |
+| Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument | psych-paper-digest | `/digest` |
 
 ## Plugins
 
@@ -56,3 +58,12 @@ Files, indexes, links, and retrieves any skill's output in the shared Obsidian-s
 Keywords: vault, obsidian, knowledge, notes, index, moc
 
 - **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
+
+### psych-paper-digest — research  _v0.1.0_
+
+Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.
+
+Keywords: pubmed, digest, psychiatry, surveillance, clinical-trials, current-awareness
+
+- **skill `psych-paper-digest`** (skill) — Sweeps every domain on the user's watchlist for literature published since the last sweep and delivers a triaged, read-once digest — practice-changing first, then worth-reading, plus registry trial readouts; noise suppr…
+- **`/digest`** (command) — Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument

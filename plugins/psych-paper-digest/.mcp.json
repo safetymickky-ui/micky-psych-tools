@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "pubmed": {
+      "type": "http",
+      "url": "https://pubmed.mcp.claude.com/mcp"
+    },
+    "clinical-trials": {
+      "type": "http",
+      "url": "https://hcls.mcp.claude.com/clinical_trials/mcp"
+    }
+  }
+}

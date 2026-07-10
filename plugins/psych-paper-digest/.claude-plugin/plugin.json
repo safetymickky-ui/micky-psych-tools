@@ -1,0 +1,17 @@
+{
+  "name": "psych-paper-digest",
+  "version": "0.1.0",
+  "description": "Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.",
+  "author": {
+    "name": "Thanawat Suharit"
+  },
+  "keywords": [
+    "pubmed",
+    "digest",
+    "psychiatry",
+    "surveillance",
+    "clinical-trials",
+    "current-awareness"
+  ],
+  "mcpServers": "./.mcp.json"
+}
