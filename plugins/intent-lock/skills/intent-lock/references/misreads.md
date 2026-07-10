@@ -12,7 +12,7 @@ Read `## Active priors` before reading any request. That is the whole point of t
 
 ## Active priors
 
-Newest first. Cap: 7. Each is a check to run, not a lesson to remember.
+Newest first. Cap: 7. Each is a check to run, not a lesson to remember. The Active-priors line must be copied verbatim from the entry's `Prior:` line at append time; retire priors past 7.
 
 1. When he says "craft my prompt," check whether he wants the prompt or the work.
 

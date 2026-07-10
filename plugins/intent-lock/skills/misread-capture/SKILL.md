@@ -36,7 +36,7 @@ Do not ask a third question. If something is still unclear, leave the line blank
 
 ## The entry
 
-Fixed grammar. Append to `references/misreads.md`, newest last.
+Fixed grammar. Append to `${CLAUDE_PLUGIN_ROOT}/skills/intent-lock/references/misreads.md`, newest last. This is the SAME file intent-lock reads at Phase 0 — there is exactly one ledger; never create a `references/` dir under misread-capture.
 
 ```markdown
 ## YYYY-MM-DD · <what the request was, five words>
@@ -56,7 +56,7 @@ If the user offers a lesson, ask them to phrase it as a check. That is the one p
 
 ## The priors block
 
-At the top of `references/misreads.md`, maintain `## Active priors` — the `Prior:` lines, verbatim, newest first. Cap at seven.
+At the top of `${CLAUDE_PLUGIN_ROOT}/skills/intent-lock/references/misreads.md`, maintain `## Active priors` — the `Prior:` lines, verbatim, newest first. Cap at seven.
 
 This block is what Phase 0 of `intent-lock` reads. It is always-on context, so it costs tokens on every gate, which is why it is capped. When it exceeds seven, do not summarize and do not merge — summarizing is diagnosing through the back door. Present the oldest three to the user and ask which retires. If they don't answer, retire the oldest.
 

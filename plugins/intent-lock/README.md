@@ -5,7 +5,7 @@ A pre-build alignment gate. Interrogate a request until it has exactly one readi
 Two skills:
 
 - **`intent-lock`** — the interview. Cold read, a prediction of the actual output written before any question, mutually incompatible readings offered to be killed, then rounds of option-picker questions until saturation. Ends with `GOAL UNIFIED.` and the work, in the same turn.
-- **`misread-capture`** — the ledger. When work comes back wrong, the user's diagnosis is written down in the user's own words. `references/misreads.md` is the only asset here that compounds.
+- **`misread-capture`** — the ledger. When work comes back wrong, the user's diagnosis is written down in the user's own words. `skills/intent-lock/references/misreads.md` is the only asset here that compounds.
 
 ## Design commitments
 
@@ -26,7 +26,7 @@ Anything unresolved at a stop ships labelled: `[ASSUMED]` for open items, `[UNTE
 
 ## The ledger
 
-`skills/intent-lock/references/misreads.md` holds `## Active priors` — checks to run against the *next* request, written by the user, in the user's words. It is read before the request is read a second time. Entries are appended by `misread-capture`, never drafted by Claude.
+There is exactly one ledger file, at `skills/intent-lock/references/misreads.md`. Both skills share it: `misread-capture` appends to it (from `${CLAUDE_PLUGIN_ROOT}/skills/intent-lock/references/misreads.md`, since it lives in the other skill's directory), and `intent-lock` reads it at Phase 0, before the request is read a second time. It holds `## Active priors` — checks to run against the *next* request, written by the user, in the user's words. Entries are appended by `misread-capture`, never drafted by Claude.
 
 ## Install
 
