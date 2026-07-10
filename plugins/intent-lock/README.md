@@ -26,7 +26,7 @@ Anything unresolved at a stop ships labelled: `[ASSUMED]` for open items, `[UNTE
 
 ## The ledger
 
-There is exactly one ledger file, at `skills/intent-lock/references/misreads.md`. Both skills share it: `misread-capture` appends to it (from `${CLAUDE_PLUGIN_ROOT}/skills/intent-lock/references/misreads.md`, since it lives in the other skill's directory), and `intent-lock` reads it at Phase 0, before the request is read a second time. It holds `## Active priors` — checks to run against the *next* request, written by the user, in the user's words. Entries are appended by `misread-capture`, never drafted by Claude.
+There is exactly one ledger file, at `skills/intent-lock/references/misreads.md`. Both skills share it: `misread-capture` appends to it — addressing it via `${CLAUDE_PLUGIN_ROOT}/skills/intent-lock/references/misreads.md` since the file lives in intent-lock's directory — and `intent-lock` reads it at Phase 0, before the request is read a second time. It holds `## Active priors` — checks to run against the *next* request, written by the user, in the user's words. Entries are appended by `misread-capture`, never drafted by Claude.
 
 ## Install
 

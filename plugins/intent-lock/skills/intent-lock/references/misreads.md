@@ -12,7 +12,7 @@ Read `## Active priors` before reading any request. That is the whole point of t
 
 ## Active priors
 
-Newest first. Cap: 7. Each is a check to run, not a lesson to remember. The Active-priors line must be copied verbatim from the entry's `Prior:` line at append time; retire priors past 7.
+Newest first. Cap: 7. Each is a check to run, not a lesson to remember. The Active-priors line must be copied verbatim from the entry's `Prior:` line at append time; cap 7 — retirement follows misread-capture's procedure (ask the user which of the oldest three retires), never silent dropping.
 
 1. When he says "craft my prompt," check whether he wants the prompt or the work.
 
