@@ -99,8 +99,12 @@ request. Do not defend the report.
 2. **Vault mode (only on request):** hand the finished note content to the
    vault-keeper skill — it owns paths, dedup, MOC wiring, and the index. Pass:
    title (`Concept — Qualifier`), body, target type (note/artifact), suggested
-   MOC topic, and source-skill identity/tags as data. Never emit frontmatter,
-   choose paths, or write into `vault/` directly from this skill.
+   MOC topic, source-skill identity/tags as data, plus optional extra
+   frontmatter fields (sources, board_pearls, review_count, last_reviewed,
+   aliases) as a flat map. The report itself still lands per mode 1 — or is
+   handed to vault-keeper as an artifact if the user wants it kept in the
+   vault. Never emit frontmatter, choose paths, or write into `vault/`
+   directly from this skill.
 3. **No filesystem:** render inline and say explicitly that nothing was written.
 
 Never fabricate a write you did not perform. Never invent a vault path.

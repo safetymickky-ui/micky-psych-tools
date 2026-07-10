@@ -53,7 +53,7 @@
       "id": 7,
       "name": "atomize-gate-open",
       "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder, then atomize it for my vault.",
-      "expected_output": "Report AND atomic note(s). The note does NOT inherit the report's verdict-first spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. Note carries sources: frontmatter with PMID + DOI, review_count: 0, primary_moc, Related Notes wikilinks, Board Pearls. In vault mode, dedup-grepped and paths reported; in sandbox, written to <outputs>/vault/ and declared to be downloads rather than vault writes.",
+      "expected_output": "Report AND atomic note(s). The note does NOT inherit the report's verdict-first spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. Note carries sources: frontmatter with PMID + DOI, review_count: 0, primary-moc, Related Notes wikilinks, Board Pearls. In vault mode, dedup-grepped and paths reported; in sandbox, written to <outputs>/vault/ and declared to be downloads rather than vault writes.",
       "files": [],
       "assertions": []
     },

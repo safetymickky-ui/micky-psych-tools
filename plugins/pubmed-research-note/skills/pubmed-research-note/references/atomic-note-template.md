@@ -23,7 +23,13 @@ The report keeps its prose clean and pushes PMIDs into `## Sources`. **The note 
 A note is re-read years later out of context, so it carries `sources:` frontmatter *and* a
 `## Sources` section. Inline attribution inside the note body is still unnecessary.
 
-## Frontmatter schema
+## Note data handed to vault-keeper (shown as frontmatter for readability)
+
+This is a description of what data this skill hands to vault-keeper, not a block this
+skill writes itself — vault-keeper authors the actual frontmatter (see **Placement is
+vault-keeper's job** below). `type`, `tags`, and `primary-moc` map to the contract's core
+payload slots (target type, tags-as-data, suggested MOC topic); every other field travels
+via the contract's optional extra-frontmatter-fields slot as a flat key: value map.
 
 ```yaml
 ---
@@ -43,17 +49,17 @@ sources:                 # RESEARCH-NOTE ADDITION — auditable provenance
 last_updated: 2026-06-21
 review_count: 0
 last_reviewed: null
-primary_moc: "Pediatric Psychopharmacology MOC"
+primary-moc: "Pediatric Psychopharmacology MOC"
 ---
 ```
 
-This frontmatter is a description of what data this skill hands to vault-keeper, not a
-block this skill writes itself — vault-keeper authors the actual frontmatter (see
-**Placement is vault-keeper's job** below). `sources:` is the one field added for research
-notes — it makes every atomic note trace back to PubMed/textbook, mirroring the report's
-citation discipline.
+`sources:` is the one field added for research notes — it makes every atomic note trace
+back to PubMed/textbook, mirroring the report's citation discipline.
 
 ## Body structure
+
+MOC wikilinks in the body are suggestions — vault-keeper may rewrite them when it does the
+actual MOC wiring.
 
 ```markdown
 > **Chapter MOCs**: [[Pediatric Psychopharmacology MOC]] · [[ADHD MOC]]
@@ -74,7 +80,7 @@ Quantified prose/tables. Effect sizes, NNT, doses, %, named trials — never vag
 2. Book, Edition, Publisher Year (Open Library OLID).
 
 ## Board Pearls
-- Mirror the frontmatter board_pearls as a readable list at the bottom.
+- Mirror the board_pearls data (handed to vault-keeper) as a readable list at the bottom.
 ```
 
 ## Optional: Obsidian spaced-repetition button
@@ -107,6 +113,8 @@ handoff contract in `plugins/vault-keeper/README.md`.
 
 ## What distinguishes a research note from a plain vault note
 
-Same skeleton, plus: a populated `sources:` frontmatter list and a `## Sources` body section
-with real PMIDs/DOIs. Everything else (atomicity, MOC wiring, pearls, optional button) is
-identical — the research note is just an *auditable* member of the same graph.
+Same skeleton, plus: a populated `sources:` list — handed to vault-keeper as extra
+frontmatter data, not written by this skill — and a `## Sources` body section with real
+PMIDs/DOIs. Everything else (atomicity, MOC wiring — which vault-keeper owns — pearls,
+optional button) is identical — the research note is just an *auditable* member of the
+same graph.
