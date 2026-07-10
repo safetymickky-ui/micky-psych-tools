@@ -61,3 +61,19 @@ scripts/bump.py                    # version bump in BOTH manifest + catalog
 
 Follow the user's global CLAUDE.md. Keep plugins simple — solve the real task, no premature
 abstraction. Prefer editing existing plugins over adding new files.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (`safetymickky-ui/micky-psych-tools`) via the `gh` CLI;
+external PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary — each role uses its canonical name (`needs-triage`, `needs-info`,
+`ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
