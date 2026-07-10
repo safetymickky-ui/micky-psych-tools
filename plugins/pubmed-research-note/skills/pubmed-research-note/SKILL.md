@@ -92,14 +92,16 @@ whether it occurs in an interview or in a citation.
 If the delivered report still misses intent, that is a `misread-capture` event, not a revision
 request. Do not defend the report.
 
-## Runtime modes
+## Where output goes
 
-- **Default: report only.** Write to `<outputs>/<kebab-topic>.md` (default `<outputs>` is
-  `/mnt/user-data/outputs`), then `present_files`. Do not restate the contents inline; a
-  two-line recap is the whole chat response.
-- **Vault mode:** if a real, user-owned vault is on disk, write the report to `report_dir`
-  (from `CLAUDE.md` / `.pubmed-research-note.json`, else `research-notes/`).
-- **No filesystem at all:** render inline and say plainly that nothing was written.
+1. **Claude Code (default):** write the report into the working directory
+   (or `report_dir` from `.pubmed-research-note.json` if present).
+2. **Vault mode (only on request):** hand the finished note content to the
+   vault-keeper skill — it owns paths, dedup, MOC wiring, and the index. Pass:
+   title (`Concept — Qualifier`), body, target type (note/artifact), suggested
+   MOC topic, and source-skill identity/tags as data. Never emit frontmatter,
+   choose paths, or write into `vault/` directly from this skill.
+3. **No filesystem:** render inline and say explicitly that nothing was written.
 
 Never fabricate a write you did not perform. Never invent a vault path.
 
@@ -196,10 +198,10 @@ Do **not** produce vault notes unless the user literally says **"atomize"**, **"
 or explicitly asks for a vault note. The report feeds nothing by default; unrequested
 atomic notes are clutter with a `review_count` nobody increments.
 
-When asked: follow [references/atomic-note-template.md](references/atomic-note-template.md).
-In vault mode, `Grep`/`Glob` for an existing note or fitting `MOC — …` and extend rather
-than duplicate; write to `<vault_dir>/<Folder>/<Concept — Qualifier>.md`. In sandbox mode,
-write to `<outputs>/vault/` and say plainly these are downloads, not vault writes.
+When asked: follow [references/atomic-note-template.md](references/atomic-note-template.md)
+to assemble the note's title and body, then hand both to vault-keeper — see
+**Where output goes** above. This skill never resolves vault paths or writes into `vault/`
+itself.
 
 ## Close
 

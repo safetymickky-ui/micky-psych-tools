@@ -13,10 +13,9 @@ report's structure across. Re-atomize the content, and here the ordinary topic h
 ## One concept per note
 
 A report may collapse into ONE rich concept note, or split into 2–3 when it spans separable
-concepts (mechanism vs adverse effects vs dosing). In vault mode, before creating:
-`Grep`/`Glob` the vault for an existing note or a fitting `MOC — …` and link/extend it
-rather than duplicating. In sandbox mode there is no vault to grep — skip dedup, write to
-`<outputs>/vault/`, and say plainly these are downloads, not vault writes.
+concepts (mechanism vs adverse effects vs dosing). Dedup, placement, and MOC linking are not
+this skill's job — hand each note's title and body to vault-keeper (see below) and let it
+decide whether an existing note should be extended instead.
 
 ## Citation rule — differs from the report
 
@@ -44,17 +43,20 @@ sources:                 # RESEARCH-NOTE ADDITION — auditable provenance
 last_updated: 2026-06-21
 review_count: 0
 last_reviewed: null
-primary_moc: "MOC — Pediatric Psychopharmacology"
+primary_moc: "Pediatric Psychopharmacology MOC"
 ---
 ```
 
-`sources:` is the one field added for research notes — it makes every atomic note trace
-back to PubMed/textbook, mirroring the report's citation discipline.
+This frontmatter is a description of what data this skill hands to vault-keeper, not a
+block this skill writes itself — vault-keeper authors the actual frontmatter (see
+**Placement is vault-keeper's job** below). `sources:` is the one field added for research
+notes — it makes every atomic note trace back to PubMed/textbook, mirroring the report's
+citation discipline.
 
 ## Body structure
 
 ```markdown
-> **Chapter MOCs**: [[MOC — Pediatric Psychopharmacology]] · [[MOC — ADHD]]
+> **Chapter MOCs**: [[Pediatric Psychopharmacology MOC]] · [[ADHD MOC]]
 
 ## Overview
 2–4 sentences. What it is, why it matters, the one hallmark fact. Link concepts with [[wikilinks]].
@@ -95,14 +97,13 @@ action:
 ```
 ```
 
-## Filename + location (vault mode)
+## Placement is vault-keeper's job
 
-- `<vault_dir>/<Folder>/<Concept — Qualifier>.md`
-- Use ` — ` (space, em dash, space) as the separator.
-- Put it in the right domain folder — confirm it exists first (`Drugs/`, `Concepts/`,
-  `Mechanisms/`, `Adverse Effects/`, `Anxiety Disorders/`, `Geriatric/`, `MOCs/`, …).
-- If a note needs a new MOC, either link an existing MOC or create the `MOC — …` note too
-  and add the new note to its `## Core Notes` list.
+Title each note `Concept — Qualifier` (space, em dash, space). Beyond that, this skill does
+not resolve a vault path, pick a folder, dedup against existing notes, or wire a MOC.
+Placement, filenames, dedup, and MOC wiring are owned by vault-keeper — see
+`plugins/vault-keeper/skills/vault-keeper/references/vault-layout.md` and the
+handoff contract in `plugins/vault-keeper/README.md`.
 
 ## What distinguishes a research note from a plain vault note
 
