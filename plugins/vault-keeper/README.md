@@ -25,8 +25,15 @@ Key point: the vault root is resolved by walking up from cwd to the directory co
 
 ## Handoff rule for producer skills
 
-Producer skills output **content + target type** (`note` / `artifact` / `MOC`);
-**vault-keeper owns paths, dedup, and index wiring.** Do not compute vault paths, invent
-filenames, or edit `index.md`/MOCs from a producer skill — hand the content over and let
-vault-keeper file it. Conversely, vault-keeper never authors content: missing content is
-handed back to the source skill.
+The producer passes:
+
+- **title** (`Concept — Qualifier` style for notes)
+- **body** (the content itself)
+- **target type** (`note` / `artifact` / `MOC`)
+- **suggested MOC topic**
+- **source-skill identity and tags** — as data, not as frontmatter
+
+**Vault-keeper writes the actual frontmatter block, the filename, and all index/MOC wiring.**
+Producers never emit frontmatter, choose paths, invent filenames, or edit `index.md`/MOCs —
+hand the payload over and let vault-keeper file it. Conversely, vault-keeper never authors
+content: missing content is handed back to the source skill.

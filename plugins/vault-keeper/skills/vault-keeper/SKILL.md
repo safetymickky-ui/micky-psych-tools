@@ -55,6 +55,7 @@ title: <human title>
 created: <YYYY-MM-DD>          # from environment context (currentDate) or ask the user; if neither, omit — never guess
 type: note | artifact | moc
 source: <origin skill or "manual">
+primary-moc: <Topic>   # only for multi-topic notes
 tags: [<kebab>, <kebab>]
 links: [<Other Note title>, <Another>]   # mirror of the [[wikilinks]] in the body
 ---
@@ -81,7 +82,9 @@ Only when the vault is not populated. **Populated means `vault/index.md` exists*
    never overwrite (see [references/vault-layout.md](references/vault-layout.md)).
 4. Write frontmatter + body. Add `[[wikilinks]]` to the obvious neighbours already in the vault.
 5. Wire it into its topic MOC (create the MOC if the topic is new) and, if the MOC is new, add
-   the MOC to `index.md`. A saved file unreachable from `index.md` is a lost file.
+   the MOC to `index.md`. When a note belongs to more than one topic, set `primary-moc:` in its
+   frontmatter to the chosen primary — that MOC gets the index-checked link; other MOCs may
+   link too. A saved file unreachable from `index.md` is a lost file.
 
 ### index — maintain the maps
 Rebuild or repair `index.md` and the `MOCs/`. Regeneration is deterministic (rules in
