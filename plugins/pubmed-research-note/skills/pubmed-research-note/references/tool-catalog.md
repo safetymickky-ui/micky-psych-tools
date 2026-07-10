@@ -21,8 +21,14 @@ hardcode those; resolve them at runtime with `ToolSearch` / `tool_search`.
 
 ## 1. PubMed — the backbone
 
+Bundled server — call the tools directly with the stable prefix
+`mcp__plugin_pubmed-research-note_pubmed__<tool>` (e.g.
+`mcp__plugin_pubmed-research-note_pubmed__search_articles`). No ToolSearch step. Available
+tools (reference list):
+
 ```
-ToolSearch  query: "select:search_articles,get_article_metadata,get_full_text_article,find_related_articles,convert_article_ids,lookup_article_by_citation"
+search_articles · get_article_metadata · get_full_text_article
+find_related_articles · convert_article_ids · lookup_article_by_citation
 ```
 
 | Tool | Use | Key args |
@@ -60,8 +66,14 @@ evidence base and proceed.
 **Mandatory for the Rx and Service frames.** Its only job: *what evidence exists that is
 not in the published record, and would it change the verdict?*
 
+Bundled server — call the tools directly with the stable prefix
+`mcp__plugin_pubmed-research-note_clinical-trials__<tool>` (e.g.
+`mcp__plugin_pubmed-research-note_clinical-trials__search_trials`). No ToolSearch step.
+Available tools (reference list):
+
 ```
-ToolSearch  query: "select:search_trials,get_trial_details,search_by_sponsor,analyze_endpoints,search_by_eligibility"
+search_trials · get_trial_details · search_by_sponsor
+analyze_endpoints · search_by_eligibility
 ```
 
 | Tool | Use |

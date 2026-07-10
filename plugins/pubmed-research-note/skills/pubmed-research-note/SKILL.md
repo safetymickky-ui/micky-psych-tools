@@ -66,6 +66,11 @@ only when:
 3. **The run is expensive** — a Service decision, a formulary change, an SOP, anywhere a wrong
    frame wastes the whole report.
 
+An explicit `/intent-lock` from the user always wins; if the user says "just search" / "don't
+interview me", skip chaining. When a delivered report comes back as "not what I wanted", that
+is a `misread-capture` event — route there, do not treat it as a revision request and re-run
+the search.
+
 Full contract — the trigger table, what intent-lock must have fixed before search begins, what
 may never be re-asked, and where `[ASSUMED]` lives in the report — is
 [references/intent-lock-pairing.md](references/intent-lock-pairing.md).
