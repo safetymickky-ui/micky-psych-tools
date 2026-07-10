@@ -61,6 +61,9 @@ def use_when(desc, cap=200):
     hard cutoff — chopping mid-quote ("...you don) reads worse than a slightly longer cue.
     Also matches "Use this skill the moment..." (misread-capture's primary trigger) — a plain
     when(ever)-only pattern skips straight to a weaker secondary "Also use when..." clause.
+    Matches the FIRST such clause — description authors must phrase exclusions as "NOT for:",
+    never "Do not use when…", or the exclusion becomes the cue. The clause ends at the first
+    ". " sentence break, so an abbreviation like "e.g. " or "i.e. " inside it truncates early.
     """
     text = " ".join(desc.split())
     m = re.search(r"[Uu]se (?:this skill |it )?(?:when(ever)?|the moment)\b(.*?)(?:\.(?:\s|$)|$)", text)
