@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0
+## 0.3.0
 
 **Removed the round cap.** Rounds are now unbounded. The interview ends on saturation (zero open items above the admission threshold plus a surviving prediction), on `LOCK` / "stop asking" / silence, or on the degenerate-loop guard.
 
@@ -23,6 +23,10 @@
 **Fixed a collision in the degenerate-loop guard.** It read *zero items resolved OR prediction unrevised*, which made survival and degeneracy the same event. Now a conjunction, with the reason stated inline.
 
 **Six new failure conditions**, including *a convergence gate was printed*, *a round opened without its price*, *the interview was extended by demoting the admission threshold*, *the guard fired and the interview continued anyway*, and *an ending was declared on a feeling*.
+
+## 0.2.0
+
+Unreleased intermediate. The manifest carried this version from the plugin's first commit, but the changes it implies were never distinctly implemented or documented — the actual silent-run behavior landed in 0.3.0 above, which this entry's content has been folded into.
 
 ## 0.1.0
 

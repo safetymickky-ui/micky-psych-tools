@@ -4,7 +4,7 @@ A pre-build alignment gate. Interrogate a request until it has exactly one readi
 
 Two skills:
 
-- **`intent-lock`** — the interview. Cold read, a prediction of the actual output written before any question, mutually incompatible readings offered to be killed, then rounds of option-picker questions until saturation. Ends with `GOAL UNIFIED.` and the work, in the same turn.
+- **`intent-lock`** — the interview. Cold read, a prediction of the actual output written before any question, mutually incompatible readings offered to be killed, then rounds of option-picker questions until saturation. Ends silently — `GOAL UNIFIED` is a private gate, never printed — with the work landing in the same turn.
 - **`misread-capture`** — the ledger. When work comes back wrong, the user's diagnosis is written down in the user's own words. `skills/intent-lock/references/misreads.md` is the only asset here that compounds.
 
 ## Design commitments
@@ -31,13 +31,13 @@ There is exactly one ledger file, at `skills/intent-lock/references/misreads.md`
 ## Install
 
 ```
-/plugin marketplace add <owner>/mickky-plugins
-/plugin install intent-lock@mickky-plugins
+/plugin marketplace add <owner>/micky-psych-tools
+/plugin install intent-lock@micky-psych-tools
 ```
 
 Local development:
 
 ```
 /plugin marketplace add .
-/plugin install intent-lock@mickky-plugins
+/plugin install intent-lock@micky-psych-tools
 ```

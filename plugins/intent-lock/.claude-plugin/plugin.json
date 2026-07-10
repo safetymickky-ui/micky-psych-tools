@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "description": "A pre-build alignment gate. Interrogates a request until it has exactly one reading, then executes it as written. Ships intent-lock (the interview) and misread-capture (the compounding ledger).",
   "author": {
-    "name": "Thanawat Suharit (Mickky)"
+    "name": "Thanawat Suharit (Micky)"
   },
   "license": "MIT",
   "keywords": [
