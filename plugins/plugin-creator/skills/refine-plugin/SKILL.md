@@ -40,8 +40,9 @@ their skills) and ask which to refine. The target is a whole plugin or one named
 Read the target's files. Produce findings in two ranked, tagged tiers:
 
 - **[BLOCKER] mechanical** (from `authoring-rules.md`): version parity broken, non-kebab
-  name, bad semver, description outside 200–1024, MCP server missing `type`/`url`, `source`
-  not `./`, skill frontmatter `name` != directory.
+  name, bad semver, skill/agent description outside 200–1024, missing `description` in a
+  command's or agent's frontmatter, MCP server missing `type`/`url`, `source` not `./`,
+  skill frontmatter `name` != directory.
 - **[QUALITY] triggering / clarity** (from `references/audit-checklist.md`): description
   not action-first, trigger phrases missing from the description, no Use-when / Not-for
   clause, vague or bloated SKILL.md, redundant reference files.
@@ -68,23 +69,15 @@ were applied, do not bump. For an out-of-marketplace audit-only run, there is no
 
 ### 6. Refresh the router
 
-If edits were applied to an in-marketplace target, regenerate the router so any changed
-name, description, or component is reflected:
-
-```
-python scripts/route.py   # fall back to: python3 scripts/route.py
-```
-
-This rewrites the generated `ROUTING.md` (read by `/route`). Skip for an audit-only run
-or when no edits were applied. Never hand-edit `ROUTING.md`.
+If edits were applied to an in-marketplace target: regenerate the router — `python
+scripts/route.py` (never hand-edit `ROUTING.md`). Skip for an audit-only run or when no
+edits were applied.
 
 ### 7. Stop before commit
 
-Print the validate output and a suggested conventional commit, e.g.:
+Stage the changes and STOP before committing — the user reviews and commits.
 
 ```
 git add plugins/<plugin> ROUTING.md
 git commit -m "refactor(<plugin>): refine <target>"
 ```
-
-Do not commit.

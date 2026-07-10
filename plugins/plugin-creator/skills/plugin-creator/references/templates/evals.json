@@ -1,0 +1,21 @@
+{
+  "skill_name": "{{SKILL_NAME}}",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger",
+      "prompt": "{{A_REALISTIC_USER_PROMPT_USING_ONE_OF_THE_VERBATIM_TRIGGER_PHRASES_THAT_SHOULD_FIRE_THIS_SKILL}}",
+      "expected_output": "{{WHAT_A_CORRECT_RUN_LOOKS_LIKE: the skill fires, follows its procedure, and produces the expected shape of output.}}",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "negative-trigger",
+      "prompt": "{{A_PLAUSIBLE_NEIGHBOURING_PROMPT_THAT_SHOULD_NOT_FIRE_THIS_SKILL}}",
+      "expected_output": "{{WHY_IT_SHOULD_NOT_TRIGGER: names the Not-for clause it hits, or the sibling skill/command it should route to instead.}}",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

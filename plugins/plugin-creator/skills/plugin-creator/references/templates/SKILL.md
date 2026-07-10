@@ -1,6 +1,11 @@
 ---
 name: {{SKILL_NAME}}
-description: {{ACTION_FIRST_DESCRIPTION_200_TO_1024_CHARS. Third person, starts with a verb. Embed the verbatim trigger phrases the user gave. Include a "Use when the user says ..." clause and a "Not for ..." clause.}}
+# Recipe (delete this comment once description is filled): third person, action-first
+# ("Scaffolds a…", not "This skill will…"). 200-1024 chars, hard cap 1024, under ~200
+# triggers unreliably. Embed the verbatim trigger phrases the user gave. Include a
+# "Use when the user says ..." clause and a "Not for ..." clause. See
+# ../authoring-rules.md for the full rules.
+description: {{one-line, third-person, action-first; embed Use-when + Not-for; 200-1024 chars}}
 ---
 
 # {{SKILL_NAME}}

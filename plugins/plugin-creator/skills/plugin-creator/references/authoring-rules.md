@@ -26,12 +26,23 @@ of these, `validate.py` fails and the plugin is not done.
 
 ## Skill / agent descriptions
 
-- Length **200–1024 chars** (hard cap 1024; under ~200 triggers unreliably).
+- Length **200–1024 chars** for BOTH skill and agent descriptions (hard cap 1024; under
+  ~200 triggers unreliably). `validate.py` enforces this range for every `skills/*/SKILL.md`
+  and every `agents/*.md`.
 - The description is the ONLY thing that decides when the skill/agent fires. Recipe:
   - **Third person, action-first** — "Scaffolds a…", not "This skill will…".
   - **Embed the verbatim trigger phrases** the user gave.
   - **A "Use when…" clause and a "Not for…" clause** — negative scope sharpens triggering.
-- Commands and hooks do NOT trigger on description — a plain one-liner is fine.
+
+## Command / agent frontmatter presence
+
+- Every `commands/*.md` and every `agents/*.md` file must have a **non-empty
+  `description`** field in its frontmatter — `validate.py` checks this for both.
+- Commands do NOT trigger on description, so no length requirement applies to them — a
+  plain one-liner is fine, it just has to exist.
+- Agents DO trigger on description (same mechanism as skills), so on top of presence,
+  `validate.py` also enforces the 200–1024 length gate from the section above.
+- Hooks have no description field and are not checked here.
 
 ## MCP wiring (never generate a server)
 
