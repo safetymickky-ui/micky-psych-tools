@@ -75,7 +75,7 @@ edits were applied.
 
 ### 7. Stop before commit
 
-Stage the changes and STOP before committing — the user reviews and commits.
+Print the validate output and a suggested conventional commit; do not stage or commit — the user reviews and commits.
 
 ```
 git add plugins/<plugin> ROUTING.md

@@ -37,8 +37,8 @@ Every plugin this toolkit scaffolds or refines is judged against:
   `hooks.json`, `.mcp.json`, `evals.json`.
 
 Both commands end the same way: regenerate the router (`python scripts/route.py` — never
-hand-edit `ROUTING.md`), stage the changes, and stop before commit — the user always
-reviews and commits.
+hand-edit `ROUTING.md`), then print the validate output and a suggested commit and stop —
+the user reviews and commits (nothing is staged or committed for them).
 
 ## Install
 

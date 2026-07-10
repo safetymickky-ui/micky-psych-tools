@@ -87,7 +87,7 @@ Regenerate the router: `python scripts/route.py` (never hand-edit `ROUTING.md`).
 
 ### 7. Stop before commit
 
-Stage the changes and STOP before committing — the user reviews and commits.
+Print the validate output and a suggested conventional commit; do not stage or commit — the user reviews and commits.
 
 ```
 git add plugins/<name> .claude-plugin/marketplace.json ROUTING.md
