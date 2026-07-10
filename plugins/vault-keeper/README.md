@@ -32,6 +32,7 @@ The producer passes:
 - **target type** (`note` / `artifact` / `MOC`)
 - **suggested MOC topic**
 - **source-skill identity and tags** — as data, not as frontmatter
+- **extra frontmatter fields** (optional) — a flat key: value map (e.g. sources, board_pearls, review_count) merged verbatim into the frontmatter vault-keeper writes; reserved keys (title, created, type, source, primary-moc, tags, links) cannot be overridden
 
 **Vault-keeper writes the actual frontmatter block, the filename, and all index/MOC wiring.**
 Producers never emit frontmatter, choose paths, invent filenames, or edit `index.md`/MOCs —

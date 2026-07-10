@@ -80,7 +80,9 @@ Only when the vault is not populated. **Populated means `vault/index.md` exists*
 3. Kebab the filename for artifacts; use `Concept — Qualifier` for notes. Apply the collision
    rule: an existing filename that is not the same topic being extended gets ` -2`, ` -3`… —
    never overwrite (see [references/vault-layout.md](references/vault-layout.md)).
-4. Write frontmatter + body. Add `[[wikilinks]]` to the obvious neighbours already in the vault.
+4. Write frontmatter + body. Merge producer-supplied extra frontmatter fields (e.g. `sources`,
+   `board_pearls`, `review_count`) verbatim after the canonical fields; extras never override
+   the canonical keys. Add `[[wikilinks]]` to the obvious neighbours already in the vault.
 5. Wire it into its topic MOC (create the MOC if the topic is new) and, if the MOC is new, add
    the MOC to `index.md`. When a note belongs to more than one topic, set `primary-moc:` in its
    frontmatter to the chosen primary — that MOC gets the index-checked link; other MOCs may
