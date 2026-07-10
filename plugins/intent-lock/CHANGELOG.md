@@ -2,6 +2,14 @@
 
 ## 0.3.0
 
+**The run went silent.** `GOAL UNIFIED` became a private gate, never printed — the goal locks internally and the work follows in the same turn. Everything the interview computes now stays internal: the cold read, prediction v0, divergent readings, defaults list, per-round price, revised prediction, survival-probe wording, and the three convergence gates are performed as reasoning and never reach the user. Exactly two things surface — the option-picker clarifying questions, and the work.
+
+- The four-field assumption preface (`Assumed:` / `Untested:` / `Resolved:` / `Skipped:`) collapsed to at most one conditional line: `Assumed: … — say if wrong.`, emitted only when a material default was actually made. Nothing material assumed, guessed, or skipped → no line, ship clean.
+- The per-round price is still counted, but only to yourself — it feeds the degenerate-loop guard instead of being printed. The user holds the brake through the picker itself: an abandoned picker is a stop.
+- Added a governing output-contract section, and new failure conditions forbidding any internal machinery — the `GOAL UNIFIED` marker, a multi-field or unwarranted preface, or "applying intent-lock" narration — from reaching the user.
+
+## 0.2.0
+
 **Removed the round cap.** Rounds are now unbounded. The interview ends on saturation (zero open items above the admission threshold plus a surviving prediction), on `LOCK` / "stop asking" / silence, or on the degenerate-loop guard.
 
 - Saturation is defined as a count performed on the ledger, not a feeling. *I think I understand now* is explicitly not a terminator.
@@ -23,10 +31,6 @@
 **Fixed a collision in the degenerate-loop guard.** It read *zero items resolved OR prediction unrevised*, which made survival and degeneracy the same event. Now a conjunction, with the reason stated inline.
 
 **Six new failure conditions**, including *a convergence gate was printed*, *a round opened without its price*, *the interview was extended by demoting the admission threshold*, *the guard fired and the interview continued anyway*, and *an ending was declared on a feeling*.
-
-## 0.2.0
-
-Unreleased intermediate. The manifest carried this version from the plugin's first commit, but the changes it implies were never distinctly implemented or documented — the actual silent-run behavior landed in 0.3.0 above, which this entry's content has been folded into.
 
 ## 0.1.0
 
