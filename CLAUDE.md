@@ -3,6 +3,10 @@
 Personal Claude Code plugin marketplace. Single owner: Thanawat Suharit (Micky).
 This repo is BOTH the marketplace and the home of every plugin in it.
 
+**`CLAUDE.md` holds stable conventions; `MEMORY.md` holds living state** (current
+versions, recent milestones, open threads). Read `MEMORY.md` first to know where things
+stand, and update it whenever you release, add a plugin, or close a milestone.
+
 ## Routing — pick the right tool first
 
 Before acting on any request one of these plugins could serve, **route it first**:
@@ -52,6 +56,12 @@ vault/                             # shared knowledge vault — managed by vault
    alters ROUTING.md; `/new-plugin` and `/refine-plugin` do this automatically).
 5. Bump with `scripts/bump.py` when releasing, never by hand.
 6. Commit (conventional commits: `feat:`, `fix:`, `refactor:`…). One logical change per commit.
+7. Update `MEMORY.md` (versions table, milestones) when releasing.
+
+## Health check — run before every commit
+
+- `python3 scripts/validate.py` — must print `all checks passed`.
+- `python3 scripts/route.py` — regenerates `ROUTING.md` after any skill/command description change.
 
 ## Plugins
 
