@@ -15,11 +15,12 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.3.0   |
+| marketplace catalog   | 1.4.0   |
 | pubmed-research-note   | 1.2.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
+| psych-paper-digest    | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -37,8 +38,16 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   refine keep the router in sync automatically.
 - **vault-keeper** — shared knowledge-vault manager for repo-root `vault/`; four jobs: init, save,
   index, query. The single place every skill's output lands.
+- **psych-paper-digest** — watchlist literature surveillance; sweeps PubMed + ClinicalTrials.gov
+  since `last_swept`, triages Act / Read / Suppressed, never adjudicates (Act items hand off to
+  pubmed-research-note). Skill + `/digest [domain]`; state in `.psych-paper-digest.json`.
 
 ## Recent milestones
+
+- **2026-07-10** — Added **psych-paper-digest 0.1.0** (fifth plugin; catalog → 1.4.0), built
+  via the plugin-creator flow from a profile-based brainstorm. Fills the temporal gap next to
+  pubmed-research-note: pull-based decision research vs scheduled watchlist surveillance —
+  the carve-out named in pubmed's description since 1.2.0 now resolves to a real plugin.
 
 - **2026-07-10** — Full four-plugin audit produced an 11-task improvement plan
   (`docs/superpowers/plans/2026-07-10-improve-all-plugins.md`), EXECUTED same day (branch

@@ -79,6 +79,11 @@ vault/                             # shared knowledge vault — managed by vault
 - **vault-keeper** — shared knowledge-vault manager for the repo-root `vault/`; four jobs: init,
   save, index, query. Other plugins delegate vault writes to it rather than writing vault files
   themselves.
+- **psych-paper-digest** — watchlist-driven literature surveillance; windowed PubMed +
+  ClinicalTrials.gov sweeps triaged into Act / Read / Suppressed, rendered as a read-once
+  digest. Triage only, never adjudication: Act items hand off to pubmed-research-note; vault
+  saves delegate to vault-keeper. One skill + `/digest [domain]` command; config + `last_swept`
+  state in `.psych-paper-digest.json`.
 
 ## Style
 

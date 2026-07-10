@@ -1,0 +1,101 @@
+{
+  "skill_name": "psych-paper-digest",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger-full-sweep",
+      "prompt": "Give me today's psychiatry paper digest across all the subspecialties.",
+      "expected_output": "Triggers. Loads .psych-paper-digest.json, windows each domain from its last_swept minus 3 days, sweeps PubMed at the evidence floor and ClinicalTrials.gov for the three readout events, dedups against the newest previous digest file, and writes digest-YYYY-MM-DD.md with the header count line and the four sections Act / Read / Registry watch / Suppressed. Every item carries a number and a DOI link only (no authors, journal, year, or PMID in the body). Chat close is two lines with domains/kept/screened/trials counts and the Act count. last_swept advances on every swept domain only after the file is written.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "negative-trigger-decision-question",
+      "prompt": "Should I start lisdexamfetamine for this 9-year-old with ADHD who failed methylphenidate?",
+      "expected_output": "Does NOT trigger. This is an Rx decision for a patient in front of the user — routes to pubmed-research-note (its Rx frame). No sweep, no digest, no watchlist read.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "negative-trigger-single-topic-research",
+      "prompt": "What does the literature say about ketamine for treatment-resistant depression?",
+      "expected_output": "Does NOT trigger. One named topic with a decision implied is pubmed-research-note's entry point, not a watchlist sweep. Defers there.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "first-run-init",
+      "prompt": "Run my paper digest.",
+      "expected_output": "No .psych-paper-digest.json exists. Runs init: elicits 3-8 watchlist domains, offering vault MOC titles as candidates if vault/MOCs/ exists at the marketplace root; drafts each domain's PubMed query and trials_term and shows them for one confirm pass; writes the config with every last_swept: null; then runs the inaugural sweep with a 14-day window in the same turn. Does not sweep before the config is confirmed and written.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "catch-up-window-capped",
+      "prompt": "Paper digest please — I haven't run this since February.",
+      "expected_output": "last_swept is more than 90 days old. Sweeps a 90-day window, names the cap and the uncovered gap in the digest header line rather than silently absorbing it. last_swept advances only after the digest file is written; a failed run would leave it untouched.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "triage-inflation-guard",
+      "prompt": "Anything new this week?",
+      "expected_output": "The window holds only small confirmatory positive trials and below-floor items. Act is EMPTY and carries the explicit single line 'Nothing practice-changing this window — all clear.' — not padded, not apologized for. Confirmatory positives sit in Read with their numbers; the rest are counted per domain under Suppressed, never listed. FAILS if a confirmatory me-too result or anything observational without regulator-grade harm data appears in Act.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 7,
+      "name": "act-item-shape-and-handoff",
+      "prompt": "What's new in the literature since last sweep?",
+      "expected_output": "The window contains an adequately powered reversal RCT in a watchlist domain. The Act item carries: the one number that makes it practice-changing (effect size / n / event rate), the decision it raises phrased as a question, the handoff line to pubmed-research-note, and a DOI link. FAILS if the item also answers the question — any verdict, dose recommendation, or adjudication between trials in the digest is a failure. When the user takes the handoff, the raised decision is passed to pubmed-research-note as the seed.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 8,
+      "name": "registry-readout-section",
+      "prompt": "Sweep my watchlist.",
+      "expected_output": "ClinicalTrials.gov is swept for exactly three events per domain: results newly posted, newly completed with nothing posted, and newly terminated for futility or safety (slow accrual ignored as noise). Qualifying trials appear under '## Registry watch' as 'NCT NNNNNNNN — event, n=NNN, date, domain'. A pivotal results-posting or a standard-of-care futility termination may additionally justify an Act item. If the registry is unreachable, the sweep degrades: PubMed still runs and the registry gap is named in the digest header.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 9,
+      "name": "pubmed-down-is-fatal",
+      "prompt": "Today's digest, please.",
+      "expected_output": "PubMed is unreachable via both the bundled MCP server and the E-utilities fallback. The skill states this and STOPS. It does not produce a registry-only digest (which would misrepresent the window as quiet), does not advance any last_swept, and does not fabricate a file.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 10,
+      "name": "vault-gate-delegation",
+      "prompt": "Run the digest and vault it.",
+      "expected_output": "The digest file lands per default (working directory or digest_dir), and because the user explicitly asked, the digest is ALSO handed to vault-keeper as an artifact — passing title, body, target type artifact, and a suggested MOC topic. This skill never resolves a vault path, never writes into vault/, never authors vault frontmatter; vault-keeper reports where it landed. Without the explicit request, no vault handoff happens at all.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 11,
+      "name": "scoped-domain-run",
+      "prompt": "/digest child-adhd",
+      "expected_output": "Sweeps ONLY the child-adhd domain. Other domains are not queried and their last_swept values are byte-for-byte untouched. The digest header names the single domain; suppressed counts cover only it. child-adhd's last_swept advances after the file is written.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 12,
+      "name": "thai-trigger-and-watchlist-management",
+      "prompt": "มีเปเปอร์ใหม่ไหมอาทิตย์นี้ แล้วช่วยเพิ่ม perinatal depression เข้า watchlist ให้ด้วย",
+      "expected_output": "Triggers on Thai. Two jobs in one turn: adds a perinatal-depression domain to .psych-paper-digest.json (drafting query + trials_term, confirming once, last_swept: null) and runs the sweep. The new domain sweeps with the 14-day inaugural window; existing domains use their own last_swept. Chat close may be Thai-English code-switch; the digest file itself is English.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}
