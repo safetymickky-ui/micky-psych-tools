@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.3.0 — 2026-07-10
+
+- **Router routes on triggers, not summaries.** `route.py` now fills the routing cue from a
+  component's `Use when…` clause (falling back to the first sentence) instead of always the
+  first sentence, so rows carry real triggers rather than noun-phrase summaries. `/route` always
+  regenerates `ROUTING.md` before reading it — the old "looks stale vs `marketplace.json`"
+  heuristic could never detect an edited skill description.
+- **Standards reconciled with the validator.** `authoring-rules.md` and `audit-checklist.md`
+  now match what `validate.py` actually enforces (skill/agent description length, per-skill
+  evals JSON, command/agent frontmatter description presence), with mechanical vs quality tiers
+  labelled honestly. The checklist gained command, catalog-coverage, router-sync, and
+  README/CHANGELOG-existence checks.
+- **Template & scaffolding.** The SKILL template's `description` is a short placeholder again
+  (the authoring recipe moved to a comment) so a literal fill can't produce a length-passing
+  but useless trigger; added an `evals.json` template. The category prompt reads distinct
+  categories from `marketplace.json` at runtime instead of a hardcoded snapshot.
+- **Docs.** Deduped the router-refresh / stop-before-commit prose across both skills; added
+  `README.md`. The catalog description now advertises `/route`.
+
 ## 0.2.0
 
 Added the request router: `scripts/route.py` generates `ROUTING.md` (Use-when → plugin →

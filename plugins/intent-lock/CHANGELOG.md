@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0 — 2026-07-10
+
+- **Fixed the misread ledger.** `misread-capture` addressed the ledger as a bare
+  `references/misreads.md`, which resolved to a non-existent file inside its own skill
+  directory — so appended priors never reached the one file `intent-lock` reads at Phase 0,
+  and the compounding-priors loop silently did nothing. Both skills now name the single
+  canonical ledger (`skills/intent-lock/references/misreads.md`, via `${CLAUDE_PLUGIN_ROOT}`
+  from `misread-capture`). The retirement rule in the ledger header now defers to
+  `misread-capture`'s procedure (present the oldest three, user picks) instead of a divergent
+  "retire past 7" shorthand.
+- **Leaner skill body.** The exhaustive failure-conditions list moved to
+  `references/failure-conditions.md`; the six load-bearing invariants stay inline with a pointer.
+- **Sharper triggering.** Both skill descriptions made third-person and given explicit
+  `Not for` clauses (throwaway/precise requests and post-delivery misread-capture for
+  `intent-lock`; mid-interview corrections for `misread-capture`). Added `evals.json` for both
+  skills covering positive triggers and cross-skill negatives.
+- **Docs.** Fixed the marketplace slug (`mickky-plugins` → `micky-psych-tools`) and the
+  README's contradictory "prints `GOAL UNIFIED`" claim; corrected the changelog so 0.3.0
+  documents the real silent-run change; fixed the author spelling.
+
 ## 0.3.0
 
 **The run went silent.** `GOAL UNIFIED` became a private gate, never printed — the goal locks internally and the work follows in the same turn. Everything the interview computes now stays internal: the cold read, prediction v0, divergent readings, defaults list, per-round price, revised prediction, survival-probe wording, and the three convergence gates are performed as reasoning and never reach the user. Exactly two things surface — the option-picker clarifying questions, and the work.

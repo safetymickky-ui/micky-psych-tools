@@ -8,7 +8,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 | Use when the request is about… | Plugin | Route |
 | --- | --- | --- |
-| when asked to "research", "look up the evidence on", "what does the literature say about", "find papers on", "evidence review of", "search PubMed for", "is X actually true", "should I use X for Y"… | pubmed-research-note | skill `pubmed-research-note` |
+| when asked to "research", "what does the literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether a drug, device, or intervention is worth using, building a… | pubmed-research-note | skill `pubmed-research-note` |
 | whenever the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ"… | intent-lock | skill `intent-lock` |
 | when the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time"… | intent-lock | skill `misread-capture` |
 | when the user says "make me a plugin", "create a plugin", "scaffold a plugin", "scaffold a skill/command/agent", "new plugin", "add a plugin to the marketplace", or runs /new-plugin. | plugin-creator | skill `plugin-creator` |
@@ -20,24 +20,24 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.1.1_
+### pubmed-research-note — research  _v1.2.0_
 
-Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; vault notes only on request.
+Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; vault notes only on request. Chains to the intent-lock plugin when the request carries no decision.
 
 Keywords: pubmed, clinical-trials, psychiatry, evidence
 
-- **skill `pubmed-research-note`** (skill) — Answer a clinical decision from primary literature and deliver a verdict-first, quantified evidence report.
+- **skill `pubmed-research-note`** (skill) — Answers a clinical decision from primary literature and delivers a verdict-first, quantified evidence report.
 
-### intent-lock — productivity  _v0.3.0_
+### intent-lock — productivity  _v0.4.0_
 
 Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.
 
 Keywords: prompting, alignment, elicitation
 
-- **skill `intent-lock`** (skill) — A pre-build alignment gate.
-- **skill `misread-capture`** (skill) — Capture a misread in the user's own words and append it to the misread ledger.
+- **skill `intent-lock`** (skill) — Interrogates a request until it has exactly one reading, then executes it as written.
+- **skill `misread-capture`** (skill) — Captures a misread in the user's own words and appends it to the misread ledger.
 
-### plugin-creator — productivity  _v0.2.0_
+### plugin-creator — productivity  _v0.3.0_
 
 Plugin lifecycle toolkit for this marketplace. /new-plugin scaffolds a new plugin (elicit checklist, generate component skeleton, register, validate); /refine-plugin audits and refines an existing plugin or skill, then bumps and validates. /route regenerates ROUTING.md and routes a request to the owning skill or command.
 
@@ -49,10 +49,10 @@ Keywords: plugin, scaffold, meta, marketplace, generator
 - **`/refine-plugin`** (command) — Audit and refine an existing plugin or skill in the marketplace
 - **`/route`** (command) — Recommend which marketplace skill/plugin fits a request, from ROUTING.md
 
-### vault-keeper — productivity  _v0.1.0_
+### vault-keeper — productivity  _v0.2.0_
 
-Full manager for the shared Obsidian-style knowledge vault at the repo root (vault/). The single place any skill's output is saved, indexed, linked, and retrieved. Four jobs: init, save, index, query.
+Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Four jobs: init, save, index, query.
 
-Keywords: vault, obsidian, knowledge, notes, index
+Keywords: vault, obsidian, knowledge, notes, index, moc
 
-- **skill `vault-keeper`** (skill) — Full manager for the shared Obsidian-style knowledge vault at the marketplace repo root (vault/).
+- **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
