@@ -89,6 +89,13 @@ vault/                             # shared knowledge vault — managed by vault
   treatment-only report. Intent-lock is the mandatory Step 0 gate; searches PubMed +
   ClinicalTrials.gov itself; the deliverable is an md file filed to the vault via vault-keeper.
   Decisions route to pubmed-research-note. One skill + `/comprehensive-review [topic]` command.
+- **brainstorm** — structured ideation that ends routed, not listed: ground against the vaults +
+  watchlist, diverge 15–30 one-liners, converge to 3–7, then route every kept idea to its owning
+  pipeline (decisions → pubmed-research-note, reviews → comprehensive-review, watch items →
+  psych-paper-digest, tooling → plugin-creator, saves → vault-keeper, things-to-learn → the
+  learn-hub vault as sync-ready topic/note stubs handed to that repo's /sync-vault). Executes
+  nothing itself; the two-vault disambiguation + Learn-hub export contract live in its
+  `references/handoff-map.md`. One skill + `/brainstorm [seed]` command.
 
 ## Style
 

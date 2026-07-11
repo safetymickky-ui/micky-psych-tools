@@ -21,6 +21,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument | psych-paper-digest | `/digest` |
 | when the user says "comprehensive review of X", "full review of X", "whole-disorder review", "academic review", "review the whole topic", "รีวิวทั้งโรค", or runs /comprehensive-review. | comprehensive-review | skill `comprehensive-review` |
 | Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault | comprehensive-review | `/comprehensive-review` |
+| when the user says "brainstorm", "let's brainstorm", "help me brainstorm", "idea dump", "generate ideas", "what should I learn next", "what should I research next", "what am I missing", "ระดมสมอง"… | brainstorm | skill `brainstorm` |
+| Run a routed brainstorm on the given seed — ground, diverge, converge, route every kept idea | brainstorm | `/brainstorm` |
 
 ## Plugins
 
@@ -78,3 +80,12 @@ Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 
 - **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — the full arc: epidemiology, pathophysiology, clinical features, diagnosis, comorbidity, treatme…
 - **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
+
+### brainstorm — productivity  _v0.1.0_
+
+Structured brainstorm sessions that end routed, not listed: ground against the vaults and watchlist, diverge wide, converge to 3–7 ideas, and hand every kept idea to the pipeline that owns it — marketplace plugins for decisions, reviews, surveillance, and tooling; the Learn hub vault (sync-ready topic/note stubs) for things to learn.
+
+Keywords: brainstorm, ideation, divergent-thinking, routing, learn-hub, workflow
+
+- **skill `brainstorm`** (skill) — Runs a structured brainstorm session — grounds against what already exists, diverges wide, converges to the 3–7 ideas worth acting on — then routes every kept idea to the pipeline that owns its follow-through: clinical…
+- **`/brainstorm`** (command) — Run a routed brainstorm on the given seed — ground, diverge, converge, route every kept idea

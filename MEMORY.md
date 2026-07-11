@@ -15,13 +15,14 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.5.0   |
+| marketplace catalog   | 1.6.0   |
 | pubmed-research-note   | 1.5.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.1.0   |
+| brainstorm            | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -53,9 +54,25 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   mandatory Step 0 gate; own PubMed + CT.gov pipeline; deliverable is an md file filed to the
   vault via vault-keeper (chat gets the Close, not the chapter). Skill + `/comprehensive-review
   [topic]`. Decisions still route to pubmed-research-note.
+- **brainstorm** — routed ideation: ground (marketplace vault MOCs, learn-hub vault topics,
+  watchlist) → diverge 15–30 → converge 3–7 → route every kept idea to its owning pipeline;
+  executes nothing itself. Things-to-learn export as learn-hub vault topic/note stubs handed to
+  that repo's `/sync-vault` (contract in `references/handoff-map.md`, incl. the two-vault
+  disambiguation rule). Skill + `/brainstorm [seed]`.
 
 ## Recent milestones
 
+- **2026-07-11** — Added **brainstorm 0.1.0** (seventh plugin; catalog → 1.6.0), built to fill
+  the ideation gap: every existing plugin executes a formed task, nothing owned the step before —
+  generating and triaging the ideas. Sessions end routed, not listed (3–7 kept ideas, each with
+  an owner + handoff seed from `references/handoff-map.md`); a wall-of-options close is a named
+  failure condition. Searched learn-hub for the integration seam: the hub's designed entry point
+  is authoring into its `vault/` + `/sync-vault` (no app change needed), so the plugin exports
+  picked things-to-learn as sync-ready topic/note stubs — grounding against `vault/*/_topic.md`
+  first (extend over duplicate, reuse `domain` spellings verbatim, deterministic slug ids,
+  `sources: ["brainstorm YYYY-MM-DD"]` provenance) and never running the sync itself. Handoff-map
+  also codifies the two-vault rule (marketplace Obsidian vault via vault-keeper vs learn-hub
+  frontmatter-typed vault). ROUTING.md regenerated (7 plugins, 15 components); validate clean.
 - **2026-07-11** — Filed **Adjustment Disorder** comprehensive review to the vault via the
   comprehensive-review → vault-keeper flow (branch `claude/adjustment-disorder-vault-1xg0lo`).
   Intent-lock gate ran first (misread prior #1 fired): locked clinician self-study register +

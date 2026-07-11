@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -87,6 +87,21 @@
         "comprehensive",
         "pubmed",
         "academic-review"
+      ]
+    },
+    {
+      "name": "brainstorm",
+      "source": "./plugins/brainstorm",
+      "version": "0.1.0",
+      "description": "Structured brainstorm sessions that end routed, not listed: ground against the vaults and watchlist, diverge wide, converge to 3–7 ideas, and hand every kept idea to the pipeline that owns it — marketplace plugins for decisions, reviews, surveillance, and tooling; the Learn hub vault (sync-ready topic/note stubs) for things to learn.",
+      "category": "productivity",
+      "keywords": [
+        "brainstorm",
+        "ideation",
+        "divergent-thinking",
+        "routing",
+        "learn-hub",
+        "workflow"
       ]
     }
   ]

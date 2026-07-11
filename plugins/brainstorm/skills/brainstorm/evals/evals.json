@@ -1,0 +1,37 @@
+{
+  "skill_name": "brainstorm",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger-open",
+      "prompt": "Help me brainstorm what I should learn next in computational psychiatry",
+      "expected_output": "The skill fires: grounds against the marketplace vault MOCs, the Learn hub vault topics (computational-psychiatry topics already exist there), and the watchlist; diverges 15-30 one-line ideas across at least four lenses; converges to 3-7 with per-cluster discard counts; ends with a routing table where learning ideas carry the Learn-hub stub handoff and any decision-shaped idea routes to pubmed-research-note. Executes nothing.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "positive-trigger-command",
+      "prompt": "/brainstorm ideas for new plugins that would save me time in clinic",
+      "expected_output": "The command triggers the skill with the seed. Grounding includes ROUTING.md and the marketplace catalog (what plugins already exist); diverge and converge as usual; kept tooling ideas route to plugin-creator as /new-plugin one-liners — the session does not scaffold any plugin itself.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "negative-trigger-decision",
+      "prompt": "Should I add aripiprazole to sertraline for treatment-resistant OCD?",
+      "expected_output": "Does not fire — a formed clinical decision routes to pubmed-research-note per Step 0 and the Not-for clause; brainstorming it would be a failure condition.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "negative-trigger-lock",
+      "prompt": "Interview me until you're sure you understand the app I want to build",
+      "expected_output": "Does not fire — narrowing an already-chosen task to one reading is intent-lock's job; brainstorm is the opposite move (many readings), per the Not-for clause.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}
