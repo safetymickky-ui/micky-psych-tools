@@ -1,0 +1,29 @@
+{
+  "skill_name": "comprehensive-review",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger",
+      "prompt": "Write me a comprehensive review of intermittent explosive disorder",
+      "expected_output": "The skill fires, chains to intent-lock first to lock audience/emphasis/length, then covers the full arc (definition, epidemiology, pathophysiology, clinical features, diagnosis, differential/comorbidity, treatment across all modalities with the ClinicalTrials.gov check, special populations, prognosis, controversies), writes one md file, and files it to the vault via vault-keeper under the disorder's MOC. Chat shows only the Close summary, not the whole chapter.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "negative-trigger",
+      "prompt": "Should I use prazosin for PTSD nightmares in my clinic patients?",
+      "expected_output": "Does not fire — this is a single clinical decision ('should I use X for Y'), which the Not-for clause routes to pubmed-research-note for a verdict-first evidence report.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "negative-trigger-surveillance",
+      "prompt": "Anything new in the literature on my watchlist this week?",
+      "expected_output": "Does not fire — windowed multi-domain surveillance belongs to psych-paper-digest, per the Not-for clause.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

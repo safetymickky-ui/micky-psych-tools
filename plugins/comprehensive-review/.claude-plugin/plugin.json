@@ -1,0 +1,17 @@
+{
+  "name": "comprehensive-review",
+  "version": "0.1.0",
+  "description": "Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Output is an md file filed to the vault via vault-keeper.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "psychiatry",
+    "literature-review",
+    "comprehensive",
+    "pubmed",
+    "academic-review"
+  ],
+  "mcpServers": "./.mcp.json"
+}

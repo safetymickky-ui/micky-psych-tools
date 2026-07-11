@@ -84,6 +84,11 @@ vault/                             # shared knowledge vault — managed by vault
   digest. Triage only, never adjudication: Act items hand off to pubmed-research-note; vault
   saves delegate to vault-keeper. One skill + `/digest [domain]` command; config + `last_swept`
   state in `.psych-paper-digest.json`.
+- **comprehensive-review** — whole-disorder academic literature reviews at textbook-chapter
+  breadth: a ten-section arc from definition to controversies, never collapsed into a
+  treatment-only report. Intent-lock is the mandatory Step 0 gate; searches PubMed +
+  ClinicalTrials.gov itself; the deliverable is an md file filed to the vault via vault-keeper.
+  Decisions route to pubmed-research-note. One skill + `/comprehensive-review [topic]` command.
 
 ## Style
 
