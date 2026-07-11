@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.5.0 — 2026-07-11
+
+- **Removed the four fixed frames.** Rx / Service / Truth / Teaching are gone. In their place
+  the skill builds a bespoke **decision brief** for every request from the same six-slot
+  anatomy every good decision shares — the decision, the verdict's shape, what settles it,
+  what must be counted, the mandatory checks, the anti-goal — filled fresh instead of chosen
+  from a menu. `references/decision-frames.md` is replaced by `references/decision-brief.md`.
+- **Removed the fixed report template.** The five-heading skeleton (Verdict / What the
+  evidence says / Where it breaks / What would change this / Sources) is no longer mandated.
+  The report now takes whatever shape carries *this* decision from evidence to action in the
+  fewest sections that earn their place, guided by the new `references/report-craft.md`:
+  answer first, headings minted from the decision (never the topic), numbers in every section,
+  disagreements adjudicated not listed, as long as the decision needs and no longer.
+- **Invariants became motivated principles, not enforced rules.** The old hard "Failure
+  conditions" and forbidden-headings ban are reframed as *tells that the report has drifted*
+  back toward the encyclopedia — taught with the reasoning, so the shape is reconstructed from
+  understanding rather than compliance. The citation discipline (clean prose, quantified
+  evidence, compressed one-line `## Sources`, decline-to-drop) is retained.
+- **De-framed the references.** `intent-lock-pairing.md` now describes the four
+  *what-the-user-wants* slots intent-lock must fix (decision, verdict's shape, scope,
+  anti-goal) instead of "the frame — Rx/Service/Truth/Teaching"; `tool-catalog.md` ties the
+  ClinicalTrials.gov and Open Library mandates to the *decision at stake* rather than to named
+  frames. Evals rewritten to test brief-building, verdict-first, decision-shaped headings, and
+  adjudication rather than frame classification and the fixed template.
+
 ## 1.2.0 — 2026-07-10
 
 - **Portable output.** Dropped the claude.ai-sandbox-only output path (`/mnt/user-data/outputs`)

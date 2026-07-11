@@ -66,8 +66,8 @@ vault/                             # shared knowledge vault — managed by vault
 ## Plugins
 
 - **pubmed-research-note** — clinical decision from primary literature; verdict-first evidence
-  reports; chains to intent-lock when a request carries no decision; delegates vault saving to
-  vault-keeper.
+  reports whose shape follows the decision, not the topic; runs intent-lock first to build a
+  bespoke decision brief (no fixed frames); delegates vault saving to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
 - **plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS marketplace
   (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation), and

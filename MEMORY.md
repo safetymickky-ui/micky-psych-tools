@@ -16,7 +16,7 @@ a milestone.
 | item                  | version |
 | --------------------- | ------- |
 | marketplace catalog   | 1.5.0   |
-| pubmed-research-note   | 1.4.0   |
+| pubmed-research-note   | 1.5.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
@@ -30,10 +30,14 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 ## Plugins at a glance
 
 - **pubmed-research-note** — clinical decision from primary literature; verdict-first,
-  quantified, trial-registry-checked evidence reports. Default output pipeline: write md →
-  show inline → file to vault as an artifact via vault-keeper; atomic notes on "atomize" only.
-  ALWAYS runs intent-lock first as a mandatory Step 0 gate (explicit opt-out only — "just
-  search"); the frame falls out of the interview, never inferred. Delegates vault writes to vault-keeper.
+  quantified, trial-registry-checked evidence reports whose shape follows the decision, not the
+  topic. Default output pipeline: write md → show inline → file to vault as an artifact via
+  vault-keeper; atomic notes on "atomize" only. ALWAYS runs intent-lock first as a mandatory
+  Step 0 gate (explicit opt-out only — "just search"). **No fixed frames, no fixed template**
+  (removed in 1.5.0): the interview builds a bespoke *decision brief* (decision · verdict's
+  shape · what settles it · what's counted · mandatory checks · anti-goal), and the report
+  takes whatever shape the decision demands, guided by principles not rules. Delegates vault
+  writes to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
   Ships `intent-lock` (the interview) + `misread-capture` (the compounding misread ledger).
 - **plugin-creator** — meta-plugin: `/new-plugin` scaffolds, `/refine-plugin` audits/refines,
@@ -52,6 +56,20 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-11** — pubmed-research-note **1.5.0**: **deleted the four fixed frames and the
+  fixed report template**, the skill's two most rigid structures. Rx / Service / Truth /
+  Teaching are replaced by a bespoke **decision brief** built fresh per request from a shared
+  six-slot anatomy (decision · verdict's shape · what settles it · what's counted · mandatory
+  checks · anti-goal) — `references/decision-frames.md` → new `references/decision-brief.md`.
+  The five-heading report skeleton is replaced by report-craft *principles*
+  (`references/report-craft.md`): answer first, headings from the decision not the topic,
+  numbers everywhere, adjudicate don't list, as long as the decision needs. The old hard
+  "Failure conditions" + forbidden-headings ban became motivated *tells of drift* toward the
+  encyclopedia — guidance, not enforcement (Micky's explicit call: delete the frames entirely,
+  loosen invariants to principles). De-framed `intent-lock-pairing.md` (four what-the-user-wants
+  slots, not "the frame") and `tool-catalog.md` (engine mandates tied to the decision at stake,
+  not named frames); rewrote all 16 evals to test brief-building + verdict-first + decision-shaped
+  headings + adjudication. `route.py` regenerated; validate clean.
 - **2026-07-11** — Added **comprehensive-review 0.1.0** (sixth plugin; catalog → 1.5.0), built via
   the plugin-creator flow with an intent-lock interview up front. Closes the gap the IED misread
   exposed: "comprehensive review" is now a first-class deliverable, not a frame pubmed-research-note

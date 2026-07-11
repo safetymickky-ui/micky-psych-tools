@@ -24,13 +24,13 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.4.0_
+### pubmed-research-note — research  _v1.5.0_
 
-Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; renders the report inline and files it to the vault by default, atomic notes on request. Chains to the intent-lock plugin when the request carries no decision.
+Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.
 
 Keywords: pubmed, clinical-trials, psychiatry, evidence
 
-- **skill `pubmed-research-note`** (skill) — Answers a clinical decision from primary literature and delivers a verdict-first, quantified evidence report.
+- **skill `pubmed-research-note`** (skill) — Answers a clinical decision from primary literature and delivers a verdict-first, quantified report shaped to the decision, not the topic.
 
 ### intent-lock — productivity  _v0.4.0_
 

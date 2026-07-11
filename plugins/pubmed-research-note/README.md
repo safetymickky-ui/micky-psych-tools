@@ -4,24 +4,35 @@ Research a psychiatry or biomedical topic from primary literature and get back a
 verdict-first, quantified evidence report — not an encyclopedia article. The report answers
 a decision, then is thrown away; vault notes are opt-in, produced only on request.
 
-## The four decision frames
+## The decision brief — built, not chosen
 
-Every request is classified into exactly one frame before any search runs. The frame picks
-the verdict slot, the load-bearing evidence, and which engines are mandatory
-(`skills/pubmed-research-note/references/decision-frames.md`):
+There is no fixed set of frames. Every request is turned into a bespoke **decision brief**
+before any search runs, built fresh from the same anatomy every good decision shares
+(`skills/pubmed-research-note/references/decision-brief.md`):
 
-- **Rx** — treatment choice for a patient in front of the user. Verdict: give / don't /
-  give only if X fails first, with a dose and what NOT to promise.
-- **Service** — whether to build, change, or fund a service or protocol. Verdict: build /
-  don't / build-under-conditions, in throughput and staff-time units.
-- **Truth** — whether a specific claim is real; settling a disagreement. Verdict: true /
-  false / unsettled, plus why the disagreement exists.
-- **Teaching** — what can be safely asserted out loud to trainees. Verdict: the exact
-  sentence to speak, with its expiry conditions.
+- **The decision** — what the user will do differently, in one sentence. Never the topic.
+- **The verdict's shape** — what a good answer physically looks like for *this* decision (a
+  dose + what not to promise; a build/don't + conditions in the service's units; a
+  true/false/unsettled + why; a sentence you can say aloud + its expiry; a probability + a
+  threshold). Named for the request, not picked from a list.
+- **What settles it / what must be counted** — the load-bearing evidence and the numbers the
+  verdict is hollow without.
+- **Mandatory checks** — the publication-bias sweep when an action or a claim's live status
+  is at stake; the textbook edition when the decision is what to teach.
+- **The anti-goal** — the specific way this report would satisfy the words and still fail.
 
-If a request names a topic with no decision attached, or two frames tie on cost, the skill
-chains to the separately-installed `intent-lock` plugin rather than guessing — see
-`skills/pubmed-research-note/references/intent-lock-pairing.md`.
+`intent-lock` runs first on every request and fixes the *what-the-user-wants* half of the
+brief; the skill derives the evidence-side slots. If a request names a topic with no decision,
+or carries two readings that tie on cost, the interview is where that gets settled rather than
+guessed — see `skills/pubmed-research-note/references/intent-lock-pairing.md`.
+
+## The report — shaped to the decision
+
+There is no fixed template either. The report is the verdict shown its working, and it takes
+whatever shape carries *this* decision from evidence to action in the fewest sections that
+earn their place — headings minted from the decision, never the topic; verdict first; numbers
+in every section; disagreements adjudicated, not listed; as long as the decision needs and no
+longer. The full guide is `skills/pubmed-research-note/references/report-craft.md`.
 
 ## Source engines
 
