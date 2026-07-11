@@ -50,6 +50,31 @@
   .swatch.band { background:rgba(63,138,110,.30); border:1px solid rgba(63,138,110,.5); }
   .viz .cap { margin:5px 0 0; font-size:10.5px; color:var(--muted); font-style:italic; }
 
+  /* Mechanism strip — the "why" */
+  .mech { display:flex; align-items:stretch; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:16px; background:#fff; }
+  .mech .node { flex:1 1 0; padding:9px 11px; display:flex; flex-direction:column; justify-content:center; gap:3px; min-width:0; }
+  .mech .node .t { font-size:12.5px; font-weight:800; color:#1c2836; display:flex; align-items:center; gap:6px; }
+  .mech .node .t .icon { color:var(--c3); width:1.35em; height:1.35em; }
+  .mech .node .s { font-size:10.5px; color:var(--muted); line-height:1.3; }
+  .mech .rec { font-size:11.3px; color:#26303d; }
+  .mech .rec .a { color:var(--danger); font-weight:800; } .mech .rec .b { color:var(--blue); font-weight:800; }
+  .mech .sep { flex:0 0 auto; align-self:center; display:flex; flex-direction:column; align-items:center; padding:0 5px; color:var(--muted); }
+  .mech .sep .k { font-size:8.5px; text-transform:uppercase; letter-spacing:.04em; }
+  .mech .sep .ar { font-size:15px; font-weight:900; line-height:.8; }
+  .mech .goal { background:var(--c1-tint); } .mech .goal .t { color:var(--c1); }
+
+  /* Which α-blocker — decision-flow */
+  .chooser { border:1px solid var(--line); border-radius:10px; padding:11px 14px; margin-bottom:16px; background:#fff; }
+  .chooser h2 { font-size:14.5px; margin:0 0 9px; display:flex; align-items:center; gap:8px; }
+  .chooser h2 .icon { color:var(--c1); }
+  .chooser .opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .opt { border:1px solid var(--line); border-radius:8px; padding:9px 11px; background:#fff; }
+  .opt.pbz { border-top:4px solid var(--c1); } .opt.dox { border-top:4px solid var(--c2); }
+  .opt .cond { font-size:10.3px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
+  .opt .name { font-size:14px; font-weight:800; margin:2px 0 3px; }
+  .opt .to { font-size:11.4px; color:#4a5563; }
+  .chooser .rct { margin-top:9px; background:#f3f6fa; border:1px solid var(--line); border-radius:8px; padding:7px 11px; font-size:11.4px; text-align:center; color:#24303f; }
+
   /* Section band */
   .band-title { display:flex; align-items:center; gap:9px; font-size:16px; font-weight:800; margin:2px 0 10px; }
   .band-title .seq { width:24px; height:24px; border-radius:50%; color:#fff; display:inline-flex; align-items:center;
@@ -160,6 +185,29 @@
     <p><strong>α-blockade first, always before any β-blocker</strong> — titrate over ~7–14 days to seated BP &lt;130/80 mmHg &amp; HR 60–70 bpm, with sodium + fluid loading. In theatre expect catecholamine <strong>surges</strong> on tumour manipulation, then an abrupt <strong>crash</strong> after venous ligation; then watch 24–48 h for hypotension &amp; rebound hypoglycaemia. Confidence: moderate-high.</p>
   </div>
 
+  <!-- ===== MECHANISM STRIP: the "why" (schematic) ===== -->
+  <div class="mech" role="group" aria-label="Mechanism: why the protocol exists">
+    <div class="node">
+      <div class="t"><svg class="icon" aria-hidden="true"><use href="#i-adrenal"/></svg> PPGL tumour</div>
+      <div class="s">chromaffin cells — adrenal medulla / sympathetic ganglia</div>
+    </div>
+    <div class="sep" aria-hidden="true"><span class="k">secretes</span><span class="ar">▶</span></div>
+    <div class="node">
+      <div class="t">Catecholamines</div>
+      <div class="s">adrenaline · noradrenaline — in excess, paroxysmal</div>
+    </div>
+    <div class="sep" aria-hidden="true"><span class="k">act on</span><span class="ar">▶</span></div>
+    <div class="node">
+      <div class="rec"><span class="a">α-receptors</span> → vasoconstriction, ↑ BP</div>
+      <div class="rec"><span class="b">β-receptors</span> → ↑ HR &amp; contractility</div>
+    </div>
+    <div class="sep" aria-hidden="true"><span class="k">so</span><span class="ar">▶</span></div>
+    <div class="node goal">
+      <div class="t">Block α first, then β</div>
+      <div class="s">β before α leaves α-vasoconstriction unopposed → crisis</div>
+    </div>
+  </div>
+
   <!-- ===== HERO VISUAL: haemodynamic journey ===== -->
   <section class="viz" aria-label="Perioperative haemodynamic journey (schematic)">
     <h2><svg class="icon" aria-hidden="true"><use href="#i-pulse"/></svg> The perioperative haemodynamic journey</h2>
@@ -216,6 +264,24 @@
       <span>● surge peak &nbsp; ● ligation crash</span>
     </div>
     <p class="cap">Illustrative pattern — not measured data. Thresholds (SBP 160 / MAP 60 mmHg) are the PRESCRIPT intra-operative target range; the surge-then-crash shape is the sourced qualitative course.</p>
+  </section>
+
+  <!-- ===== DECISION-FLOW: which α-blocker ===== -->
+  <section class="chooser" aria-label="Choosing the alpha-blocker">
+    <h2><svg class="icon" aria-hidden="true"><use href="#i-pill"/></svg> Choosing the α-blocker — start 2–3 weeks pre-op, BP-titrated</h2>
+    <div class="opts">
+      <div class="opt pbz">
+        <div class="cond">If: most reactive tumour · tightest intra-op control</div>
+        <div class="name">Phenoxybenzamine <span style="font-weight:600;font-size:11px;color:var(--muted)">— non-selective, irreversible</span></div>
+        <div class="to">Trade-off: more &amp; more protracted <strong>post-op hypotension</strong>; longer stay (12.2 vs 6.2 days).</div>
+      </div>
+      <div class="opt dox">
+        <div class="cond">If: cleaner recovery · fewer side effects</div>
+        <div class="name">Doxazosin <span style="font-weight:600;font-size:11px;color:var(--muted)">— selective α1</span></div>
+        <div class="to">Trade-off: more <strong>intra-op hypotension</strong> (SBP&lt;80 in 67% vs 35%); more post-op pressor / ICU.</div>
+      </div>
+    </div>
+    <div class="rct"><strong>PRESCRIPT RCT (n=134): either is acceptable</strong> — time outside BP target 11.1% vs 12.2% (P=.75); instability score favoured phenoxybenzamine (38 vs 50); 30-day CV complications similar (8.8% vs 6.9%).</div>
   </section>
 
   <section class="columns" style="--n:3" aria-label="Perioperative phases">
@@ -409,6 +475,7 @@
   <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h3.5l2-6 4 12 2.5-7 1.5 1H21v2h-5.5l-2-1.3L11 20 7 8l-1 4H3z"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 8.7-8 11-4.6-2.3-8-6-8-11V5l8-3zm-1 13l6-6-1.4-1.4L11 12.2 8.4 9.6 7 11l4 4z"/></symbol>
   <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2s6 6.9 6 11a6 6 0 01-12 0c0-4.1 6-11 6-11zm0 16a4 4 0 004-4h-2a2 2 0 01-2 2v2z"/></symbol>
+  <symbol id="i-adrenal" viewBox="0 0 24 24"><path d="M4.5 14.5c0-4.4 3.6-8 8-8 3.6 0 6.5 2.5 6.5 6 0 3-2.3 5-5.3 5-2 0-3.1-1-4.7-1-1.3 0-2 .8-3.2.2-1-.5-1.3-1.4-1.3-2.2z" opacity=".9"/><circle cx="14" cy="12.4" r="2.5" fill="#a4304a"/></symbol>
 </svg>
 </body>
 </html>
