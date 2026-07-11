@@ -89,6 +89,14 @@ vault/                             # shared knowledge vault — managed by vault
   treatment-only report. Intent-lock is the mandatory Step 0 gate; searches PubMed +
   ClinicalTrials.gov itself; the deliverable is an md file filed to the vault via vault-keeper.
   Decisions route to pubmed-research-note. One skill + `/comprehensive-review [topic]` command.
+- **clinical-infographic** — the pipeline's last mile: renders a SOURCED report into a
+  professional, print-ready medical summary infographic for clinical reference (one
+  self-contained HTML file — color-coded columns, stat tiles, a mandatory "medications to
+  avoid" safety banner). Ships no search engines by design and never fabricates a clinical
+  fact — deep-integrates with comprehensive-review / pubmed-research-note (reuse an existing
+  report or generate one first) and files the HTML as an asset via vault-keeper. One skill +
+  `/infographic [topic-or-source]` command; fidelity contract + design system under its
+  `skills/clinical-infographic/references/`.
 
 ## Style
 

@@ -15,13 +15,14 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.5.0   |
+| marketplace catalog   | 1.6.0   |
 | pubmed-research-note   | 1.5.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.1.0   |
+| clinical-infographic  | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -53,9 +54,37 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   mandatory Step 0 gate; own PubMed + CT.gov pipeline; deliverable is an md file filed to the
   vault via vault-keeper (chat gets the Close, not the chapter). Skill + `/comprehensive-review
   [topic]`. Decisions still route to pubmed-research-note.
+- **clinical-infographic** — the pipeline's last mile: renders a SOURCED report into a
+  professional, print-ready medical summary infographic for clinical reference — one
+  self-contained HTML file (inline styles + inline SVG, no external CSS/JS/fonts/images) with
+  color-coded phase/theme columns, stat tiles, and a mandatory "medications to avoid" safety
+  banner. **Rendering layer, not a research tool** — ships no search engines and never
+  fabricates a clinical fact: it resolves a source in order (this session's report → an existing
+  vault artifact via vault-keeper → generate one with comprehensive-review / pubmed-research-note)
+  and enforces a fidelity contract (nothing untraceable, numbers keep units + qualifiers,
+  contraindications always reach the safety banner, `[unverified]` never rendered as fact). Files
+  the HTML as an **asset** via vault-keeper, wired into the source report's MOC. Skill +
+  `/infographic [topic-or-source]`.
 
 ## Recent milestones
 
+- **2026-07-11** — Added **clinical-infographic 0.1.0** (seventh plugin; catalog → 1.6.0), built
+  via the plugin-creator flow. It is the visual **last mile** of the research pipeline: renders a
+  SOURCED comprehensive-review / pubmed-research-note report into a professional medical summary
+  infographic for clinical reference — one **self-contained** HTML file (inline styles + inline
+  SVG icons, zero external CSS/JS/fonts/images; opens offline, prints identically) with
+  color-coded phase/theme columns, stat tiles, and a mandatory `CRITICAL SAFETY — MEDICATIONS /
+  ACTIONS TO AVOID` banner modelled on the reference standard. Deliberately **ships no search
+  engines** — the guardrail against a confident-but-fabricated panel: it resolves a source in
+  order (this session → vault artifact via vault-keeper → generate with the two research plugins,
+  never author facts itself) and enforces a fidelity contract (nothing untraceable to the source,
+  numbers keep units + qualifiers, contraindications always reach the safety banner, `[unverified]`
+  never rendered as fact). Files the HTML as an **asset** via vault-keeper, wired into the source
+  report's MOC. Ships the `clinical-infographic` skill, `/infographic [topic-or-source]`, and three
+  references (source-contract, design-system, fillable infographic-template.html). `route.py`
+  regenerated (7 plugins, 15 components); validate clean. Prompted by a request for a PPGL
+  perioperative-management reference infographic (NotebookLM-style) — the plugin generalises that
+  into a repeatable, source-locked renderer.
 - **2026-07-11** — Filed **Adjustment Disorder** comprehensive review to the vault via the
   comprehensive-review → vault-keeper flow (branch `claude/adjustment-disorder-vault-1xg0lo`).
   Intent-lock gate ran first (misread prior #1 fired): locked clinician self-study register +

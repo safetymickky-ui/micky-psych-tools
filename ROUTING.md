@@ -21,6 +21,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument | psych-paper-digest | `/digest` |
 | when the user says "comprehensive review of X", "full review of X", "whole-disorder review", "academic review", "review the whole topic", "รีวิวทั้งโรค", or runs /comprehensive-review. | comprehensive-review | skill `comprehensive-review` |
 | Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault | comprehensive-review | `/comprehensive-review` |
+| when the user says "make an infographic", "medical summary infographic", "clinical reference infographic", "turn this review/report into an infographic", "one-page visual summary"… | clinical-infographic | skill `clinical-infographic` |
+| Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic | clinical-infographic | `/infographic` |
 
 ## Plugins
 
@@ -78,3 +80,12 @@ Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 
 - **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — the full arc: epidemiology, pathophysiology, clinical features, diagnosis, comorbidity, treatme…
 - **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
+
+### clinical-infographic — research  _v0.1.0_
+
+Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/"medications to avoid" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.
+
+Keywords: infographic, clinical-reference, visual-summary, html, medical, poster
+
+- **skill `clinical-infographic`** (skill) — Renders a professional, print-ready medical summary infographic (a self-contained HTML file) for clinical reference from a SOURCED evidence report.
+- **`/infographic`** (command) — Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic
