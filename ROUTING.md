@@ -19,6 +19,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "save this to the vault", "vault this", "add to my vault", "file this note", "put this in the vault", "index the vault", "rebuild the index", "link these notes", "make a MOC"… | vault-keeper | skill `vault-keeper` |
 | when the user says "paper digest", "today's digest", "what's new in the literature", "anything new this week", "อัปเดตงานวิจัย", "มีเปเปอร์ใหม่ไหม", runs /digest, or asks to manage the watchlist… | psych-paper-digest | skill `psych-paper-digest` |
 | Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument | psych-paper-digest | `/digest` |
+| when the user says "comprehensive review of X", "full review of X", "whole-disorder review", "academic review", "review the whole topic", "รีวิวทั้งโรค", or runs /comprehensive-review. | comprehensive-review | skill `comprehensive-review` |
+| Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault | comprehensive-review | `/comprehensive-review` |
 
 ## Plugins
 
@@ -67,3 +69,12 @@ Keywords: pubmed, digest, psychiatry, surveillance, clinical-trials, current-awa
 
 - **skill `psych-paper-digest`** (skill) — Sweeps every domain on the user's watchlist for literature published since the last sweep and delivers a triaged, read-once digest — practice-changing first, then worth-reading, plus registry trial readouts; noise suppr…
 - **`/digest`** (command) — Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument
+
+### comprehensive-review — research  _v0.1.0_
+
+Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.
+
+Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
+
+- **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — the full arc: epidemiology, pathophysiology, clinical features, diagnosis, comorbidity, treatme…
+- **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
