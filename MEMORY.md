@@ -54,7 +54,10 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   IED report that silently collapsed a "comprehensive review" request into an Rx-only decision.
   Rewrote Step 0, the intent-lock pairing section + trigger table (`references/intent-lock-pairing.md`),
   and the failure conditions; logged the misread to the intent-lock ledger as a new active prior.
-  `route.py` regenerated.
+  `route.py` regenerated. Then re-ran the IED vault artifact *through* the new gate: intent-lock
+  locked an academic, whole-disorder frame, so the Rx-only artifact was replaced by a comprehensive
+  academic review (`intermittent-explosive-disorder-review`) and its MOC promoted to a whole-disorder
+  `Intermittent Explosive Disorder MOC`.
 - **2026-07-10** — pubmed-research-note **1.3.0**: output is now a three-step default
   pipeline — write the md report, render it inline in the chat, then file it to the vault as
   an artifact via vault-keeper (was working-directory only, vault opt-in). Atomic-note
