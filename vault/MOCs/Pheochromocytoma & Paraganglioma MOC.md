@@ -28,9 +28,11 @@ notes, and rendered references on PPGL hang here.
 ## Assets
 
 - `assets/ppgl-perioperative-management-infographic.html` — Self-contained, print-ready clinical-reference
-  infographic rendered from the report above: colour-coded Pre-op / Intra-op / Post-op columns, stat
-  tiles, and the mandatory "medications / actions to avoid" critical-safety banner. Opens offline, prints
-  on A4/Letter. Source of truth is [[ppgl-perioperative-management]].
+  infographic rendered from the report above: colour-coded, numbered Pre-op → Intra-op → Post-op columns,
+  stat tiles, and the mandatory "medications / actions to avoid" critical-safety banner. Opens offline,
+  prints on A4/Letter. Source of truth is [[ppgl-perioperative-management]].
+- `assets/ppgl-perioperative-management-infographic.png` — High-resolution (3480×4200) PNG export of the
+  HTML above, for embedding/sharing where an image is needed. OCR-verified for legibility.
 
 ## Notes
 

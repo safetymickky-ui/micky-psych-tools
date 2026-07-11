@@ -37,10 +37,12 @@
   .keyline p { margin:0; font-size:13.5px; color:#24303f; }
   .keyline strong { color:var(--ink); }
 
-  .columns { display:grid; grid-template-columns:repeat(var(--n,3),1fr); gap:16px; align-items:start; }
+  .columns { display:grid; grid-template-columns:repeat(var(--n,3),1fr); gap:16px; align-items:stretch; }
   .col { border:1px solid var(--line); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
-  .col-head { color:#fff; padding:11px 14px; font-weight:700; font-size:15px; display:flex; align-items:center; gap:9px; }
+  .col-head { color:#fff; padding:11px 14px; font-weight:700; font-size:15px; display:flex; align-items:center; gap:8px; }
   .col-head .lbl { flex:1; }
+  .col-head .seq { width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,.26); display:inline-flex;
+    align-items:center; justify-content:center; font-size:12.5px; font-weight:800; flex:none; }
   .col-body { padding:12px; background:var(--tint,#fff); flex:1; }
   .col.c1 .col-head{ background:var(--c1);} .col.c1{ --tint:var(--c1-tint);}
   .col.c2 .col-head{ background:var(--c2);} .col.c2{ --tint:var(--c2-tint);}
@@ -55,6 +57,10 @@
   .card.rule { border-left:4px solid var(--warn); background:#fffaf4; }
   .card.rule h3 { color:#8a3d12; }
   .card .dose { font-variant-numeric:tabular-nums; font-weight:600; color:#1c2836; }
+  .druglist { list-style:none; margin:6px 0 0; padding:0; }
+  .druglist li { font-size:12.6px; color:#26303d; padding:4px 0; border-top:1px dotted #d7dee7; }
+  .druglist li:first-child { border-top:0; padding-top:2px; }
+  .druglist .d { font-weight:700; color:#1c2836; }
 
   .stats { display:flex; flex-wrap:wrap; gap:7px; margin-top:2px; }
   .stat { flex:1 1 42%; text-align:center; border:1px solid var(--line); border-radius:8px; padding:7px 5px; background:#fff; }
@@ -112,6 +118,7 @@
     <!-- PRE-OP ================================================== -->
     <article class="col c1" aria-label="Preoperative preparation">
       <div class="col-head">
+        <span class="seq" aria-hidden="true">1</span>
         <svg class="icon" aria-hidden="true"><use href="#i-pill"/></svg>
         <span class="lbl">Pre-operative preparation</span>
         <span class="badge">~7–14 days</span>
@@ -149,6 +156,7 @@
     <!-- INTRA-OP =============================================== -->
     <article class="col c2" aria-label="Intraoperative management">
       <div class="col-head">
+        <span class="seq" aria-hidden="true">2</span>
         <svg class="icon" aria-hidden="true"><use href="#i-pulse"/></svg>
         <span class="lbl">Intra-operative</span>
         <span class="badge">In theatre</span>
@@ -165,7 +173,13 @@
         <div class="card">
           <h3>Phase 1 — surges on manipulation</h3>
           <p>First: tell surgeon to <strong>stop manipulating</strong> until BP falls. Then short-acting titratable agents:</p>
-          <p><span class="dose">Phentolamine</span> 5 mg IV bolus, repeat p.r.n. · <span class="dose">Nicardipine</span> 5 → max 15 mg/h · <span class="dose">Nitroglycerin</span> 5 → 100 µg/min · <span class="dose">Magnesium sulfate</span> 4 g in 250 mL D5W (≤3 mL/min) for refractory · <span class="dose">Esmolol</span> 0.5–1 mg/kg then 50–150 µg/kg/min (tachyarrhythmia, α-blocked patient only).</p>
+          <ul class="druglist">
+            <li><span class="d">Phentolamine</span> — 5 mg IV bolus, repeat p.r.n.</li>
+            <li><span class="d">Nicardipine</span> — 5 → max 15 mg/h</li>
+            <li><span class="d">Nitroglycerin</span> — 5 → 100 µg/min</li>
+            <li><span class="d">Magnesium sulfate</span> — 4 g in 250 mL D5W (≤3 mL/min), refractory</li>
+            <li><span class="d">Esmolol</span> — 0.5–1 mg/kg then 50–150 µg/kg/min (tachyarrhythmia; α-blocked only)</li>
+          </ul>
         </div>
         <div class="card">
           <h3>Phase 2 — crash after venous ligation</h3>
@@ -181,6 +195,7 @@
     <!-- POST-OP =============================================== -->
     <article class="col c3" aria-label="Postoperative care">
       <div class="col-head">
+        <span class="seq" aria-hidden="true">3</span>
         <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
         <span class="lbl">Post-operative</span>
         <span class="badge">24–48 h</span>
