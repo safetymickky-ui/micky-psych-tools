@@ -6,9 +6,9 @@ description: >-
   asked to "research", "what does the literature say about", "search PubMed for", "is X true",
   "should I use X for Y" — or whether a drug, device, or intervention is worth using, building a
   service around, or teaching. Thai triggers: "หางานวิจัย", "ทบทวนหลักฐาน", "ค้น PubMed",
-  "จริงหรือเปล่า". Orchestrates PubMed (primary evidence), ClinicalTrials.gov (unpublished/ongoing
-  evidence), Open Library (textbook gap), Wikipedia (terminology). Chains to intent-lock when a
-  topic is named with no decision attached. By default writes the report, shows it inline in
+  "จริงหรือเปล่า". Orchestrates PubMed, ClinicalTrials.gov (unpublished), Open Library
+  (textbook gap), Wikipedia (terminology). ALWAYS runs intent-lock FIRST to lock frame and
+  scope before searching — skip only on explicit opt-out ("just search"). By default writes the report, shows it inline in
   the chat, and files it to the vault via vault-keeper; atomic notes ONLY on "atomize" /
   "ทำโน้ต". NOT for: daily multi-domain literature sweeps (psych-paper-digest); non-biomedical
   research (deep-research); MCQ/CRQ/Essay generation; grading; one-line lookups.
@@ -38,43 +38,58 @@ failed, and no quantity of PMIDs will rescue it. Mechanism and adverse effects a
 to a verdict — they appear inside `## What the evidence says` and `## Where it breaks`, as
 prose, subordinate to the decision. They are never the skeleton.
 
-## Step 0 — Classify the decision (do this before any tool call)
+## Step 0 — Run intent-lock first, then classify the frame (before any tool call)
 
-Read the request and place it in exactly one frame. The frame chooses the verdict slot, the
-evidence that is load-bearing, and what must be quantified. Read
-[references/decision-frames.md](references/decision-frames.md) before your first search.
+**Every research request routes through `intent-lock` FIRST — always, before any search.**
+This is the mandatory first step, not a conditional one. The interview locks *what is being
+asked* — the frame, the decision, the scope, the anti-goal — and the frame then **falls out of
+it** rather than being guessed. Never infer the frame from ambiguous wording and proceed: that
+inference is the single most expensive error this skill makes (it is how a "comprehensive
+review" gets silently collapsed into a single-frame report the user never asked for), and it is
+exactly what the gate exists to remove. See **Pairing with intent-lock** below and
+[references/intent-lock-pairing.md](references/intent-lock-pairing.md).
+
+**The only bypass is an explicit opt-out** — the user says "just search" / "don't interview
+me" / "ไม่ต้องถาม", or hands over an already-locked frame. An opt-out must be the user's own
+words; never infer one from an ordinary "research this and file it." On a genuine opt-out, and
+only then, you classify the frame yourself and name it in one line at the top of the report.
+Read [references/decision-frames.md](references/decision-frames.md) before your first search.
+
+Place the request in exactly one frame — whether locked by intent-lock or, on opt-out,
+classified by you:
 
 - **Rx** — treatment choice for a patient in front of the user.
 - **Service** — whether to build, change, or fund a service or protocol.
 - **Truth** — whether a specific claim is real; settling a disagreement.
 - **Teaching** — what can be safely asserted out loud to trainees.
 
-If the request genuinely spans two frames, pick the one whose *wrong answer costs more*
-and say which you picked in one line at the top of the report. Never straddle: a report
-serving two frames serves neither, and reverts to the encyclopedia.
-
-If the request has no decision in it at all — a topic named with no question attached — or if
-two frames genuinely tie on cost, **do not guess and do not ask a single ad-hoc question.**
-Hand off to `intent-lock`. See **Pairing with intent-lock** below and
-[references/intent-lock-pairing.md](references/intent-lock-pairing.md).
+Never straddle: a report serving two frames serves neither, and reverts to the encyclopedia.
+When a request genuinely spans frames, or names a topic with no decision, that is not yours to
+resolve by guessing — it is precisely what intent-lock is there to settle.
 
 ## Pairing with intent-lock
 
 `intent-lock` is a **separate installed plugin**. It decides *what is being asked*; this skill
-decides *what the evidence says about it* — never re-implement the interview here. Chain to it
-only when:
+decides *what the evidence says about it* — never re-implement the interview here. **Chain to
+it first on every request, unconditionally**, as Step 0 above requires. It is not a fallback
+for hard cases; it is the default entry point, and the frame it locks is what you then research.
 
-1. **No decision attached** — a bare topic ("review DLPFC", "tell me about vortioxetine").
-2. **Two frames tie on cost** — the Step 0 asymmetry rule fails to break the tie.
-3. **The run is expensive** — a Service decision, a formulary change, an SOP, anywhere a wrong
-   frame wastes the whole report.
+`intent-lock` self-regulates, so this costs nothing on the easy case: when the request is
+already unambiguous it constructs no rival readings, asks no questions, and passes straight to
+the work — an already-precise query is not punished with an interview it does not need. When
+the request is a bare topic, spans frames, or hides a scope the user has not stated, the
+interview is where that gets settled — before a single search, while correction is still free.
 
-An explicit `/intent-lock` from the user always wins; if the user says "just search" / "don't
-interview me", skip chaining. When a delivered report comes back as "not what I wanted", that
-is a `misread-capture` event — route there, do not treat it as a revision request and re-run
-the search.
+**The one bypass is an explicit opt-out**: the user says "just search" / "don't interview me"
+/ "ไม่ต้องถาม", or hands over a frame they have already locked. Honour it — do not force an
+interview on someone who has waved it off. But the opt-out must be the user's own words; never
+infer one from "research this and file it" or any other ordinary request, because inferring
+the waiver is the mistake the gate exists to prevent.
 
-Full contract — the trigger table, what intent-lock must have fixed before search begins, what
+When a delivered report comes back as "not what I wanted", that is a `misread-capture` event —
+route there, do not treat it as a revision request and re-run the search.
+
+Full contract — the trigger rule, what intent-lock must have fixed before search begins, what
 may never be re-asked, and where `[ASSUMED]` lives in the report — is
 [references/intent-lock-pairing.md](references/intent-lock-pairing.md).
 
@@ -222,8 +237,9 @@ This skill has failed if:
 - Trials disagree and the report lists both without adjudicating.
 - An inline citation appears in the prose.
 - A `## Sources` entry names an author, journal, year, or PMID.
-- A bare topic with no decision was researched without chaining intent-lock.
-- A quick evidence check with an obvious frame was subjected to an interview it did not need.
+- Any research request proceeded to search without first routing through intent-lock, absent an explicit user opt-out.
+- The frame was inferred from ambiguous wording, or an opt-out was assumed from a request the user never actually opted out of.
+- An explicit opt-out ("just search" / "don't interview me") was ignored and an interview was forced anyway.
 - An intent-lock `[ASSUMED]` item reached the report without appearing in the preface block.
 - A question intent-lock already settled was re-asked after `GOAL UNIFIED`.
 - Atomic notes were distilled into the vault without the word *atomize* (filing the whole
