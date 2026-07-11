@@ -56,6 +56,15 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-11** — Filed **Adjustment Disorder** comprehensive review to the vault via the
+  comprehensive-review → vault-keeper flow (branch `claude/adjustment-disorder-vault-1xg0lo`).
+  Intent-lock gate ran first (misread prior #1 fired): locked clinician self-study register +
+  treatment/management emphasis, full ten-section arc preserved. Deliverable centres on the DSM-5-TR
+  (residual) vs ICD-11 (stress-response syndrome) reconceptualisation and the thin treatment base
+  (etifoxine, plant extracts, digital self-help; psychotherapy first-line; foregrounded suicide
+  risk). 30 PubMed sources + 3 registry trials (psilocybin, work-CBT, US-military ADNM). New
+  `Adjustment Disorder MOC` wired into `index.md` (third MOC alongside Depression, IED). One
+  `[unverified]` gap flagged: no dedicated AjD-specific suicide-mortality register study located.
 - **2026-07-11** — pubmed-research-note **1.5.0**: **deleted the four fixed frames and the
   fixed report template**, the skill's two most rigid structures. Rx / Service / Truth /
   Teaching are replaced by a bespoke **decision brief** built fresh per request from a shared
