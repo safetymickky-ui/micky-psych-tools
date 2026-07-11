@@ -57,6 +57,10 @@ Everything else is forbidden:
   design choice.
 - **No laundered gaps.** A `[unverified]` or explicitly-thin point is omitted or marked as a
   gap — never rendered as a confident tile.
+- **No unlabelled schematics.** An illustrative figure — a drawn curve, a timeline — that shows
+  a *shape* rather than a measurement must say so (*illustrative — not measured data*) and may
+  carry only numbers already in the report (a target threshold, a labelled band). A schematic
+  drawn to a fabricated axis, or read as real data, is the same failure as an invented tile.
 
 If honouring all of this leaves a panel that will not fit, the panel shrinks or splits — the
 *content* does not bend.

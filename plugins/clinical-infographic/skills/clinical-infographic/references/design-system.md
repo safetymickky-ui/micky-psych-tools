@@ -50,6 +50,50 @@ Promote the source's key figures into tiles: a big value with its unit, a small 
 `<130/80 mmHg` / "seated BP". `60–70` / "HR bpm". `7–14 d` / "pre-op". Tiles are for figures
 that are **already in the report** — never a figure you inferred to fill a row.
 
+## Beyond columns — the diagram grammar
+
+Columns of cards are the *spine*, not the whole skeleton. A reference that is only cards reads
+like a report in columns — accurate, but text-heavy, which is the single most common miss.
+**Reach for a diagram first; use a prose card only for what a diagram cannot carry.** Before
+filling cards, ask what the report is *shaped* like and pick the matching form:
+
+- **Signature visual — design it first.** Most references have one defining picture. Name it
+  before you draw the columns: a **physiologic journey over time** (a BP / glucose / drug-level
+  curve, a peri-op timeline), a **decision** (a branch or tree), or a **mechanism** (a causal
+  chain). It carries the gestalt; the columns then carry the detail.
+- **Timeline / journey curve.** When the content is a course over time — phases, a rising and
+  falling physiologic signal, "then this happens" — draw a labelled SVG plot: phase bands,
+  threshold lines, event markers, a curve. Usually the strongest single element on the page.
+- **Flow / escalation ladder.** For sequential logic with conditions ("start X; only after N
+  days, if Y, add Z"), stack numbered tiers with the *condition* printed on each rung. Order +
+  conditions replace a paragraph.
+- **Decision-flow.** For a real choice (which drug, which route), show the options side by side
+  with the *indication* and the *trade-off* for each, and the evidence verdict beneath.
+- **Mechanism strip.** For the "why", a short causal chain of nodes joined by labelled arrows
+  (cause → mediator → effect → therefore) sets up the whole protocol in one line.
+- **Paired-opposite panel.** When two states mirror each other (surge vs crash, over- vs
+  under-treatment), a two-half split with mirrored arrows and colour reads instantly.
+
+The scaffolds for these live, commented and copy-ready, in
+[infographic-template.html](infographic-template.html) — fill one rather than inventing markup.
+
+### Schematic figures — honest by construction
+A drawn curve or timeline *looks* like data even when it is not. So:
+
+- **Label it illustrative.** A schematic that shows a *shape* rather than a measurement carries
+  a visible caption: *illustrative pattern — not measured data.*
+- **Only sourced numbers appear on it.** Axis thresholds, target bands, and annotations use
+  figures already in the report (e.g. an `SBP 160 / MAP 60` target range) — never a value
+  invented to make the picture read.
+- **Never a false axis.** A qualitative or unlabelled axis is fine; a fabricated *quantitative*
+  one that implies precision the source lacks is not.
+
+### Diagram accessibility
+- Informative SVGs get `role="img"` with a `<title>` and a `<desc>` that states the finding.
+- Flows and ladders use **logical DOM order**, so a screen reader reads them in sequence.
+- **Never arrow-glyph-only.** An arrow (▲ ▼ →) always pairs with a word ("SURGE", "add", "so").
+- Decorative sub-elements are `aria-hidden`; every colour still pairs with a label, contrast AA.
+
 ## The critical-safety banner
 
 Model it on the reference standard: a full-width band, crimson header reading **CRITICAL
