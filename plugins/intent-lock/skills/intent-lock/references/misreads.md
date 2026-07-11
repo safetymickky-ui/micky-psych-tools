@@ -14,11 +14,19 @@ Read `## Active priors` before reading any request. That is the whole point of t
 
 Newest first. Cap: 7. Each is a check to run, not a lesson to remember. The Active-priors line must be copied verbatim from the entry's `Prior:` line at append time; cap 7 — retirement follows misread-capture's procedure (ask the user which of the oldest three retires), never silent dropping.
 
-1. When he says "craft my prompt," check whether he wants the prompt or the work.
+1. When he asks to "research" or "review" a topic, run intent-lock first to lock breadth and frame — never collapse a "comprehensive review" into "just Rx."
+2. When he says "craft my prompt," check whether he wants the prompt or the work.
 
 ---
 
 ## Entries
+
+## 2026-07-11 · comprehensive review, not just Rx
+Asked for:    Research + comprehensive review of intermittent explosive disorder
+Got:          a verdict-first Rx (treatment-only) decision report; the frame was chosen for him without asking
+Axis missed:  breadth/frame — "Comprehensive review (Not just Rx)"
+Tell arrived: at delivery — the report was Rx-only when a full-disorder review was wanted
+Prior:        When he asks to "research" or "review" a topic, run intent-lock first to lock breadth and frame — never collapse a "comprehensive review" into "just Rx."
 
 ## 2026-07-09 · the intent-lock skill itself
 Asked for:    a way to make you understand my need without misunderstanding

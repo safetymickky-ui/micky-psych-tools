@@ -11,19 +11,28 @@ work; the verdict-first report protects the reading after it. Run alone, each ha
 the other covers — an interview that produces an encyclopedia, or a perfectly-spined report
 answering a question nobody asked.
 
-## Trigger table
+## Trigger rule
+
+**Chain intent-lock first on every request. The only exception is an explicit opt-out.**
 
 | Situation | Chain intent-lock? |
 |---|---|
+| Any research request — the default | **Yes, always, first** |
 | Bare topic, no decision ("review DLPFC", "tell me about lurasidone") | **Yes** |
-| Two frames tie on cost after the Step 0 asymmetry rule | **Yes** |
+| Two or more frames could apply | **Yes** |
 | Service decision, formulary change, SOP, anything reused | **Yes** |
-| Quick check, obvious frame ("is prazosin still first-line for PTSD nightmares?") | No — search |
+| Quick check, seemingly obvious frame ("is prazosin still first-line for PTSD nightmares?") | **Yes** — intent-lock self-skips the questions if it is truly unambiguous, so this costs nothing |
 | User typed `/intent-lock` | **Yes**, unconditionally |
-| User explicitly says "just search" / "don't interview me" | No |
+| User explicitly says "just search" / "don't interview me" / hands over a locked frame | **No** — honour the opt-out |
 
-Scope the interview by **reuse count × cost of a wrong frame**, exactly as `intent-lock` says.
-A one-off Truth check earns one round. A protocol for a service earns the cap.
+The old model chained only on hard cases and let you infer the frame on "obvious" ones. That
+inference is exactly how a "comprehensive review" gets silently collapsed into a single-frame
+report the user did not ask for. The gate now runs first every time; **`intent-lock`'s own
+admission threshold — not your judgement about whether this request "deserves" an interview —
+decides whether any questions actually get asked.** Do not infer an opt-out from an ordinary
+"research this for me"; the opt-out must be the user's explicit words. Once the interview
+locks a frame, scope the evidence work by **reuse count × cost of a wrong frame**, exactly as
+`intent-lock` says.
 
 ## What intent-lock must have fixed before search begins
 

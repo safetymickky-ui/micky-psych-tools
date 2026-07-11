@@ -22,7 +22,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.3.0_
+### pubmed-research-note — research  _v1.4.0_
 
 Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports; renders the report inline and files it to the vault by default, atomic notes on request. Chains to the intent-lock plugin when the request carries no decision.
 

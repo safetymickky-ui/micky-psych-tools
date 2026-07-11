@@ -11,12 +11,12 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-10
+## Current versions — 2026-07-11
 
 | item                  | version |
 | --------------------- | ------- |
 | marketplace catalog   | 1.4.0   |
-| pubmed-research-note   | 1.3.0   |
+| pubmed-research-note   | 1.4.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
@@ -31,7 +31,8 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 - **pubmed-research-note** — clinical decision from primary literature; verdict-first,
   quantified, trial-registry-checked evidence reports. Default output pipeline: write md →
   show inline → file to vault as an artifact via vault-keeper; atomic notes on "atomize" only.
-  Chains to intent-lock when a request carries no decision; delegates vault writes to vault-keeper.
+  ALWAYS runs intent-lock first as a mandatory Step 0 gate (explicit opt-out only — "just
+  search"); the frame falls out of the interview, never inferred. Delegates vault writes to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
   Ships `intent-lock` (the interview) + `misread-capture` (the compounding misread ledger).
 - **plugin-creator** — meta-plugin: `/new-plugin` scaffolds, `/refine-plugin` audits/refines,
@@ -45,6 +46,18 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-11** — pubmed-research-note **1.4.0**: intent-lock is now a **mandatory Step 0 gate**
+  before any search (was conditional — only fired on bare topics, frame-ties, or expensive runs).
+  The frame now *falls out of the interview* instead of being inferred; the only bypass is an
+  explicit opt-out ("just search" / "don't interview me"), which must be the user's own words —
+  an opt-out may never be inferred from an ordinary "research this and file it." Prompted by an
+  IED report that silently collapsed a "comprehensive review" request into an Rx-only decision.
+  Rewrote Step 0, the intent-lock pairing section + trigger table (`references/intent-lock-pairing.md`),
+  and the failure conditions; logged the misread to the intent-lock ledger as a new active prior.
+  `route.py` regenerated. Then re-ran the IED vault artifact *through* the new gate: intent-lock
+  locked an academic, whole-disorder frame, so the Rx-only artifact was replaced by a comprehensive
+  academic review (`intermittent-explosive-disorder-review`) and its MOC promoted to a whole-disorder
+  `Intermittent Explosive Disorder MOC`.
 - **2026-07-10** — pubmed-research-note **1.3.0**: output is now a three-step default
   pipeline — write the md report, render it inline in the chat, then file it to the vault as
   an artifact via vault-keeper (was working-directory only, vault opt-in). Atomic-note
