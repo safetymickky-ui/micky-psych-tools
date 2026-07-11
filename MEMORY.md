@@ -68,6 +68,20 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-11** — First real run of the **research → infographic** pipeline end-to-end (branch
+  `claude/ppgl-perioperative-infographic-2ghpcr`): filed a sourced **Perioperative Management of
+  PPGL** decision report to the vault and rendered it into a **clinical-infographic** asset — the
+  exact PPGL perioperative reference that motivated building the plugin. Report (`pubmed-research-note`
+  style, opt-out/autonomous, phase-structured Pre-op → Intra-op → Post-op) rests on 15 PubMed sources
+  + 4 CT.gov trials: Endocrine Society guideline (all functional PPGL blocked pre-op), the **PRESCRIPT
+  RCT** settling phenoxybenzamine vs doxazosin to "either" (time outside BP target 11.1% vs 12.2%,
+  P=.75), selective-vs-nonselective series, PHEO-RISK complications, and the contraindicated-drugs
+  literature; forward-looking flag = **NCT05702944** (live RCT testing whether normotensive tumours can
+  skip α-blockade, readout 2027). Fidelity contract held: sodium-nitroprusside, "Roizen criteria", and
+  glucagon-as-crisis-trigger were deliberately **excluded** as untraceable to the retrieved sources.
+  Deliverables: `vault/artifacts/ppgl-perioperative-management.md`,
+  `vault/assets/ppgl-perioperative-management-infographic.html` (self-contained, print-ready, AA), new
+  `Pheochromocytoma & Paraganglioma MOC` (fourth MOC) wired into `index.md`. `validate.py` clean.
 - **2026-07-11** — Added **clinical-infographic 0.1.0** (seventh plugin; catalog → 1.6.0), built
   via the plugin-creator flow. It is the visual **last mile** of the research pipeline: renders a
   SOURCED comprehensive-review / pubmed-research-note report into a professional medical summary
