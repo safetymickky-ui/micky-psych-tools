@@ -1,0 +1,17 @@
+{
+  "name": "pubmed-research-note",
+  "version": "1.5.0",
+  "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Locks the decision before searching (via the intent-lock plugin when installed, otherwise with a short built-in interview), then renders the report inline; files it to a vault only when the vault-keeper plugin is installed.",
+  "author": {
+    "name": "Thanawat Suharit"
+  },
+  "keywords": [
+    "pubmed",
+    "clinical-trials",
+    "psychiatry",
+    "evidence",
+    "research",
+    "intent-lock"
+  ],
+  "mcpServers": "./.mcp.json"
+}

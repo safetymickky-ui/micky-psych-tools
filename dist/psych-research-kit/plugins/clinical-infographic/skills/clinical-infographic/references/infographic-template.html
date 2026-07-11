@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+  Clinical Infographic template — self-contained, print-ready, accessible.
+  Fill the {{TOKENS}} from the SOURCE report only. No external CSS/JS/fonts/images.
+  Repeat/delete .col blocks for 2-4 columns; drop the .safety block ONLY if the
+  source names no contraindication / avoid item. See design-system.md.
+  VISUAL-FIRST: prefer a diagram to a prose card. Commented, copy-ready scaffolds for a
+  signature journey-curve, mechanism strip, decision-flow, escalation ladder, and surge/crash
+  split sit below the columns — design the signature visual first and place it high on the page.
+  Every schematic carries "illustrative — not measured data" and uses only sourced numbers.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} — Clinical Reference</title>
+<style>
+  :root {
+    --ink:#1a2230; --muted:#5a6675; --line:#e2e7ee; --bg:#ffffff;
+    /* Column accent families (accent / tint) — swap per topic, keep AA contrast. */
+    --c1:#3b6ea8; --c1-tint:#eef3f9;
+    --c2:#3f8a6e; --c2-tint:#edf5f1;
+    --c3:#c9772e; --c3-tint:#fbf1e7;
+    --danger:#a4304a; --danger-tint:#f7e9ed; --warn:#b3541e;
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.4; font-size:15px;
+  }
+  .sheet { max-width:1100px; margin:0 auto; padding:28px; }
+  .masthead { border-bottom:3px solid var(--ink); padding-bottom:14px; margin-bottom:20px; }
+  .masthead h1 { font-size:30px; line-height:1.15; margin:0 0 4px; letter-spacing:-0.01em; }
+  .masthead .sub { color:var(--muted); font-size:14px; margin:0; }
+
+  .columns { display:grid; grid-template-columns:repeat(var(--n,3),1fr); gap:16px; }
+  .col { border:1px solid var(--line); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
+  .col-head { color:#fff; padding:12px 14px; font-weight:700; font-size:15px; display:flex; align-items:center; gap:10px; }
+  .col-body { padding:12px; background:var(--tint,#fff); flex:1; }
+  .col.c1 .col-head{ background:var(--c1);} .col.c1{ --tint:var(--c1-tint);}
+  .col.c2 .col-head{ background:var(--c2);} .col.c2{ --tint:var(--c2-tint);}
+  .col.c3 .col-head{ background:var(--c3);} .col.c3{ --tint:var(--c3-tint);}
+  .col-head .badge { background:rgba(255,255,255,.22); border-radius:6px; padding:2px 8px; font-size:12px; font-weight:700; }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:0 0 10px; }
+  .card:last-child { margin-bottom:0; }
+  .card h3 { margin:0 0 4px; font-size:14px; }
+  .card p { margin:0; font-size:13.5px; color:#26303d; }
+  .card.rule { border-left:4px solid var(--warn); }
+
+  .stats { display:flex; flex-wrap:wrap; gap:8px; }
+  .stat { flex:1 1 30%; text-align:center; border:1px solid var(--line); border-radius:8px; padding:8px 6px; background:#fff; }
+  .stat .v { font-size:16px; font-weight:800; letter-spacing:-0.01em; }
+  .stat .k { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
+
+  .safety { margin-top:20px; border:2px solid var(--danger); border-radius:10px; background:var(--danger-tint); overflow:hidden; }
+  .safety-head { background:var(--danger); color:#fff; padding:10px 16px; font-weight:800; letter-spacing:.02em; font-size:15px; display:flex; align-items:center; gap:10px; }
+  .safety-body { padding:12px 16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .safety h3 { margin:0 0 4px; font-size:14px; color:var(--danger); }
+  .safety p { margin:0; font-size:13.5px; }
+
+  .foot { margin-top:18px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:11.5px; }
+  .foot .disclaimer { font-weight:600; color:#40495a; margin:0 0 4px; }
+  .foot ul { margin:6px 0 0; padding-left:18px; }
+
+  .icon { width:1.05em; height:1.05em; flex:none; fill:currentColor; }
+
+  /* ---- Optional diagram components (design-system.md → the diagram grammar) ---- */
+  .viz { border:1px solid var(--line); border-radius:10px; padding:11px 14px 9px; margin-bottom:16px; background:#fff; }
+  .viz h2 { margin:0 0 6px; font-size:15px; } .viz svg { width:100%; height:auto; display:block; }
+  .viz .cap { margin:5px 0 0; font-size:10.5px; color:var(--muted); font-style:italic; }
+  .mech { display:flex; align-items:stretch; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:16px; background:#fff; }
+  .mech .node { flex:1 1 0; padding:9px 11px; display:flex; flex-direction:column; justify-content:center; gap:3px; min-width:0; }
+  .mech .node .t { font-size:12.5px; font-weight:800; } .mech .node .s { font-size:10.5px; color:var(--muted); }
+  .mech .sep { align-self:center; padding:0 6px; color:var(--muted); font-weight:900; } .mech .goal { background:var(--c1-tint); }
+  .ladder .tier { display:flex; gap:9px; align-items:flex-start; background:#fff; border:1px solid var(--line); border-left:5px solid var(--tcol,var(--c1)); border-radius:8px; padding:8px 10px; }
+  .ladder .n { width:20px; height:20px; border-radius:50%; background:var(--tcol,var(--c1)); color:#fff; font-size:11.5px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+  .ladder .rung { text-align:center; color:var(--muted); font-size:11px; font-weight:700; margin:2px 0; }
+  .chooser { border:1px solid var(--line); border-radius:10px; padding:11px 14px; margin-bottom:16px; background:#fff; }
+  .chooser .opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .opt { border:1px solid var(--line); border-top:4px solid var(--c1); border-radius:8px; padding:9px 11px; }
+  .opt .cond { font-size:10.3px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
+  .opt .name { font-size:14px; font-weight:800; margin:2px 0 3px; }
+  .chooser .verdict { margin-top:9px; background:#f3f6fa; border:1px solid var(--line); border-radius:8px; padding:7px 11px; font-size:11.4px; text-align:center; }
+  .split { display:flex; gap:8px; margin:0 0 10px; }
+  .half { flex:1; border-radius:8px; padding:8px 9px; text-align:center; border:1px solid var(--line); }
+  .half .ar { font-size:22px; font-weight:900; line-height:.9; } .half .th { font-weight:800; font-size:12.5px; }
+  .half.up { background:var(--danger-tint); border-color:#e3b9c4; } .half.up .ar,.half.up .th { color:var(--danger); }
+  .half.down { background:#eaf1f7; border-color:#bcd2e6; } .half.down .ar,.half.down .th { color:#2f6ca8; }
+
+  @media (max-width:720px){ .columns{ grid-template-columns:1fr; } .safety-body{ grid-template-columns:1fr; } }
+  @media print {
+    body { font-size:12px; }
+    .sheet { max-width:none; padding:0; }
+    .col,.card,.safety,.stat { break-inside:avoid; }
+    @page { margin:12mm; }
+  }
+  @media (prefers-color-scheme:dark){
+    /* Screen dark mode only; print stays light for legibility. */
+    :root { --bg:#12161c; --ink:#e9edf3; --muted:#9aa6b4; --line:#2a323d; }
+    .card,.stat { background:#171c24; }
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header class="masthead">
+    <h1>{{TITLE}}</h1>
+    <p class="sub">{{SUBTITLE — scope / population / guideline basis}}</p>
+  </header>
+
+  <!-- COLUMNS: 2-4. class c1|c2|c3 sets the accent. Set --n to the count. -->
+  <section class="columns" style="--n:{{N_COLUMNS}}">
+
+    <article class="col c1" aria-label="{{COLUMN_1_LABEL}}">
+      <div class="col-head">
+        <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+        <span class="badge">{{PHASE_1_BADGE}}</span> {{COLUMN_1_HEADING}}
+      </div>
+      <div class="col-body">
+        <div class="card"><h3>{{CARD_HEADING}}</h3><p>{{directive — keep numbers, units, and "unless/avoid/only-after" qualifiers verbatim}}</p></div>
+        <div class="card rule"><h3>⚠ {{RULE_NAME}}</h3><p>{{the rule, with the condition that makes it safe}}</p></div>
+        <div class="stats" role="group" aria-label="{{targets}}">
+          <div class="stat"><div class="v">{{VALUE}}</div><div class="k">{{LABEL}}</div></div>
+          <div class="stat"><div class="v">{{VALUE}}</div><div class="k">{{LABEL}}</div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="col c2" aria-label="{{COLUMN_2_LABEL}}">
+      <div class="col-head">
+        <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+        <span class="badge">{{PHASE_2_BADGE}}</span> {{COLUMN_2_HEADING}}
+      </div>
+      <div class="col-body">
+        <div class="card"><h3>{{CARD_HEADING}}</h3><p>{{directive}}</p></div>
+      </div>
+    </article>
+
+    <article class="col c3" aria-label="{{COLUMN_3_LABEL}}">
+      <div class="col-head">
+        <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+        <span class="badge">{{PHASE_3_BADGE}}</span> {{COLUMN_3_HEADING}}
+      </div>
+      <div class="col-body">
+        <div class="card"><h3>{{CARD_HEADING}}</h3><p>{{directive}}</p></div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ============================================================
+       OPTIONAL DIAGRAMS — the visual-first layer (design-system.md → diagram grammar).
+       Prefer a diagram to a prose card. Uncomment/fill what fits the report's shape; delete
+       the rest. Place the SIGNATURE visual HIGH (right after the masthead), not down here.
+       Every schematic MUST carry an "illustrative — not measured data" caption and use only
+       numbers already in the source report.
+       ============================================================ -->
+
+  <!-- MECHANISM STRIP — the causal "why": cause → mediator → effect → therefore -->
+  <!--
+  <div class="mech" role="group" aria-label="{{mechanism}}">
+    <div class="node"><div class="t">{{CAUSE}}</div><div class="s">{{detail}}</div></div>
+    <div class="sep" aria-hidden="true">▶</div>
+    <div class="node"><div class="t">{{MEDIATOR}}</div><div class="s">{{detail}}</div></div>
+    <div class="sep" aria-hidden="true">▶</div>
+    <div class="node goal"><div class="t">{{THEREFORE — the rule}}</div><div class="s">{{why}}</div></div>
+  </div>
+  -->
+
+  <!-- SIGNATURE JOURNEY CURVE — a physiologic course over time (schematic).
+       role=img + title/desc; threshold lines/bands use SOURCED numbers only. -->
+  <!--
+  <section class="viz" aria-label="{{journey}}">
+    <h2>{{The … journey}}</h2>
+    <svg viewBox="0 0 1080 300" role="img" aria-labelledby="vt vd">
+      <title id="vt">{{what the curve shows}}</title>
+      <desc id="vd">{{the finding, in words}}</desc>
+      <!-- phase bands · threshold lines labelled with SOURCED values · <polyline> curve · event markers -->
+    </svg>
+    <p class="cap">Illustrative pattern — not measured data. Thresholds ({{sourced values}}) are from the source.</p>
+  </section>
+  -->
+
+  <!-- DECISION-FLOW — a real choice: options side by side, each with indication + trade-off, then the verdict -->
+  <!--
+  <section class="chooser" aria-label="{{choosing X}}">
+    <h2>{{Choosing …}}</h2>
+    <div class="opts">
+      <div class="opt"><div class="cond">If: {{indication A}}</div><div class="name">{{Option A}}</div><p>{{trade-off, with numbers}}</p></div>
+      <div class="opt" style="border-top-color:var(--c2)"><div class="cond">If: {{indication B}}</div><div class="name">{{Option B}}</div><p>{{trade-off}}</p></div>
+    </div>
+    <div class="verdict">{{evidence verdict — the number that settles it}}</div>
+  </section>
+  -->
+
+  <!-- ESCALATION LADDER — sequential logic with the CONDITION printed on each rung -->
+  <!--
+  <div class="ladder">
+    <div class="tier"><span class="n">1</span><span>{{first-line — all patients}}</span></div>
+    <div class="rung">↓ only {{condition}}</div>
+    <div class="tier" style="--tcol:var(--warn)"><span class="n">2</span><span>{{add if …}}</span></div>
+  </div>
+  -->
+
+  <!-- PAIRED-OPPOSITE SPLIT — two mirrored states (e.g. surge vs crash) -->
+  <!--
+  <div class="split" role="group" aria-label="{{two opposite states}}">
+    <div class="half up"><div class="ar" aria-hidden="true">▲</div><div class="th">{{STATE A}}</div><div>{{trigger · action}}</div></div>
+    <div class="half down"><div class="ar" aria-hidden="true">▼</div><div class="th">{{STATE B}}</div><div>{{trigger · action}}</div></div>
+  </div>
+  -->
+
+  <!-- CRITICAL SAFETY: mandatory when the source names contraindications / avoid items.
+       Delete only if the source has none (and say so in the Close). -->
+  <section class="safety" aria-label="Critical safety — do not do">
+    <div class="safety-head">
+      <svg class="icon" aria-hidden="true"><use href="#i-ban"/></svg>
+      {{CRITICAL SAFETY — MEDICATIONS / ACTIONS TO AVOID}}
+    </div>
+    <div class="safety-body">
+      <div><h3>🚫 {{CONTRAINDICATION_GROUP}}</h3><p>{{what to avoid and why — drug names verbatim}}</p></div>
+      <div><h3>⚠ {{NAMED_PITFALL}}</h3><p>{{the trap and the safe alternative}}</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p class="disclaimer">Clinical reference aid — not a substitute for clinical judgment or local protocol. Verify against the primary sources before acting.</p>
+    <p>Source: {{SOURCE_REPORT_TITLE}} · rendered {{YYYY-MM-DD}} · {{PubMed N · trials N}}</p>
+    <details>
+      <summary>Sources</summary>
+      <ul>
+        <li>{{claim/topic}} — {{doi:10.xxxx/yyyy or NCT NNNNNNNN}}</li>
+      </ul>
+    </details>
+  </footer>
+</main>
+
+<!-- Inline icon sprite — self-contained, no external requests. Add symbols as needed. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 10V6h-2v8h6v-2z"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 015.29 14L6 6.71A7.96 7.96 0 0112 4zM4.71 6L18 17.29A8 8 0 014.71 6z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+</svg>
+</body>
+</html>

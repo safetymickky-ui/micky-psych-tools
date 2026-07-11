@@ -73,6 +73,17 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-11** — Built **psych-research-kit** (`dist/psych-research-kit/`, branch
+  `claude/pubmed-infographic-plugin-1qzlon`): a shareable, self-contained two-plugin
+  marketplace (`micky-psych-research-kit`) holding standalone copies of pubmed-research-note
+  1.5.0 + clinical-infographic 0.2.0, made to send to a friend. Copies degrade gracefully
+  without the companions this repo has: no intent-lock → the research skill runs a short
+  built-in brief interview; no vault-keeper → vault steps are skipped (working-directory
+  output only); no comprehensive-review → whole-topic renders route to pubmed-research-note.
+  Friend installs via `/plugin marketplace add <unzipped-path>` + `/plugin install
+  <name>@micky-psych-research-kit`; per-skill zips cover claude.ai skill upload. The kit is a
+  one-off snapshot (not wired into `scripts/bump.py`/`validate.py`) — regenerate it if the
+  source plugins change. Main catalog untouched; validate + route clean.
 - **2026-07-11** — **clinical-infographic 0.2.0 — visual-first upgrade** (same PPGL branch),
   driven by feedback that the first render was text-heavy. Design system gains a **diagram
   grammar** (name a *signature visual* before the columns; journey/timeline curve, mechanism

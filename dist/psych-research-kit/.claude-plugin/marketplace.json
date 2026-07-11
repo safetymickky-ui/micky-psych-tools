@@ -1,0 +1,38 @@
+{
+  "name": "micky-psych-research-kit",
+  "version": "1.0.0",
+  "description": "Standalone two-plugin kit from micky-psych-tools: decision-driven PubMed evidence reports plus a print-ready clinical infographic renderer.",
+  "owner": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "plugins": [
+    {
+      "name": "pubmed-research-note",
+      "source": "./plugins/pubmed-research-note",
+      "version": "1.5.0",
+      "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Locks the decision before searching (via the intent-lock plugin when installed, otherwise with a short built-in interview), then renders the report inline; files it to a vault only when the vault-keeper plugin is installed.",
+      "category": "research",
+      "keywords": [
+        "pubmed",
+        "clinical-trials",
+        "psychiatry",
+        "evidence"
+      ]
+    },
+    {
+      "name": "clinical-infographic",
+      "source": "./plugins/clinical-infographic",
+      "version": "0.2.0",
+      "description": "Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/\"medications to avoid\" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with pubmed-research-note (reuse an existing report or generate one first); vault filing only when the vault-keeper plugin is installed.",
+      "category": "research",
+      "keywords": [
+        "infographic",
+        "clinical-reference",
+        "visual-summary",
+        "html",
+        "medical",
+        "poster"
+      ]
+    }
+  ]
+}
