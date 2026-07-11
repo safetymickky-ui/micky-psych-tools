@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -73,6 +73,20 @@
         "surveillance",
         "clinical-trials",
         "current-awareness"
+      ]
+    },
+    {
+      "name": "comprehensive-review",
+      "source": "./plugins/comprehensive-review",
+      "version": "0.1.0",
+      "description": "Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.",
+      "category": "research",
+      "keywords": [
+        "psychiatry",
+        "literature-review",
+        "comprehensive",
+        "pubmed",
+        "academic-review"
       ]
     }
   ]

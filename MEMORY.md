@@ -15,12 +15,13 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.4.0   |
+| marketplace catalog   | 1.5.0   |
 | pubmed-research-note   | 1.5.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.2.0   |
 | psych-paper-digest    | 0.1.0   |
+| comprehensive-review  | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -47,6 +48,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 - **psych-paper-digest** — watchlist literature surveillance; sweeps PubMed + ClinicalTrials.gov
   since `last_swept`, triages Act / Read / Suppressed, never adjudicates (Act items hand off to
   pubmed-research-note). Skill + `/digest [domain]`; state in `.psych-paper-digest.json`.
+- **comprehensive-review** — whole-disorder academic reviews, textbook-chapter breadth across a
+  ten-section arc (definition → controversies), never collapsed into Rx-only. Intent-lock is the
+  mandatory Step 0 gate; own PubMed + CT.gov pipeline; deliverable is an md file filed to the
+  vault via vault-keeper (chat gets the Close, not the chapter). Skill + `/comprehensive-review
+  [topic]`. Decisions still route to pubmed-research-note.
 
 ## Recent milestones
 
@@ -64,6 +70,13 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   slots, not "the frame") and `tool-catalog.md` (engine mandates tied to the decision at stake,
   not named frames); rewrote all 16 evals to test brief-building + verdict-first + decision-shaped
   headings + adjudication. `route.py` regenerated; validate clean.
+- **2026-07-11** — Added **comprehensive-review 0.1.0** (sixth plugin; catalog → 1.5.0), built via
+  the plugin-creator flow with an intent-lock interview up front. Closes the gap the IED misread
+  exposed: "comprehensive review" is now a first-class deliverable, not a frame pubmed-research-note
+  must be talked into. Locked in the interview: whole-disorder textbook-chapter reviews, own
+  PubMed + CT.gov pipeline (pubmed-research-note stays the decision tool), output is an md file
+  kept in the vault via vault-keeper. Skill + `/comprehensive-review [topic]`; ROUTING.md
+  regenerated (6 plugins, 13 components).
 - **2026-07-11** — pubmed-research-note **1.4.0**: intent-lock is now a **mandatory Step 0 gate**
   before any search (was conditional — only fired on bare topics, frame-ties, or expensive runs).
   The frame now *falls out of the interview* instead of being inferred; the only bypass is an
