@@ -22,7 +22,7 @@ a milestone.
 | vault-keeper          | 0.2.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.1.0   |
-| clinical-infographic  | 0.1.0   |
+| clinical-infographic  | 0.2.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -58,7 +58,12 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   professional, print-ready medical summary infographic for clinical reference — one
   self-contained HTML file (inline styles + inline SVG, no external CSS/JS/fonts/images) with
   color-coded phase/theme columns, stat tiles, and a mandatory "medications to avoid" safety
-  banner. **Rendering layer, not a research tool** — ships no search engines and never
+  banner. **Visual-first (v0.2.0):** a diagram grammar — a *signature visual* (journey/timeline
+  curve, mechanism strip, decision-flow, escalation ladder, paired-opposite split) designed
+  before the columns, with template scaffolds; schematics must be labelled illustrative + carry
+  only sourced numbers; a render-&-verify step (rasterise + OCR) before filing; PNG a named
+  deliverable; a worked **dense reference** example under `examples/`. **Rendering layer, not a
+  research tool** — ships no search engines and never
   fabricates a clinical fact: it resolves a source in order (this session's report → an existing
   vault artifact via vault-keeper → generate one with comprehensive-review / pubmed-research-note)
   and enforces a fidelity contract (nothing untraceable, numbers keep units + qualifiers,
@@ -68,6 +73,31 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-11** — **clinical-infographic 0.2.0 — visual-first upgrade** (same PPGL branch),
+  driven by feedback that the first render was text-heavy. Design system gains a **diagram
+  grammar** (name a *signature visual* before the columns; journey/timeline curve, mechanism
+  strip, decision-flow, escalation ladder, paired-opposite split) with commented scaffolds in
+  the template; a **schematic-fidelity rule** (illustrative figures must be labelled, sourced-
+  numbers-only, no fake axis) in the source contract; a **render-&-verify** Step 2.5 (rasterise
+  + eyeball + optional OCR before filing; PNG is a named deliverable); and an `examples/` dir
+  holding a worked **dense reference infographic** (the PPGL one). Rationale kept in
+  `references/lessons-learned.md`. The PPGL infographic itself gained a mechanism strip, a
+  haemodynamic-journey curve, a which-α-blocker decision-flow, and an escalation ladder (rung
+  arrows corrected to point down-flow). Bumped via `scripts/bump.py`; validate + route clean.
+- **2026-07-11** — First real run of the **research → infographic** pipeline end-to-end (branch
+  `claude/ppgl-perioperative-infographic-2ghpcr`): filed a sourced **Perioperative Management of
+  PPGL** decision report to the vault and rendered it into a **clinical-infographic** asset — the
+  exact PPGL perioperative reference that motivated building the plugin. Report (`pubmed-research-note`
+  style, opt-out/autonomous, phase-structured Pre-op → Intra-op → Post-op) rests on 15 PubMed sources
+  + 4 CT.gov trials: Endocrine Society guideline (all functional PPGL blocked pre-op), the **PRESCRIPT
+  RCT** settling phenoxybenzamine vs doxazosin to "either" (time outside BP target 11.1% vs 12.2%,
+  P=.75), selective-vs-nonselective series, PHEO-RISK complications, and the contraindicated-drugs
+  literature; forward-looking flag = **NCT05702944** (live RCT testing whether normotensive tumours can
+  skip α-blockade, readout 2027). Fidelity contract held: sodium-nitroprusside, "Roizen criteria", and
+  glucagon-as-crisis-trigger were deliberately **excluded** as untraceable to the retrieved sources.
+  Deliverables: `vault/artifacts/ppgl-perioperative-management.md`,
+  `vault/assets/ppgl-perioperative-management-infographic.html` (self-contained, print-ready, AA), new
+  `Pheochromocytoma & Paraganglioma MOC` (fourth MOC) wired into `index.md`. `validate.py` clean.
 - **2026-07-11** — Added **clinical-infographic 0.1.0** (seventh plugin; catalog → 1.6.0), built
   via the plugin-creator flow. It is the visual **last mile** of the research pipeline: renders a
   SOURCED comprehensive-review / pubmed-research-note report into a professional medical summary

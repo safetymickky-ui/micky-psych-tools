@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<!--
+  Clinical Infographic — Perioperative Management of PPGL (visual-first).
+  Self-contained, print-ready, accessible. Every fact traces to the source report
+  vault/artifacts/ppgl-perioperative-management.md. No external CSS/JS/fonts/images.
+  The haemodynamic curve is a SCHEMATIC of a sourced qualitative pattern (surge on
+  manipulation → crash on ligation; thresholds SBP 160 / MAP 60 from PRESCRIPT) —
+  labelled illustrative, not measured data.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perioperative Management of PPGL — Clinical Reference</title>
+<style>
+  :root {
+    --ink:#1a2230; --muted:#5a6675; --line:#e2e7ee; --bg:#ffffff;
+    --c1:#3b6ea8; --c1-tint:#eef3f9;   /* Pre-op  */
+    --c2:#3f8a6e; --c2-tint:#edf5f1;   /* Intra-op */
+    --c3:#c9772e; --c3-tint:#fbf1e7;   /* Post-op */
+    --danger:#a4304a; --danger-tint:#f7e9ed; --warn:#b3541e; --blue:#2f6ca8;
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.4; font-size:15px;
+  }
+  .sheet { max-width:1120px; margin:0 auto; padding:26px; }
+  .masthead { border-bottom:3px solid var(--ink); padding-bottom:12px; margin-bottom:16px; }
+  .masthead h1 { font-size:28px; line-height:1.14; margin:0 0 5px; letter-spacing:-0.01em; }
+  .masthead .sub { color:var(--muted); font-size:13px; margin:0; }
+
+  .keyline { display:flex; gap:11px; align-items:flex-start; background:#f3f6fa; border:1px solid var(--line);
+    border-left:5px solid var(--c1); border-radius:9px; padding:10px 13px; margin-bottom:16px; }
+  .keyline .icon { color:var(--c1); width:1.25em; height:1.25em; margin-top:2px; }
+  .keyline p { margin:0; font-size:13px; color:#24303f; }
+  .keyline strong { color:var(--ink); }
+
+  /* Hero haemodynamic visualization */
+  .viz { border:1px solid var(--line); border-radius:10px; padding:11px 14px 9px; margin-bottom:16px; background:#fff; }
+  .viz h2 { margin:0 0 6px; font-size:15px; display:flex; align-items:center; gap:8px; }
+  .viz h2 .icon { color:var(--danger); width:1.15em; height:1.15em; }
+  .viz svg { width:100%; height:auto; display:block; }
+  .viz .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:7px; font-size:11px; color:var(--muted); }
+  .viz .legend span { display:inline-flex; align-items:center; gap:5px; }
+  .swatch { width:16px; height:9px; border-radius:2px; display:inline-block; }
+  .swatch.line { height:0; border-top:3px solid var(--ink); width:18px; }
+  .swatch.band { background:rgba(63,138,110,.30); border:1px solid rgba(63,138,110,.5); }
+  .viz .cap { margin:5px 0 0; font-size:10.5px; color:var(--muted); font-style:italic; }
+
+  /* Mechanism strip — the "why" */
+  .mech { display:flex; align-items:stretch; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:16px; background:#fff; }
+  .mech .node { flex:1 1 0; padding:9px 11px; display:flex; flex-direction:column; justify-content:center; gap:3px; min-width:0; }
+  .mech .node .t { font-size:12.5px; font-weight:800; color:#1c2836; display:flex; align-items:center; gap:6px; }
+  .mech .node .t .icon { color:var(--c3); width:1.35em; height:1.35em; }
+  .mech .node .s { font-size:10.5px; color:var(--muted); line-height:1.3; }
+  .mech .rec { font-size:11.3px; color:#26303d; }
+  .mech .rec .a { color:var(--danger); font-weight:800; } .mech .rec .b { color:var(--blue); font-weight:800; }
+  .mech .sep { flex:0 0 auto; align-self:center; display:flex; flex-direction:column; align-items:center; padding:0 5px; color:var(--muted); }
+  .mech .sep .k { font-size:8.5px; text-transform:uppercase; letter-spacing:.04em; }
+  .mech .sep .ar { font-size:15px; font-weight:900; line-height:.8; }
+  .mech .goal { background:var(--c1-tint); } .mech .goal .t { color:var(--c1); }
+
+  /* Which α-blocker — decision-flow */
+  .chooser { border:1px solid var(--line); border-radius:10px; padding:11px 14px; margin-bottom:16px; background:#fff; }
+  .chooser h2 { font-size:14.5px; margin:0 0 9px; display:flex; align-items:center; gap:8px; }
+  .chooser h2 .icon { color:var(--c1); }
+  .chooser .opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .opt { border:1px solid var(--line); border-radius:8px; padding:9px 11px; background:#fff; }
+  .opt.pbz { border-top:4px solid var(--c1); } .opt.dox { border-top:4px solid var(--c2); }
+  .opt .cond { font-size:10.3px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
+  .opt .name { font-size:14px; font-weight:800; margin:2px 0 3px; }
+  .opt .to { font-size:11.4px; color:#4a5563; }
+  .chooser .rct { margin-top:9px; background:#f3f6fa; border:1px solid var(--line); border-radius:8px; padding:7px 11px; font-size:11.4px; text-align:center; color:#24303f; }
+
+  /* Section band */
+  .band-title { display:flex; align-items:center; gap:9px; font-size:16px; font-weight:800; margin:2px 0 10px; }
+  .band-title .seq { width:24px; height:24px; border-radius:50%; color:#fff; display:inline-flex; align-items:center;
+    justify-content:center; font-size:13px; font-weight:800; flex:none; }
+
+  .columns { display:grid; grid-template-columns:repeat(var(--n,3),1fr); gap:15px; align-items:stretch; }
+  .col { border:1px solid var(--line); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
+  .col-head { color:#fff; padding:10px 13px; font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px; }
+  .col-head .lbl { flex:1; }
+  .col-head .seq { width:21px; height:21px; border-radius:50%; background:rgba(255,255,255,.26); display:inline-flex;
+    align-items:center; justify-content:center; font-size:12px; font-weight:800; flex:none; }
+  .col-body { padding:11px; background:var(--tint,#fff); flex:1; }
+  .col.c1 .col-head{ background:var(--c1);} .col.c1{ --tint:var(--c1-tint); --accent:var(--c1);}
+  .col.c2 .col-head{ background:var(--c2);} .col.c2{ --tint:var(--c2-tint); --accent:var(--c2);}
+  .col.c3 .col-head{ background:var(--c3);} .col.c3{ --tint:var(--c3-tint); --accent:var(--c3);}
+  .col-head .badge { background:rgba(255,255,255,.24); border-radius:6px; padding:2px 8px; font-size:11px; font-weight:700; white-space:nowrap; }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:9px 11px; margin:0 0 9px; }
+  .card:last-child { margin-bottom:0; }
+  .card h3 { margin:0 0 3px; font-size:13px; }
+  .card p { margin:0; font-size:12.5px; color:#26303d; }
+  .card.rule { border-left:4px solid var(--warn); background:#fffaf4; }
+  .card.rule h3 { color:#8a3d12; }
+  .dose { font-variant-numeric:tabular-nums; font-weight:700; color:#1c2836; }
+
+  /* Drug-escalation ladder (pre-op) */
+  .ladder { margin:0 0 9px; }
+  .tier { display:flex; gap:9px; align-items:flex-start; background:#fff; border:1px solid var(--line);
+    border-left:5px solid var(--tcol,var(--c1)); border-radius:8px; padding:8px 10px; }
+  .tier .n { width:20px; height:20px; border-radius:50%; background:var(--tcol,var(--c1)); color:#fff; font-size:11.5px;
+    font-weight:800; display:inline-flex; align-items:center; justify-content:center; flex:none; margin-top:1px; }
+  .tier .tx b { font-size:12.5px; } .tier .tx { font-size:12px; color:#26303d; }
+  .rung { text-align:center; color:var(--muted); font-size:12px; font-weight:800; line-height:1; margin:2px 0; }
+  .rung small { font-weight:600; font-size:10px; color:var(--muted); }
+  .neverban { display:flex; align-items:center; gap:7px; background:var(--danger-tint); border:1px solid #e3b9c4;
+    color:#7d2438; border-radius:8px; padding:7px 10px; margin:2px 0 9px; font-size:12px; font-weight:600; }
+  .foundation { display:flex; align-items:center; gap:7px; background:#eef3f9; border:1px dashed #b9cbe0; border-radius:8px;
+    padding:7px 10px; margin:0 0 9px; font-size:12px; color:#24303f; }
+
+  /* Surge / crash split (intra-op) */
+  .split { display:flex; gap:8px; margin:0 0 9px; }
+  .half { flex:1; border-radius:8px; padding:8px 9px; text-align:center; }
+  .half.up { background:var(--danger-tint); border:1px solid #e3b9c4; }
+  .half.down { background:#eaf1f7; border:1px solid #bcd2e6; }
+  .half .ar { font-size:24px; font-weight:900; line-height:.9; }
+  .half.up .ar { color:var(--danger); } .half.down .ar { color:var(--blue); }
+  .half h4 { margin:2px 0 1px; font-size:12px; }
+  .half .th { font-size:12.5px; font-weight:800; }
+  .half.up .th { color:var(--danger); } .half.down .th { color:var(--blue); }
+  .half .sub2 { font-size:10.5px; color:var(--muted); }
+
+  .druglist { list-style:none; margin:5px 0 0; padding:0; }
+  .druglist li { font-size:12.3px; color:#26303d; padding:4px 0; border-top:1px dotted #d7dee7; }
+  .druglist li:first-child { border-top:0; padding-top:2px; }
+  .druglist .d { font-weight:700; color:#1c2836; }
+
+  .stats { display:flex; flex-wrap:wrap; gap:7px; margin-top:2px; }
+  .stat { flex:1 1 42%; text-align:center; border:1px solid var(--line); border-radius:8px; padding:7px 5px; background:#fff; }
+  .stat .v { font-size:15px; font-weight:800; letter-spacing:-0.01em; }
+  .stat .k { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.02em; margin-top:1px; }
+
+  .safety { margin-top:18px; border:2px solid var(--danger); border-radius:10px; background:var(--danger-tint); overflow:hidden; }
+  .safety-head { background:var(--danger); color:#fff; padding:10px 16px; font-weight:800; letter-spacing:.02em; font-size:15px; display:flex; align-items:center; gap:10px; }
+  .safety-body { padding:12px 16px; display:grid; grid-template-columns:repeat(4,1fr); gap:12px 16px; }
+  .safety .cell { display:flex; flex-direction:column; gap:3px; }
+  .safety .ic { width:30px; height:30px; border-radius:50%; background:#fff; border:2px solid var(--danger); color:var(--danger);
+    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; }
+  .safety h3 { margin:2px 0 1px; font-size:12.5px; color:var(--danger); }
+  .safety p { margin:0; font-size:11.8px; color:#3a2027; }
+
+  .foot { margin-top:16px; padding-top:11px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+  .foot .disclaimer { font-weight:600; color:#40495a; margin:0 0 5px; }
+  .foot p { margin:0 0 4px; }
+  .foot summary { cursor:pointer; color:#40495a; font-weight:600; }
+  .foot ul { margin:6px 0 0; padding-left:18px; columns:2; column-gap:24px; }
+  .foot li { margin:0 0 3px; break-inside:avoid; }
+  .foot a { color:#3b6ea8; }
+
+  .icon { width:1.05em; height:1.05em; flex:none; fill:currentColor; }
+
+  @media (max-width:820px){ .columns{ grid-template-columns:1fr; } .safety-body{ grid-template-columns:1fr 1fr; } .foot ul{ columns:1; } }
+  @media (max-width:520px){ .safety-body{ grid-template-columns:1fr; } .split{ flex-direction:column; } }
+  @media print {
+    body { font-size:11.5px; }
+    .sheet { max-width:none; padding:0; }
+    .col,.card,.safety,.stat,.keyline,.viz,.tier,.half { break-inside:avoid; }
+    .columns { gap:9px; }
+    @page { margin:10mm; }
+  }
+  @media (prefers-color-scheme:dark){
+    :root { --bg:#12161c; --ink:#e9edf3; --muted:#9aa6b4; --line:#2a323d; }
+    .card,.stat,.viz,.tier { background:#171c24; }
+    .card.rule { background:#211a12; }
+    .keyline,.foundation { background:#161d26; }
+    .keyline p { color:#cdd6e0; } .foot a { color:#8fb4de; }
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header class="masthead">
+    <h1>Perioperative Management of Pheochromocytoma &amp; Sympathetic Paraganglioma (PPGL)</h1>
+    <p class="sub">Surgical-safety reference for elective resection of functional (catecholamine-secreting) PPGL in adults · basis: Endocrine Society clinical practice guideline + the PRESCRIPT randomized trial · for the anaesthetist / endocrinologist / surgeon team</p>
+  </header>
+
+  <div class="keyline">
+    <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+    <p><strong>α-blockade first, always before any β-blocker</strong> — titrate over ~7–14 days to seated BP &lt;130/80 mmHg &amp; HR 60–70 bpm, with sodium + fluid loading. In theatre expect catecholamine <strong>surges</strong> on tumour manipulation, then an abrupt <strong>crash</strong> after venous ligation; then watch 24–48 h for hypotension &amp; rebound hypoglycaemia. Confidence: moderate-high.</p>
+  </div>
+
+  <!-- ===== MECHANISM STRIP: the "why" (schematic) ===== -->
+  <div class="mech" role="group" aria-label="Mechanism: why the protocol exists">
+    <div class="node">
+      <div class="t"><svg class="icon" aria-hidden="true"><use href="#i-adrenal"/></svg> PPGL tumour</div>
+      <div class="s">chromaffin cells — adrenal medulla / sympathetic ganglia</div>
+    </div>
+    <div class="sep" aria-hidden="true"><span class="k">secretes</span><span class="ar">▶</span></div>
+    <div class="node">
+      <div class="t">Catecholamines</div>
+      <div class="s">adrenaline · noradrenaline — in excess, paroxysmal</div>
+    </div>
+    <div class="sep" aria-hidden="true"><span class="k">act on</span><span class="ar">▶</span></div>
+    <div class="node">
+      <div class="rec"><span class="a">α-receptors</span> → vasoconstriction, ↑ BP</div>
+      <div class="rec"><span class="b">β-receptors</span> → ↑ HR &amp; contractility</div>
+    </div>
+    <div class="sep" aria-hidden="true"><span class="k">so</span><span class="ar">▶</span></div>
+    <div class="node goal">
+      <div class="t">Block α first, then β</div>
+      <div class="s">β before α leaves α-vasoconstriction unopposed → crisis</div>
+    </div>
+  </div>
+
+  <!-- ===== HERO VISUAL: haemodynamic journey ===== -->
+  <section class="viz" aria-label="Perioperative haemodynamic journey (schematic)">
+    <h2><svg class="icon" aria-hidden="true"><use href="#i-pulse"/></svg> The perioperative haemodynamic journey</h2>
+    <svg viewBox="0 0 1080 300" role="img" aria-labelledby="vizt vizd">
+      <title id="vizt">Schematic arterial blood-pressure curve across the perioperative course</title>
+      <desc id="vizd">Blood pressure is high when untreated, is titrated into the target band over 7 to 14 days of alpha-blockade, spikes above SBP 160 during tumour manipulation, crashes below MAP 60 at venous ligation, then runs low for 24 to 48 hours postoperatively with risk of hypotension and hypoglycaemia.</desc>
+      <!-- phase zones -->
+      <rect x="70" y="40" width="330" height="222" fill="#eef3f9"/>
+      <rect x="400" y="40" width="365" height="222" fill="#edf5f1"/>
+      <rect x="765" y="40" width="290" height="222" fill="#fbf1e7"/>
+      <!-- target band + threshold lines -->
+      <rect x="70" y="92" width="985" height="104" fill="rgba(63,138,110,.13)"/>
+      <line x1="70" y1="92" x2="1055" y2="92" stroke="#a4304a" stroke-width="1.3" stroke-dasharray="5 4" opacity=".65"/>
+      <line x1="70" y1="196" x2="1055" y2="196" stroke="#2f6ca8" stroke-width="1.3" stroke-dasharray="5 4" opacity=".65"/>
+      <text x="1050" y="88" text-anchor="end" font-size="10.5" fill="#a4304a" font-weight="700">SBP 160 mmHg</text>
+      <text x="1050" y="209" text-anchor="end" font-size="10.5" fill="#2f6ca8" font-weight="700">MAP 60 mmHg</text>
+      <!-- event verticals -->
+      <g stroke="#9aa6b4" stroke-width="1" stroke-dasharray="3 3">
+        <line x1="425" y1="46" x2="425" y2="262"/>
+        <line x1="520" y1="46" x2="520" y2="262"/>
+        <line x1="680" y1="46" x2="680" y2="262"/>
+      </g>
+      <g font-size="10.5" fill="#5a6675" text-anchor="middle" font-weight="600">
+        <text x="425" y="38">Induction</text>
+        <text x="520" y="38">Manipulation</text>
+        <text x="680" y="38">Ligation</text>
+      </g>
+      <!-- BP curve (schematic) -->
+      <polyline fill="none" stroke="#1a2230" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
+        points="70,64 150,80 250,112 360,140 400,140 425,126 452,66 482,132 516,58 548,136 588,70 626,140 660,150 692,220 730,192 765,188 840,196 930,180 1010,160 1055,152"/>
+      <!-- markers -->
+      <g>
+        <circle cx="452" cy="66" r="3.2" fill="#a4304a"/><circle cx="516" cy="58" r="3.2" fill="#a4304a"/><circle cx="588" cy="70" r="3.2" fill="#a4304a"/>
+        <circle cx="692" cy="220" r="3.8" fill="#2f6ca8"/>
+      </g>
+      <!-- annotations -->
+      <text x="96" y="176" font-size="11" fill="#2b5488" font-weight="700">α-blockade titrated 7–14 d</text>
+      <text x="150" y="190" font-size="10" fill="#2b5488">high → into target ↓</text>
+      <text x="556" y="50" font-size="10.5" fill="#a4304a" font-weight="700">SBP &gt;160 surges</text>
+      <text x="700" y="236" font-size="10.5" fill="#2f6ca8" font-weight="700">MAP &lt;60 crash</text>
+      <text x="912" y="238" font-size="10.5" fill="#b3541e" font-weight="700" text-anchor="middle">hypotension + hypoglycaemia</text>
+      <!-- y label -->
+      <text transform="rotate(-90 24 150)" x="24" y="150" text-anchor="middle" font-size="10.5" fill="#5a6675" font-weight="700">Arterial BP</text>
+      <!-- phase pills -->
+      <g font-size="11" font-weight="800" fill="#fff" text-anchor="middle">
+        <rect x="70" y="270" width="330" height="22" rx="5" fill="#3b6ea8"/><text x="235" y="285">PRE-OP PREP · ~7–14 d</text>
+        <rect x="404" y="270" width="357" height="22" rx="5" fill="#3f8a6e"/><text x="582" y="285">SURGERY (in theatre)</text>
+        <rect x="765" y="270" width="290" height="22" rx="5" fill="#c9772e"/><text x="910" y="285">POST-OP · 24–48 h</text>
+      </g>
+    </svg>
+    <div class="legend">
+      <span><span class="swatch line"></span> arterial BP (schematic pattern)</span>
+      <span><span class="swatch band"></span> intra-op target: SBP &lt;160 · MAP &gt;60</span>
+      <span>● surge peak &nbsp; ● ligation crash</span>
+    </div>
+    <p class="cap">Illustrative pattern — not measured data. Thresholds (SBP 160 / MAP 60 mmHg) are the PRESCRIPT intra-operative target range; the surge-then-crash shape is the sourced qualitative course.</p>
+  </section>
+
+  <!-- ===== DECISION-FLOW: which α-blocker ===== -->
+  <section class="chooser" aria-label="Choosing the alpha-blocker">
+    <h2><svg class="icon" aria-hidden="true"><use href="#i-pill"/></svg> Choosing the α-blocker — start 2–3 weeks pre-op, BP-titrated</h2>
+    <div class="opts">
+      <div class="opt pbz">
+        <div class="cond">If: most reactive tumour · tightest intra-op control</div>
+        <div class="name">Phenoxybenzamine <span style="font-weight:600;font-size:11px;color:var(--muted)">— non-selective, irreversible</span></div>
+        <div class="to">Trade-off: more &amp; more protracted <strong>post-op hypotension</strong>; longer stay (12.2 vs 6.2 days).</div>
+      </div>
+      <div class="opt dox">
+        <div class="cond">If: cleaner recovery · fewer side effects</div>
+        <div class="name">Doxazosin <span style="font-weight:600;font-size:11px;color:var(--muted)">— selective α1</span></div>
+        <div class="to">Trade-off: more <strong>intra-op hypotension</strong> (SBP&lt;80 in 67% vs 35%); more post-op pressor / ICU.</div>
+      </div>
+    </div>
+    <div class="rct"><strong>PRESCRIPT RCT (n=134): either is acceptable</strong> — time outside BP target 11.1% vs 12.2% (P=.75); instability score favoured phenoxybenzamine (38 vs 50); 30-day CV complications similar (8.8% vs 6.9%).</div>
+  </section>
+
+  <section class="columns" style="--n:3" aria-label="Perioperative phases">
+
+    <!-- PRE-OP ================================================== -->
+    <article class="col c1" aria-label="Preoperative preparation">
+      <div class="col-head">
+        <span class="seq" aria-hidden="true">1</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-pill"/></svg>
+        <span class="lbl">Pre-operative preparation</span>
+        <span class="badge">~7–14 days</span>
+      </div>
+      <div class="col-body">
+        <p style="margin:0 0 7px;font-size:11.5px;font-weight:700;color:var(--c1);text-transform:uppercase;letter-spacing:.03em">Blockade escalation ladder</p>
+        <div class="ladder">
+          <div class="tier" style="--tcol:var(--c1)">
+            <span class="n">1</span>
+            <span class="tx"><b>α-blockade — ALL functional PPGL</b><br><span class="dose">Phenoxybenzamine</span> 10 mg BID → 1 mg/kg/day, <em>or</em> <span class="dose">doxazosin</span> 2 → 32 mg/day. RCT: either agent (time outside target 11.1% vs 12.2%, P=.75).</span>
+          </div>
+          <div class="rung">↓<br><small>only after ≥3–4 d, if HR &gt;100</small></div>
+          <div class="tier" style="--tcol:var(--warn)">
+            <span class="n">2</span>
+            <span class="tx"><b>+ β-blocker — for reflex tachycardia</b><br><span class="dose">Propranolol</span> 20 mg TID (→ 3×40 mg/day) or <span class="dose">atenolol</span> 25 → 50 mg/day.</span>
+          </div>
+          <div class="rung">↓<br><small>if refractory / α-intolerant</small></div>
+          <div class="tier" style="--tcol:var(--c2)">
+            <span class="n">3</span>
+            <span class="tx"><b>+ CCB or metyrosine</b><br>Calcium-channel blocker (or alone if normotensive). <span class="dose">Metyrosine</span> 250 mg BID (↑ q48h).</span>
+          </div>
+        </div>
+        <div class="neverban">
+          <svg class="icon" aria-hidden="true"><use href="#i-ban"/></svg>
+          <span><strong>Never β before α</strong> — unopposed α-stimulation → hypertensive crisis.</span>
+        </div>
+        <div class="foundation">
+          <svg class="icon" aria-hidden="true" style="color:var(--c1)"><use href="#i-drop"/></svg>
+          <span><strong>Volume load throughout:</strong> Na⁺ 5000 mg/day + fluids 2.5 L/day (or 1–2 L IV 0.9% saline the day before).</span>
+        </div>
+        <div class="stats" role="group" aria-label="Preoperative targets">
+          <div class="stat"><div class="v">&lt;130/80</div><div class="k">Seated BP, mmHg</div></div>
+          <div class="stat"><div class="v">60–70</div><div class="k">HR seated, bpm</div></div>
+          <div class="stat"><div class="v">≥80/45</div><div class="k">Standing BP floor</div></div>
+          <div class="stat"><div class="v">7–14 d</div><div class="k">Prep duration</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- INTRA-OP =============================================== -->
+    <article class="col c2" aria-label="Intraoperative management">
+      <div class="col-head">
+        <span class="seq" aria-hidden="true">2</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-pulse"/></svg>
+        <span class="lbl">Intra-operative</span>
+        <span class="badge">In theatre</span>
+      </div>
+      <div class="col-body">
+        <div class="split" role="group" aria-label="Two opposite emergencies">
+          <div class="half up">
+            <div class="ar" aria-hidden="true">▲</div>
+            <div class="th">SURGE</div>
+            <h4>on manipulation</h4>
+            <div class="sub2">SBP &gt;160 · vasodilators</div>
+          </div>
+          <div class="half down">
+            <div class="ar" aria-hidden="true">▼</div>
+            <div class="th">CRASH</div>
+            <h4>after ligation</h4>
+            <div class="sub2">MAP &lt;60 · fluids/pressors</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Set-up</h3>
+          <p>Radial arterial line + large-bore/central access. Laparoscopic for most pheochromocytomas, open for most paragangliomas. First move on a surge: tell surgeon to <strong>stop manipulating</strong>.</p>
+        </div>
+        <div class="card">
+          <h3>▲ Surge agents — short-acting, titratable</h3>
+          <ul class="druglist">
+            <li><span class="d">Phentolamine</span> — 5 mg IV bolus, repeat p.r.n.</li>
+            <li><span class="d">Nicardipine</span> — 5 → max 15 mg/h</li>
+            <li><span class="d">Nitroglycerin</span> — 5 → 100 µg/min</li>
+            <li><span class="d">Magnesium sulfate</span> — 4 g in 250 mL D5W (≤3 mL/min), refractory</li>
+            <li><span class="d">Esmolol</span> — 0.5–1 mg/kg then 50–150 µg/kg/min (tachyarrhythmia; α-blocked only)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>▼ Crash — after venous ligation</h3>
+          <p>Pre-emptive IV isotonic fluid is the mainstay; add <span class="dose">norepinephrine</span> or <span class="dose">vasopressin</span> 0.03–0.04 units/min for catecholamine-resistant vasoplegia. Pure α-agonists (phenylephrine) are of limited use — α-receptors are still blocked.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- POST-OP =============================================== -->
+    <article class="col c3" aria-label="Postoperative care">
+      <div class="col-head">
+        <span class="seq" aria-hidden="true">3</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+        <span class="lbl">Post-operative</span>
+        <span class="badge">24–48 h</span>
+      </div>
+      <div class="col-body">
+        <div class="card">
+          <h3>Watch closely 24–48 h</h3>
+          <p>ICU / high-dependency for higher-risk cases. Post-surgical complication rate ~19%; prolonged hypotension is the commonest (~10%).</p>
+        </div>
+        <div class="card">
+          <h3>💧 Hypotension (BP &lt;90/60 mmHg)</h3>
+          <p>Catecholamine withdrawal + residual α-blockade + expanded vascular bed — worst after phenoxybenzamine. Fluids first, then norepinephrine / vasopressin.</p>
+        </div>
+        <div class="card">
+          <h3>🍬 Rebound hypoglycaemia</h3>
+          <p>Rebound hyperinsulinaemia once the tumour is out — typically the first 4 hours. Check glucose every 6 h for ≥24 h; IV 5% dextrose until oral intake; re-adjust insulin in diabetics.</p>
+        </div>
+        <div class="card">
+          <h3>Adrenal insufficiency</h3>
+          <p>Not expected after unilateral adrenalectomy. Steroid-cover only bilateral / cortical-sparing cases or if clinically suspected.</p>
+        </div>
+        <div class="stats" role="group" aria-label="Postoperative monitoring">
+          <div class="stat"><div class="v">24–48 h</div><div class="k">Close monitoring</div></div>
+          <div class="stat"><div class="v">first 4 h</div><div class="k">Hypoglycaemia peak</div></div>
+          <div class="stat"><div class="v">q6h</div><div class="k">Glucose checks</div></div>
+          <div class="stat"><div class="v">&gt;5 cm</div><div class="k">Higher-risk tumour</div></div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- CRITICAL SAFETY ======================================== -->
+  <section class="safety" aria-label="Critical safety — medications and actions to avoid">
+    <div class="safety-head">
+      <svg class="icon" aria-hidden="true"><use href="#i-ban"/></svg>
+      CRITICAL SAFETY — MEDICATIONS / ACTIONS TO AVOID
+    </div>
+    <div class="safety-body">
+      <div class="cell">
+        <div class="ic" aria-hidden="true">🚫</div>
+        <h3>β-blocker before α-blockade</h3>
+        <p>Unopposed α-stimulation → hypertensive crisis. α-blockade always first; β-blocker only after, for tachycardia.</p>
+      </div>
+      <div class="cell">
+        <div class="ic" aria-hidden="true">🚫</div>
+        <h3>Morphine &amp; codeine</h3>
+        <p>Avoided per Endocrine Society guideline. <strong>Fentanyl</strong> is tolerated and safe.</p>
+      </div>
+      <div class="cell">
+        <div class="ic" aria-hidden="true">🚫</div>
+        <h3>Dopamine antagonists · steroids · TCAs</h3>
+        <p>Metoclopramide &amp; other dopamine-receptor antagonists, corticosteroids, and tricyclics precipitate crisis.</p>
+      </div>
+      <div class="cell">
+        <div class="ic" aria-hidden="true">⚠</div>
+        <h3>Unprepared surgery</h3>
+        <p>Operating on an un-optimised functional PPGL — the core avoidable catastrophe and a crisis trigger.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p class="disclaimer">Clinical reference aid — not a substitute for clinical judgment or local protocol. Verify against the primary sources before acting.</p>
+    <p>Source: <em>Perioperative management of pheochromocytoma &amp; sympathetic paraganglioma (PPGL)</em> · rendered 2026-07-11 · PubMed 15 · trials 4 · According to PubMed &amp; ClinicalTrials.gov</p>
+    <details>
+      <summary>Sources</summary>
+      <ul>
+        <li>Endocrine Society clinical practice guideline (blockade for all functional PPGL) — <a href="https://doi.org/10.1210/jc.2014-1498">doi:10.1210/jc.2014-1498</a></li>
+        <li>PRESCRIPT RCT — phenoxybenzamine vs doxazosin (n=134) — <a href="https://doi.org/10.1210/clinem/dgz188">doi:10.1210/clinem/dgz188</a></li>
+        <li>PPGL treatment-to-follow-up — α/β dosing, targets, alpha-before-beta — <a href="https://doi.org/10.14744/SEMB.2020.58998">doi:10.14744/SEMB.2020.58998</a></li>
+        <li>Postoperative management — hypotension, hypoglycaemia, crisis agents — <a href="https://doi.org/10.3390/cancers11070936">doi:10.3390/cancers11070936</a></li>
+        <li>Selective vs non-selective α-blockade (n=526; BP ≤130/85) — <a href="https://doi.org/10.1530/EC-17-0232">doi:10.1530/EC-17-0232</a></li>
+        <li>Selective vs non-selective, laparoscopic (n=52) — <a href="https://doi.org/10.1245/s10434-016-5514-7">doi:10.1245/s10434-016-5514-7</a></li>
+        <li>Retroperitoneal vs transperitoneal approach (n=341) — <a href="https://doi.org/10.1016/j.surg.2017.05.029">doi:10.1016/j.surg.2017.05.029</a></li>
+        <li>Hemodynamic parameters / adequate prep thresholds — <a href="https://doi.org/10.1186/s12957-023-03072-z">doi:10.1186/s12957-023-03072-z</a></li>
+        <li>Nomogram for intra-op instability (C-index 0.773) — <a href="https://doi.org/10.3389/fendo.2021.787786">doi:10.3389/fendo.2021.787786</a></li>
+        <li>PHEO-RISK — post-surgical complications (n=162) — <a href="https://doi.org/10.1007/s12020-021-02843-6">doi:10.1007/s12020-021-02843-6</a></li>
+        <li>Perioperative complication rates — <a href="https://doi.org/10.15605/jafes.039.02.07">doi:10.15605/jafes.039.02.07</a></li>
+        <li>Drugs precipitating catecholamine crisis; fentanyl safe — <a href="https://doi.org/10.1089/jpm.2022.0402">doi:10.1089/jpm.2022.0402</a></li>
+        <li>Contemporary practice survey (combination α+β) — <a href="https://doi.org/10.7759/cureus.89145">doi:10.7759/cureus.89145</a></li>
+        <li>Diagnosis-and-management practical guide — <a href="https://doi.org/10.1007/s11906-014-0442-z">doi:10.1007/s11906-014-0442-z</a></li>
+        <li>Phenoxybenzamine vs doxazosin narrative review — pmid:24829175</li>
+        <li>NCT01379898 — PRESCRIPT (completed, n=134) · NCT03176693 — phenoxybenzamine vs doxazosin (completed, n=39)</li>
+        <li>NCT05702944 — omitting α-blockade in normotensive PPGL (recruiting, completion 2027) · NCT04557072 — selective vs non-selective meta-analysis (n=1344)</li>
+      </ul>
+    </details>
+  </footer>
+</main>
+
+<!-- Inline icon sprite — self-contained, no external requests. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 10V6h-2v8h6v-2z"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 015.29 14L6 6.71A7.96 7.96 0 0112 4zM4.71 6L18 17.29A8 8 0 014.71 6z"/></symbol>
+  <symbol id="i-pill" viewBox="0 0 24 24"><path d="M4.22 11.29l7.07-7.07a5 5 0 017.07 7.07l-7.07 7.07a5 5 0 01-7.07-7.07zm8.49 1.42l3.54-3.54a3 3 0 00-4.24-4.24l-3.54 3.54 4.24 4.24z"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h3.5l2-6 4 12 2.5-7 1.5 1H21v2h-5.5l-2-1.3L11 20 7 8l-1 4H3z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 8.7-8 11-4.6-2.3-8-6-8-11V5l8-3zm-1 13l6-6-1.4-1.4L11 12.2 8.4 9.6 7 11l4 4z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2s6 6.9 6 11a6 6 0 01-12 0c0-4.1 6-11 6-11zm0 16a4 4 0 004-4h-2a2 2 0 01-2 2v2z"/></symbol>
+  <symbol id="i-adrenal" viewBox="0 0 24 24"><path d="M4.5 14.5c0-4.4 3.6-8 8-8 3.6 0 6.5 2.5 6.5 6 0 3-2.3 5-5.3 5-2 0-3.1-1-4.7-1-1.3 0-2 .8-3.2.2-1-.5-1.3-1.4-1.3-2.2z" opacity=".9"/><circle cx="14" cy="12.4" r="2.5" fill="#a4304a"/></symbol>
+</svg>
+</body>
+</html>

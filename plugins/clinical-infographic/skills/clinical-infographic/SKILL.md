@@ -46,7 +46,9 @@ is compact. That trust is the whole risk. So:
   it; do not launder it into a confident tile.
 
 Read [references/source-contract.md](references/source-contract.md) before acquiring content
-and [references/design-system.md](references/design-system.md) before laying anything out.
+and [references/design-system.md](references/design-system.md) before laying anything out. The
+worked retrospective in [references/lessons-learned.md](references/lessons-learned.md) explains
+*why* the visual defaults below lean on diagrams and on rendering the result — read it once.
 
 ## Step 0 — Acquire SOURCED content (the deep integration)
 
@@ -78,10 +80,16 @@ full interview for a render.
 From the source report, pull the renderable skeleton — nothing invented:
 
 - **Title & scope** — the report's decision or disorder, its population/guideline basis.
+- **The signature visual — name it first.** The one picture the report is *shaped* like: a
+  physiologic **journey over time** (a BP / glucose / drug-level curve, a peri-op timeline), a
+  **decision** (a branch), or a **mechanism** (a causal chain). Design this before the columns —
+  it carries the gestalt they then detail. See the diagram grammar in `design-system.md`.
 - **Columns** — 2–4 phases or themes the report is already organized around (e.g. Pre-op /
   Intra-op / Post-op; or Diagnosis / Treatment / Monitoring). If the report has no natural
   split, theme by the reader's workflow, not by prettiness.
-- **Cards** — each column's key directives, each keeping its numbers and qualifiers.
+- **Diagrams over prose cards** — sequential logic with conditions → an escalation ladder; a
+  real choice → a decision-flow; two mirrored states → a paired split. Prefer these to text.
+- **Cards** — the residue a diagram can't carry, each keeping its numbers and qualifiers.
 - **Stat tiles** — the targets, doses, thresholds, and rates worth surfacing as figures.
 - **Safety** — every contraindication / "avoid" / high-risk item, gathered for the banner.
 - **Provenance** — the source's title, date, counts (`PubMed N · trials N`), and its
@@ -93,6 +101,11 @@ Fill [references/infographic-template.html](references/infographic-template.html
 self-contained, print-ready skeleton — following the grammar in
 [references/design-system.md](references/design-system.md). The load-bearing rules:
 
+- **Diagrams first.** The template ships commented, copy-ready scaffolds for a journey-curve,
+  mechanism strip, decision-flow, escalation ladder, and surge/crash split. Fill the ones that
+  fit the report's shape *before* writing prose cards; place the signature visual high on the
+  page. Label every schematic *illustrative — not measured data* and put only sourced numbers
+  on it (a target threshold, a labelled band) — never a value invented to make the picture read.
 - **Self-contained, always.** One HTML file, inline `<style>`, inline SVG icons. **No external
   CSS, JS, fonts, images, or CDN** — it must open offline and print identically on any machine.
 - **Color-coded columns** with a header chip (icon + phase/theme label), a tint, and stacked
@@ -106,9 +119,25 @@ self-contained, print-ready skeleton — following the grammar in
   Sources list (DOIs / NCT numbers), plus one line: *clinical reference aid, not a substitute
   for clinical judgment or local protocol.*
 
+## Step 2.5 — Render & verify before filing
+
+An infographic that was never rendered is a guess. Before it is filed:
+
+1. **Rasterise it** — render the HTML to an image (a headless-browser screenshot) and *look*:
+   nothing clipped or overlapping, columns balanced, the safety banner intact, every diagram
+   and curve label legible, arrows pointing the way the flow reads.
+2. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
+   not silently drop or overlap; the OCR text should contain the load-bearing numbers.
+3. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
+   deliverable** alongside the HTML — offer it for sharing or embedding.
+
+This is a *layout* check, never a content one — it changes how a fact sits on the page, never
+the fact.
+
 ## Step 3 — Where output goes
 
-1. **Write** the finished infographic as a single `.html` file in the working directory.
+1. **Write** the finished infographic as a single `.html` file (plus the PNG render from Step
+   2.5) in the working directory.
 2. **Surface it** — show the file to the user so they can open/print it (render or attach it);
    do not merely name a path.
 3. **File it via vault-keeper.** An HTML infographic is a rendered **asset**: hand it to the
@@ -151,6 +180,10 @@ This skill has failed if:
 - The HTML referenced any external CSS, JS, font, image, or CDN — i.e. it is not self-contained
   and would not open or print offline.
 - Color was the only signal for meaning, or contrast/heading semantics failed accessibility.
+- A schematic/illustrative figure was drawn without an "illustrative — not measured data"
+  label, to a fabricated axis, or carrying a number not in the source.
+- The infographic was filed without ever being rendered and eyeballed for clipped text, broken
+  layout, or a diagram/arrow that reads the wrong way.
 - Content was rendered with no traceable source when comprehensive-review or
   pubmed-research-note should have generated it first.
 - A vault path was resolved or a file written into `vault/` by this skill instead of vault-keeper,

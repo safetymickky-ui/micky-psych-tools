@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.0 — 2026-07-11
+
+**Visual-first.** After the first real run rendered a text-heavy first pass, the defaults now
+lean on diagrams. New **diagram grammar** in the design system — a *signature visual* named
+before the columns, plus a journey/timeline curve, mechanism strip, decision-flow, escalation
+ladder, and paired-opposite split — with matching commented, copy-ready scaffolds in the
+template so a diagram is reached for before a prose card.
+
+**Schematic fidelity.** New rule (in the source contract and design system): any illustrative
+figure must be labelled *illustrative — not measured data*, carry only sourced numbers, and
+never use a fabricated axis. Diagram accessibility spelled out (SVG `role="img"`/`<title>`/
+`<desc>`, logical DOM order, never arrow-glyph-only).
+
+**Render & verify.** New Step 2.5 — rasterise the HTML, eyeball the layout (and optionally OCR
+it) before filing; the PNG render is now a named deliverable.
+
+**Examples.** Added `examples/` with a worked **dense reference infographic** (PPGL perioperative
+management) — HTML + preview — demonstrating every diagram type.
+
+Rationale captured in `references/lessons-learned.md`.
+
 ## 0.1.0 — 2026-07-11
 
 Initial release. Renders a **sourced** clinical evidence report into a professional medical
