@@ -13,7 +13,7 @@
       "id": 2,
       "name": "negative-trigger-decision-question",
       "prompt": "Should I start lisdexamfetamine for this 9-year-old with ADHD who failed methylphenidate?",
-      "expected_output": "Does NOT trigger. This is an Rx decision for a patient in front of the user — routes to pubmed-research-note (its Rx frame). No sweep, no digest, no watchlist read.",
+      "expected_output": "Does NOT trigger. This is a treatment decision for a patient in front of the user — routes to pubmed-research-note. No sweep, no digest, no watchlist read.",
       "files": [],
       "assertions": []
     },

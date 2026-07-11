@@ -63,7 +63,8 @@ evidence base and proceed.
 
 ## 2. ClinicalTrials.gov — the publication-bias check
 
-**Mandatory for the Rx and Service frames.** Its only job: *what evidence exists that is
+**Load-bearing whenever an action is at stake — a treatment choice or a service/protocol
+decision — and high-yield on a contested claim.** Its only job: *what evidence exists that is
 not in the published record, and would it change the verdict?*
 
 Bundled server — call the tools directly with the stable prefix
@@ -88,8 +89,9 @@ analyze_endpoints · search_by_eligibility
 
 1. **Completed, no publication.** Completion date > 2 years ago, no linked results, nothing
    in PubMed. This is the single most common reason a confident positive verdict is wrong.
-2. **Ongoing, large, reading out soon.** Belongs in `## What would change this`, with the
-   expected readout date. For a Service decision this can be the whole answer — *wait*.
+2. **Ongoing, large, reading out soon.** Belongs with the forward-looking evidence — what
+   would change the verdict — with the expected readout date. For a service decision this can
+   be the whole answer — *wait*.
 3. **Terminated / withdrawn, and why.** Slow accrual is noise. Futility or safety is signal.
 
 **Web fallback.** WebFetch `https://clinicaltrials.gov/api/v2/studies?query.term=<term>`.
@@ -100,9 +102,9 @@ Report every NCT you cite in `## Sources` as `NCT NNNNNNNN — status, n, endpoi
 
 ## 3. Open Library — the textbook-vs-evidence gap
 
-**Mandatory for the Teaching frame.** Optional elsewhere. Its job is not to source a
-clinical claim — it is to establish *what the trainee has been taught*, so the report can
-name where the canon and the evidence diverge.
+**Load-bearing when the decision is what to teach** — what a trainee can be told and examined
+on. Optional elsewhere. Its job is not to source a clinical claim — it is to establish *what
+the trainee has been taught*, so the report can name where the canon and the evidence diverge.
 
 **Web-fallback only — no MCP server is wired for this engine.** `.mcp.json` declares just
 `pubmed` and `clinical-trials`; there is no bundled or preferred `open-library` MCP path.

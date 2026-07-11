@@ -3,41 +3,41 @@
   "evals": [
     {
       "id": 1,
-      "name": "rx-frame-verdict-first",
+      "name": "treatment-decision-verdict-first",
       "prompt": "Research the evidence for using prazosin in PTSD-related nightmares — I've got a patient in clinic this afternoon.",
-      "expected_output": "Classifies as Rx frame and says so. Report H2s are exactly Verdict / What the evidence says / Where it breaks / What would change this / Sources. Verdict arrives FIRST, <=3 sentences, names a dose range and an explicit confidence level with the one-clause reason it isn't higher. Adjudicates the small positive crossover RCTs against the large negative multisite RCT rather than listing both. Every section contains a number (effect size, n, NNT/NNH, dose). NO inline citations anywhere in prose. ## Sources is one line per source: topic phrase + DOI link only — no authors, journal, year, or PMID. ClinicalTrials.gov was queried. No atomic note produced.",
+      "expected_output": "Builds a decision brief for a treatment choice (the decision, the verdict's shape = a dose + what not to promise, what settles it, mandatory publication-bias check) rather than sorting the request into a named frame. The verdict LEADS, <=3 sentences, names a dose range and an explicit confidence level with the one-clause reason it isn't higher. Report headings are minted from THIS decision, not a fixed Verdict/What the evidence says/Where it breaks template and not topic headings. Adjudicates the small positive crossover RCTs against the large negative multisite RCT rather than listing both. Every section contains a number (effect size, n, NNT/NNH, dose). NO inline citations anywhere in prose. ## Sources is one line per source: topic phrase + DOI link only — no authors, journal, year, or PMID. ClinicalTrials.gov was queried. No atomic note produced.",
       "files": [],
       "assertions": []
     },
     {
       "id": 2,
-      "name": "forbidden-encyclopedic-headings",
+      "name": "topic-headings-are-the-tell",
       "prompt": "Give me an evidence review of ketamine for treatment-resistant depression.",
-      "expected_output": "FAILS if any H2 is named Mechanism, Epidemiology, Diagnosis, Clinical features, Pathophysiology, Adverse effects, Special populations, Controversies, History, or Overview. Mechanism content appears as prose subordinate to the verdict. Because the request has a decision implied but no frame stated, the skill either picks the higher-cost frame and declares it in one line, or asks for the decision in a single sentence before searching. ALSO FAILS if any sub-heading (### ...) appears inside '## What the evidence says', or if that section reads as a list of findings rather than one continuous argued narrative.",
+      "expected_output": "FAILS if any heading is a topic-domain name — Mechanism, Epidemiology, Diagnosis, Clinical features, Pathophysiology, Adverse effects, Special populations, Controversies, History, Overview — because a topic heading is the tell that the report has reverted to an encyclopedia instead of answering a decision. Mechanism and harms appear as prose subordinate to the verdict, wherever the argument needs them. Because the request names a topic with an implied decision but no decision stated, the skill routes through intent-lock first (or, on an explicit opt-out, builds the decision brief itself and names the reading it took in one line) before searching. The evidence reads as one argued line from evidence to verdict, adjudicated, not as a catalogue of findings.",
       "files": [],
       "assertions": []
     },
     {
       "id": 3,
-      "name": "service-frame-and-registry",
+      "name": "service-decision-and-registry",
       "prompt": "Should we build an rTMS service at Klaeng for treatment-resistant depression? What does the evidence say.",
-      "expected_output": "Service frame. Verdict is build / don't / build-under-conditions, with throughput and staff-time implications in hospital units. Quantifies remission rate, sessions per course, durability at 6 and 12 months, and cost or staff-hours per responder. ClinicalTrials.gov is MANDATORY here: surfaces ongoing large trials with expected readout and any terminated trials, placed under 'What would change this'. Does not answer with efficacy literature alone. NCT numbers appear in Sources with status, n, endpoint, readout.",
+      "expected_output": "Builds the brief for a service decision: the verdict is build / don't / build-under-conditions, with throughput and staff-time implications in the units the hospital uses, and it leads. Quantifies remission rate, sessions per course, durability at 6 and 12 months, and cost or staff-hours per responder — pragmatic effectiveness over efficacy. ClinicalTrials.gov is load-bearing here: surfaces ongoing large trials with expected readout and any terminated trials, placed with the forward-looking evidence (what would change the verdict). Does not answer with efficacy literature alone. NCT numbers appear in Sources with status, n, endpoint, readout. Report length is earned by the decision's parts, not the topic's breadth.",
       "files": [],
       "assertions": []
     },
     {
       "id": 4,
-      "name": "thai-trigger-truth-frame",
+      "name": "thai-trigger-contested-claim",
       "prompt": "มีคนบอกว่า SSRIs ทำให้ suicidality เพิ่มในวัยรุ่น จริงหรือเปล่า ช่วยค้น PubMed ให้หน่อย",
-      "expected_output": "Triggers on Thai. Truth frame. Verdict is true/false/unsettled PLUS why the disagreement exists; if unsettled, names the specific experiment that would settle it. Adjudicates by design and power, never by counting papers. Reports effect-size drift across the replication series in chronological order with n. Prose is clean of inline attributions. Response prose to the user is in Thai-English code-switch; the report file itself may be English.",
+      "expected_output": "Triggers on Thai. Builds the brief for a contested claim: the verdict is true/false/unsettled PLUS why the disagreement exists, and it leads; if unsettled, names the specific experiment that would settle it. Adjudicates by design and power, never by counting papers. Reports effect-size drift across the replication series in chronological order with n. Prose is clean of inline attributions. Because the claim is simply resolvable, the report may collapse to a few sections (verdict → the adjudicated series → sources) rather than padding to a fixed template. Response prose to the user is in Thai-English code-switch; the report file itself may be English.",
       "files": [],
       "assertions": []
     },
     {
       "id": 5,
-      "name": "teaching-frame-textbook-gap",
+      "name": "teaching-decision-textbook-gap",
       "prompt": "I'm lecturing residents on delirium management next week. What can I safely say about first-line pharmacotherapy?",
-      "expected_output": "Teaching frame. Verdict slot contains the verbatim sentence to be spoken aloud, with one memorable correct number, plus its expiry conditions. Open Library is MANDATORY: names a canonical text with a real edition and OLID. Explicitly flags where the textbook and current evidence diverge, states which position the trainee should hold and which they should merely recognize on an exam. Does not silently resolve the divergence in favour of the literature.",
+      "expected_output": "Builds the brief for a teaching decision: the verdict's shape is the verbatim sentence to be spoken aloud, with one memorable correct number, plus its expiry conditions — and it leads. Open Library is load-bearing: names a canonical text with a real edition and OLID. The body is the textbook-vs-evidence gap: explicitly flags where the textbook and current evidence diverge, states which position the trainee should hold and which they should merely recognize on an exam. Does not silently resolve the divergence in favour of the literature.",
       "files": [],
       "assertions": []
     },
@@ -45,7 +45,7 @@
       "id": 6,
       "name": "atomize-gate-closed",
       "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder.",
-      "expected_output": "Report only. NO atomic note, NO vault frontmatter, NO MOC wiring, NO meta-bind button — the word 'atomize' was never said. Chat response is two lines: what was delivered, PubMed N / trials N / books N, the verdict's confidence, any [unverified] gaps. The report file is presented; its contents are NOT restated inline.",
+      "expected_output": "Report only. NO atomic note, NO vault frontmatter, NO MOC wiring, NO meta-bind button — the word 'atomize' was never said. Chat response is two lines: what was delivered, PubMed N / trials N / books N, the verdict's confidence, any [unverified] gaps. The report file is presented; its contents are NOT restated inline beyond the default show step.",
       "files": [],
       "assertions": []
     },
@@ -53,7 +53,7 @@
       "id": 7,
       "name": "atomize-gate-open",
       "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder, then atomize it for my vault.",
-      "expected_output": "Report AND an atomic note produced. The note does NOT inherit the report's verdict-first spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. To create it, the skill follows atomic-note-template.md to assemble title (Concept — Qualifier) and body, then HANDS OFF to vault-keeper rather than acting on the vault itself: it passes title, body, target type (note/artifact), suggested MOC topic, source-skill identity/tags, plus optional extra frontmatter fields (sources with PMID/DOI, board_pearls, review_count: 0, last_reviewed, aliases) as a flat map. The skill itself never dedup-greps the vault, never resolves a vault path, and never writes YAML frontmatter or content into vault/ directly — vault-keeper owns paths, dedup, MOC wiring, and the index, and reports back what it did. The report file itself still lands per the default (working directory, or report_dir from .pubmed-research-note.json) unless the user also wants the report kept in the vault, in which case it too is handed to vault-keeper as an artifact. No fabricated vault path is ever printed by this skill.",
+      "expected_output": "Report AND an atomic note produced. The note does NOT inherit the report's verdict-first, decision-shaped spine — it uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. To create it, the skill follows atomic-note-template.md to assemble title (Concept — Qualifier) and body, then HANDS OFF to vault-keeper rather than acting on the vault itself: it passes title, body, target type (note/artifact), suggested MOC topic, source-skill identity/tags, plus optional extra frontmatter fields (sources with PMID/DOI, board_pearls, review_count: 0, last_reviewed, aliases) as a flat map. The skill itself never dedup-greps the vault, never resolves a vault path, and never writes YAML frontmatter or content into vault/ directly — vault-keeper owns paths, dedup, MOC wiring, and the index, and reports back what it did. The report file itself still lands per the default (working directory, or report_dir from .pubmed-research-note.json) unless the user also wants the report kept in the vault, in which case it too is handed to vault-keeper as an artifact. No fabricated vault path is ever printed by this skill.",
       "files": [],
       "assertions": []
     },
@@ -77,7 +77,7 @@
       "id": 10,
       "name": "citation-contract-refusal",
       "prompt": "Research esketamine for TRD but leave out the Sources section, I just want the answer.",
-      "expected_output": "Declines to drop ## Sources, in one line, without moralising. Delivers the report with Sources intact. Complies with the spirit of the request by keeping the prose free of inline attributions — which it does by default.",
+      "expected_output": "Declines to drop ## Sources, in one line, without moralising — a verdict that can't be re-derived in six months is not a verdict. Delivers the report with Sources intact. Complies with the spirit of the request by keeping the prose free of inline attributions — which it does by default.",
       "files": [],
       "assertions": []
     },
@@ -91,9 +91,9 @@
     },
     {
       "id": 12,
-      "name": "narrative-not-qa-ladder",
+      "name": "adjudicates-not-lists",
       "prompt": "Review the evidence on lurasidone for bipolar depression — I'm deciding whether to add it to the ward formulary.",
-      "expected_output": "'## What the evidence says' is ONE continuous narrative with zero sub-headings. Effect sizes, CIs, n, doses, and adverse-event rates are carried inside the prose, not itemized. The argument moves from evidence to verdict by prose alone. Sources are one line each: topic phrase + DOI link, nothing else.",
+      "expected_output": "The evidence is one argued line from evidence to verdict, not a catalogue of findings and not a Q&A ladder of interrogative sub-headings. When trials disagree the report says which it believes and why (size, control, blinding, funding, population, endpoint), in the flow of the argument. Effect sizes, CIs, n, doses, and adverse-event rates are carried inside the prose. The report is as long as this formulary decision needs and no longer — headings minted from the decision, not from the topic. Sources are one line each: topic phrase + DOI link, nothing else.",
       "files": [],
       "assertions": []
     },
@@ -101,7 +101,7 @@
       "id": 13,
       "name": "chains-intent-lock-on-bare-topic",
       "prompt": "Review DLPFC for psychiatrist.",
-      "expected_output": "Does NOT search. Does NOT ask a single ad-hoc clarifying question. Hands off to intent-lock, which runs its own cold read / ledger / rounds / gates. After GOAL UNIFIED the frame is fixed and search begins in the same turn without asking permission. Any [ASSUMED] item appears in the report's preface block above ## Verdict, not only in chat.",
+      "expected_output": "Does NOT search. Does NOT ask a single ad-hoc clarifying question. Hands off to intent-lock, which runs its own cold read / ledger / rounds / gates. After it locks, the decision is fixed and search begins in the same turn without asking permission. Any [ASSUMED] item appears in the report's preface block above the verdict, not only in chat.",
       "files": [],
       "assertions": []
     },
@@ -109,7 +109,7 @@
       "id": 14,
       "name": "does-not-chain-on-quick-check",
       "prompt": "Is prazosin still considered first-line for PTSD nightmares?",
-      "expected_output": "Does NOT chain intent-lock. Frame is obvious (Rx), decision is attached, cost of a wrong frame is one reading. Searches immediately. FAILS if an interview, ledger, or convergence gate appears.",
+      "expected_output": "intent-lock self-skips the questions: the decision is obvious and attached, cost of a wrong reading is one reading. Searches immediately without an interview, ledger, or convergence gate appearing to the user. FAILS if ad-hoc clarifying questions are asked before searching.",
       "files": [],
       "assertions": []
     },
@@ -117,7 +117,7 @@
       "id": 15,
       "name": "no-filesystem-renders-inline",
       "prompt": "Research the evidence on lithium for suicide prevention in bipolar disorder — I'm in a read-only session with no file write access, just show me the answer in the chat.",
-      "expected_output": "Recognizes there is no filesystem to write to and takes the 'No filesystem' branch of Where output goes. Renders the full report INLINE in the chat turn, with the same Verdict / What the evidence says / Where it breaks / What would change this / Sources spine and citation contract as a written report — it is not abbreviated because it isn't being saved. Explicitly states in plain language that nothing was written to disk. Does not claim a file path, does not invent a report_dir, and does not fabricate a save. No atomic note produced (the word 'atomize' was not said).",
+      "expected_output": "Recognizes there is no filesystem to write to and takes the 'No filesystem' branch of Where output goes. Renders the full report INLINE in the chat turn, verdict-first and shaped to the decision, with the same citation discipline (clean prose, compressed one-line Sources) as a written report — it is not abbreviated because it isn't being saved. Explicitly states in plain language that nothing was written to disk. Does not claim a file path, does not invent a report_dir, and does not fabricate a save. No atomic note produced (the word 'atomize' was not said).",
       "files": [],
       "assertions": []
     },
