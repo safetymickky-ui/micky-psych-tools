@@ -73,6 +73,20 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-12** — Filed **Panic disorder — pharmacological management** decision report to the vault
+  via the pubmed-research-note → vault-keeper flow (branch `claude/panic-disorder-pharmacology-mw7hqv`).
+  Intent-lock gate ran first (active prior #1 fired): a 2-question round locked the *whole
+  pharmacological algorithm* for an uncomplicated adult outpatient (not first-line-only, not a
+  whole-disorder review). The verdict adjudicates a real tension — the Cochrane 2023 NMA (70 RCTs)
+  ranks benzodiazepines/TCAs above SSRIs on *acute* response and dropout, but the BMJ 2022 NMA
+  (87 RCTs, 12,800) remission-vs-adverse-event cluster puts **SSRIs (sertraline/escitalopram)** as
+  the best tradeoff; report believes the tradeoff over the raw ranking (BDZ evidence low-quality,
+  "acceptability" = acute-trial dropout that misses dependence/mortality). Rests on 15 PubMed sources
+  + 1 CT.gov trial: benzo-as-bridge-only, continue 6–12 months then **slow taper + psychological
+  support** (Batelaan 2017: relapse OR 3.11, 36.4% vs 16.4%; Lancet Psychiatry 2026 deprescribing NMA:
+  taper-alone no better than abrupt), switch-not-augment on failure (augmentation meta RR 1.08 NS).
+  Field is mature/quiet — only ongoing trial is NCT05737511 (hydroxyzine vs escitalopram, n≈80, 2026).
+  New **Panic Disorder MOC** (fifth MOC) wired into `index.md`. `validate.py` clean.
 - **2026-07-11** — **clinical-infographic 0.2.0 — visual-first upgrade** (same PPGL branch),
   driven by feedback that the first render was text-heavy. Design system gains a **diagram
   grammar** (name a *signature visual* before the columns; journey/timeline curve, mechanism
