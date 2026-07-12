@@ -26,7 +26,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.5.0_
+### pubmed-research-note — research  _v1.5.1_
 
 Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.
 
@@ -55,7 +55,7 @@ Keywords: plugin, scaffold, meta, marketplace, generator
 - **`/refine-plugin`** (command) — Audit and refine an existing plugin or skill in the marketplace
 - **`/route`** (command) — Recommend which marketplace skill/plugin fits a request, from ROUTING.md
 
-### vault-keeper — productivity  _v0.2.0_
+### vault-keeper — productivity  _v0.3.0_
 
 Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Four jobs: init, save, index, query.
 
@@ -81,7 +81,7 @@ Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 - **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — the full arc: epidemiology, pathophysiology, clinical features, diagnosis, comorbidity, treatme…
 - **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
 
-### clinical-infographic — research  _v0.2.0_
+### clinical-infographic — research  _v0.2.1_
 
 Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/"medications to avoid" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.
 

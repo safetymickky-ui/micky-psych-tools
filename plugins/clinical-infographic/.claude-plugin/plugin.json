@@ -1,6 +1,6 @@
 {
   "name": "clinical-infographic",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Renders a sourced clinical evidence report or review into a professional, print-ready medical summary infographic (self-contained HTML) for clinical reference. Never generates clinical facts itself \u2014 deep-integrates with comprehensive-review and pubmed-research-note.",
   "author": {
     "name": "Thanawat Suharit (Micky)"

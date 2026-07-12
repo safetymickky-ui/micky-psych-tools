@@ -141,11 +141,12 @@ the fact.
 2. **Surface it** — show the file to the user so they can open/print it (render or attach it);
    do not merely name a path.
 3. **File it via vault-keeper.** An HTML infographic is a rendered **asset**: hand it to the
-   **vault-keeper** skill to place in `vault/assets/` and to create/extend a short companion
-   note that links it and wires it into the **source report's MOC** (pass the asset, a title
-   like `<Topic> — Infographic`, the companion-note body, and the suggested MOC topic).
-   Vault-keeper owns every path, dedup, and MOC wiring — never resolve a vault path or write
-   into `vault/` from this skill. Skip only on an explicit "don't vault this".
+   **vault-keeper** skill to place in `vault/assets/` and wire into the **source report's
+   MOC** under its `## Assets` section, linked from the source artifact when one exists (pass
+   the asset — HTML plus PNG — a title like `<Topic> — Infographic`, and the suggested MOC
+   topic; a short companion-note body is optional, only when it adds something the MOC line
+   cannot carry). Vault-keeper owns every path, dedup, and MOC wiring — never resolve a vault
+   path or write into `vault/` from this skill. Skip only on an explicit "don't vault this".
 
 **No filesystem:** render/return the HTML inline and say explicitly that nothing was written
 or filed. Never claim a save you did not perform, and never invent a vault path.
@@ -157,7 +158,8 @@ or filed. Never claim a save you did not perform, and never invent a vault path.
 - **pubmed-research-note** — generates the sourced decision/protocol content when the
   infographic is about one call. It also owns any live verdict — the infographic shows the
   verdict, it never issues one.
-- **vault-keeper** — every vault write (asset + companion note + MOC wiring), per Step 3.
+- **vault-keeper** — every vault write (asset + MOC `## Assets` wiring; companion note
+  optional), per Step 3.
 - **intent-lock** — not re-run here; it gates the upstream content plugins when they generate.
 
 ## Close

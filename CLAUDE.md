@@ -82,8 +82,9 @@ vault/                             # shared knowledge vault — managed by vault
 - **psych-paper-digest** — watchlist-driven literature surveillance; windowed PubMed +
   ClinicalTrials.gov sweeps triaged into Act / Read / Suppressed, rendered as a read-once
   digest. Triage only, never adjudication: Act items hand off to pubmed-research-note; vault
-  saves delegate to vault-keeper. One skill + `/digest [domain]` command; config + `last_swept`
-  state in `.psych-paper-digest.json`.
+  saves delegate to vault-keeper on explicit request only (unlike the other writers, which
+  file by default). One skill + `/digest [domain]` command; config + `last_swept` state in
+  `.psych-paper-digest.json`.
 - **comprehensive-review** — whole-disorder academic literature reviews at textbook-chapter
   breadth: a ten-section arc from definition to controversies, never collapsed into a
   treatment-only report. Intent-lock is the mandatory Step 0 gate; searches PubMed +

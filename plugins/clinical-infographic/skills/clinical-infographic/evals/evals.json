@@ -1,0 +1,37 @@
+{
+  "skill_name": "clinical-infographic",
+  "evals": [
+    {
+      "id": 1,
+      "name": "renders-existing-vault-report-and-files-asset",
+      "prompt": "Make an infographic of the PPGL perioperative management report.",
+      "expected_output": "Fires on 'make an infographic'. Step 0 resolves the source by asking vault-keeper to query for the existing PPGL artifact — it does NOT search PubMed or author any clinical fact. Renders a single self-contained HTML file (inline CSS/SVG, no external resources) plus a PNG, with the mandatory critical-safety banner, then hands both to vault-keeper as an asset with a '<Topic> — Infographic' title and the source report's MOC topic so it lands in vault/assets/ and the MOC's ## Assets section. FAILS if it invents a clinical fact, resolves a vault path itself, or skips the safety banner.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "generates-sourced-content-first-when-none-exists",
+      "prompt": "Make me a clinical reference infographic on catatonia management. (No report on catatonia exists in this session or in the vault.)",
+      "expected_output": "Step 0 finds no sourced report in the session and none via vault-keeper query, so it runs the upstream content plugin FIRST — comprehensive-review for a whole-topic reference (or pubmed-research-note if the request is a single decision) — letting that plugin's intent-lock gate run, and only then renders the infographic from the sourced output. FAILS if it authors clinical facts itself, searches literature directly from this skill, or renders from unsourced memory.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "fidelity-safety-banner-and-unverified-gaps",
+      "prompt": "Turn this review into an infographic. (The source report lists two absolute contraindications, doses with units and titration qualifiers, and one figure marked [unverified].)",
+      "expected_output": "The rendered infographic carries the mandatory contraindications / 'medications to avoid' safety banner with both contraindications; every number keeps its units and qualifiers exactly as sourced; the [unverified] figure is either omitted or shown flagged — never rendered as an established fact. The footer carries the source title, date, counts, and Sources mapping. FAILS if a qualifier is dropped for layout reasons, the banner is omitted, or [unverified] content renders as fact.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "does-not-fire-outside-its-lane",
+      "prompt": "Chart our clinic's quarterly patient-volume numbers as a nice visual. Also, could you write the actual review of adjustment disorder for me?",
+      "expected_output": "Neither request fires this skill. Non-clinical data charts belong to dataviz-style charting, not a clinical-evidence infographic; producing the underlying review belongs to comprehensive-review (or pubmed-research-note for a single decision). The skill names the right owners and hands off instead of rendering. FAILS if it builds a business chart as a 'clinical infographic' or authors the review content itself.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

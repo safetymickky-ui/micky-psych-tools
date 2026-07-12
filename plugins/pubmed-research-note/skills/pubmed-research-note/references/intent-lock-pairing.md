@@ -34,6 +34,12 @@ decides whether any questions actually get asked.** Do not infer an opt-out from
 locks the decision, scope the evidence work by **reuse count × cost of a wrong reading**,
 exactly as `intent-lock` says.
 
+One boundary the interview polices explicitly: a **whole-disorder / "comprehensive review of
+X"** request belongs to the `comprehensive-review` plugin, not this skill. Chaining intent-lock
+on a bare "review X" is what disambiguates it — a decision-shaped reading stays here; a
+whole-disorder reading hands off to `comprehensive-review` rather than being collapsed into a
+narrow decision report.
+
 ## What intent-lock must have fixed before search begins
 
 At `GOAL UNIFIED`, these are closed. Search cannot begin until all four exist — they are the

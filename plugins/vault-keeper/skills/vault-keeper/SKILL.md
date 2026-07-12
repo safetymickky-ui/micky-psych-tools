@@ -45,7 +45,9 @@ plugin cites. In brief:
 
 Atomic notes go in `notes/`; long-form or single-file outputs go in `artifacts/`. When unsure,
 it is a note if it states one idea another note could link to, an artifact if it is a document
-read top-to-bottom. Binaries always land in `assets/` and are referenced from a note.
+read top-to-bottom. Binaries (rendered HTML, PNG, decks) always land in `assets/`, referenced
+from their topic MOC's `## Assets` section — and from the source artifact when one exists; a
+companion note is optional, written only when the producer supplies one.
 
 ## Frontmatter — every markdown file carries it
 
@@ -83,7 +85,10 @@ Only when the vault is not populated. **Populated means `vault/index.md` exists*
 4. Write frontmatter + body. Merge producer-supplied extra frontmatter fields (e.g. `sources`,
    `board_pearls`, `review_count`) verbatim after the canonical fields; extras never override
    the canonical keys. Add `[[wikilinks]]` to the obvious neighbours already in the vault.
-5. Wire it into its topic MOC (create the MOC if the topic is new) and, if the MOC is new, add
+5. Wire it into its topic MOC under the section its type dictates — artifact under
+   `## Artifacts`, asset under `## Assets`, note under `## Notes` (see
+   [references/vault-layout.md](references/vault-layout.md)). Create the MOC if the topic is
+   new and, if the MOC is new, add
    the MOC to `index.md`. When a note belongs to more than one topic, set `primary-moc:` in its
    frontmatter to the chosen primary — that MOC gets the index-checked link; other MOCs may
    link too. A saved file unreachable from `index.md` is a lost file.
@@ -94,7 +99,8 @@ Rebuild or repair `index.md` and the `MOCs/`. Regeneration is deterministic (rul
 title; multi-topic notes' `primary-moc:` frontmatter decides their one MOC and the index
 checks only the primary. Walk the vault, ensure every note is reachable from exactly one MOC
 and every MOC from `index.md`, fix stale/broken `[[links]]`, and report orphans (files no MOC
-points at) — never move or delete them.
+points at) — never move or delete them. Within each MOC, entries sit under the canonical
+type-keyed sections (`## Artifacts` / `## Assets` / `## Notes`) per the layout reference.
 
 ### query — find before you duplicate
 `Glob` `<resolved vault root>/**/*.md`, `Grep` titles/tags/body for the topic. Return what exists with paths.
