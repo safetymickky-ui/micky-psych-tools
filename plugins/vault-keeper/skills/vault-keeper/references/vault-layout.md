@@ -20,6 +20,12 @@ Naming: MOC files are `<Topic> MOC.md` (not `MOC — <Topic>`). Notes use
 Collision rule: if the derived filename exists and is NOT the same topic being
 extended, disambiguate with ` -2`, ` -3`… — never overwrite.
 
+MOC internal sections: inside `<Topic> MOC.md`, entries live under type-keyed headings —
+`## Artifacts`, `## Assets`, `## Notes`, in that order — each mapping 1:1 to the vault tree
+so index regeneration stays a pure rebuild. Include a section when it has content; an empty
+section may carry a single placeholder line. Artifacts and notes are linked as
+`[[wikilinks]]`; assets are referenced by vault path (`assets/<file>`).
+
 MOC membership: every note reachable from exactly one MOC. Multi-topic notes declare
 `primary-moc:` in frontmatter; that MOC wins, other MOCs may link but index checks
 only the primary. Index regeneration is a pure rebuild, alphabetical by title;

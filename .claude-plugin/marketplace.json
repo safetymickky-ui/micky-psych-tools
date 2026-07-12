@@ -48,7 +48,7 @@
     {
       "name": "vault-keeper",
       "source": "./plugins/vault-keeper",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Four jobs: init, save, index, query.",
       "category": "productivity",
       "keywords": [
