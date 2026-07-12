@@ -17,4 +17,5 @@ a MOC. Managed by the `vault-keeper` skill.
 - [[Adjustment Disorder MOC]]
 - [[Depression — Treatment MOC]]
 - [[Intermittent Explosive Disorder MOC]]
+- [[Panic Disorder MOC]]
 - [[Pheochromocytoma & Paraganglioma MOC]]
