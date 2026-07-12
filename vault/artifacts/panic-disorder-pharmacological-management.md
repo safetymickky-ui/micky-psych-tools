@@ -10,7 +10,7 @@ review_count: 0
 last_reviewed: 2026-07-12
 sources: [pubmed, clinicaltrials.gov]
 aliases: [panic disorder drug treatment, panic disorder medication algorithm, PD pharmacotherapy]
-links: [Panic Disorder MOC]
+links: [Panic Disorder MOC, panic-disorder-novel-treatments]
 ---
 
 # Pharmacological Management of Panic Disorder in an Adult Outpatient — a Stepwise Algorithm

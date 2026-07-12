@@ -73,6 +73,17 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-12** — Filed a second panic report, **Panic disorder — novel & emerging treatments (try-now vs
+  watch)**, to the vault (same branch), extending the **Panic Disorder MOC** to two artifacts. Follow-up
+  to the pharmacology report; intent-lock picker hit a transport error so proceeded on a declared broad
+  reading (all modalities; actionable-first then horizon). Verdict: **watch, don't prescribe** — for panic
+  *specifically*, nothing novel is prescribable now except better-delivered CBT (digital/VR: VRET g≈0.90,
+  guided iCBT ≈ face-to-face). The novelty gradient is **inverted from the hype**: psychedelics
+  (psilocybin g −1.49; MM120/LSD −5 to −6 HAM-A points) + ketamine are aimed at GAD/depression/PTSD, not
+  panic; rTMS **null in panic** (SMD 1.19, P=.054) though positive in GAD; D-cycloserine near-null (Cochrane
+  RR 1.10) and cannabidiol negative in refractory panic. CT.gov: ~35 active panic trials, almost all
+  psychotherapy-delivery — no ongoing panic-specific psychedelic/ketamine trial. 12 PubMed + 6 CT.gov
+  trials. `validate.py` clean.
 - **2026-07-12** — Filed **Panic disorder — pharmacological management** decision report to the vault
   via the pubmed-research-note → vault-keeper flow (branch `claude/panic-disorder-pharmacology-mw7hqv`).
   Intent-lock gate ran first (active prior #1 fired): a 2-question round locked the *whole
