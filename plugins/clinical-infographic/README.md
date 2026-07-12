@@ -54,9 +54,10 @@ the fillable skeleton is `references/infographic-template.html`.
 
 ## Where it lands
 
-The HTML is a rendered **asset**: `vault-keeper` files it into `vault/assets/` and wires a short
-companion note into the **source report's MOC**, so the infographic hangs off the same map as
-its evidence. This plugin never resolves a vault path itself.
+The HTML is a rendered **asset**: `vault-keeper` files it into `vault/assets/` and wires it into
+the **source report's MOC** under its `## Assets` section (a short companion note is optional),
+so the infographic hangs off the same map as its evidence. This plugin never resolves a vault
+path itself.
 
 ## Use it
 
