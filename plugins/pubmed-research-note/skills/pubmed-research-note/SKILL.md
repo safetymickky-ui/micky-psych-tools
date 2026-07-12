@@ -2,17 +2,16 @@
 name: pubmed-research-note
 description: >-
   Answers a clinical decision from primary literature and delivers a verdict-first, quantified
-  report shaped to the decision, not the topic. The entry point for decision-driven biomedical
-  research. Use when asked to "research", "what does the literature say about", "search PubMed
-  for", "is X true", "should I use X for Y" — or whether a drug, device, or intervention is
-  worth using, building a service around, or teaching. Thai triggers: "หางานวิจัย",
-  "ทบทวนหลักฐาน", "ค้น PubMed", "จริงหรือเปล่า". Orchestrates PubMed, ClinicalTrials.gov
-  (unpublished), Open Library (textbook gap), Wikipedia (terms). ALWAYS runs intent-lock FIRST
-  to lock the decision and scope before searching — skip only on explicit opt-out ("just
-  search"). By default writes the report, shows it inline, and files it to the vault via
-  vault-keeper; atomic notes ONLY on "atomize" / "ทำโน้ต". NOT for: daily multi-domain sweeps
-  (psych-paper-digest); non-biomedical research (deep-research); MCQ/CRQ/Essay generation;
-  grading; one-line lookups.
+  report shaped to the decision, not the topic. Use when asked to "research", "what does the
+  literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether
+  a drug, device, or intervention is worth using, building a service around, or teaching. Thai
+  triggers: "หางานวิจัย", "ทบทวนหลักฐาน", "ค้น PubMed", "จริงหรือเปล่า". Orchestrates PubMed,
+  ClinicalTrials.gov, Open Library, Wikipedia. ALWAYS runs intent-lock FIRST to lock the
+  decision and scope before searching — skip only on explicit opt-out ("just search"). By
+  default writes the report, shows it inline, and files it to the vault via vault-keeper;
+  atomic notes ONLY on "atomize" / "ทำโน้ต". NOT for: whole-disorder / "comprehensive review
+  of X" reviews (comprehensive-review); daily multi-domain sweeps (psych-paper-digest);
+  non-biomedical research (deep-research); MCQ/CRQ/Essay generation; grading; one-line lookups.
 ---
 
 # PubMed → Decision Instrument
@@ -135,8 +134,9 @@ unless the user opts out of one.
    right here — do not merely announce the file path. The file and the inline copy are the
    same content.
 3. **File (default):** hand the finished report to the vault-keeper skill to save as an
-   **artifact** — it owns paths, dedup, MOC wiring, and the index. Pass: title
-   (`Concept — Qualifier`), body, target type `artifact`, suggested MOC topic, source-skill
+   **artifact** — it owns paths, dedup, MOC wiring, and the index. Pass: a human title
+   (vault-keeper derives the kebab-case artifact filename from it), body, target type
+   `artifact`, suggested MOC topic, source-skill
    identity/tags as data, plus optional extra frontmatter fields (sources, board_pearls,
    review_count, last_reviewed, aliases) as a flat map. Never emit frontmatter, choose paths,
    or write into `vault/` directly from this skill. Skip this step only if the user says not
