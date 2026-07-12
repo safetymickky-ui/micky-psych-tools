@@ -12,13 +12,10 @@ links: [Panic disorder — pharmacological management (whole algorithm), Panic d
 Map of content for panic disorder (± agoraphobia). Decision reports, reviews, and notes on
 panic disorder — diagnosis, pharmacological and psychological management — hang here.
 
-## Decision reports
+## Artifacts
 
 - [[panic-disorder-pharmacological-management]] — Rx algorithm: start an SSRI (sertraline/escitalopram), benzodiazepines as a short bridge only, continue 6–12 months then taper slowly with psychological support, switch (not augment) when first-line fails. Confidence moderate-high.
 - [[panic-disorder-novel-treatments]] — Emerging-treatment triage: nothing novel is prescribable for panic *now* except better-delivered CBT (digital/VR); psychedelics/ketamine/rTMS are aimed at GAD/depression, not panic (rTMS null in panic); watch-don't-prescribe. Confidence moderate-high.
-
-## Reviews
-
 - [[cbt-panic-disorder-comprehensive-review]] — Comprehensive review of CBT for panic: cognitive model (catastrophic misinterpretation), component analysis (interoceptive exposure + face-to-face are the active ingredients; relaxation/VR worse; best-vs-worst remission OR 7.69), efficacy g 0.5–1.0, predictors (agoraphobic avoidance, Cluster C), and the weak ≥12-month durability evidence in panic.
 
 ## Notes
