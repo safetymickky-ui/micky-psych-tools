@@ -82,6 +82,8 @@ list cannot support the tiles on the page, the tiles are wrong, not the list.
 - **To comprehensive-review / pubmed-research-note (generate):** the topic or decision, plus a
   note that the output will be rendered as a one-page clinical reference (so emphasis and
   brevity are welcome). Let their intent-lock gate run — do not pre-empt it.
-- **To vault-keeper (file):** the finished `.html` as an **asset**, a title `<Topic> —
-  Infographic`, a short companion-note body (what it summarises, link to the source artifact),
-  and the **source report's MOC topic** so the infographic hangs off the same map as its source.
+- **To vault-keeper (file):** the finished `.html` (plus PNG) as an **asset**, a title
+  `<Topic> — Infographic`, and the **source report's MOC topic** so the infographic hangs off
+  the same map as its source — vault-keeper wires it into that MOC's `## Assets` section and
+  links it from the source artifact when one exists. A short companion-note body is optional;
+  supply one only when it adds something the MOC line cannot carry.
