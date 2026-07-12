@@ -10,7 +10,7 @@ review_count: 0
 last_reviewed: 2026-07-12
 sources: [pubmed, clinicaltrials.gov]
 aliases: [panic disorder emerging treatments, novel panic therapies, panic disorder pipeline]
-links: [Panic Disorder MOC, panic-disorder-pharmacological-management]
+links: [Panic Disorder MOC, panic-disorder-pharmacological-management, cbt-panic-disorder-comprehensive-review]
 ---
 
 # Novel & Emerging Treatments for Panic Disorder — What's Worth Trying Now vs What to Watch

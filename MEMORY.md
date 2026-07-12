@@ -73,6 +73,17 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-12** — First run of **comprehensive-review** end-to-end: filed **CBT for Panic Disorder —
+  Comprehensive Review** (same branch), the third artifact under the **Panic Disorder MOC** (now split
+  into Decision reports + Reviews). Ledger prior #1 fired on "review" — intent-lock round confirmed the
+  user wanted the **comprehensive academic review**, not another decision report (emphasis: components &
+  mechanism + who-responds/relapse). Adapted the disorder-arc to a treatment-modality arc (model →
+  components → efficacy → formats → mechanism → predictors → durability → limitations → controversies).
+  Key numbers: Pompoli component NMA (interoceptive exposure + face-to-face = active ingredients;
+  relaxation/VR *lower* efficacy; best-vs-worst remission OR 7.69), efficacy g 0.5–1.0 (JAMA 2025 unified
+  meta, 375 trials), predictors (agoraphobic avoidance most consistent, Cluster C; 5-HTTLPR null), and the
+  honest weak point — CBT panic gains hold to ~12 months but are **not significant beyond 12 months**
+  (van Dis). 23 PubMed + 5 CT.gov trials. `validate.py` clean.
 - **2026-07-12** — Filed a second panic report, **Panic disorder — novel & emerging treatments (try-now vs
   watch)**, to the vault (same branch), extending the **Panic Disorder MOC** to two artifacts. Follow-up
   to the pharmacology report; intent-lock picker hit a transport error so proceeded on a declared broad
