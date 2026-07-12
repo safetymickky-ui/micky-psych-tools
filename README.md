@@ -24,8 +24,10 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
-The examples above install `pubmed-research-note`; swap in `intent-lock`, `plugin-creator`, or
-`vault-keeper` (or any future plugin) by name — the commands are identical for all of them.
+The examples above install `pubmed-research-note`; swap in any of the other six —
+`intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
+or `clinical-infographic` (or any future plugin) by name — the commands are identical for all
+of them.
 
 ## Update it
 
@@ -57,14 +59,23 @@ characters), version parity between a plugin's manifest and its marketplace entr
 
 ## Plugins
 
-Four plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
+Seven plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
 
 - **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
-  quantified, trial-registry-checked evidence reports. Chains to `intent-lock` when a request
-  carries no decision, and delegates vault saving to `vault-keeper`.
+  quantified, trial-registry-checked evidence reports. Runs `intent-lock` first on every
+  request, and delegates vault saving to `vault-keeper`.
 - **intent-lock** — pre-build alignment gate. Interrogates a request until it has exactly one
   reading, then builds it.
 - **plugin-creator** — meta-plugin for this marketplace. Scaffolds new plugins (`/new-plugin`)
   and refines existing ones (`/refine-plugin`), and regenerates the router (`/route`).
 - **vault-keeper** — shared knowledge-vault manager for the repo-root `vault/`. Other plugins
   delegate their vault writes to it instead of writing vault files themselves.
+- **psych-paper-digest** — watchlist-driven literature surveillance: windowed PubMed +
+  ClinicalTrials.gov sweeps triaged into a read-once digest. Act items hand off to
+  `pubmed-research-note`; vault saves are opt-in, via `vault-keeper`.
+- **comprehensive-review** — whole-disorder academic reviews at textbook-chapter breadth,
+  gated by `intent-lock` and filed to the vault via `vault-keeper`; live decisions route to
+  `pubmed-research-note`.
+- **clinical-infographic** — renders a sourced report or review into a print-ready medical
+  summary infographic (one self-contained HTML file), filed as a vault asset via
+  `vault-keeper`. Never generates clinical facts itself.
