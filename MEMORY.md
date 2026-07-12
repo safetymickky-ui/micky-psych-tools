@@ -225,6 +225,15 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   catalog 1.3.0. `validate.py` now also checks per-skill evals + command/agent frontmatter
   descriptions. Merged to `master` (`57e470e`).
 
+## Machine toolchain — audited 2026-07-12
+
+All plugin/skill dependencies on this machine are satisfied; don't re-audit or suggest installing these.
+
+- **CLIs:** python 3.14, node 24, npm, pnpm, git, gh, pandoc, mermaid-cli (`mmdc`), rg, curl, jq 1.8.2, rtk, firebase-tools, vercel, firecrawl-cli, poppler 26.02.0 (`pdftoppm`, `pdftotext`, `pdfinfo`, …).
+- **Poppler location:** `C:\Users\User\Desktop\My skill\tools\poppler-26.02.0\Library\bin`, on user PATH.
+- **Python packages:** yfinance, pandas, numpy, matplotlib 3.11, openpyxl, python-docx, python-pptx, pypdf, PyMuPDF, Pillow, weasyprint, reportlab, svglib, pdfplumber, curl_cffi, requests, bs4, lxml, httpx, yaml.
+- **Deliberately skipped** (install only when a use case appears): LibreOffice, ffmpeg, ImageMagick, playwright, cairosvg, edge-tts, uv, feedparser.
+
 ## Open threads
 
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
