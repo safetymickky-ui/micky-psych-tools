@@ -11,18 +11,18 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-11
+## Current versions — 2026-07-12
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.6.0   |
-| pubmed-research-note   | 1.5.0   |
+| marketplace catalog   | 1.7.0   |
+| pubmed-research-note   | 1.5.1   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
-| vault-keeper          | 0.2.0   |
+| vault-keeper          | 0.3.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.1.0   |
-| clinical-infographic  | 0.2.0   |
+| clinical-infographic  | 0.2.1   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -73,6 +73,19 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-12** — **Interconnect + conflict-resolution wave** (7-plugin review; released pubmed
+  1.5.1, vault-keeper 0.3.0, clinical-infographic 0.2.1; catalog → 1.7.0). Fixed the asymmetric
+  "review X" routing: pubmed-research-note's NOT-for now carves out whole-disorder reviews to
+  comprehensive-review (the IED-collapse gap, closed at the description layer). Unified the
+  asset handoff contract: vault-keeper gained an `asset` target type (binary → `assets/`, wired
+  into the topic MOC's `## Assets` section; companion note optional) and clinical-infographic
+  now hands over exactly that payload. Codified the canonical MOC section vocabulary
+  (`## Artifacts / ## Assets / ## Notes`) in vault-layout.md and normalized the Panic Disorder
+  MOC to it. Also: artifact titles clarified as human titles (kebab filename is vault-keeper's),
+  clinical-infographic got its first evals, the stray root-level adjunctive-treatment duplicate
+  was removed, README refreshed to 7 plugins, CLAUDE.md notes digest vault saves are opt-in.
+  Left by design: triple MCP wiring (self-contained plugins), stale `frame:` frontmatter in old
+  artifacts (historical records), no validate.py cross-ref linter (false-positive risk).
 - **2026-07-12** — First run of **comprehensive-review** end-to-end: filed **CBT for Panic Disorder —
   Comprehensive Review** (same branch), the third artifact under the **Panic Disorder MOC** (now split
   into Decision reports + Reviews). Ledger prior #1 fired on "review" — intent-lock round confirmed the

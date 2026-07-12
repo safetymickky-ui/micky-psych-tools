@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
