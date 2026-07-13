@@ -11,15 +11,15 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-12
+## Current versions — 2026-07-13
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.7.0   |
+| marketplace catalog   | 1.8.0   |
 | pubmed-research-note   | 1.5.1   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
-| vault-keeper          | 0.3.0   |
+| vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.1.0   |
 | clinical-infographic  | 0.2.1   |
@@ -44,8 +44,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 - **plugin-creator** — meta-plugin: `/new-plugin` scaffolds, `/refine-plugin` audits/refines,
   `/route` regenerates `ROUTING.md` and routes a request to the owning skill/command. Create and
   refine keep the router in sync automatically.
-- **vault-keeper** — shared knowledge-vault manager for repo-root `vault/`; four jobs: init, save,
-  index, query. The single place every skill's output lands.
+- **vault-keeper** — shared knowledge-vault manager for repo-root `vault/`; five jobs: init, save,
+  index, query, empty. The single place every skill's output lands. The `empty-vault` skill
+  (+ `/empty-vault [topic]`) drains the vault into the Learn hub: hands each artifact to
+  learn-hub's `digest-report` skill (which authors atomic Learn notes + syncs to Supabase),
+  then deletes only after verified sync + git-committed state + explicit confirmation.
 - **psych-paper-digest** — watchlist literature surveillance; sweeps PubMed + ClinicalTrials.gov
   since `last_swept`, triages Act / Read / Suppressed, never adjudicates (Act items hand off to
   pubmed-research-note). Skill + `/digest [domain]`; state in `.psych-paper-digest.json`.
@@ -73,6 +76,18 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-13** — **vault-keeper 0.4.0 — the empty-vault skill** (catalog → 1.8.0, branch
+  `claude/micky-vault-emptying-skill-2z107h`). New fifth job: **empty** — drain the vault into the
+  Learn hub. The skill is a mover/eraser, never an author: it resolves both roots (psych vault per
+  Step 0; the learn-hub checkout found or asked for, never guessed), inventories a manifest
+  (artifacts / notes / assets / MOCs), hands each artifact to **learn-hub's new `digest-report`
+  skill** (created in the learn-hub repo, same branch: distills a report into one Learn topic +
+  6–12 atomic notes with deterministic ids + `sources[]` provenance, syncs via sync-vault, verifies
+  a provenance-scoped Supabase count — that verification is the deletion handshake), then deletes
+  **only** verified files behind a double gate (git-committed + explicit user confirmation), prunes
+  MOCs, and rebuilds `index.md` (whole-vault empty → empty scaffold). Supports topic scoping via
+  `/empty-vault [topic]`. Ships SKILL.md + command + 6 evals; ROUTING.md regenerated
+  (7 plugins, 17 components); `validate.py` clean.
 - **2026-07-13** — Filed **Choosing an Antidepressant by Mechanism — a Phenotype-to-Drug Selection Guide** to the
   vault via the pubmed-research-note → vault-keeper flow (branch `claude/antidepressant-pharmacology-research-yoma58`).
   Intent-lock gate ran first: a 3-question picker locked the shape from a topic-shaped 8-item list (serotonin receptor
