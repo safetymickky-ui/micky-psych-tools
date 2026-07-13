@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -102,6 +102,21 @@
         "html",
         "medical",
         "poster"
+      ]
+    },
+    {
+      "name": "firecrawl",
+      "source": "./plugins/firecrawl",
+      "version": "0.1.0",
+      "description": "Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. One install command sets up CLI tools, app-integration build skills, and workflow deliverable skills; the skill routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier.",
+      "category": "productivity",
+      "keywords": [
+        "firecrawl",
+        "web-scraping",
+        "web-search",
+        "crawl",
+        "web-data",
+        "onboarding"
       ]
     }
   ]

@@ -25,6 +25,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault | comprehensive-review | `/comprehensive-review` |
 | when the user says "make an infographic", "medical summary infographic", "clinical reference infographic", "turn this review/report into an infographic", "one-page visual summary"… | clinical-infographic | skill `clinical-infographic` |
 | Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic | clinical-infographic | `/infographic` |
+| when the user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs", "map a site", needs live web data during a session, wants Firecrawl wired into app code, needs a… | firecrawl | skill `firecrawl` |
 
 ## Plugins
 
@@ -93,3 +94,11 @@ Keywords: infographic, clinical-reference, visual-summary, html, medical, poster
 
 - **skill `clinical-infographic`** (skill) — Renders a professional, print-ready medical summary infographic (a self-contained HTML file) for clinical reference from a SOURCED evidence report.
 - **`/infographic`** (command) — Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic
+
+### firecrawl — productivity  _v0.1.0_
+
+Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. One install command sets up CLI tools, app-integration build skills, and workflow deliverable skills; the skill routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier.
+
+Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
+
+- **skill `firecrawl`** (skill) — Firecrawl gives AI agents and apps fast, reliable web context with strong search, scraping, and interaction tools.

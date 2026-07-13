@@ -101,6 +101,12 @@ vault/                             # shared knowledge vault — managed by vault
   report or generate one first) and files the HTML as an asset via vault-keeper. One skill +
   `/infographic [topic-or-source]` command; fidelity contract + design system under its
   `skills/clinical-infographic/references/`.
+- **firecrawl** — Firecrawl onboarding and routing for general-web data: search the web, scrape
+  clean markdown, interact with live pages, crawl and map sites via the Firecrawl CLI or API.
+  The skill body is Firecrawl's official AI-onboarding guide kept verbatim (one install
+  command, three vendor skill segments, six usage paths A–F). Boundary: biomedical literature
+  stays with pubmed-research-note / comprehensive-review / psych-paper-digest. Keys never
+  enter the repo — `FIRECRAWL_API_KEY` lives in the environment. One skill, no commands.
 
 ## Style
 

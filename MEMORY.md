@@ -15,7 +15,7 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.8.0   |
+| marketplace catalog   | 1.9.0   |
 | pubmed-research-note   | 1.5.1   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -23,6 +23,7 @@ a milestone.
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.1.0   |
 | clinical-infographic  | 0.2.1   |
+| firecrawl             | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -73,9 +74,26 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   contraindications always reach the safety banner, `[unverified]` never rendered as fact). Files
   the HTML as an **asset** via vault-keeper, wired into the source report's MOC. Skill +
   `/infographic [topic-or-source]`.
+- **firecrawl** — Firecrawl onboarding + routing for general-web data (search / scrape /
+  interact / crawl / map via the Firecrawl CLI or API). Skill body is the vendor's official
+  AI-onboarding guide kept verbatim: one install command, three vendor skill segments
+  (CLI / build / workflow), six usage paths A–F. Boundary: biomedical literature stays with
+  the PubMed-facing plugins; `FIRECRAWL_API_KEY` lives in the environment, never the repo.
+  One skill, no commands.
 
 ## Recent milestones
 
+- **2026-07-13** — Added **firecrawl 0.1.0** (eighth plugin; catalog → 1.9.0, branch
+  `claude/firecrawl-docs-5qlw5z`), packaging Firecrawl's official AI-onboarding guide as a
+  marketplace skill. Body kept verbatim (install command, CLI/build/workflow skill segments,
+  usage paths A–F: live tools, app integration, deliverables, auth, REST-only, keyless
+  fallback); two local adaptations only — the frontmatter description gained this
+  marketplace's Use-when / Not-for clauses (biomedical literature carved out to the
+  PubMed-facing plugins), and the vendor doc's session-specific API-key block was replaced by
+  a credentials-hygiene rule (keys live in the environment, never the repo; a key that
+  appears in chat is exposed — rotate it). Note: the onboarding doc that seeded this plugin
+  arrived carrying a live `fc-…` key; it was NOT committed anywhere and should be rotated.
+  `validate.py` clean; ROUTING.md regenerated (8 plugins, 18 components).
 - **2026-07-13** — **First empty-vault run — drained the whole vault into the Learn hub** (same
   branch). Ran the new skill end to end: 9 artifacts → 9 Learn topics / **97 atomic notes / 301
   links**, each report handed to learn-hub's `digest-report` skill, distilled, and synced to the

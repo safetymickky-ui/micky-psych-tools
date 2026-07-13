@@ -24,10 +24,10 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
-The examples above install `pubmed-research-note`; swap in any of the other six —
+The examples above install `pubmed-research-note`; swap in any of the other seven —
 `intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
-or `clinical-infographic` (or any future plugin) by name — the commands are identical for all
-of them.
+`clinical-infographic`, or `firecrawl` (or any future plugin) by name — the commands are
+identical for all of them.
 
 ## Update it
 
@@ -59,7 +59,7 @@ characters), version parity between a plugin's manifest and its marketplace entr
 
 ## Plugins
 
-Seven plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
+Eight plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
 
 - **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
   quantified, trial-registry-checked evidence reports. Runs `intent-lock` first on every
@@ -79,3 +79,7 @@ Seven plugins, all vendored under `plugins/` and listed in `.claude-plugin/marke
 - **clinical-infographic** — renders a sourced report or review into a print-ready medical
   summary infographic (one self-contained HTML file), filed as a vault asset via
   `vault-keeper`. Never generates clinical facts itself.
+- **firecrawl** — Firecrawl onboarding and routing for general-web data: search, scrape,
+  interact, crawl, and map via the Firecrawl CLI or API. Packages the vendor's official
+  AI-onboarding guide (install command, skill segments, usage paths A–F); biomedical
+  literature stays with the PubMed-facing plugins, and API keys stay in the environment.
