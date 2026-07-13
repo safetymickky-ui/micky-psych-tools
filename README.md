@@ -81,5 +81,8 @@ Eight plugins, all vendored under `plugins/` and listed in `.claude-plugin/marke
   `vault-keeper`. Never generates clinical facts itself.
 - **firecrawl** — Firecrawl onboarding and routing for general-web data: search, scrape,
   interact, crawl, and map via the Firecrawl CLI or API. Packages the vendor's official
-  AI-onboarding guide (install command, skill segments, usage paths A–F); biomedical
+  AI-onboarding guide (install command, skill segments, usage paths A–F) and serves as the
+  general-web evidence engine for `pubmed-research-note` and `comprehensive-review`
+  (regulator labels, guideline full texts — fetch-only, adjudication stays with the caller);
+  deliverables gate through `intent-lock` and vault via `vault-keeper` on request. Biomedical
   literature stays with the PubMed-facing plugins, and API keys stay in the environment.

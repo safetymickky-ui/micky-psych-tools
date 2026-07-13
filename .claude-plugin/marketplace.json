@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -9,7 +9,7 @@
     {
       "name": "pubmed-research-note",
       "source": "./plugins/pubmed-research-note",
-      "version": "1.5.1",
+      "version": "1.6.0",
       "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.",
       "category": "research",
       "keywords": [
@@ -78,7 +78,7 @@
     {
       "name": "comprehensive-review",
       "source": "./plugins/comprehensive-review",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.",
       "category": "research",
       "keywords": [
@@ -107,8 +107,8 @@
     {
       "name": "firecrawl",
       "source": "./plugins/firecrawl",
-      "version": "0.1.0",
-      "description": "Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. One install command sets up CLI tools, app-integration build skills, and workflow deliverable skills; the skill routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier.",
+      "version": "0.2.0",
+      "description": "Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. Routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier — and deep-integrates with the pipeline: the general-web evidence engine for pubmed-research-note and comprehensive-review, intent-lock gating on deliverables, vault saves via vault-keeper.",
       "category": "productivity",
       "keywords": [
         "firecrawl",

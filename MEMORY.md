@@ -15,15 +15,15 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.9.0   |
-| pubmed-research-note   | 1.5.1   |
+| marketplace catalog   | 1.10.0  |
+| pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
-| comprehensive-review  | 0.1.0   |
+| comprehensive-review  | 0.2.0   |
 | clinical-infographic  | 0.2.1   |
-| firecrawl             | 0.1.0   |
+| firecrawl             | 0.2.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -77,12 +77,33 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 - **firecrawl** — Firecrawl onboarding + routing for general-web data (search / scrape /
   interact / crawl / map via the Firecrawl CLI or API). Skill body is the vendor's official
   AI-onboarding guide kept verbatim: one install command, three vendor skill segments
-  (CLI / build / workflow), six usage paths A–F. Boundary: biomedical literature stays with
-  the PubMed-facing plugins; `FIRECRAWL_API_KEY` lives in the environment, never the repo.
-  One skill, no commands.
+  (CLI / build / workflow), six usage paths A–F. **Deep-integrated (0.2.0):** the
+  marketplace's general-web evidence engine — pubmed-research-note (fifth engine in its
+  catalog) and comprehensive-review call it for documents outside PubMed/CT.gov (regulator
+  labels, guideline full texts, gray literature; clean markdown + URL + access date,
+  fetch-only, blog ban stands); Path C deliverables gate through intent-lock and vault via
+  vault-keeper on explicit request; clinical-infographic and psych-paper-digest explicitly
+  not chained. Boundary: biomedical literature stays with the PubMed-facing plugins;
+  `FIRECRAWL_API_KEY` lives in the environment, never the repo. One skill + 8 evals,
+  no commands.
 
 ## Recent milestones
 
+- **2026-07-13** — **firecrawl deep-integration wave** (same branch; released firecrawl
+  0.2.0, pubmed-research-note 1.6.0, comprehensive-review 0.2.0; catalog → 1.10.0). Wired
+  the new plugin into the pipeline in both directions. **Inbound:** firecrawl is now the
+  general-web document engine — pubmed-research-note's tool catalog grew from four engines
+  to five (regulator labels FDA/EMA/MHRA, guideline full texts NICE/APA/WFSBP, gray
+  literature; `firecrawl search` / `firecrawl scrape`, WebFetch fallback, never blocks a
+  run) and comprehensive-review gained the same engine in Step 2 + Handoffs; both keep the
+  contract *widens where documents come from, never the evidence bar* — fetch-only,
+  adjudication stays with the caller, the blog ban stands, scraped sources cite exact URL +
+  access date (`<topic> — <URL> (accessed YYYY-MM-DD)` in `## Sources`). **Outbound:**
+  firecrawl's Path C deliverables now gate through intent-lock (explicit opt-out only) and
+  file to the vault via vault-keeper on explicit request (opt-in like psych-paper-digest);
+  clinical-infographic (sourced clinical reports only) and psych-paper-digest (fixed sweep
+  engines) explicitly not chained. Firecrawl's description rewritten action-first with the
+  handoffs; first 8 evals shipped. `validate.py` clean; ROUTING.md regenerated.
 - **2026-07-13** — Added **firecrawl 0.1.0** (eighth plugin; catalog → 1.9.0, branch
   `claude/firecrawl-docs-5qlw5z`), packaging Firecrawl's official AI-onboarding guide as a
   marketplace skill. Body kept verbatim (install command, CLI/build/workflow skill segments,

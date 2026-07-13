@@ -36,9 +36,11 @@ longer. The full guide is `skills/pubmed-research-note/references/report-craft.m
 
 ## Source engines
 
-Four engines, four jobs — PubMed (backbone), ClinicalTrials.gov (publication-bias check),
-Open Library (textbook-vs-evidence gap), Wikipedia (terminology only, never cited). Full
-tool reference: `skills/pubmed-research-note/references/tool-catalog.md`.
+Five engines, five jobs — PubMed (backbone), ClinicalTrials.gov (publication-bias check),
+Open Library (textbook-vs-evidence gap), Wikipedia (terminology only, never cited),
+Firecrawl (general-web documents — regulator labels, guideline full texts, gray literature;
+via the `firecrawl` plugin, cited with URL + access date). Full tool reference:
+`skills/pubmed-research-note/references/tool-catalog.md`.
 
 ## MCP setup
 

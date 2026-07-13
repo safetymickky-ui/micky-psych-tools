@@ -1,7 +1,7 @@
 {
   "name": "firecrawl",
-  "version": "0.1.0",
-  "description": "Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. One install command sets up CLI tools, app-integration build skills, and workflow deliverable skills; the skill routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier.",
+  "version": "0.2.0",
+  "description": "Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. Routes each request to the right path \u2014 live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier \u2014 and deep-integrates with the pipeline: the general-web evidence engine for pubmed-research-note and comprehensive-review, intent-lock gating on deliverables, vault saves via vault-keeper.",
   "author": {
     "name": "Thanawat Suharit (Micky)"
   },

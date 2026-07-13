@@ -25,11 +25,11 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault | comprehensive-review | `/comprehensive-review` |
 | when the user says "make an infographic", "medical summary infographic", "clinical reference infographic", "turn this review/report into an infographic", "one-page visual summary"… | clinical-infographic | skill `clinical-infographic` |
 | Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic | clinical-infographic | `/infographic` |
-| when the user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs", "map a site", needs live web data during a session, wants Firecrawl wired into app code, needs a… | firecrawl | skill `firecrawl` |
+| when the user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs", "map a site", needs live web data in-session, wants Firecrawl in app code, or wants a web-powered… | firecrawl | skill `firecrawl` |
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.5.1_
+### pubmed-research-note — research  _v1.6.0_
 
 Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.
 
@@ -77,7 +77,7 @@ Keywords: pubmed, digest, psychiatry, surveillance, clinical-trials, current-awa
 - **skill `psych-paper-digest`** (skill) — Sweeps every domain on the user's watchlist for literature published since the last sweep and delivers a triaged, read-once digest — practice-changing first, then worth-reading, plus registry trial readouts; noise suppr…
 - **`/digest`** (command) — Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument
 
-### comprehensive-review — research  _v0.1.0_
+### comprehensive-review — research  _v0.2.0_
 
 Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.
 
@@ -95,10 +95,10 @@ Keywords: infographic, clinical-reference, visual-summary, html, medical, poster
 - **skill `clinical-infographic`** (skill) — Renders a professional, print-ready medical summary infographic (a self-contained HTML file) for clinical reference from a SOURCED evidence report.
 - **`/infographic`** (command) — Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic
 
-### firecrawl — productivity  _v0.1.0_
+### firecrawl — productivity  _v0.2.0_
 
-Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. One install command sets up CLI tools, app-integration build skills, and workflow deliverable skills; the skill routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier.
+Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. Routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier — and deep-integrates with the pipeline: the general-web evidence engine for pubmed-research-note and comprehensive-review, intent-lock gating on deliverables, vault saves via vault-keeper.
 
 Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
 
-- **skill `firecrawl`** (skill) — Firecrawl gives AI agents and apps fast, reliable web context with strong search, scraping, and interaction tools.
+- **skill `firecrawl`** (skill) — Routes any general-web data request to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyles…

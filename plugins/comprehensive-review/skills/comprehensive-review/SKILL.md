@@ -83,6 +83,12 @@ source floors are in [references/review-arc.md](references/review-arc.md).
 - **ClinicalTrials.gov — mandatory for the treatment section.** Completed-but-unpublished
   and ongoing registered trials belong in *Controversies & future directions*; a treatment
   section written without the registry check has failed.
+- **Firecrawl — guideline and regulatory full texts, where a section needs them.**
+  Documents outside PubMed/CT.gov — a guideline body's full text on its own site (NICE,
+  APA, WFSBP), a regulator's label or safety communication, gray literature — are fetched
+  via the `firecrawl` plugin (`firecrawl search` / `firecrawl scrape`; WebFetch fallback,
+  never blocks the run). It widens *where* documents come from, never the evidence bar:
+  PubMed stays every section's backbone, and no clinical claim is sourced from a blog.
 
 ## The citation contract
 
@@ -93,8 +99,10 @@ Inherited from the house rules, binding here too:
   CI, NNT/NNH, relapse rates. **No section may exist without a number in it** (Definition
   & nosology is the one permitted exception when the literature offers none).
 - **`## Sources` is one line per source**: the topic it supports, then the DOI link.
-  Registry entries: `NCT NNNNNNNN — topic, status, n, readout`. No authors, journals,
-  years, or PMIDs. Anything unsourced is `[unverified]` in place, never quietly asserted.
+  Registry entries: `NCT NNNNNNNN — topic, status, n, readout`. Web documents fetched via
+  firecrawl: `<topic> — <URL> (accessed YYYY-MM-DD)`, DOI preferred when one exists. No
+  authors, journals, years, or PMIDs. Anything unsourced is `[unverified]` in place,
+  never quietly asserted.
 
 ## The review
 
@@ -144,6 +152,9 @@ that nothing was filed.
   ("so *should* I use X?"), or the request was one decision in disguise, route there. The
   treatment section reports the evidence landscape; it never issues a patient-level verdict.
 - **vault-keeper** — every vault write, per Where output goes.
+- **firecrawl** — the general-web document engine, for sources outside PubMed/CT.gov
+  (guideline org full texts, regulator labels, gray literature). It fetches — clean
+  markdown with URL + access date; this skill adjudicates.
 - **psych-paper-digest** — not chained; surveillance is a different job.
 
 ## Close

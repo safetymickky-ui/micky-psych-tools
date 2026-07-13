@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.6.0 — 2026-07-13
+
+- **Fifth engine: Firecrawl — the general-web document engine.** Load-bearing when the
+  verdict hinges on a document outside PubMed and the registry: regulator labels and
+  safety communications (FDA, EMA, MHRA), guideline full texts on org sites (NICE, APA,
+  WFSBP), gray literature. Rides the new `firecrawl` plugin (`firecrawl search` /
+  `firecrawl scrape`; WebFetch fallback — a missing CLI or key never blocks a run).
+  Widens *where* documents come from, never the evidence bar — the blog ban stands, and
+  Firecrawl fetches while this skill adjudicates. Scraped sources cite exact URL +
+  access date in `## Sources`. Tool catalog, SKILL engines list, description, and README
+  updated to five engines.
+
 ## 1.5.0 — 2026-07-11
 
 - **Removed the four fixed frames.** Rx / Service / Truth / Teaching are gone. In their place

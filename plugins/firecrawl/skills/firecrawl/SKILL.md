@@ -1,17 +1,19 @@
 ---
 name: firecrawl
 description: >-
-  Firecrawl gives AI agents and apps fast, reliable web context with strong search,
-  scraping, and interaction tools. One install command sets up three skill segments —
-  live CLI tools, app-integration build skills, and outcome-focused workflow skills —
-  and this skill routes the request to the right usage path after install. Use when the
-  user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these
-  docs", "map a site", needs live web data during a session, wants Firecrawl wired into
-  app code, needs a Firecrawl account/API key or the keyless fallback, or wants a
-  web-powered deliverable (research brief, SEO audit, lead list, knowledge base). Not
-  for biomedical literature — PubMed/ClinicalTrials.gov questions belong to
-  pubmed-research-note, comprehensive-review, or psych-paper-digest — and not for
-  authoring Firecrawl server code.
+  Routes any general-web data request to the right Firecrawl path: live CLI tools
+  (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow
+  deliverables, credential auth, REST-only, or the keyless free tier. Use when the user
+  says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs",
+  "map a site", needs live web data in-session, wants Firecrawl in app code, or wants a
+  web-powered deliverable (research brief, SEO audit, lead list, knowledge base). Also
+  the marketplace's general-web evidence engine: pubmed-research-note and
+  comprehensive-review call it for documents outside PubMed/ClinicalTrials.gov
+  (regulator labels, guideline full texts, gray literature), served as clean markdown
+  with URL + access date — adjudication stays with the caller. Deliverables gate
+  through intent-lock and file to the vault via vault-keeper on request. NOT for
+  biomedical literature itself: that belongs to pubmed-research-note,
+  comprehensive-review, or psych-paper-digest.
 ---
 
 # Firecrawl
@@ -334,6 +336,45 @@ Prefer a free account when the human can sign up: do Path D to get an
 account or API key, which unlocks higher limits and the full set of
 endpoints. If you hit rate limits on the keyless free tier, ask the human
 to sign up at https://www.firecrawl.dev/signin.
+
+## Marketplace integration (this marketplace)
+
+Firecrawl is this marketplace's **general-web engine** — the complement to the
+PubMed/ClinicalTrials.gov pipeline, never its replacement.
+
+**Inbound — serving the research plugins.** When `pubmed-research-note` or
+`comprehensive-review` needs a document that decides a clinical question but lives
+outside PubMed/CT.gov — a regulator's label or safety communication (FDA, EMA, MHRA),
+a guideline body's full text on its own site (NICE, APA, WFSBP), gray literature or a
+preprint the argument genuinely needs — that skill calls this one as its web engine
+(Path A: search when the URL is unknown, scrape when it is known). The contract: serve
+**clean markdown plus the exact URL and access date** so the caller can cite it; fetch
+only — evidence grading, adjudication, and the citation format stay with the caller.
+Firecrawl widens *where* documents can be fetched from, never *what counts as
+evidence*: the callers' scope guards (never source a clinical claim from a blog) stand
+unchanged.
+
+**Outbound — deliverables join the pipeline.**
+
+- **intent-lock gates Path C.** The vendor flow's step 1 — "confirm the workflow and
+  final artifact with the user" — runs through the `intent-lock` skill here, the same
+  gate every other deliverable-producing plugin uses. Explicit opt-out only
+  ("just build it").
+- **Vault saves go through vault-keeper, on explicit request.** When the user says
+  "vault this" about a finished Path C artifact, hand vault-keeper the human title,
+  the body, target type `artifact`, and a suggested MOC topic — never resolve a vault
+  path or write into `vault/` from this skill. Without the explicit request the
+  deliverable stays in the working directory (the same opt-in rule as
+  psych-paper-digest).
+- **Not chained:** `clinical-infographic` renders SOURCED clinical reports only — a
+  general-web artifact is not an eligible source. `psych-paper-digest` sweeps PubMed +
+  CT.gov by contract; Firecrawl never joins the sweep.
+
+**Boundary, restated.** A biomedical-literature question routes to
+`pubmed-research-note` (decision), `comprehensive-review` (whole-disorder review), or
+`psych-paper-digest` (surveillance) even when it mentions the web. A mixed request is
+split, not grabbed: the registry/literature half goes to those plugins, the
+general-web half runs here — often serving the same report.
 
 ## Credentials hygiene (this marketplace)
 

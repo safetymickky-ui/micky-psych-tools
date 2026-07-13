@@ -6,7 +6,7 @@ description: >-
   literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether
   a drug, device, or intervention is worth using, building a service around, or teaching. Thai
   triggers: "หางานวิจัย", "ทบทวนหลักฐาน", "ค้น PubMed", "จริงหรือเปล่า". Orchestrates PubMed,
-  ClinicalTrials.gov, Open Library, Wikipedia. ALWAYS runs intent-lock FIRST to lock the
+  ClinicalTrials.gov, Open Library, Wikipedia, Firecrawl. ALWAYS runs intent-lock FIRST to lock the
   decision and scope before searching — skip only on explicit opt-out ("just search"). By
   default writes the report, shows it inline, and files it to the vault via vault-keeper;
   atomic notes ONLY on "atomize" / "ทำโน้ต". NOT for: whole-disorder / "comprehensive review
@@ -151,7 +151,7 @@ Never fabricate a write you did not perform. Never invent a vault path.
 
 ## Source engines
 
-Four engines, four distinct jobs. Prefer the MCP server when connected; otherwise use the
+Five engines, five distinct jobs. Prefer the MCP server when connected; otherwise use the
 web fallback. Read [references/tool-catalog.md](references/tool-catalog.md) before the first
 call.
 
@@ -170,6 +170,13 @@ call.
 - **Wikipedia — terminology only.** Resolve a drug's synonyms, a scale's full name, an
   abbreviation. **Barred from shaping the outline.** Never a citable source. If you find
   yourself reading its section list, stop.
+- **Firecrawl — the general-web document engine.** Load-bearing when the verdict hinges on
+  a document outside PubMed and the registry — a regulator's label or safety communication,
+  a guideline body's full text on its own site, gray literature. Via the `firecrawl` plugin
+  (`firecrawl search` / `firecrawl scrape`); WebFetch is the fallback. It widens *where*
+  documents come from, never *what counts as evidence* — the blog ban stands. Scraped
+  documents cite exact URL + access date in `## Sources`. Firecrawl fetches; this skill
+  adjudicates.
 
 ## The citation discipline
 

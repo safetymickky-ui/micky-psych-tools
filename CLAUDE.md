@@ -67,7 +67,9 @@ vault/                             # shared knowledge vault — managed by vault
 
 - **pubmed-research-note** — clinical decision from primary literature; verdict-first evidence
   reports whose shape follows the decision, not the topic; runs intent-lock first to build a
-  bespoke decision brief (no fixed frames); delegates vault saving to vault-keeper.
+  bespoke decision brief (no fixed frames); five engines (PubMed backbone, CT.gov, Open
+  Library, Wikipedia, firecrawl for general-web documents — labels, guidelines); delegates
+  vault saving to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
 - **plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS marketplace
   (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation), and
@@ -91,7 +93,8 @@ vault/                             # shared knowledge vault — managed by vault
 - **comprehensive-review** — whole-disorder academic literature reviews at textbook-chapter
   breadth: a ten-section arc from definition to controversies, never collapsed into a
   treatment-only report. Intent-lock is the mandatory Step 0 gate; searches PubMed +
-  ClinicalTrials.gov itself; the deliverable is an md file filed to the vault via vault-keeper.
+  ClinicalTrials.gov itself (guideline/regulator full texts via firecrawl when a section
+  needs them); the deliverable is an md file filed to the vault via vault-keeper.
   Decisions route to pubmed-research-note. One skill + `/comprehensive-review [topic]` command.
 - **clinical-infographic** — the pipeline's last mile: renders a SOURCED report into a
   professional, print-ready medical summary infographic for clinical reference (one
@@ -104,9 +107,14 @@ vault/                             # shared knowledge vault — managed by vault
 - **firecrawl** — Firecrawl onboarding and routing for general-web data: search the web, scrape
   clean markdown, interact with live pages, crawl and map sites via the Firecrawl CLI or API.
   The skill body is Firecrawl's official AI-onboarding guide kept verbatim (one install
-  command, three vendor skill segments, six usage paths A–F). Boundary: biomedical literature
-  stays with pubmed-research-note / comprehensive-review / psych-paper-digest. Keys never
-  enter the repo — `FIRECRAWL_API_KEY` lives in the environment. One skill, no commands.
+  command, three vendor skill segments, six usage paths A–F). Deep-integrated with the
+  pipeline: the general-web evidence engine for pubmed-research-note and comprehensive-review
+  (regulator labels, guideline full texts, gray literature — fetch-only, clean markdown +
+  URL + access date, adjudication stays with the caller); Path C deliverables gate through
+  intent-lock and file to the vault via vault-keeper on explicit request. Boundary:
+  biomedical literature stays with pubmed-research-note / comprehensive-review /
+  psych-paper-digest — mixed requests are split, not grabbed. Keys never enter the repo —
+  `FIRECRAWL_API_KEY` lives in the environment. One skill, no commands.
 
 ## Style
 

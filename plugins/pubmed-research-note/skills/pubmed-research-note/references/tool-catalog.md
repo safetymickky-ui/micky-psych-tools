@@ -1,11 +1,12 @@
 # Source Tool Catalog
 
-Read before your first tool call. Four engines, four jobs. PubMed and ClinicalTrials.gov have
+Read before your first tool call. Five engines, five jobs. PubMed and ClinicalTrials.gov have
 an **MCP path** — this plugin bundles both servers in its own `.mcp.json` — and a **web
 fallback**. Open Library has **no MCP server wired by this plugin**; it is web-fallback only
-(WebSearch/WebFetch), unless an external Open Library connector happens to be installed. A
-missing server never blocks the run — except PubMed, whose absence is fatal and must be
-stated rather than worked around.
+(WebSearch/WebFetch), unless an external Open Library connector happens to be installed.
+Firecrawl rides the **firecrawl plugin / CLI** (keyless fallback exists) and is optional on
+every run. A missing server never blocks the run — except PubMed, whose absence is fatal and
+must be stated rather than worked around.
 
 **Bundled servers have stable prefixes — no hunting required.** This plugin's own two MCP
 servers resolve to fixed tool-name prefixes, not hashes:
@@ -130,3 +131,27 @@ this engine is optional on every run.
 
 Its historical role in this skill (generating 3–6 sub-questions that became the report's
 H2 headings) is the specific defect this version exists to remove.
+
+---
+
+## 5. Firecrawl — the general-web document engine
+
+**Load-bearing when the verdict hinges on a document that is not in PubMed or the
+registry** — a regulator's label or safety communication (FDA, EMA, MHRA), a guideline
+body's full text on its own site (NICE, APA, WFSBP), gray literature or a preprint the
+decision genuinely needs. Optional on every other run.
+
+**Path.** The `firecrawl` plugin owns the how-to (install, auth, keyless fallback). In
+practice: `firecrawl search "<query>"` when the URL is unknown, `firecrawl scrape <url>`
+when it is known — clean markdown back, provenance attached. **Web fallback:**
+WebSearch/WebFetch; a missing CLI or key never blocks the run.
+
+**Scope guard — this engine widens *where*, never *what*.** The evidence bar is
+unchanged: never source a clinical claim from a blog, a vendor page, or an unattributed
+site. A scraped document must be an authoritative primary document — regulator,
+guideline body, registry — and it feeds the verdict the same way any other source does.
+Firecrawl fetches; this skill adjudicates.
+
+**Citation.** A scraped document keeps its exact URL and access date. In `## Sources`:
+`<topic it supports> — <URL> (accessed YYYY-MM-DD)`. A DOI link stays preferred whenever
+one exists.

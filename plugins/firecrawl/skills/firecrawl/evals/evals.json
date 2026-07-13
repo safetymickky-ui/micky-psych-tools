@@ -1,0 +1,69 @@
+{
+  "skill_name": "firecrawl",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger-scrape-known-url",
+      "prompt": "Scrape https://stripe.com/pricing into clean markdown for me.",
+      "expected_output": "Triggers. Path A with a known URL: goes straight to scrape (firecrawl scrape, or the REST /scrape endpoint on Path E/F) — no search step, no interact. Returns clean markdown and keeps the exact URL + access date with the output. Does not install anything the session already has; verifies with firecrawl --status only when the CLI state is unknown.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "positive-trigger-deliverable-gated-by-intent-lock",
+      "prompt": "Use firecrawl to build me a competitive intel brief on the top teletherapy platforms.",
+      "expected_output": "Triggers as Path C (workflow deliverable). Step 1 of the vendor flow — confirm the workflow and final artifact — runs through the intent-lock skill, not ad-hoc questions: it locks the artifact's shape, the competitor set, and the depth before any scraping. Only an explicit opt-out in the user's own words ('just build it') skips the gate. Evidence is collected via Firecrawl search/scrape with every claim traceable to a URL + access date, and the finished brief includes a short rerun-inputs block.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "negative-trigger-biomedical-literature",
+      "prompt": "Search the web for the evidence on sertraline versus escitalopram for panic disorder.",
+      "expected_output": "Does NOT trigger despite the words 'search the web'. A biomedical-literature question routes to pubmed-research-note (it is a clinical decision), which owns PubMed/ClinicalTrials.gov. Firecrawl participates only if that skill later needs a document outside the registry (e.g. a regulator label) — as the called engine, never the owner of the question.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "inbound-engine-contract",
+      "prompt": "(from pubmed-research-note mid-report) Fetch the current FDA label for clozapine — I need the REMS monitoring thresholds for the verdict.",
+      "expected_output": "Serves as the general-web engine: search to locate the authoritative label (accessdata.fda.gov), scrape it, and hand back clean markdown plus the exact URL and access date. Fetch only — no evidence grading, no adjudication, no rewriting of the caller's citation format; the calling skill decides what the thresholds mean for its verdict. An unauthoritative source (blog, vendor summary) is not substituted when the primary document is findable.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "vault-handoff-opt-in-only",
+      "prompt": "Great SEO audit — vault this.",
+      "expected_output": "On the explicit request, hands the finished artifact to the vault-keeper skill: human title, body, target type artifact, suggested MOC topic. Never resolves a vault path, never writes into vault/, never authors vault frontmatter itself; vault-keeper reports where it landed. Without the explicit 'vault this', the deliverable stays in the working directory — same opt-in rule as psych-paper-digest.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "keyless-fallback-path",
+      "prompt": "I don't have a Firecrawl account and can't sign up right now — can you still grab the text of these three product pages?",
+      "expected_output": "Falls back to Path F: keyless scrape via the CLI with no login (or the REST endpoints with no Authorization header), noting it is rate-limited. Does not block on Path D auth when the human cannot sign up, does not fabricate a key, and suggests creating a free account later for higher limits and the full endpoint set (crawl/map need a key).",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 7,
+      "name": "app-integration-path",
+      "prompt": "Add Firecrawl scraping to my Next.js app so new blog posts get summarized automatically.",
+      "expected_output": "Routes to Path B, not Path A: this is product code that outlives the session. Inspects the existing project first, asks the one required question (what should Firecrawl do in the product) if unclear, installs the matching SDK, stores FIRECRAWL_API_KEY in the project's .env, writes the call site to the repo's conventions, and runs one real request as a smoke test.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 8,
+      "name": "credentials-hygiene",
+      "prompt": "Here's my Firecrawl API key (pasted as a real fc- value in chat) — set everything up in this repo.",
+      "expected_output": "Saves the key to the environment (.env or runtime config) only. Never writes the key into a committed file, a vault artifact, or a document; .env stays untracked. Because the key was pasted in plaintext chat, flags it as exposed and recommends rotating it in the Firecrawl dashboard.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}
