@@ -14,10 +14,5 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Adjustment Disorder MOC]]
-- [[Antidepressant Pharmacology MOC]]
-- [[Depression — Treatment MOC]]
-- [[Intermittent Explosive Disorder MOC]]
-- [[Panic Disorder MOC]]
-- [[Pheochromocytoma & Paraganglioma MOC]]
-- [[Primary Headache Disorders MOC]]
+_Empty — the vault was drained into the Learn hub (see the `empty-vault` skill). New MOCs are
+added here as artifacts are filed._
