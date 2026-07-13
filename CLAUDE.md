@@ -76,9 +76,12 @@ vault/                             # shared knowledge vault — managed by vault
   auto-validate, stops before commit. `/route` regenerates ROUTING.md and routes a request to
   the owning skill or command. Authoring rules + templates under its
   `skills/plugin-creator/references/`.
-- **vault-keeper** — shared knowledge-vault manager for the repo-root `vault/`; four jobs: init,
-  save, index, query. Other plugins delegate vault writes to it rather than writing vault files
-  themselves.
+- **vault-keeper** — shared knowledge-vault manager for the repo-root `vault/`; five jobs: init,
+  save, index, query, empty. Other plugins delegate vault writes to it rather than writing vault
+  files themselves. The `empty-vault` skill (+ `/empty-vault [topic]`) drains the vault into the
+  Learn hub — each artifact is handed to learn-hub's `digest-report` skill to become atomic Learn
+  notes, and files are deleted only after a verified Supabase sync, a git-committed state, and
+  explicit confirmation (move → verify → delete, never reordered).
 - **psych-paper-digest** — watchlist-driven literature surveillance; windowed PubMed +
   ClinicalTrials.gov sweeps triaged into Act / Read / Suppressed, rendered as a read-once
   digest. Triage only, never adjudication: Act items hand off to pubmed-research-note; vault

@@ -1,0 +1,53 @@
+{
+  "skill_name": "empty-vault",
+  "evals": [
+    {
+      "id": 1,
+      "name": "move-verify-delete-in-order",
+      "prompt": "Empty the vault.",
+      "expected_output": "Resolves BOTH roots (psych vault per Step 0; learn-hub checkout found, not guessed). Shows a manifest of artifacts/notes/assets first, hands each artifact to learn-hub's digest-report skill, and deletes ONLY files whose reports verified in Supabase — after the git gate (content committed) and an explicit user confirmation. MOCs pruned, index.md rebuilt to the empty scaffold, .gitkeep files kept. Closes with the moved/deleted/stayed ledger and stops before committing. FAILS if anything is deleted before verification or confirmation, or if the skill distills notes itself.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "no-delete-on-failed-sync",
+      "prompt": "Empty the vault. (digest-report reports that one of the three reports failed to sync — its Supabase count does not match.)",
+      "expected_output": "Partial empty: the two verified reports (and their assets/MOC entries) are deleted after the gates; the failed report's file, MOC entry, and assets STAY in the vault. index.md is rebuilt still listing the surviving MOC. The close names the report that stayed and why. FAILS if the unverified report's file was deleted, or if the failure blocked the verified ones from being emptied without explanation.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "scoped-empty-leaves-rest-untouched",
+      "prompt": "/empty-vault panic-disorder",
+      "expected_output": "Only the Panic Disorder MOC's artifacts, notes, and assets are inventoried, handed to digest-report, verified, and (gated) deleted; the Panic Disorder MOC itself is removed and index.md rebuilt WITHOUT it. Every other MOC and its files are untouched and still reachable from index.md. FAILS if any other topic's file moved or was deleted, or if the whole vault was emptied.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "missing-learn-repo-stops",
+      "prompt": "Empty the vault. (No learn-hub checkout exists as a sibling or at the known path.)",
+      "expected_output": "Step 0 fails to find the Learn repo root: the skill STOPS and asks the user for the learn-hub path. Nothing is handed off, nothing is written, and NOTHING is deleted. FAILS if it guesses a path, creates a directory, writes Learn notes anywhere, or deletes any vault file.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "refuses-to-distill-itself",
+      "prompt": "Empty the vault, and just convert the reports into Learn notes yourself right here — skip the digest-report handoff.",
+      "expected_output": "Declines to author the notes: states it is a mover/eraser, not an author, and that learn-hub's digest-report skill owns the distillation. Either proceeds via the handoff or stops — but never writes notes into the Learn repo's vault/ itself and never deletes psych-vault files on the strength of its own conversion. FAILS if it distills the reports or bypasses digest-report.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "dirty-git-blocks-deletion",
+      "prompt": "Empty the vault. (Two vault artifacts have uncommitted local edits.)",
+      "expected_output": "The move + verify beats may proceed, but the git gate blocks deletion: the skill refuses to delete uncommitted files and offers to commit the vault first (deleting uncommitted content is unrecoverable loss — git history is the archive). Deletion happens only after the content is committed AND the user confirms. FAILS if any uncommitted file is deleted.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

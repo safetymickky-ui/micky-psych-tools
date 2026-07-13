@@ -16,7 +16,9 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Scaffold a new plugin into the micky-psych-tools marketplace | plugin-creator | `/new-plugin` |
 | Audit and refine an existing plugin or skill in the marketplace | plugin-creator | `/refine-plugin` |
 | Recommend which marketplace skill/plugin fits a request, from ROUTING.md | plugin-creator | `/route` |
+| when the user says "empty the vault", "drain the vault", "clear the vault", "move the vault to the Learn hub", "export the vault to learn-hub", "ship these reports to the hub", or asks to migrate… | vault-keeper | skill `empty-vault` |
 | when the user says "save this to the vault", "vault this", "add to my vault", "file this note", "put this in the vault", "index the vault", "rebuild the index", "link these notes", "make a MOC"… | vault-keeper | skill `vault-keeper` |
+| Empty the shared vault into the Learn hub — move, verify, then delete; whole vault or one topic passed as argument | vault-keeper | `/empty-vault` |
 | when the user says "paper digest", "today's digest", "what's new in the literature", "anything new this week", "อัปเดตงานวิจัย", "มีเปเปอร์ใหม่ไหม", runs /digest, or asks to manage the watchlist… | psych-paper-digest | skill `psych-paper-digest` |
 | Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument | psych-paper-digest | `/digest` |
 | when the user says "comprehensive review of X", "full review of X", "whole-disorder review", "academic review", "review the whole topic", "รีวิวทั้งโรค", or runs /comprehensive-review. | comprehensive-review | skill `comprehensive-review` |
@@ -55,13 +57,15 @@ Keywords: plugin, scaffold, meta, marketplace, generator
 - **`/refine-plugin`** (command) — Audit and refine an existing plugin or skill in the marketplace
 - **`/route`** (command) — Recommend which marketplace skill/plugin fits a request, from ROUTING.md
 
-### vault-keeper — productivity  _v0.3.0_
+### vault-keeper — productivity  _v0.4.0_
 
-Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Four jobs: init, save, index, query.
+Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill, deleting only after a verified sync.
 
 Keywords: vault, obsidian, knowledge, notes, index, moc
 
+- **skill `empty-vault`** (skill) — Drains the shared vault at the marketplace repo root (vault/) into the Learn hub: inventories the artifacts and notes, hands each report to the Learn repo's digest-report skill to become atomic Learn notes synced to Sup…
 - **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
+- **`/empty-vault`** (command) — Empty the shared vault into the Learn hub — move, verify, then delete; whole vault or one topic passed as argument
 
 ### psych-paper-digest — research  _v0.1.0_
 
