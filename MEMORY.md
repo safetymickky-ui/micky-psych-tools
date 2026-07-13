@@ -73,6 +73,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-13** — Filed **Tension-Type Headache and Migraine — Comprehensive Review** to the vault via
+  the comprehensive-review → vault-keeper flow (branch `claude/tension-migraine-review-ep6xs5`). Intent-lock
+  gate ran first (active prior #1 fired on "review"): a 3-question picker locked **one combined review** (both
+  disorders through a single ten-section arc, compared section by section — not two separate reviews),
+  **balanced emphasis** (equal depth, no section favored), and **clinician self-study** register. First
+  **neurology** topic in the vault and first **combined two-disorder** review; new **Primary Headache Disorders
+  MOC** (sixth MOC) wired into `index.md`. The chapter's spine is the prevalence/disability inversion + the
+  research-attention asymmetry: TTH is far more prevalent (GBD 2016: **1.89 billion** vs migraine's 1.04 billion)
+  but migraine owns the disability (**45.1M vs 7.2M YLDs**; #1 disabler in women 15–49) and the entire
+  therapeutic revolution — the 137-RCT acute NMA (triptans still first-line; gepants/ditans for cardiovascular
+  risk), best-in-class CGRP-antibody prevention (74-trial NMA), onabotulinumtoxinA for chronic migraine, and a
+  novel post-CGRP target (anti-PACAP **Lu AG09222**, n=874) — while TTH has only amitriptyline and "little
+  progress since the early 2000s," a gap the registry confirms (migraine pipeline = drugs, TTH pipeline =
+  physiotherapy). MOH treated as the shared secondary complication; stroke comorbidity OR 2.04; CHAMP pediatric
+  futility (52/55/61%). **30 PubMed sources + 5 CT.gov trials**, all 10 arc sections present. `validate.py` clean.
 - **2026-07-12** — **Interconnect + conflict-resolution wave** (7-plugin review; released pubmed
   1.5.1, vault-keeper 0.3.0, clinical-infographic 0.2.1; catalog → 1.7.0). Fixed the asymmetric
   "review X" routing: pubmed-research-note's NOT-for now carves out whole-disorder reviews to
