@@ -76,6 +76,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-13** — **First empty-vault run — drained the whole vault into the Learn hub** (same
+  branch). Ran the new skill end to end: 9 artifacts → 9 Learn topics / **97 atomic notes / 301
+  links**, each report handed to learn-hub's `digest-report` skill, distilled, and synced to the
+  shared Supabase project `juvoohejxuuvwolmgoep`. Sync integrity was proven, not assumed —
+  every note body was **md5-verified byte-exact** (local `md5(content.trim())` vs Postgres
+  `md5(body_md)`, 97/97 match) before any deletion. Then the double gate: files were already
+  git-committed, and with that satisfied the 9 artifacts, the 2 PPGL infographic assets
+  (html+png), and all 7 MOCs were deleted and `index.md` rebuilt to the empty scaffold
+  (`.gitkeep` tree kept). Everything remains recoverable from git history. New panic-disorder
+  reports (3) grouped under a shared `book: "Panic Disorder"`; the other 6 are standalone topics
+  by domain (Psychiatry / Pharmacology / Endocrinology / Neurology). Toolchain notes for next
+  time: learn-hub had no `.env.local`/service-role key, so the sync went through the Supabase MCP
+  `execute_sql` (per-topic SQL under the ~200 KB ceiling) rather than `npm run sync:apply`; the
+  deployed-app cache revalidate was skipped (no `APP_URL`/`REVALIDATE_SECRET` locally) so content
+  surfaces within the 1 h safety revalidate.
 - **2026-07-13** — **vault-keeper 0.4.0 — the empty-vault skill** (catalog → 1.8.0, branch
   `claude/micky-vault-emptying-skill-2z107h`). New fifth job: **empty** — drain the vault into the
   Learn hub. The skill is a mover/eraser, never an author: it resolves both roots (psych vault per
