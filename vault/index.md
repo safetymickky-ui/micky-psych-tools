@@ -15,6 +15,7 @@ a MOC. Managed by the `vault-keeper` skill.
 ## MOCs
 
 - [[Adjustment Disorder MOC]]
+- [[Antidepressant Pharmacology MOC]]
 - [[Depression — Treatment MOC]]
 - [[Intermittent Explosive Disorder MOC]]
 - [[Panic Disorder MOC]]

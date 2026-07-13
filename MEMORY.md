@@ -73,6 +73,26 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-13** — Filed **Choosing an Antidepressant by Mechanism — a Phenotype-to-Drug Selection Guide** to the
+  vault via the pubmed-research-note → vault-keeper flow (branch `claude/antidepressant-pharmacology-research-yoma58`).
+  Intent-lock gate ran first: a 3-question picker locked the shape from a topic-shaped 8-item list (serotonin receptor
+  map → SSRI transporter comparison → dose–occupancy/adaptation → activation/akathisia/blunting → PK-vs-PD → α₂δ
+  pharmacology → misuse/withdrawal → clinical selection). User chose **selection instrument** (item 8's phenotype→drug
+  framework is the verdict; items 1–7 are the mechanistic argument beneath it — not an atlas, not 8 notes), **full
+  antidepressant spectrum + α₂δ ligands**, **clinician self-study** register. Active prior #1 fired (don't collapse a
+  broad "research" list) — here the risk was the opposite, an item-by-item receptor encyclopedia, so the picker forced
+  the culminating decision to lead. The spine adjudicates a real tension: efficacy is a class near-tie (Cipriani 21-drug
+  NMA, OR 1.37–2.13 vs placebo, head-to-head diffs only 1.15–1.55) and PET shows why (SERT ~80% occupancy at the min
+  effective dose; high dose → ~85% but only more dropout), so **selection belongs to mechanism/tolerability/PK matched
+  to phenotype, not efficacy ranking**. Cashes out to: receptor fingerprint → side-effect forecast; half-life → the
+  discontinuation you choose at the start (Henssler 2024: ~15% attributable, ~1 in 6–7, severe 2.8%; short-t½
+  paroxetine/venlafaxine worst; hyperbolic taper per Horowitz); emotional blunting ~46% and partly residual depression
+  (Goodwin); α₂δ ligands as the non-monoamine anxiety option (Slee GAD NMA pregabalin −2.79 HAM-A; Taylor α₂δ-1
+  mechanism) capped hard by dependence (Evoy: 1.6% general vs 3–68% opioid-user misuse). **17 PubMed + 3 CT.gov trials**
+  (hyperbolic-vs-linear taper NCT07393919 2027; deprescribing NCT07398053; pharmacogenomic-guided NCT06729541 2026).
+  New **Antidepressant Pharmacology MOC** (seventh MOC) — first drug-side, cross-disorder pharmacology MOC — wired into
+  `index.md` and cross-linked to Depression — Treatment. Confidence moderate-high on the spine, moderate on the specific
+  phenotype mappings. `validate.py` clean.
 - **2026-07-13** — Filed **Tension-Type Headache and Migraine — Comprehensive Review** to the vault via
   the comprehensive-review → vault-keeper flow (branch `claude/tension-migraine-review-ep6xs5`). Intent-lock
   gate ran first (active prior #1 fired on "review"): a 3-question picker locked **one combined review** (both
