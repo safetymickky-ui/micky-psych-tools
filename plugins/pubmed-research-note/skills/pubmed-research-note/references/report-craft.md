@@ -34,9 +34,10 @@ both sides is not balance; it is a refusal to do the one thing the reader cannot
 themselves.
 
 **5. Read clean.** No inline citations taxing the prose — provenance lives in a compressed
-`## Sources` block at the end, one auditable line per source (topic phrase + DOI, nothing
-else). See *The citation discipline* in the SKILL. The reader reads once; do not make every
-sentence carry a bracket he checks in maybe one.
+`## Sources` block at the end, one auditable line per source (topic phrase + DOI; a web
+document fetched via firecrawl cites URL + access date instead — nothing else). See *The
+citation discipline* in the SKILL. The reader reads once; do not make every sentence carry
+a bracket he checks in maybe one.
 
 **6. As long as the decision needs, no longer.** The number of sections is decided by the
 decision's complexity, never the topic's breadth. A contested claim may resolve in three

@@ -103,7 +103,14 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   file to the vault via vault-keeper on explicit request (opt-in like psych-paper-digest);
   clinical-infographic (sourced clinical reports only) and psych-paper-digest (fixed sweep
   engines) explicitly not chained. Firecrawl's description rewritten action-first with the
-  handoffs; first 8 evals shipped. `validate.py` clean; ROUTING.md regenerated.
+  handoffs; first 8 evals shipped. A four-way adversarial audit followed (contracts /
+  conventions / consistency / regressions — no blockers): the web-document citation format
+  was propagated into pubmed's citation-discipline + report-craft (it had only reached the
+  engine catalog), "publication year" disambiguated from the access date in both research
+  plugins' failure tells, firecrawl's vault bullet gained the HTML/binary→`asset` carve-out,
+  and two pre-existing README drifts were fixed (pubmed's stale opt-in vault framing →
+  write→show→file default; vault-keeper's "four jobs" → five with the empty row).
+  `validate.py` clean; ROUTING.md regenerated.
 - **2026-07-13** — Added **firecrawl 0.1.0** (eighth plugin; catalog → 1.9.0, branch
   `claude/firecrawl-docs-5qlw5z`), packaging Firecrawl's official AI-onboarding guide as a
   marketplace skill. Body kept verbatim (install command, CLI/build/workflow skill segments,

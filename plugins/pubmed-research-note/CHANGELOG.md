@@ -10,7 +10,10 @@
   Widens *where* documents come from, never the evidence bar — the blog ban stands, and
   Firecrawl fetches while this skill adjudicates. Scraped sources cite exact URL +
   access date in `## Sources`. Tool catalog, SKILL engines list, description, and README
-  updated to five engines.
+  updated to five engines; the citation discipline and report-craft admit the
+  web-document format (`<topic> — <URL> (accessed YYYY-MM-DD)`, DOI preferred when one
+  exists) with "publication year" disambiguated from the access date. README's stale
+  opt-in vault framing corrected to the write → show → file default (1.3.0 behavior).
 
 ## 1.5.0 — 2026-07-11
 

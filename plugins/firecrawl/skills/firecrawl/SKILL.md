@@ -358,12 +358,12 @@ unchanged.
 
 - **intent-lock gates Path C.** The vendor flow's step 1 — "confirm the workflow and
   final artifact with the user" — runs through the `intent-lock` skill here, the same
-  gate every other deliverable-producing plugin uses. Explicit opt-out only
-  ("just build it").
+  gate the research plugins use. Explicit opt-out only ("just build it").
 - **Vault saves go through vault-keeper, on explicit request.** When the user says
-  "vault this" about a finished Path C artifact, hand vault-keeper the human title,
-  the body, target type `artifact`, and a suggested MOC topic — never resolve a vault
-  path or write into `vault/` from this skill. Without the explicit request the
+  "vault this" about a finished Path C deliverable, hand vault-keeper the human title,
+  the body, target type `artifact` — or `asset` when the deliverable is HTML or another
+  binary, per vault-keeper's layout rule — and a suggested MOC topic. Never resolve a
+  vault path or write into `vault/` from this skill. Without the explicit request the
   deliverable stays in the working directory (the same opt-in rule as
   psych-paper-digest).
 - **Not chained:** `clinical-infographic` renders SOURCED clinical reports only — a

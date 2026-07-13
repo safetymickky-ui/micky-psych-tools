@@ -4,7 +4,7 @@ Files, indexes, links, and retrieves any skill's output in the shared Obsidian-s
 at the marketplace repo root (`vault/`). This README is the integration contract: if your
 plugin produces content that should land in the vault, this is how you hand it over.
 
-## The four jobs
+## The five jobs
 
 | Job | What it does |
 |-----|--------------|
@@ -12,6 +12,7 @@ plugin produces content that should land in the vault, this is how you hand it o
 | **save** | File a note/artifact: query first to avoid duplicates, name it per the layout rules, write frontmatter + wikilinks, wire it into its topic MOC and `index.md`. |
 | **index** | Rebuild/repair `index.md` and `MOCs/` deterministically — pure rebuild, alphabetical by title, `primary-moc:` tie-break, orphans reported never moved. |
 | **query** | Glob/Grep the resolved vault root to find what exists before anything is duplicated. |
+| **empty** | Drain the vault into the Learn hub (the sibling `empty-vault` skill, `/empty-vault [topic]`): each artifact digested via learn-hub's `digest-report`, deleted only after verified sync + git-committed state + explicit confirmation. |
 
 ## Canonical layout
 

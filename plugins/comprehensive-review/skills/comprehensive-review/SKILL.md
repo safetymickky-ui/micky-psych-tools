@@ -173,7 +173,8 @@ This skill has failed if:
 - Any search ran before intent-lock, absent an explicit opt-out in the user's own words.
 - A section (other than Definition & nosology) contains no number.
 - An inline citation appeared in prose, or a `## Sources` entry carries an author,
-  journal, year, or PMID.
+  journal, publication year, or PMID (a firecrawl web document's access date is not a
+  publication year).
 - The treatment section shipped without the ClinicalTrials.gov check.
 - A patient-level verdict was issued instead of handing the decision to
   pubmed-research-note.

@@ -190,10 +190,11 @@ Both halves hold together: they are what keep the report readable *and* auditabl
   points more than placebo (n=304, d≈0.15, non-significant)"` is the standard. A section
   with no number in it is decoration.
 - **A `## Sources` block, compressed to one line per source: the topic it supports, then the
-  DOI link.** Nothing else. No authors, no journal, no year, no volume, no pages, no PMID.
-  The topic phrase *is* the annotation — it names what the source carries, so the report
-  stays auditable without a bibliography nobody reads. Registry entries: `NCT NNNNNNNN —
-  topic, status, n, readout`. Books: `Title, edition — OLID`.
+  DOI link.** Nothing else. No authors, no journal, no publication year, no volume, no pages,
+  no PMID. The topic phrase *is* the annotation — it names what the source carries, so the
+  report stays auditable without a bibliography nobody reads. Registry entries: `NCT NNNNNNNN
+  — topic, status, n, readout`. Books: `Title, edition — OLID`. Web documents fetched via
+  firecrawl: `<topic> — <URL> (accessed YYYY-MM-DD)`, DOI preferred when one exists.
 - **A request to drop the `## Sources` block is declined** — kindly, in one line, without
   moralising. A verdict you cannot re-derive in six months is not a verdict; the block stays
   even when the user asks for just the answer. The prose is already clean of inline
@@ -272,7 +273,8 @@ it exists to replace. If one shows up, the fix is upstream, in the decision or t
 - Trials disagree and the report lays out both without saying which it believes and why.
 - The verdict is absent, hedged into uselessness, or arrives after the evidence.
 - A section contains no number, or an inline citation clutters the prose.
-- A `## Sources` entry carries an author, journal, year, or PMID.
+- A `## Sources` entry carries an author, journal, publication year, or PMID (a firecrawl
+  web document's access date is not a publication year).
 - The report is padded past what the decision needed, or shaped by the topic's breadth
   instead of the decision's complexity.
 - A research request went to search without first routing through intent-lock, absent an

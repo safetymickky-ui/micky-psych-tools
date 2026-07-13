@@ -2,7 +2,8 @@
 
 Research a psychiatry or biomedical topic from primary literature and get back a
 verdict-first, quantified evidence report — not an encyclopedia article. The report answers
-a decision, then is thrown away; vault notes are opt-in, produced only on request.
+a decision — shown inline and filed to the vault by default; atomic notes are opt-in,
+produced only on "atomize".
 
 ## The decision brief — built, not chosen
 
@@ -75,13 +76,13 @@ If absent, reports land in the working directory. See "Where output goes" in
 
 ## Vault handoff
 
-This skill never resolves vault paths, dedup-greps, or writes YAML frontmatter itself. When
-the user asks to save the report into the vault, or says "atomize" / "ทำโน้ต" to produce
-atomic notes, the skill hands the content to the **vault-keeper** skill — title, body,
-target type (note/artifact), suggested MOC topic, source-skill tags, and any optional extra
-frontmatter fields (sources, board_pearls, review_count, last_reviewed, aliases) as a flat
-map. `vault-keeper` owns paths, dedup, MOC wiring, and the index, and reports back where the
-content landed.
+This skill never resolves vault paths, dedup-greps, or writes YAML frontmatter itself. The
+finished report is handed to the **vault-keeper** skill as an artifact by default (skip only
+on an explicit "don't vault this"); "atomize" / "ทำโน้ต" additionally produces atomic notes.
+The handoff passes title, body, target type (note/artifact), suggested MOC topic,
+source-skill tags, and any optional extra frontmatter fields (sources, board_pearls,
+review_count, last_reviewed, aliases) as a flat map. `vault-keeper` owns paths, dedup, MOC
+wiring, and the index, and reports back where the content landed.
 
 ## Install
 
