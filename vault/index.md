@@ -19,3 +19,4 @@ a MOC. Managed by the `vault-keeper` skill.
 - [[Intermittent Explosive Disorder MOC]]
 - [[Panic Disorder MOC]]
 - [[Pheochromocytoma & Paraganglioma MOC]]
+- [[Primary Headache Disorders MOC]]
