@@ -89,6 +89,24 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Closed **Tier 1** of the addiction-service accreditation research program (same branch),
+  filing reports **#3** and **#5** to the **Addiction Psychiatry MOC** (now 5 artifacts) via pubmed-research-note
+  → vault-keeper. **#3 AUD relapse-prevention pharmacotherapy (limited adherence support):** naltrexone first
+  (once-daily/XR fits low supervision; JAMA 2023 meta 118 trials — NNT to prevent return to any drinking:
+  **acamprosate 11, naltrexone 18**; naltrexone NNT 11 for heavy drinking), acamprosate co-first-line (abstinent/
+  **hepatic** — renally cleared), **disulfiram ONLY supervised** (Skinner meta: effect appears only in open-label
+  trials g 0.70, vanishes when blinded — the anti-goal is the unsupervised default), second-line topiramate/
+  gabapentin/**baclofen** (niche = advanced liver disease); Bahji NMA (156 trials) for the comparative RRs. 7
+  PubMed + 4 CT.gov (mature field — only mechanistic/formulation trials ongoing). **#5 Methamphetamine use
+  disorder pharmacotherapy (usable-now vs wait):** **nothing approved**; **ADAPT-2** combo (XR-naltrexone + ER
+  bupropion) the best off-label try-now (Trivedi NEJM n=403, response 13.6% vs 2.5%, **effect 11.1 pp**, NNT ~9,
+  reduced-use not abstinence), **mirtazapine** reasonable adjunct (Colfax RR 0.57 / Coffin RR 0.67–0.73; meta RR
+  0.81 small — best where insomnia/depression/high-risk behaviour coexist), bupropion marginal (RR 0.90), agonists
+  (dexamfetamine/methylphenidate) most-consistent signal but **watch** (regulatory/diversion); **CM is the
+  backbone** (Cochrane RR 1.89 continuous abstinence) → hands to report #6. Live frontier = **GLP-1 agonists**
+  (semaglutide Phase 2, 2027–2030) + **ketamine** (NIDA CTN-0132, 2026) + extended ADAPT-2 delivery. 8 PubMed + 5
+  CT.gov. Tier 1 (#1–#5) complete; Tier 2 (#6 CM, #7 retention — the R2R/publication candidates) and Tier 3 next.
+  `validate.py` clean.
 - **2026-07-14** — Completed the **pre-meeting trio** of the addiction-service accreditation research program
   (same branch), filing reports **#2** and **#4** to the **Addiction Psychiatry MOC** (now 3 artifacts) via
   the pubmed-research-note → vault-keeper flow. **#2 Methamphetamine-associated psychosis — consult protocol:**
