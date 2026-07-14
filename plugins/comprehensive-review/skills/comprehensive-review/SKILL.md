@@ -140,15 +140,15 @@ The deliverable is the vault artifact. Three steps, all defaults:
    as suggested MOC topic. Vault-keeper owns paths, dedup, MOC wiring, and the index —
    never resolve a vault path or write into `vault/` from this skill. Skip only on an
    explicit "don't vault this".
-3. **Offer the infographic — the autolink (default):** after filing, surface the
-   **clinical-infographic** handoff in one line — this review can be rendered into a
-   single-page, print-ready clinical reference (color-coded phase/theme columns, stat tiles,
-   and a "medications to avoid" safety banner when the review carries contraindications).
-   Clinical-infographic reuses *this
-   session's* review directly as its source — no re-search — so the render is one step away:
-   run `/infographic`, or say "make an infographic". Hand the review over on the user's
-   go-ahead; **never lay out the HTML here** — visual layout is clinical-infographic's job.
-   Skip only on an explicit "no infographic".
+3. **Offer the infographic — the autolink (default):** as the last step — whether or not the
+   review was vaulted — surface the **clinical-infographic** handoff in one line: this review
+   can be rendered into a single-page, print-ready clinical reference (color-coded phase/theme
+   columns, stat tiles, and a "medications to avoid" safety banner when the review carries
+   contraindications). Clinical-infographic reuses *this session's* review directly as its
+   source — no re-search — so the render is one step away: run `/infographic`, or say "make an
+   infographic". Hand the review over on the user's go-ahead; **never lay out the HTML here** —
+   visual layout is clinical-infographic's job. Skip the offer only on an explicit "no
+   infographic", or when a one-page render would not serve the review.
 
 **Chat gets the Close, not the chapter.** Render the full review inline only when the
 user asks to see it here. **No filesystem:** render inline instead, and say explicitly
@@ -172,10 +172,10 @@ that nothing was filed.
 
 ## Close
 
-Two lines in chat: what was reviewed, `PubMed N · trials N · sections N`, the vault path
-returned by vault-keeper (or that the save was skipped), any merged or thin sections, and
-any `[unverified]` gaps. The file is the deliverable — never restate the chapter inline. Close
-with the one-line infographic offer — the review is ready to render (`/infographic`).
+Two lines in chat, then the offer: what was reviewed, `PubMed N · trials N · sections N`, the
+vault path returned by vault-keeper (or that the save was skipped), any merged or thin sections,
+and any `[unverified]` gaps; then the one-line infographic offer — the review is ready to render
+(`/infographic`). The file is the deliverable — never restate the chapter inline.
 
 ## Failure conditions
 
