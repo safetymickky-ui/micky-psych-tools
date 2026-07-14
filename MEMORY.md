@@ -89,6 +89,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Completed the **pre-meeting trio** of the addiction-service accreditation research program
+  (same branch), filing reports **#2** and **#4** to the **Addiction Psychiatry MOC** (now 3 artifacts) via
+  the pubmed-research-note → vault-keeper flow. **#2 Methamphetamine-associated psychosis — consult protocol:**
+  olanzapine/quetiapine first-line (Chiang Mai NMA, 6 RCTs/395; aripiprazole significantly inferior; Thanyarak
+  quetiapine≈haloperidol RCT n=80), lower doses/brisk response, **time-limited not indefinite**; transition to
+  schizophrenia **≈22%** (Murrie meta 50 studies/40,783), most within 2–5 y (Alderson), so surveillance is the
+  core, not the drug; **LAI reserved on borrowed schizophrenia evidence — no MAP-specific LAI trial exists** and
+  none ongoing (honest gap); antipsychotics treat psychosis not use (Kishi null), and the ~76% violence rate ties
+  it to the SMI-V layer (report #11). 14 PubMed + 3 CT.gov. **#4 Smoking cessation for a counselling-only public
+  clinic:** adding pharmacotherapy ≈**doubles** abstinence (~11%→~20%+); **cytisine first-line for a public system**
+  (≈varenicline efficacy, cheaper, fewer AEs — RAUORA Māori RCT 12.1% vs 7.9%; Ofori meta RR 1.13 NS vs varenicline),
+  varenicline + combination NRT co-first-line, bupropion reserved; **EAGLES (n=8,144) cleared the neuropsychiatric
+  fear** → comorbidity is not a barrier (directly relevant to a psych clinic). Anchored on the Cochrane component
+  NMA (319 RCTs/157,179). 8 PubMed; field mature so no CT.gov sweep load-bearing (stated). Sequence 1→2→4 as
+  advised; #3, #5, and Tiers 2–3 remain. `validate.py` clean.
 - **2026-07-14** — Filed **Alcohol Withdrawal on a District-Hospital Ward — Protocol Choice and Thiamine
   Dosing** to the vault via the pubmed-research-note → vault-keeper flow (branch
   `claude/addiction-protocols-research-sng1gs`). First report of the **addiction-service accreditation
