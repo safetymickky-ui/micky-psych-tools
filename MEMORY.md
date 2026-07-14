@@ -90,9 +90,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 ## Recent milestones
 
 - **2026-07-14** — Filed **Matrix Intensive Outpatient Treatment — Comprehensive Review** to the vault via the
-  comprehensive-review → vault-keeper flow (branch `claude/matrix-iop-review-w6v68x`). First **comprehensive
-  review** filed under the **Addiction Psychiatry MOC** (now **17 artifacts**) — the whole-topic academic
-  companion to decision report #8 (the Matrix evidence-base "honest ceiling"), not a 17th program question.
+  comprehensive-review → vault-keeper flow (branch `claude/matrix-iop-review-w6v68x`). A **comprehensive
+  review** filed under the **Addiction Psychiatry MOC** (now **18 artifacts** — 16 decision reports + 2
+  comprehensive reviews; the Twelve-Step review was filed concurrently on another branch and merged in) — the
+  whole-topic academic companion to decision report #8 (the Matrix evidence-base "honest ceiling"), not a
+  program question.
   Intent-lock gate ran first (active prior #1 fired on "review"): 3-question picker locked **comparative scope**
   (Matrix as anchor within the IOP/psychosocial landscape, a "where Matrix sits" map — not a Matrix-only
   monograph), **components & fidelity emphasis**, and **clinician self-study** register. Because the object is a
@@ -111,6 +113,29 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   core (digital/peer CM, tDCS+Matrix RCT n=60, **Vietnam Matrix+CM at MMT clinics** NCT07121296, non-abstinence
   outcomes). **26 PubMed + 8 CT.gov trials**, all 10 arc sections present, cross-linked to the Matrix evidence-base,
   CM, and short-stay-vs-outpatient artifacts. `validate.py` clean.
+- **2026-07-14** — Filed **Twelve-Step Treatment for Addiction — Comprehensive Review** to the vault via the
+  comprehensive-review → vault-keeper flow (branch `claude/12-step-treatment-review-2wnm8o`); **Addiction
+  Psychiatry MOC now 18 artifacts** — one of two comprehensive reviews filed the same day (with the Matrix IOP
+  review, merged concurrently); the other 16 are decision reports. Intent-lock Step 0 ran as a silent cold read (unattended session; ledger prior #1 checked — the
+  full-arc frame is fixed by the skill itself): locked a **whole-modality review** (AA/NA fellowships +
+  manualized TSF, all SUDs, alcohol evidence dominant), clinician self-study register, ten-section arc adapted
+  treatment-modality-wise, assumptions surfaced in the preface. The chapter's spine: **the manual moved
+  12-step from faith to evidence** — the 2006→2020 Cochrane reversal (8 trials "no unequivocal evidence" →
+  27 studies/10,565: manualized TSF **beats CBT for continuous abstinence at 12 mo, RR 1.21 high-certainty**,
+  holding at 24/36 mo), with self-selection answered by the instrumental-variables re-analysis (attendance
+  *causes* abstinence, B=0.38/0.42). Mechanisms are **social-network change + abstinence self-efficacy**
+  (43–67% mediated), spiritual pathway only in the high-severity minority; gendered (women: negative-affect
+  self-efficacy). Clinical job = **intensive referral, not a meeting list** (Timko: 1-y abstinence 51% vs 41%;
+  involvement > attendance — record sponsors/service, not counts); durability is the comparative advantage
+  (≥27 wks first-year AA → better **16-year** outcomes) vs the CBT/Matrix decay curves; cheapest continuing
+  care in the literature (2-y 49.5% vs 37.0% abstinence, ~$2,440/patient saved). Honest ceilings: drug-
+  population evidence one tier weaker (STAGE-12 mixed; NA+buprenorphine observational only), coerced bare
+  attendance worse than alternatives (grade belongs to voluntary facilitated engagement — links the
+  quasi-coerced report), adolescent iTSF engagement-positive not abstinence-superior, dual-dx TSF raises
+  participation not outcomes. Registry quiet: 3 active trials only (TSF as comparator/platform — NCT05363371
+  2027, NCT04793685 2026) + one n=3,483 implementation RCT completed 2015 with **no results posted**
+  (publication-bias flag) → frontier is implementation; **Thai adaptation flagged as a publishable local
+  gap**. 25 PubMed + 3 CT.gov; all 10 arc sections present. `validate.py` clean.
 - **2026-07-14** — **Completed the addiction-service accreditation research program** — filed the final Tier 3
   reports (#12–#16), bringing the **Addiction Psychiatry MOC to 16 artifacts** (all 16 decision-locked
   questions → 16 reports), via pubmed-research-note → vault-keeper. This batch: **#12 harm reduction for
@@ -246,6 +271,48 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   regimen (no RCT in a low-resource ward). New **Addiction Psychiatry MOC** (umbrella for the whole program —
   reports #2–#16 to follow) wired into `index.md`; first vault content since the empty-vault drain.
   `validate.py` clean.
+- **2026-07-14** — Filed **two separate whole-disorder comprehensive reviews — ADHD and Autism
+  Spectrum Disorder** — to the vault via the comprehensive-review → vault-keeper flow (branch
+  `claude/adhd-asd-plugin-review-20vuac`). Intent-lock gate ran first (active prior #1 fired on
+  "review"): a 3-question picker locked **two separate reviews** (not one combined/overlap review,
+  not a balanced two-disorder arc), the **novel-concept emphasis across all four axes**
+  (co-occurrence/AuDHD, dimensional nosology, shared mechanism/biomarkers, emerging treatments),
+  and **clinician self-study** register. First **neurodevelopmental** topics in the (recently
+  drained) vault; two new MOCs — **ADHD MOC** and **Autism Spectrum Disorder MOC** — cross-linked
+  through the shared AuDHD overlap and wired into `index.md`. Both reviews keep the full
+  ten-section arc (breadth is the contract) with depth concentrated on the emerging concepts.
+  Shared spine across the pair: the **AuDHD** reconceptualization DSM-5 (2013) enabled by deleting
+  the ASD/ADHD exclusion (ADHD in **28%** of autistic people; ~170 pleiotropic ADHD/ASD/intelligence
+  loci; **84–98%** of ADHD common-variant liability shared with other psychiatric disorders); the
+  dimensional turn (ADHD as trait-extreme; autism's one-spectrum-vs-"profound-autism" tension +
+  neurodiversity); and the biomarker-negative bottom line (ENIGMA subcortical Cohen's d −0.10 to
+  −0.19, non-significant in adults; autism social-looking markers with no clear-cut relation to
+  autism). Emerging-treatment stories diverge sharply — ADHD's is incremental success (viloxazine,
+  centanafadine, FDA-cleared EndeavorRx digital therapeutic, home tDCS / eTNS) while autism's is a
+  catalogue of pivotal failures (oxytocin SOARS-B P=0.61, balovaptan primary miss, cannabidiol
+  "insufficient," microbiome open-label-only, bumetanide phase-3 halted). **ADHD: 27 PubMed + 16
+  registry trials; ASD: 29 PubMed + 17 registry trials**, all real DOIs/NCTs (parallel harvest
+  agents + targeted gap-filling: AuDHD rate, twin heritability 0.76, US NSCH trend). `validate.py`
+  clean. Honest gaps flagged in-text as `[thin]`/`[unverified]` (ADHD reciprocal AuDHD rate,
+  RDoC-specific framing; autism epilepsy pooled rate, employment/optimal-outcome rates, ICD-11
+  severity-level validation).
+- **2026-07-14** — **Treatment deep-dive follow-up** (same branch), on the user's "dig deep more on
+  treatment side of adhd and autistic." Expanded §7 of both reviews in place (full arc preserved,
+  H3 modality split kept — allowed only in Treatment). Two parallel treatment-harvest agents added
+  **~44 new sources**: ADHD → PubMed 27→**55**, trials 16→**22** (MTA 14-mo→8-yr→young-adult arc:
+  acute efficacy strong but the randomized-group advantage gone by 8 yr and extended use → ~2.5 cm
+  adult-height suppression *without* lower symptom severity; alpha-2 agonists guanfacine/clonidine
+  ER mono + adjunct; atomoxetine SMD −0.45, ≈ OROS-MPH but slower; switching rescue 42–43%; adult
+  CBT SMD −0.84/−1.22; solriamfetol phase 3; CV safety HR 0.75 / RR 0.83; deprescribing).
+  Autism → PubMed 29→**52**, trials 17→**19** (ESDM IQ +17.6 vs +7.0; **Sandbank 2024** intensity
+  has no dose–response — undercuts 20–40 h/wk; Project AIM/Gosling detection-bias null; **PACT**
+  durable ES 0.55 at 6 yr; risperidone 69% vs 12% but +2.7 kg; **Meza 2025** Cochrane NMA
+  risperidone −7.89 > aripiprazole −6.26 > lurasidone nil, weight-gain RR 2.40 / EPS RR 2.36;
+  SSRIs negative for repetitive behavior — citalopram STAART RR 0.96; adapted CBT 92% response;
+  melatonin NNT 3.4; adult-treatment evidence gap). Shared **AuDHD treatment-collision** subsection
+  in both (methylphenidate 49% response + 18% AE dropout; guanfacine ER the standout, ES 1.67;
+  alpha-2 often first-line in AuDHD), cross-linked. Citation contract held (0 inline PMIDs/author-year,
+  DOI-only sources, counts match headers). `validate.py` clean.
 - **2026-07-13** — **firecrawl deep-integration wave** (same branch; released firecrawl
   0.2.0, pubmed-research-note 1.6.0, comprehensive-review 0.2.0; catalog → 1.10.0). Wired
   the new plugin into the pipeline in both directions. **Inbound:** firecrawl is now the
