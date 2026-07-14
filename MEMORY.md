@@ -89,6 +89,29 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — **Completed the addiction-service accreditation research program** — filed the final Tier 3
+  reports (#12–#16), bringing the **Addiction Psychiatry MOC to 16 artifacts** (all 16 decision-locked
+  questions → 16 reports), via pubmed-research-note → vault-keeper. This batch: **#12 harm reduction for
+  stimulants** (beyond NSP: safer-smoking supplies, drug checking for fentanyl-adulterated supply,
+  integrated sexual-health/HIV/PrEP, naloxone; no proven stimulant substitution; evidence mostly
+  observational — implement with measurement); **#13 CBTx + QoL instrument** (CBTx = delivery framework,
+  claim components' evidence + measure own; task-shifted community tx works in Thai low-resource — CETA;
+  **QoL = WHOQOL-BREF**, Thai/SUD-validated, paired with a substance-specific outcome); **#14 quasi-coerced
+  treatment** (detention compulsory tx = no benefit + harm — Werb; **legal leverage** retains/completes ≥
+  self-referral — Copeland; same evidence-based tx both streams + front-load engagement); **#15 emerging
+  local substances** (one combined artifact, 3 parts — **ketamine**: screen chronic users for uropathy,
+  abstinence + joint urology–addiction; **kratom/cannabis**: risk = adulterated kratom cocktails + cannabis
+  perception–evidence gap/psychosis, Assanangkornchai Thai post-legalization data, not traditional use;
+  **adolescent vaping**: text-message cessation works — Graham JAMA RR 1.35 — + school prevention, NOT adult
+  pharmacotherapy); **#16 KPI panel** (no single adopted standard set → compact 4-domain panel: retention at
+  ≥3/6 mo fixed-definition · use/remission · functioning/QoL=WHOQOL-BREF · safety/harm; mix process+outcome,
+  hold definitions constant, keep small — answers the surveyor recommendation at the root). **Program summary:**
+  16 reports, Tier 1 (#1–5 protocols) → Tier 2 (#6–7 R2R candidates) → Tier 3 (#8–16 service/context), all
+  under one new **Addiction Psychiatry MOC** (first content since the empty-vault drain); recurring threads —
+  CM is the strongest stimulant intervention and the backbone; retention/continuing-care is the durable active
+  ingredient; honest ceilings stated (Matrix in-treatment-only, coerced-detention harm, generic-QoL modest
+  responsiveness); several **Thai-language validation / local-audit** publication hooks flagged. `validate.py`
+  clean throughout; seven commits on branch `claude/addiction-protocols-research-sng1gs`.
 - **2026-07-14** — Filed the **two service-model reports (#8, #9)** of the addiction-service accreditation
   research program (same branch); **Addiction Psychiatry MOC now 11 artifacts**. **#8 Matrix Model evidence
   base — the honest ceiling:** the Rawson MTP RCT (n=978) shows Matrix > TAU on **in-treatment** outcomes

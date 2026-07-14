@@ -14,4 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Addiction Psychiatry MOC]] — substance-use-disorder service evidence base (alcohol withdrawal protocol; more from the accreditation research program to follow).
+- [[Addiction Psychiatry MOC]] — substance-use-disorder service evidence base; the completed accreditation research program (16 decision reports across protocols, service design, and context/strategy).
