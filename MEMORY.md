@@ -89,6 +89,28 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Filed **Matrix Intensive Outpatient Treatment — Comprehensive Review** to the vault via the
+  comprehensive-review → vault-keeper flow (branch `claude/matrix-iop-review-w6v68x`). First **comprehensive
+  review** filed under the **Addiction Psychiatry MOC** (now **17 artifacts**) — the whole-topic academic
+  companion to decision report #8 (the Matrix evidence-base "honest ceiling"), not a 17th program question.
+  Intent-lock gate ran first (active prior #1 fired on "review"): 3-question picker locked **comparative scope**
+  (Matrix as anchor within the IOP/psychosocial landscape, a "where Matrix sits" map — not a Matrix-only
+  monograph), **components & fidelity emphasis**, and **clinician self-study** register. Because the object is a
+  treatment *model* not a disorder, the canonical disorder-arc was **adapted to a treatment-model arc** (origins →
+  reach → theory-of-change → components → assessment/fidelity → comparators → efficacy → populations → durability →
+  future); H3 used in the components + efficacy cores by design (surfaced in the preface). The spine adjudicates the
+  central misreading of the model: Matrix is a **manualised container** of individually-evidence-based components
+  (CBT + MI + CM + 12-step + family), whose active ingredient is **retention + in-treatment abstinence**, and which
+  is **not shown superior** to its own best components. Load-bearing evidence: MTP RCT (n=978, 8 sites — in-treatment
+  superiority over TAU that did NOT persist at discharge/6 mo); IOP-as-level-of-care ≈ inpatient (McCarty, evidence
+  graded high); **CM+CRA the only NMA winner** (De Crescenzo 50 RCTs, OR 2.84 / 7.60 / 3.08); **2024 Cochrane** (64
+  RCTs, 8241) — psychosocial cuts dropout RR 0.82, continuous abstinence RR 1.89, but ≈ TAU on abstinence; Khalili
+  72-RCT NMA (no moderate/high-certainty benefit, Matrix appears as a combination partner); residential 1-yr
+  abstinence 23% with weeks-in-tx/rapport/individual-counselling as predictors; US facilities pair CM+Matrix only
+  25% of the time; Thai **FAST > Matrix** RCT as the fidelity-vs-adaptation tension. Future = augment/re-deliver the
+  core (digital/peer CM, tDCS+Matrix RCT n=60, **Vietnam Matrix+CM at MMT clinics** NCT07121296, non-abstinence
+  outcomes). **26 PubMed + 8 CT.gov trials**, all 10 arc sections present, cross-linked to the Matrix evidence-base,
+  CM, and short-stay-vs-outpatient artifacts. `validate.py` clean.
 - **2026-07-14** — **Completed the addiction-service accreditation research program** — filed the final Tier 3
   reports (#12–#16), bringing the **Addiction Psychiatry MOC to 16 artifacts** (all 16 decision-locked
   questions → 16 reports), via pubmed-research-note → vault-keeper. This batch: **#12 harm reduction for
