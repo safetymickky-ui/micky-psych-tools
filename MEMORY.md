@@ -89,6 +89,27 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Filed **Alcohol Withdrawal on a District-Hospital Ward — Protocol Choice and Thiamine
+  Dosing** to the vault via the pubmed-research-note → vault-keeper flow (branch
+  `claude/addiction-protocols-research-sng1gs`). First report of the **addiction-service accreditation
+  research program** (a 16-item decision-locked plan; this is Tier-1 #1, "the single most defensible gap").
+  Decision was handed over pre-locked, so intent-lock was bypassed (valid opt-out) and the brief named at
+  the top. Verdict adjudicates a real trap: symptom-triggered CIWA-Ar dosing is the specialist-unit
+  "textbook best" (Holleck meta: duration −60.4 h, BZD −10.5 mg lorazepam-eq) but the same meta rates its
+  **general-hospital applicability low** — it presupposes reliable hourly CIWA-Ar scoring a district ward
+  lacks. So the recommendation is a **risk-stratified, benzodiazepine-anchored** protocol: PAWSS ≥4 gate
+  (validation n=403: sens 93.1%, spec 99.5%; JAMA RCE LR+ 174) → front-loaded long-acting diazepam
+  (pharmacokinetic self-taper, monitoring only during the loading window) → **phenobarbital as reserve, not
+  first-line** (retrospective series positive but the two ED meta-analyses null: ICU RR 0.92; intubation RR
+  0.70 NS — believe the nulls) → **parenteral thiamine before glucose** (100–250 mg/d prophylaxis; 500 mg IV
+  TID for suspected Wernicke), the high dose justified by harm-asymmetry not by the one dosing RCT (Dingwall:
+  no high-dose benefit, but underpowered). Publication-bias sweep: 14 ongoing AWS trials, **none** re-litigate
+  regimen choice or thiamine dosing (all adjuncts/novel — prazosin, CBD, ketones, neurostim), so "wait" is not
+  a reason to defer standardisation; Rosenson's phenobarbital RCT (NCT01184417) is published, no hidden
+  negative. 21 PubMed + 4 CT.gov trials; confidence moderate-high on the skeleton, moderate on the specific
+  regimen (no RCT in a low-resource ward). New **Addiction Psychiatry MOC** (umbrella for the whole program —
+  reports #2–#16 to follow) wired into `index.md`; first vault content since the empty-vault drain.
+  `validate.py` clean.
 - **2026-07-13** — **firecrawl deep-integration wave** (same branch; released firecrawl
   0.2.0, pubmed-research-note 1.6.0, comprehensive-review 0.2.0; catalog → 1.10.0). Wired
   the new plugin into the pipeline in both directions. **Inbound:** firecrawl is now the

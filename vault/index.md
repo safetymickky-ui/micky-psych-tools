@@ -14,5 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-_Empty — the vault was drained into the Learn hub (see the `empty-vault` skill). New MOCs are
-added here as artifacts are filed._
+- [[Addiction Psychiatry MOC]] — substance-use-disorder service evidence base (alcohol withdrawal protocol; more from the accreditation research program to follow).
