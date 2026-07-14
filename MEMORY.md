@@ -89,6 +89,141 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — **Completed the addiction-service accreditation research program** — filed the final Tier 3
+  reports (#12–#16), bringing the **Addiction Psychiatry MOC to 16 artifacts** (all 16 decision-locked
+  questions → 16 reports), via pubmed-research-note → vault-keeper. This batch: **#12 harm reduction for
+  stimulants** (beyond NSP: safer-smoking supplies, drug checking for fentanyl-adulterated supply,
+  integrated sexual-health/HIV/PrEP, naloxone; no proven stimulant substitution; evidence mostly
+  observational — implement with measurement); **#13 CBTx + QoL instrument** (CBTx = delivery framework,
+  claim components' evidence + measure own; task-shifted community tx works in Thai low-resource — CETA;
+  **QoL = WHOQOL-BREF**, Thai/SUD-validated, paired with a substance-specific outcome); **#14 quasi-coerced
+  treatment** (detention compulsory tx = no benefit + harm — Werb; **legal leverage** retains/completes ≥
+  self-referral — Copeland; same evidence-based tx both streams + front-load engagement); **#15 emerging
+  local substances** (one combined artifact, 3 parts — **ketamine**: screen chronic users for uropathy,
+  abstinence + joint urology–addiction; **kratom/cannabis**: risk = adulterated kratom cocktails + cannabis
+  perception–evidence gap/psychosis, Assanangkornchai Thai post-legalization data, not traditional use;
+  **adolescent vaping**: text-message cessation works — Graham JAMA RR 1.35 — + school prevention, NOT adult
+  pharmacotherapy); **#16 KPI panel** (no single adopted standard set → compact 4-domain panel: retention at
+  ≥3/6 mo fixed-definition · use/remission · functioning/QoL=WHOQOL-BREF · safety/harm; mix process+outcome,
+  hold definitions constant, keep small — answers the surveyor recommendation at the root). **Program summary:**
+  16 reports, Tier 1 (#1–5 protocols) → Tier 2 (#6–7 R2R candidates) → Tier 3 (#8–16 service/context), all
+  under one new **Addiction Psychiatry MOC** (first content since the empty-vault drain); recurring threads —
+  CM is the strongest stimulant intervention and the backbone; retention/continuing-care is the durable active
+  ingredient; honest ceilings stated (Matrix in-treatment-only, coerced-detention harm, generic-QoL modest
+  responsiveness); several **Thai-language validation / local-audit** publication hooks flagged. `validate.py`
+  clean throughout; seven commits on branch `claude/addiction-protocols-research-sng1gs`.
+- **2026-07-14** — Filed the **two service-model reports (#8, #9)** of the addiction-service accreditation
+  research program (same branch); **Addiction Psychiatry MOC now 11 artifacts**. **#8 Matrix Model evidence
+  base — the honest ceiling:** the Rawson MTP RCT (n=978) shows Matrix > TAU on **in-treatment** outcomes
+  (retention, sessions, MA-free urines, in-treatment abstinence) but the superiority **did NOT persist** at
+  discharge/6 mo (both arms converged); Matrix is a well-manualised packaging of generically-effective
+  components, **not shown superior to CBT/MI/CRA** (only CM+CRA reliably beats TAU — De Crescenzo; CBT core
+  decays by 8+ mo — Boness); in-treatment abstinence is the mechanism (Rawson 2012, strongest predictor of
+  follow-up); a Thai DDTC study found a local model (**FAST) outperformed Matrix** → local adaptation isn't
+  outcome-harming but moves you off the tested manual, so grade **"Matrix-informed" on your own outcomes**, not
+  a borrowed III-4; highest-yield upgrade = add CM (#6) + continuing care (#9). 7 PubMed. **#9 Short-stay
+  residential vs outpatient — the aftercare reframe:** **no**, brief inpatient doesn't reliably beat intensive
+  outpatient for most (McKay/ASAM RCT: even inpatient-matched patients no better; residential completion low —
+  Keen); the **durable active ingredient is continuing care**, but only when **longer + actively delivered**,
+  higher-risk benefit most (McKay 2021/2009 reviews; Cacciola/McKay FCC: participation→outcomes). **Reframe: the
+  14-day ward = stabilisation/engagement; the 10-visit follow-up IS the treatment** — protect its dose, make it
+  active (assertive contact, risk-targeted, + CM), keep residential for the unstable/unsafe-environment/OP-failure
+  patients. Contrary local point flagged (Perngparn FAST>Matrix, confounded). 7 PubMed. Both feed the service
+  model's defensibility and route follow-through to #6/#7. Tiers 1–2 done; Tier 3 remainder = #12 (harm reduction),
+  #13 (CBTx/QoL), #14 (quasi-coerced), #15 (emerging locals), #16 (KPIs). `validate.py` clean.
+- **2026-07-14** — Filed the **two clinical pathways (#10, #11)** — the "pathways you'll author" — opening Tier 3
+  of the addiction-service accreditation research program (same branch); **Addiction Psychiatry MOC now 9
+  artifacts**. **#10 Suicide risk in stimulant users — the 8Q-positive pathway:** the screen isn't the
+  intervention — stratify (8Q tier + acute modifiers) → **immediate safety** (means restriction/observation;
+  don't discharge mid-crash/intoxication) → brief structured intervention (**safety planning ALONE is null** —
+  Albaum adolescent meta; works only bundled) → **sustained follow-up contact** (the load-bearing part —
+  brief-contact/caring-contacts, VigilanS/ALGOS crisis-card + phone-recontact + postcards) → addiction linkage.
+  Justified by post-crash epidemiology (injection-MA suicide-attempt aHR 1.80 Marshall; MA→SI OR ~2.6; MA→greater
+  injury severity). 8 PubMed. **#11 Violence risk in SUD, the SMI-V layer:** match tool to job — **V-RISK-10** for
+  the brief acute SMI-V admission screen, **HCR-20** reserved for complex/forensic; all structured tools are
+  **rule-out not rule-in** (Fazel/Singh meta 73 samples: violence NPV ~91% / PPV ~41% → not sole basis for
+  detention); the **OAS MEASURES an aggressive event after it happens, it does not predict** (Eikelboom 2025 — the
+  key correction for มาตรการที่ 3); the modifiable drivers are **recent substance/alcohol misuse, non-adherence,
+  impulsivity, hostility** (Witt 110-study meta) + paranoid ideation (Coid AOR 2.26) — i.e. the "substance behind
+  it" is the actionable core. 8 PubMed. Both flag a **Thai-language validation** (8Q pathway audit; V-RISK-10/OAS
+  local validation) as the publishable next step. Tiers 1–2 done; Tier 3 remainder = #8 (Matrix), #9 (short-stay
+  vs outpatient), #12 (harm reduction), #13 (CBTx/QoL), #14 (quasi-coerced), #15 (emerging locals), #16 (KPIs).
+  `validate.py` clean.
+- **2026-07-14** — Filed the **Tier 2 R2R/publication candidates** (#6, #7) of the addiction-service
+  accreditation research program (same branch), taking the **Addiction Psychiatry MOC to 7 artifacts** via
+  pubmed-research-note → vault-keeper. **#6 Contingency management for stimulant UD — build-and-design:**
+  verdict *build it* — CM is the **only** treatment reliably tied to stimulant abstinence (Bentzley meta 157
+  studies: OR 2.13; Bolívar d≈0.70; De Crescenzo NMA: CM+CRA the only psychosocial intervention beating TAU,
+  OR 2.84 end / 7.60 at 12 wk / 3.08 follow-up; Cochrane RR 1.89); design spec from the dismantling
+  literature — objective single target (abstinence r=0.32 > attendance r=0.15, Lussier), **adequate magnitude**
+  + immediacy (both dose-response moderators), **escalation with reset**, 2–3×/wk, **≥12 wk** (Ginley: longer
+  active tx the durability moderator), **prize-based fishbowl** for low cost (Petry/Walker, counsellor-
+  delivered), plan for **decay**; ethics guardrail (gambling-history → fixed vouchers). 9 PubMed. **#7 Retention
+  interventions — what works + how to defend 30.9→79.8%:** honest finding that the stand-alone retention-
+  intervention base is **thin/mixed**; best levers = **attendance-CM** (dropout RR 0.82; CM+CRA OR 3.63),
+  **case management/assertive outreach** (Miler review-of-reviews), **structural supports** (phones/flexible
+  scheduling — Stewart); **MI NOT reliable for retention** (Smedslund Cochrane: no better than TAU) and generic
+  added counselling didn't help (Wyse); **no single retention definition** (fixed-timepoint 3/6/12-mo [OAT
+  standard, Degenhardt] vs 45-day-gap [Mintz] vs planned-discharge completion [Daly 58.1%]) — recommend one,
+  held constant; the **30.9→79.8% jump** is real but pre/post ⇒ **association not causation** — name RTM,
+  **definition drift**, case-mix, secular trend; strengthen with constant definition + case-mix adjustment +
+  **ITS/comparison arm** to make it publishable. 11 PubMed. Both are prime R2R candidates and interlock with #5→#6.
+  Tiers 1–2 (#1–#7) complete; Tier 3 (#8–#16: Matrix, short-stay, suicide/violence pathways, harm reduction,
+  emerging local substances, KPIs) remains. `validate.py` clean.
+- **2026-07-14** — Closed **Tier 1** of the addiction-service accreditation research program (same branch),
+  filing reports **#3** and **#5** to the **Addiction Psychiatry MOC** (now 5 artifacts) via pubmed-research-note
+  → vault-keeper. **#3 AUD relapse-prevention pharmacotherapy (limited adherence support):** naltrexone first
+  (once-daily/XR fits low supervision; JAMA 2023 meta 118 trials — NNT to prevent return to any drinking:
+  **acamprosate 11, naltrexone 18**; naltrexone NNT 11 for heavy drinking), acamprosate co-first-line (abstinent/
+  **hepatic** — renally cleared), **disulfiram ONLY supervised** (Skinner meta: effect appears only in open-label
+  trials g 0.70, vanishes when blinded — the anti-goal is the unsupervised default), second-line topiramate/
+  gabapentin/**baclofen** (niche = advanced liver disease); Bahji NMA (156 trials) for the comparative RRs. 7
+  PubMed + 4 CT.gov (mature field — only mechanistic/formulation trials ongoing). **#5 Methamphetamine use
+  disorder pharmacotherapy (usable-now vs wait):** **nothing approved**; **ADAPT-2** combo (XR-naltrexone + ER
+  bupropion) the best off-label try-now (Trivedi NEJM n=403, response 13.6% vs 2.5%, **effect 11.1 pp**, NNT ~9,
+  reduced-use not abstinence), **mirtazapine** reasonable adjunct (Colfax RR 0.57 / Coffin RR 0.67–0.73; meta RR
+  0.81 small — best where insomnia/depression/high-risk behaviour coexist), bupropion marginal (RR 0.90), agonists
+  (dexamfetamine/methylphenidate) most-consistent signal but **watch** (regulatory/diversion); **CM is the
+  backbone** (Cochrane RR 1.89 continuous abstinence) → hands to report #6. Live frontier = **GLP-1 agonists**
+  (semaglutide Phase 2, 2027–2030) + **ketamine** (NIDA CTN-0132, 2026) + extended ADAPT-2 delivery. 8 PubMed + 5
+  CT.gov. Tier 1 (#1–#5) complete; Tier 2 (#6 CM, #7 retention — the R2R/publication candidates) and Tier 3 next.
+  `validate.py` clean.
+- **2026-07-14** — Completed the **pre-meeting trio** of the addiction-service accreditation research program
+  (same branch), filing reports **#2** and **#4** to the **Addiction Psychiatry MOC** (now 3 artifacts) via
+  the pubmed-research-note → vault-keeper flow. **#2 Methamphetamine-associated psychosis — consult protocol:**
+  olanzapine/quetiapine first-line (Chiang Mai NMA, 6 RCTs/395; aripiprazole significantly inferior; Thanyarak
+  quetiapine≈haloperidol RCT n=80), lower doses/brisk response, **time-limited not indefinite**; transition to
+  schizophrenia **≈22%** (Murrie meta 50 studies/40,783), most within 2–5 y (Alderson), so surveillance is the
+  core, not the drug; **LAI reserved on borrowed schizophrenia evidence — no MAP-specific LAI trial exists** and
+  none ongoing (honest gap); antipsychotics treat psychosis not use (Kishi null), and the ~76% violence rate ties
+  it to the SMI-V layer (report #11). 14 PubMed + 3 CT.gov. **#4 Smoking cessation for a counselling-only public
+  clinic:** adding pharmacotherapy ≈**doubles** abstinence (~11%→~20%+); **cytisine first-line for a public system**
+  (≈varenicline efficacy, cheaper, fewer AEs — RAUORA Māori RCT 12.1% vs 7.9%; Ofori meta RR 1.13 NS vs varenicline),
+  varenicline + combination NRT co-first-line, bupropion reserved; **EAGLES (n=8,144) cleared the neuropsychiatric
+  fear** → comorbidity is not a barrier (directly relevant to a psych clinic). Anchored on the Cochrane component
+  NMA (319 RCTs/157,179). 8 PubMed; field mature so no CT.gov sweep load-bearing (stated). Sequence 1→2→4 as
+  advised; #3, #5, and Tiers 2–3 remain. `validate.py` clean.
+- **2026-07-14** — Filed **Alcohol Withdrawal on a District-Hospital Ward — Protocol Choice and Thiamine
+  Dosing** to the vault via the pubmed-research-note → vault-keeper flow (branch
+  `claude/addiction-protocols-research-sng1gs`). First report of the **addiction-service accreditation
+  research program** (a 16-item decision-locked plan; this is Tier-1 #1, "the single most defensible gap").
+  Decision was handed over pre-locked, so intent-lock was bypassed (valid opt-out) and the brief named at
+  the top. Verdict adjudicates a real trap: symptom-triggered CIWA-Ar dosing is the specialist-unit
+  "textbook best" (Holleck meta: duration −60.4 h, BZD −10.5 mg lorazepam-eq) but the same meta rates its
+  **general-hospital applicability low** — it presupposes reliable hourly CIWA-Ar scoring a district ward
+  lacks. So the recommendation is a **risk-stratified, benzodiazepine-anchored** protocol: PAWSS ≥4 gate
+  (validation n=403: sens 93.1%, spec 99.5%; JAMA RCE LR+ 174) → front-loaded long-acting diazepam
+  (pharmacokinetic self-taper, monitoring only during the loading window) → **phenobarbital as reserve, not
+  first-line** (retrospective series positive but the two ED meta-analyses null: ICU RR 0.92; intubation RR
+  0.70 NS — believe the nulls) → **parenteral thiamine before glucose** (100–250 mg/d prophylaxis; 500 mg IV
+  TID for suspected Wernicke), the high dose justified by harm-asymmetry not by the one dosing RCT (Dingwall:
+  no high-dose benefit, but underpowered). Publication-bias sweep: 14 ongoing AWS trials, **none** re-litigate
+  regimen choice or thiamine dosing (all adjuncts/novel — prazosin, CBD, ketones, neurostim), so "wait" is not
+  a reason to defer standardisation; Rosenson's phenobarbital RCT (NCT01184417) is published, no hidden
+  negative. 21 PubMed + 4 CT.gov trials; confidence moderate-high on the skeleton, moderate on the specific
+  regimen (no RCT in a low-resource ward). New **Addiction Psychiatry MOC** (umbrella for the whole program —
+  reports #2–#16 to follow) wired into `index.md`; first vault content since the empty-vault drain.
+  `validate.py` clean.
 - **2026-07-13** — **firecrawl deep-integration wave** (same branch; released firecrawl
   0.2.0, pubmed-research-note 1.6.0, comprehensive-review 0.2.0; catalog → 1.10.0). Wired
   the new plugin into the pipeline in both directions. **Inbound:** firecrawl is now the
