@@ -247,6 +247,48 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   regimen (no RCT in a low-resource ward). New **Addiction Psychiatry MOC** (umbrella for the whole program —
   reports #2–#16 to follow) wired into `index.md`; first vault content since the empty-vault drain.
   `validate.py` clean.
+- **2026-07-14** — Filed **two separate whole-disorder comprehensive reviews — ADHD and Autism
+  Spectrum Disorder** — to the vault via the comprehensive-review → vault-keeper flow (branch
+  `claude/adhd-asd-plugin-review-20vuac`). Intent-lock gate ran first (active prior #1 fired on
+  "review"): a 3-question picker locked **two separate reviews** (not one combined/overlap review,
+  not a balanced two-disorder arc), the **novel-concept emphasis across all four axes**
+  (co-occurrence/AuDHD, dimensional nosology, shared mechanism/biomarkers, emerging treatments),
+  and **clinician self-study** register. First **neurodevelopmental** topics in the (recently
+  drained) vault; two new MOCs — **ADHD MOC** and **Autism Spectrum Disorder MOC** — cross-linked
+  through the shared AuDHD overlap and wired into `index.md`. Both reviews keep the full
+  ten-section arc (breadth is the contract) with depth concentrated on the emerging concepts.
+  Shared spine across the pair: the **AuDHD** reconceptualization DSM-5 (2013) enabled by deleting
+  the ASD/ADHD exclusion (ADHD in **28%** of autistic people; ~170 pleiotropic ADHD/ASD/intelligence
+  loci; **84–98%** of ADHD common-variant liability shared with other psychiatric disorders); the
+  dimensional turn (ADHD as trait-extreme; autism's one-spectrum-vs-"profound-autism" tension +
+  neurodiversity); and the biomarker-negative bottom line (ENIGMA subcortical Cohen's d −0.10 to
+  −0.19, non-significant in adults; autism social-looking markers with no clear-cut relation to
+  autism). Emerging-treatment stories diverge sharply — ADHD's is incremental success (viloxazine,
+  centanafadine, FDA-cleared EndeavorRx digital therapeutic, home tDCS / eTNS) while autism's is a
+  catalogue of pivotal failures (oxytocin SOARS-B P=0.61, balovaptan primary miss, cannabidiol
+  "insufficient," microbiome open-label-only, bumetanide phase-3 halted). **ADHD: 27 PubMed + 16
+  registry trials; ASD: 29 PubMed + 17 registry trials**, all real DOIs/NCTs (parallel harvest
+  agents + targeted gap-filling: AuDHD rate, twin heritability 0.76, US NSCH trend). `validate.py`
+  clean. Honest gaps flagged in-text as `[thin]`/`[unverified]` (ADHD reciprocal AuDHD rate,
+  RDoC-specific framing; autism epilepsy pooled rate, employment/optimal-outcome rates, ICD-11
+  severity-level validation).
+- **2026-07-14** — **Treatment deep-dive follow-up** (same branch), on the user's "dig deep more on
+  treatment side of adhd and autistic." Expanded §7 of both reviews in place (full arc preserved,
+  H3 modality split kept — allowed only in Treatment). Two parallel treatment-harvest agents added
+  **~44 new sources**: ADHD → PubMed 27→**55**, trials 16→**22** (MTA 14-mo→8-yr→young-adult arc:
+  acute efficacy strong but the randomized-group advantage gone by 8 yr and extended use → ~2.5 cm
+  adult-height suppression *without* lower symptom severity; alpha-2 agonists guanfacine/clonidine
+  ER mono + adjunct; atomoxetine SMD −0.45, ≈ OROS-MPH but slower; switching rescue 42–43%; adult
+  CBT SMD −0.84/−1.22; solriamfetol phase 3; CV safety HR 0.75 / RR 0.83; deprescribing).
+  Autism → PubMed 29→**52**, trials 17→**19** (ESDM IQ +17.6 vs +7.0; **Sandbank 2024** intensity
+  has no dose–response — undercuts 20–40 h/wk; Project AIM/Gosling detection-bias null; **PACT**
+  durable ES 0.55 at 6 yr; risperidone 69% vs 12% but +2.7 kg; **Meza 2025** Cochrane NMA
+  risperidone −7.89 > aripiprazole −6.26 > lurasidone nil, weight-gain RR 2.40 / EPS RR 2.36;
+  SSRIs negative for repetitive behavior — citalopram STAART RR 0.96; adapted CBT 92% response;
+  melatonin NNT 3.4; adult-treatment evidence gap). Shared **AuDHD treatment-collision** subsection
+  in both (methylphenidate 49% response + 18% AE dropout; guanfacine ER the standout, ES 1.67;
+  alpha-2 often first-line in AuDHD), cross-linked. Citation contract held (0 inline PMIDs/author-year,
+  DOI-only sources, counts match headers). `validate.py` clean.
 - **2026-07-13** — **firecrawl deep-integration wave** (same branch; released firecrawl
   0.2.0, pubmed-research-note 1.6.0, comprehensive-review 0.2.0; catalog → 1.10.0). Wired
   the new plugin into the pipeline in both directions. **Inbound:** firecrawl is now the
