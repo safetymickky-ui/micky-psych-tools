@@ -89,6 +89,27 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Filed the **Tier 2 R2R/publication candidates** (#6, #7) of the addiction-service
+  accreditation research program (same branch), taking the **Addiction Psychiatry MOC to 7 artifacts** via
+  pubmed-research-note → vault-keeper. **#6 Contingency management for stimulant UD — build-and-design:**
+  verdict *build it* — CM is the **only** treatment reliably tied to stimulant abstinence (Bentzley meta 157
+  studies: OR 2.13; Bolívar d≈0.70; De Crescenzo NMA: CM+CRA the only psychosocial intervention beating TAU,
+  OR 2.84 end / 7.60 at 12 wk / 3.08 follow-up; Cochrane RR 1.89); design spec from the dismantling
+  literature — objective single target (abstinence r=0.32 > attendance r=0.15, Lussier), **adequate magnitude**
+  + immediacy (both dose-response moderators), **escalation with reset**, 2–3×/wk, **≥12 wk** (Ginley: longer
+  active tx the durability moderator), **prize-based fishbowl** for low cost (Petry/Walker, counsellor-
+  delivered), plan for **decay**; ethics guardrail (gambling-history → fixed vouchers). 9 PubMed. **#7 Retention
+  interventions — what works + how to defend 30.9→79.8%:** honest finding that the stand-alone retention-
+  intervention base is **thin/mixed**; best levers = **attendance-CM** (dropout RR 0.82; CM+CRA OR 3.63),
+  **case management/assertive outreach** (Miler review-of-reviews), **structural supports** (phones/flexible
+  scheduling — Stewart); **MI NOT reliable for retention** (Smedslund Cochrane: no better than TAU) and generic
+  added counselling didn't help (Wyse); **no single retention definition** (fixed-timepoint 3/6/12-mo [OAT
+  standard, Degenhardt] vs 45-day-gap [Mintz] vs planned-discharge completion [Daly 58.1%]) — recommend one,
+  held constant; the **30.9→79.8% jump** is real but pre/post ⇒ **association not causation** — name RTM,
+  **definition drift**, case-mix, secular trend; strengthen with constant definition + case-mix adjustment +
+  **ITS/comparison arm** to make it publishable. 11 PubMed. Both are prime R2R candidates and interlock with #5→#6.
+  Tiers 1–2 (#1–#7) complete; Tier 3 (#8–#16: Matrix, short-stay, suicide/violence pathways, harm reduction,
+  emerging local substances, KPIs) remains. `validate.py` clean.
 - **2026-07-14** — Closed **Tier 1** of the addiction-service accreditation research program (same branch),
   filing reports **#3** and **#5** to the **Addiction Psychiatry MOC** (now 5 artifacts) via pubmed-research-note
   → vault-keeper. **#3 AUD relapse-prevention pharmacotherapy (limited adherence support):** naltrexone first
