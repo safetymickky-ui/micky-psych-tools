@@ -14,6 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Addiction Psychiatry MOC]] — substance-use-disorder service evidence base; the completed accreditation research program (16 decision reports across protocols, service design, and context/strategy).
-- [[ADHD MOC]] — attention-deficit/hyperactivity disorder; whole-disorder comprehensive review foregrounding the emerging concepts (AuDHD, dimensional nosology, shared mechanism/biomarkers, novel treatments).
-- [[Autism Spectrum Disorder MOC]] — autism spectrum disorder; whole-disorder comprehensive review foregrounding the emerging concepts (AuDHD, neurodiversity/dimensional nosology, shared mechanism/biomarkers, emerging treatments).
+_None yet._
