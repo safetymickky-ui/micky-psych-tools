@@ -143,7 +143,8 @@ The deliverable is the vault artifact. Three steps, all defaults:
 3. **Offer the infographic — the autolink (default):** after filing, surface the
    **clinical-infographic** handoff in one line — this review can be rendered into a
    single-page, print-ready clinical reference (color-coded phase/theme columns, stat tiles,
-   a mandatory "medications to avoid" safety banner). Clinical-infographic reuses *this
+   and a "medications to avoid" safety banner when the review carries contraindications).
+   Clinical-infographic reuses *this
    session's* review directly as its source — no re-search — so the render is one step away:
    run `/infographic`, or say "make an infographic". Hand the review over on the user's
    go-ahead; **never lay out the HTML here** — visual layout is clinical-infographic's job.

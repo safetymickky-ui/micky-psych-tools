@@ -144,7 +144,8 @@ Run each step every time unless the user opts out of it.
 4. **Offer the infographic — the autolink (default):** once the report is filed, surface the
    handoff to the **clinical-infographic** plugin in one line — this report can be rendered
    into a single-page, print-ready clinical-reference infographic (color-coded columns, stat
-   tiles, a mandatory "medications to avoid" safety banner). Clinical-infographic reuses
+   tiles, and a "medications to avoid" safety banner when the report carries contraindications).
+   Clinical-infographic reuses
    *this session's* report directly as its source — no re-search, no re-adjudication — so the
    render is one step away: run `/infographic`, or say "make an infographic". Hand the report
    over on the user's go-ahead; **never render the HTML here** — visual layout is
