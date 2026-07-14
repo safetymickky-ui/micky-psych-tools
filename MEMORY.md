@@ -89,6 +89,29 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Filed **Twelve-Step Treatment for Addiction — Comprehensive Review** to the vault via the
+  comprehensive-review → vault-keeper flow (branch `claude/12-step-treatment-review-2wnm8o`); **Addiction
+  Psychiatry MOC now 17 artifacts** — the first comprehensive review under it (all prior 16 are decision
+  reports). Intent-lock Step 0 ran as a silent cold read (unattended session; ledger prior #1 checked — the
+  full-arc frame is fixed by the skill itself): locked a **whole-modality review** (AA/NA fellowships +
+  manualized TSF, all SUDs, alcohol evidence dominant), clinician self-study register, ten-section arc adapted
+  treatment-modality-wise, assumptions surfaced in the preface. The chapter's spine: **the manual moved
+  12-step from faith to evidence** — the 2006→2020 Cochrane reversal (8 trials "no unequivocal evidence" →
+  27 studies/10,565: manualized TSF **beats CBT for continuous abstinence at 12 mo, RR 1.21 high-certainty**,
+  holding at 24/36 mo), with self-selection answered by the instrumental-variables re-analysis (attendance
+  *causes* abstinence, B=0.38/0.42). Mechanisms are **social-network change + abstinence self-efficacy**
+  (43–67% mediated), spiritual pathway only in the high-severity minority; gendered (women: negative-affect
+  self-efficacy). Clinical job = **intensive referral, not a meeting list** (Timko: 1-y abstinence 51% vs 41%;
+  involvement > attendance — record sponsors/service, not counts); durability is the comparative advantage
+  (≥27 wks first-year AA → better **16-year** outcomes) vs the CBT/Matrix decay curves; cheapest continuing
+  care in the literature (2-y 49.5% vs 37.0% abstinence, ~$2,440/patient saved). Honest ceilings: drug-
+  population evidence one tier weaker (STAGE-12 mixed; NA+buprenorphine observational only), coerced bare
+  attendance worse than alternatives (grade belongs to voluntary facilitated engagement — links the
+  quasi-coerced report), adolescent iTSF engagement-positive not abstinence-superior, dual-dx TSF raises
+  participation not outcomes. Registry quiet: 3 active trials only (TSF as comparator/platform — NCT05363371
+  2027, NCT04793685 2026) + one n=3,483 implementation RCT completed 2015 with **no results posted**
+  (publication-bias flag) → frontier is implementation; **Thai adaptation flagged as a publishable local
+  gap**. 25 PubMed + 3 CT.gov; all 10 arc sections present. `validate.py` clean.
 - **2026-07-14** — **Completed the addiction-service accreditation research program** — filed the final Tier 3
   reports (#12–#16), bringing the **Addiction Psychiatry MOC to 16 artifacts** (all 16 decision-locked
   questions → 16 reports), via pubmed-research-note → vault-keeper. This batch: **#12 harm reduction for
