@@ -247,6 +247,31 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   regimen (no RCT in a low-resource ward). New **Addiction Psychiatry MOC** (umbrella for the whole program —
   reports #2–#16 to follow) wired into `index.md`; first vault content since the empty-vault drain.
   `validate.py` clean.
+- **2026-07-14** — Filed **two separate whole-disorder comprehensive reviews — ADHD and Autism
+  Spectrum Disorder** — to the vault via the comprehensive-review → vault-keeper flow (branch
+  `claude/adhd-asd-plugin-review-20vuac`). Intent-lock gate ran first (active prior #1 fired on
+  "review"): a 3-question picker locked **two separate reviews** (not one combined/overlap review,
+  not a balanced two-disorder arc), the **novel-concept emphasis across all four axes**
+  (co-occurrence/AuDHD, dimensional nosology, shared mechanism/biomarkers, emerging treatments),
+  and **clinician self-study** register. First **neurodevelopmental** topics in the (recently
+  drained) vault; two new MOCs — **ADHD MOC** and **Autism Spectrum Disorder MOC** — cross-linked
+  through the shared AuDHD overlap and wired into `index.md`. Both reviews keep the full
+  ten-section arc (breadth is the contract) with depth concentrated on the emerging concepts.
+  Shared spine across the pair: the **AuDHD** reconceptualization DSM-5 (2013) enabled by deleting
+  the ASD/ADHD exclusion (ADHD in **28%** of autistic people; ~170 pleiotropic ADHD/ASD/intelligence
+  loci; **84–98%** of ADHD common-variant liability shared with other psychiatric disorders); the
+  dimensional turn (ADHD as trait-extreme; autism's one-spectrum-vs-"profound-autism" tension +
+  neurodiversity); and the biomarker-negative bottom line (ENIGMA subcortical Cohen's d −0.10 to
+  −0.19, non-significant in adults; autism social-looking markers with no clear-cut relation to
+  autism). Emerging-treatment stories diverge sharply — ADHD's is incremental success (viloxazine,
+  centanafadine, FDA-cleared EndeavorRx digital therapeutic, home tDCS / eTNS) while autism's is a
+  catalogue of pivotal failures (oxytocin SOARS-B P=0.61, balovaptan primary miss, cannabidiol
+  "insufficient," microbiome open-label-only, bumetanide phase-3 halted). **ADHD: 27 PubMed + 16
+  registry trials; ASD: 29 PubMed + 17 registry trials**, all real DOIs/NCTs (parallel harvest
+  agents + targeted gap-filling: AuDHD rate, twin heritability 0.76, US NSCH trend). `validate.py`
+  clean. Honest gaps flagged in-text as `[thin]`/`[unverified]` (ADHD reciprocal AuDHD rate,
+  RDoC-specific framing; autism epilepsy pooled rate, employment/optimal-outcome rates, ICD-11
+  severity-level validation).
 - **2026-07-13** — **firecrawl deep-integration wave** (same branch; released firecrawl
   0.2.0, pubmed-research-note 1.6.0, comprehensive-review 0.2.0; catalog → 1.10.0). Wired
   the new plugin into the pipeline in both directions. **Inbound:** firecrawl is now the
