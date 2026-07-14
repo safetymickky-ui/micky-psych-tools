@@ -89,6 +89,25 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Filed the **two service-model reports (#8, #9)** of the addiction-service accreditation
+  research program (same branch); **Addiction Psychiatry MOC now 11 artifacts**. **#8 Matrix Model evidence
+  base — the honest ceiling:** the Rawson MTP RCT (n=978) shows Matrix > TAU on **in-treatment** outcomes
+  (retention, sessions, MA-free urines, in-treatment abstinence) but the superiority **did NOT persist** at
+  discharge/6 mo (both arms converged); Matrix is a well-manualised packaging of generically-effective
+  components, **not shown superior to CBT/MI/CRA** (only CM+CRA reliably beats TAU — De Crescenzo; CBT core
+  decays by 8+ mo — Boness); in-treatment abstinence is the mechanism (Rawson 2012, strongest predictor of
+  follow-up); a Thai DDTC study found a local model (**FAST) outperformed Matrix** → local adaptation isn't
+  outcome-harming but moves you off the tested manual, so grade **"Matrix-informed" on your own outcomes**, not
+  a borrowed III-4; highest-yield upgrade = add CM (#6) + continuing care (#9). 7 PubMed. **#9 Short-stay
+  residential vs outpatient — the aftercare reframe:** **no**, brief inpatient doesn't reliably beat intensive
+  outpatient for most (McKay/ASAM RCT: even inpatient-matched patients no better; residential completion low —
+  Keen); the **durable active ingredient is continuing care**, but only when **longer + actively delivered**,
+  higher-risk benefit most (McKay 2021/2009 reviews; Cacciola/McKay FCC: participation→outcomes). **Reframe: the
+  14-day ward = stabilisation/engagement; the 10-visit follow-up IS the treatment** — protect its dose, make it
+  active (assertive contact, risk-targeted, + CM), keep residential for the unstable/unsafe-environment/OP-failure
+  patients. Contrary local point flagged (Perngparn FAST>Matrix, confounded). 7 PubMed. Both feed the service
+  model's defensibility and route follow-through to #6/#7. Tiers 1–2 done; Tier 3 remainder = #12 (harm reduction),
+  #13 (CBTx/QoL), #14 (quasi-coerced), #15 (emerging locals), #16 (KPIs). `validate.py` clean.
 - **2026-07-14** — Filed the **two clinical pathways (#10, #11)** — the "pathways you'll author" — opening Tier 3
   of the addiction-service accreditation research program (same branch); **Addiction Psychiatry MOC now 9
   artifacts**. **#10 Suicide risk in stimulant users — the 8Q-positive pathway:** the screen isn't the
