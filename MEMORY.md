@@ -89,6 +89,24 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — Filed the **two clinical pathways (#10, #11)** — the "pathways you'll author" — opening Tier 3
+  of the addiction-service accreditation research program (same branch); **Addiction Psychiatry MOC now 9
+  artifacts**. **#10 Suicide risk in stimulant users — the 8Q-positive pathway:** the screen isn't the
+  intervention — stratify (8Q tier + acute modifiers) → **immediate safety** (means restriction/observation;
+  don't discharge mid-crash/intoxication) → brief structured intervention (**safety planning ALONE is null** —
+  Albaum adolescent meta; works only bundled) → **sustained follow-up contact** (the load-bearing part —
+  brief-contact/caring-contacts, VigilanS/ALGOS crisis-card + phone-recontact + postcards) → addiction linkage.
+  Justified by post-crash epidemiology (injection-MA suicide-attempt aHR 1.80 Marshall; MA→SI OR ~2.6; MA→greater
+  injury severity). 8 PubMed. **#11 Violence risk in SUD, the SMI-V layer:** match tool to job — **V-RISK-10** for
+  the brief acute SMI-V admission screen, **HCR-20** reserved for complex/forensic; all structured tools are
+  **rule-out not rule-in** (Fazel/Singh meta 73 samples: violence NPV ~91% / PPV ~41% → not sole basis for
+  detention); the **OAS MEASURES an aggressive event after it happens, it does not predict** (Eikelboom 2025 — the
+  key correction for มาตรการที่ 3); the modifiable drivers are **recent substance/alcohol misuse, non-adherence,
+  impulsivity, hostility** (Witt 110-study meta) + paranoid ideation (Coid AOR 2.26) — i.e. the "substance behind
+  it" is the actionable core. 8 PubMed. Both flag a **Thai-language validation** (8Q pathway audit; V-RISK-10/OAS
+  local validation) as the publishable next step. Tiers 1–2 done; Tier 3 remainder = #8 (Matrix), #9 (short-stay
+  vs outpatient), #12 (harm reduction), #13 (CBTx/QoL), #14 (quasi-coerced), #15 (emerging locals), #16 (KPIs).
+  `validate.py` clean.
 - **2026-07-14** — Filed the **Tier 2 R2R/publication candidates** (#6, #7) of the addiction-service
   accreditation research program (same branch), taking the **Addiction Psychiatry MOC to 7 artifacts** via
   pubmed-research-note → vault-keeper. **#6 Contingency management for stimulant UD — build-and-design:**
