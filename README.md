@@ -63,7 +63,8 @@ Eight plugins, all vendored under `plugins/` and listed in `.claude-plugin/marke
 
 - **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
   quantified, trial-registry-checked evidence reports. Runs `intent-lock` first on every
-  request, and delegates vault saving to `vault-keeper`.
+  request, delegates vault saving to `vault-keeper`, and — once filed — offers to render the
+  report as a `clinical-infographic`.
 - **intent-lock** — pre-build alignment gate. Interrogates a request until it has exactly one
   reading, then builds it.
 - **plugin-creator** — meta-plugin for this marketplace. Scaffolds new plugins (`/new-plugin`)
@@ -75,10 +76,11 @@ Eight plugins, all vendored under `plugins/` and listed in `.claude-plugin/marke
   `pubmed-research-note`; vault saves are opt-in, via `vault-keeper`.
 - **comprehensive-review** — whole-disorder academic reviews at textbook-chapter breadth,
   gated by `intent-lock` and filed to the vault via `vault-keeper`; live decisions route to
-  `pubmed-research-note`.
+  `pubmed-research-note`, and the filed review auto-offers a `clinical-infographic` render.
 - **clinical-infographic** — renders a sourced report or review into a print-ready medical
   summary infographic (one self-contained HTML file), filed as a vault asset via
-  `vault-keeper`. Never generates clinical facts itself.
+  `vault-keeper`. Never generates clinical facts itself — it reuses the research plugins'
+  report (which now auto-offer the render), and generates one via them first if none exists.
 - **firecrawl** — Firecrawl onboarding and routing for general-web data: search, scrape,
   interact, crawl, and map via the Firecrawl CLI or API. Packages the vendor's official
   AI-onboarding guide (install command, skill segments, usage paths A–F) and serves as the

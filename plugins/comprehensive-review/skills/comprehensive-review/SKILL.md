@@ -132,7 +132,7 @@ house style — evidence adjudicated in the flow of the prose, not listed.
 
 ## Where output goes
 
-The deliverable is the vault artifact. Two steps, both defaults:
+The deliverable is the vault artifact. Three steps, all defaults:
 
 1. **Write** the finished review as a single md file.
 2. **File** it via the **vault-keeper** skill as an **artifact** — pass title
@@ -140,6 +140,14 @@ The deliverable is the vault artifact. Two steps, both defaults:
    as suggested MOC topic. Vault-keeper owns paths, dedup, MOC wiring, and the index —
    never resolve a vault path or write into `vault/` from this skill. Skip only on an
    explicit "don't vault this".
+3. **Offer the infographic — the autolink (default):** after filing, surface the
+   **clinical-infographic** handoff in one line — this review can be rendered into a
+   single-page, print-ready clinical reference (color-coded phase/theme columns, stat tiles,
+   a mandatory "medications to avoid" safety banner). Clinical-infographic reuses *this
+   session's* review directly as its source — no re-search — so the render is one step away:
+   run `/infographic`, or say "make an infographic". Hand the review over on the user's
+   go-ahead; **never lay out the HTML here** — visual layout is clinical-infographic's job.
+   Skip only on an explicit "no infographic".
 
 **Chat gets the Close, not the chapter.** Render the full review inline only when the
 user asks to see it here. **No filesystem:** render inline instead, and say explicitly
@@ -151,6 +159,10 @@ that nothing was filed.
 - **pubmed-research-note** — the adjudicator. When the review surfaces a live decision
   ("so *should* I use X?"), or the request was one decision in disguise, route there. The
   treatment section reports the evidence landscape; it never issues a patient-level verdict.
+- **clinical-infographic** — the render layer, the downstream autolink. Once the review is
+  filed, offer to turn it into a one-page, print-ready clinical-reference infographic; it
+  reuses this session's review directly (no re-search). Hand over the filed review on the
+  user's go-ahead — never lay out the HTML here.
 - **vault-keeper** — every vault write, per Where output goes.
 - **firecrawl** — the general-web document engine, for sources outside PubMed/CT.gov
   (guideline org full texts, regulator labels, gray literature). It fetches — clean
@@ -161,7 +173,8 @@ that nothing was filed.
 
 Two lines in chat: what was reviewed, `PubMed N · trials N · sections N`, the vault path
 returned by vault-keeper (or that the save was skipped), any merged or thin sections, and
-any `[unverified]` gaps. The file is the deliverable — never restate the chapter inline.
+any `[unverified]` gaps. The file is the deliverable — never restate the chapter inline. Close
+with the one-line infographic offer — the review is ready to render (`/infographic`).
 
 ## Failure conditions
 

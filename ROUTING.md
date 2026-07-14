@@ -29,7 +29,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.6.0_
+### pubmed-research-note — research  _v1.7.0_
 
 Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.
 
@@ -77,7 +77,7 @@ Keywords: pubmed, digest, psychiatry, surveillance, clinical-trials, current-awa
 - **skill `psych-paper-digest`** (skill) — Sweeps every domain on the user's watchlist for literature published since the last sweep and delivers a triaged, read-once digest — practice-changing first, then worth-reading, plus registry trial readouts; noise suppr…
 - **`/digest`** (command) — Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument
 
-### comprehensive-review — research  _v0.2.0_
+### comprehensive-review — research  _v0.3.0_
 
 Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.
 

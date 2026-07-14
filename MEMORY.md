@@ -11,17 +11,17 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-13
+## Current versions — 2026-07-14
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.10.0  |
-| pubmed-research-note   | 1.6.0   |
+| marketplace catalog   | 1.11.0  |
+| pubmed-research-note   | 1.7.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
-| comprehensive-review  | 0.2.0   |
+| comprehensive-review  | 0.3.0   |
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
 
@@ -89,6 +89,19 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-14** — **research → infographic autolink** (branch `claude/clinical-infographic-local-zip-orocer`;
+  released pubmed-research-note 1.7.0, comprehensive-review 0.3.0; catalog → 1.11.0). Closed the *outbound* half
+  of the pipeline's last mile. The inbound link already existed (clinical-infographic Step 0 tier 1 reuses "the
+  report produced this session"); the two research plugins never pointed forward to it. Both now carry a
+  **standing, default "Offer the infographic — the autolink" step** after filing: surface the clinical-infographic
+  handoff in one line, note it reuses *this session's* report directly (no re-search, one step away via
+  `/infographic`), hand over on the user's go-ahead. Boundary held — the research plugins **offer + hand off only,
+  never render HTML or lay out** (that division of labour is the safety guardrail); the render still waits for
+  explicit go-ahead (the "auto" is that the offer always fires, not that pixels are produced unprompted). Edits:
+  pubmed's `Where output goes` gained step 4 + pipeline-intro reword + a Close clause; comprehensive-review gained
+  `Where output goes` step 3 + a `Handoffs` bullet + a Close clause. clinical-infographic untouched (its inbound
+  side already documents the reciprocity). Descriptions unchanged (no cap risk). `validate.py` clean; ROUTING.md
+  regenerated (8 plugins, 18 components).
 - **2026-07-14** — Filed **Matrix Intensive Outpatient Treatment — Comprehensive Review** to the vault via the
   comprehensive-review → vault-keeper flow (branch `claude/matrix-iop-review-w6v68x`). A **comprehensive
   review** filed under the **Addiction Psychiatry MOC** (now **18 artifacts** — 16 decision reports + 2

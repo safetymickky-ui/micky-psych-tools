@@ -125,8 +125,8 @@ may never be re-asked, and where `[ASSUMED]` lives in the report — is
 
 ## Where output goes
 
-The default is a three-step pipeline — **write → show → file.** Run all three every time
-unless the user opts out of one.
+The default pipeline is **write → show → file**, then a standing **infographic offer**.
+Run each step every time unless the user opts out of it.
 
 1. **Write (default):** write the report into the working directory (or `report_dir` from
    `.pubmed-research-note.json` if present).
@@ -141,6 +141,15 @@ unless the user opts out of one.
    review_count, last_reviewed, aliases) as a flat map. Never emit frontmatter, choose paths,
    or write into `vault/` directly from this skill. Skip this step only if the user says not
    to save (e.g. "don't vault this" / "no vault").
+4. **Offer the infographic — the autolink (default):** once the report is filed, surface the
+   handoff to the **clinical-infographic** plugin in one line — this report can be rendered
+   into a single-page, print-ready clinical-reference infographic (color-coded columns, stat
+   tiles, a mandatory "medications to avoid" safety banner). Clinical-infographic reuses
+   *this session's* report directly as its source — no re-search, no re-adjudication — so the
+   render is one step away: run `/infographic`, or say "make an infographic". Hand the report
+   over on the user's go-ahead; **never render the HTML here** — visual layout is
+   clinical-infographic's job, and issuing a rendered view is not this skill's. Skip the offer
+   only for a report with no protocol/reference value, or on an explicit "no infographic".
 
 **No filesystem:** step 2 still applies — render inline — then say explicitly that nothing
 was written and nothing was filed.
@@ -259,7 +268,8 @@ itself.
 Two lines. What was delivered, `PubMed N · trials N · books N`, the verdict's confidence
 level, and any `[unverified]` gap. Then name where it now lives — the report file, the inline
 copy shown above, and the vault artifact path returned by vault-keeper (or note the vault save
-was skipped). Nothing else.
+was skipped). Then close with the one-line infographic offer — the report is ready to render as
+a clinical-reference infographic (`/infographic`). Nothing else.
 
 ## Signs the report has drifted
 
