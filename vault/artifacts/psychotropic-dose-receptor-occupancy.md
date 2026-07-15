@@ -4,7 +4,7 @@ created: 2026-07-15
 type: artifact
 source: manual
 tags: [psychopharmacology, antipsychotics, antidepressants, receptor-occupancy, pet, dose-range, reference]
-links: []
+links: [Antipsychotic & Antidepressant Receptor-Binding Fingerprints — Affinity Atlas]
 sources:
   - "Kapur 2000 — D2 occupancy thresholds (65/72/78%) — doi:10.1176/appi.ajp.157.4.514"
   - "Seeman 2002 — fast-off-D2, atypicality, clozapine/quetiapine transient occupancy — PMID 11873706"
@@ -26,6 +26,8 @@ sources:
 **Scope.** A cross-drug reference: for every commonly used antipsychotic and antidepressant, the usual adult oral dose range and the *primary-target receptor occupancy* it produces — **striatal dopamine D2** for antipsychotics, **serotonin transporter (SERT)** for antidepressants — plus the secondary receptors that drive tolerability. Occupancy is the number that turns a dose into a mechanism, and it explains two clinical facts a mg-value alone cannot: why pushing the dose higher usually adds side-effects rather than efficacy, and why two drugs at the "same" dose behave differently.
 
 > **Read the occupancy, not just the milligrams.** Both drug classes share one lesson from PET imaging: the target is ~65–80% occupied across most of the *usual* dose range, and the dose–occupancy curve is **hyperbolic** (steep at low dose, flat once the target is saturated). Dose escalation past the plateau buys side-effects, not receptor blockade.
+
+> **Companion:** [[psychotropic-receptor-binding-fingerprints|Receptor-Binding Fingerprints — Affinity Atlas]] maps the *in-vitro affinity* of each drug across the whole receptor panel (the fingerprint behind the side-effect profile). This report is the *in-vivo occupancy* at the primary target; read the two together.
 
 ---
 

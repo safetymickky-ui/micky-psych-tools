@@ -89,6 +89,24 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-15** — Added the **full receptor-fingerprint companion** to the dose–occupancy reference (same branch),
+  on the user's "add the full receptor fingerprint version." Filed **Antipsychotic & Antidepressant
+  Receptor-Binding Fingerprints — Affinity Atlas** (`vault/artifacts/psychotropic-receptor-binding-fingerprints.md`)
+  + a **heatmap infographic** (`vault/assets/psychotropic-receptor-binding-fingerprints-infographic.html` + preview),
+  both under the same **Psychopharmacology Reference MOC**, cross-linked bidirectionally with the occupancy report
+  (occupancy = in-vivo primary target; fingerprint = in-vitro affinity across the whole panel → side-effect profile).
+  Covers **51 drugs** × the full panel (antipsychotics D1/D2/D3/5-HT1A/5-HT2A/5-HT2C/5-HT7/H1/M1/α1/α2; antidepressants
+  SERT/NET/DAT/5-HT1A/5-HT2A/5-HT2C/5-HT3/H1/M1/α1/σ1/MAO), Ki binned +++/++/+/±/–. **Built with the Workflow tool
+  (ultracode)**: a 21-agent pipeline — per-class assemble → 2 independent adversarial verify lenses
+  (pharmacology-correctness + Ki-fabrication/traceability) → reconcile → synthesize (legend + 9 cross-consistency
+  checks + safety + caveats); ~711k subagent tokens, 0 errors. The verification demonstrably worked: it nulled
+  spuriously-precise/single-source Ki (kept the bin), corrected haloperidol H1 → weak, fixed the milnacipran-vs-eutomer
+  SERT ordering, and downgraded risperidone/paliperidone 5-HT1A to distinguish them from true low-nM 5-HT1A partial
+  agonists. Both deliverables **generated from the verified JSON by a script** (no hand transcription); heatmap
+  render-verified. Grounded in the classic binding compilations — **Kroeze 2003, Richelson & Souder 2000, Owens 1997,
+  Tatsumi 1997/1999, Siafis 2018, Nasrallah 2007** + NIMH PDSP + manufacturer/FDA data for newer agents (flagged
+  approximate). Governing caveat carried on both: affinity ≠ occupancy ≠ functional direction (D2 +++ = prolactin-raising
+  for risperidone but prolactin-sparing partial agonism for aripiprazole). `validate.py` clean. No plugin version bump.
 - **2026-07-15** — Filed **Antipsychotics & Antidepressants — Dose Range and Receptor Occupancy Reference**
   to the vault and rendered it into a **clinical-infographic** asset (branch
   `claude/antipsychotic-antidepressant-dosing-6f25y9`). First **cross-drug pharmacology reference sheet**
