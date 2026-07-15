@@ -14,4 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Psychopharmacology Reference MOC]] — cross-drug dose-range + receptor-pharmacology reference sheets.
+_(empty — drained to the Learn hub)_

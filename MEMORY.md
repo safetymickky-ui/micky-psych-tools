@@ -90,6 +90,19 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-15** — **Emptied the vault into the Learn hub** (`empty-vault`, whole-vault scope, branch
+  `claude/empty-vault-learn-hub-92vttb`). The entire **Psychopharmacology Reference** set —
+  the dose–occupancy report + the receptor-fingerprint atlas + **both infographics** — moved into
+  `learn-hub` and **deleted from this vault** (move → verify → delete, explicit-confirmed). It landed as
+  **one combined `psychopharmacology-reference` topic**: 13 atomic notes digested from the two reports
+  (provenance 7 dose-occupancy + 6 fingerprint, both empty-vault handshakes satisfied), cross-linked,
+  each adversarially fidelity-checked against its source. **New in learn-hub for this:** an
+  `infographic` content type (migration 0012 `infographics` table, sync-owned, RLS read-for-auth,
+  service-role writes) — the two HTML infographics are stored **byte-exact** (md5-verified vs source)
+  and render in a deny-all sandboxed iframe at `/infographic/[id]`; the topic page lists them. All 15
+  content rows + 2 infographics verified in Supabase `juvoohejxuuvwolmgoep`; learn-hub committed + pushed.
+  The vault is back to the empty scaffold (`index.md` + `.gitkeep`s); everything git-recoverable.
+
 - **2026-07-15** — Added **gridgeist 0.1.0** (ninth plugin; catalog → 1.11.0), the first
   non-clinical plugin in the marketplace — a frontend/web-design skill (strong grid, precise
   typography, product-specific visual systems) vendored from upstream `ohmiler` under MIT, with
