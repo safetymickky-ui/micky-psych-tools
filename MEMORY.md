@@ -89,6 +89,30 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-15** — Filed **Antipsychotics & Antidepressants — Dose Range and Receptor Occupancy Reference**
+  to the vault and rendered it into a **clinical-infographic** asset (branch
+  `claude/antipsychotic-antidepressant-dosing-6f25y9`). First **cross-drug pharmacology reference sheet**
+  (not a decision report or disorder review) → new **Psychopharmacology Reference MOC**, the first vault
+  content since the 2026-07-13 empty-vault drain. Terse owner request ("all antipsychotic & antidepressant
+  dose range and receptor occupancy"); the intent-lock picker was interrupted (permission stream closed in
+  the remote session) so proceeded on the highest-value defaults matching what "receptor occupancy" means in
+  psychopharmacology: **report → infographic**, **occupancy-anchor depth** (primary-target occupancy across
+  the dose range: striatal D2 for antipsychotics, SERT for antidepressants, + tolerability-driving secondary
+  receptors), **full marketed spectrum**. The spine is the two PET occupancy frameworks: the **65–80% striatal
+  D2 window** (Kapur 2000 thresholds — response >65% / prolactin >72% / EPS >78%; Seeman 2002 fast-off theory)
+  with its three exceptions (**partial agonists** aripiprazole/brexpiprazole/cariprazine occupy >90% without
+  EPS — Yokoi/Gründer 2002; **fast-off** clozapine/quetiapine low/transient D2; **low/non-D2** lumateperone,
+  pimavanserin), and the **~80% SERT threshold at the minimum antidepressant dose** with a hyperbolic
+  dose–occupancy plateau (Meyer 2004 five SSRIs; Sørensen 2021 systematic review; Hart 2024 SNRI-NET /
+  bupropion-DAT / MAOI). Drug-specific occupancy directly cited where measured (haloperidol, aripiprazole,
+  lurasidone Wong 2013, cariprazine Seneca 2011, escitalopram Lundberg 2007 / Kim 2017, vortioxetine
+  Stenkrona 2013, bupropion DAT ~26% Learned-Coughlin 2003); "~" values flagged as representative of the PET
+  review literature. Mandatory safety banner carries 6 avoid-groups (MAOI+serotonergic → serotonin syndrome;
+  don't chase D2 >80%; QT dose caps incl. citalopram 40 mg; clozapine hazards; TCA overdose lethality; broad
+  serotonin-syndrome). **14 PubMed PET / systematic-review sources**, all with DOIs. Deliverables:
+  `vault/artifacts/psychotropic-dose-receptor-occupancy.md`,
+  `vault/assets/psychotropic-dose-receptor-occupancy-infographic.html` (+ `.preview.png`, render-verified),
+  new MOC wired into `index.md`. `validate.py` clean. No plugin version bump (vault content only).
 - **2026-07-14** — Filed **Matrix Intensive Outpatient Treatment — Comprehensive Review** to the vault via the
   comprehensive-review → vault-keeper flow (branch `claude/matrix-iop-review-w6v68x`). A **comprehensive
   review** filed under the **Addiction Psychiatry MOC** (now **18 artifacts** — 16 decision reports + 2

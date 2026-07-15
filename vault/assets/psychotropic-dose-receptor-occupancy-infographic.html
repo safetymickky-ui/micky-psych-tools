@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!--
+  Clinical reference infographic — self-contained, print-ready, accessible.
+  Source: Antipsychotics & Antidepressants — Dose Range and Receptor Occupancy Reference
+  (vault/artifacts/psychotropic-dose-receptor-occupancy.md). No external CSS/JS/fonts/images.
+  Every number traces to that report; schematics are labelled illustrative and carry only sourced thresholds.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antipsychotics &amp; Antidepressants — Dose &amp; Receptor Occupancy — Clinical Reference</title>
+<style>
+  :root{
+    --ink:#1a2230; --muted:#5a6675; --line:#e2e7ee; --bg:#ffffff;
+    --ap:#3b6ea8; --ap-tint:#eef3f9;      /* antipsychotics — blue */
+    --ad:#3f8a6e; --ad-tint:#edf5f1;      /* antidepressants — green */
+    --amber:#c9772e; --amber-tint:#fbf1e7;
+    --danger:#a4304a; --danger-tint:#f7e9ed; --warn:#b3541e;
+    --band:#dfeee6;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.4; font-size:14.5px;}
+  .sheet{max-width:1180px; margin:0 auto; padding:26px;}
+  .masthead{border-bottom:3px solid var(--ink); padding-bottom:12px; margin-bottom:16px;}
+  .masthead h1{font-size:27px; line-height:1.14; margin:0 0 4px; letter-spacing:-0.01em;}
+  .masthead .sub{color:var(--muted); font-size:13.5px; margin:0;}
+
+  h2.sec{font-size:17px; margin:20px 0 9px; padding:6px 12px; border-radius:8px; color:#fff; display:flex; align-items:center; gap:9px;}
+  h2.ap{background:var(--ap);} h2.ad{background:var(--ad);}
+  .icon{width:1.05em; height:1.05em; flex:none; fill:currentColor;}
+
+  /* ---- key concept row ---- */
+  .concepts{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:6px;}
+  .viz{border:1px solid var(--line); border-radius:10px; padding:11px 13px 9px; background:#fff;}
+  .viz h3{margin:0 0 4px; font-size:14px;} .viz svg{width:100%; height:auto; display:block;}
+  .viz .cap{margin:5px 0 0; font-size:10px; color:var(--muted); font-style:italic;}
+
+  .frame{border:1px solid var(--line); border-radius:9px; padding:9px 12px; margin:0 0 12px; background:#fafbfc;}
+  .frame h3{margin:0 0 5px; font-size:13.5px;}
+  .frame ul{margin:0; padding-left:18px;} .frame li{margin:2px 0; font-size:12.5px;}
+
+  /* ---- thresholds mini-legend ---- */
+  .thr{display:flex; flex-wrap:wrap; gap:7px; margin:2px 0 0;}
+  .chip{border:1px solid var(--line); border-radius:20px; padding:3px 10px; font-size:11.5px; font-weight:700; background:#fff;}
+  .chip b{color:var(--ap);}
+
+  /* ---- reference tables ---- */
+  table{width:100%; border-collapse:collapse; margin:0 0 14px; font-size:12.6px; background:#fff;
+    border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  caption{caption-side:top; text-align:left; font-weight:800; font-size:13px; padding:7px 4px 5px; color:var(--ink);}
+  thead th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:#fff; padding:6px 9px;}
+  .ap thead th{background:var(--ap);} .ad thead th{background:var(--ad);}
+  tbody td{padding:6px 9px; border-top:1px solid var(--line); vertical-align:top;}
+  tbody tr:nth-child(even){background:#f7f9fb;}
+  .ap tbody tr:nth-child(even){background:var(--ap-tint);}
+  .ad tbody tr:nth-child(even){background:var(--ad-tint);}
+  td.drug{font-weight:700; white-space:nowrap;}
+  td.dose{white-space:nowrap; font-variant-numeric:tabular-nums;}
+  td.occ{font-weight:600;}
+  .tag{display:inline-block; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.03em;
+    padding:1px 6px; border-radius:4px; vertical-align:middle; margin-left:3px;}
+  .tag.pa{background:#e7f0fb; color:#2c5c96;}      /* partial agonist */
+  .tag.fo{background:#fbeede; color:#9a5a12;}      /* fast-off */
+  .tag.lo{background:#f0e9f6; color:#6b3fa0;}      /* low / non-D2 */
+  .tag.qt{background:#f7e9ed; color:#8f2740;}      /* QT / caution */
+  .note{color:var(--muted); font-size:11px; margin:-8px 0 14px; padding-left:2px;}
+
+  /* ---- safety ---- */
+  .safety{margin-top:14px; border:2px solid var(--danger); border-radius:10px; background:var(--danger-tint); overflow:hidden;}
+  .safety-head{background:var(--danger); color:#fff; padding:9px 15px; font-weight:800; letter-spacing:.02em; font-size:14.5px; display:flex; align-items:center; gap:9px;}
+  .safety-body{padding:11px 15px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px;}
+  .safety h3{margin:0 0 3px; font-size:12.8px; color:var(--danger);}
+  .safety p{margin:0; font-size:11.8px;}
+
+  .foot{margin-top:15px; padding-top:11px; border-top:1px solid var(--line); color:var(--muted); font-size:11px;}
+  .foot .disclaimer{font-weight:600; color:#40495a; margin:0 0 4px;}
+  .foot ul{margin:6px 0 0; padding-left:18px; columns:2; font-size:10.3px;}
+  .foot summary{cursor:pointer; font-weight:700; color:#40495a;}
+
+  @media (max-width:820px){ .concepts{grid-template-columns:1fr;} .safety-body{grid-template-columns:1fr;} .foot ul{columns:1;} }
+  @media print{
+    body{font-size:11px;}
+    .sheet{max-width:none; padding:0;}
+    table,.safety,.viz,.frame{break-inside:avoid;}
+    thead{display:table-header-group;}
+    @page{margin:11mm;}
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#12161c; --ink:#e9edf3; --muted:#9aa6b4; --line:#2a323d;}
+    table,.viz,.frame,.chip{background:#171c24;} .frame{background:#141a21;}
+    tbody tr:nth-child(even){background:#1b212a;}
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header class="masthead">
+    <h1>Antipsychotics &amp; Antidepressants — Dose Range &amp; Receptor Occupancy</h1>
+    <p class="sub">Usual adult oral dose vs primary-target occupancy — striatal D2 (antipsychotics) · SERT/NET/DAT (antidepressants). A quick-reference aid; verify locally before prescribing.</p>
+  </header>
+
+  <!-- ============ SIGNATURE VISUALS: the two occupancy frameworks ============ -->
+  <section class="concepts" aria-label="The two occupancy frameworks">
+
+    <!-- D2 window -->
+    <div class="viz">
+      <h3>Antipsychotics — the 65–80% D2 window</h3>
+      <svg viewBox="0 0 520 285" role="img" aria-labelledby="d2t d2d">
+        <title id="d2t">Striatal dopamine D2 occupancy versus dose</title>
+        <desc id="d2d">Antipsychotic response begins near 65% D2 occupancy, prolactin rises above 72%, and EPS above 80%; standard antagonists climb through this window into the EPS zone at higher doses, partial agonists exceed 90% without EPS, and fast-off agents stay low.</desc>
+        <!-- therapeutic band 65-80% -->
+        <rect x="55" y="66" width="445" height="34.5" fill="#dfeee6"/>
+        <!-- axes -->
+        <line x1="55" y1="20" x2="55" y2="250" stroke="#8a97a6" stroke-width="1"/>
+        <line x1="55" y1="250" x2="500" y2="250" stroke="#8a97a6" stroke-width="1"/>
+        <!-- threshold lines (SOURCED) -->
+        <line x1="55" y1="66"    x2="500" y2="66"    stroke="#a4304a" stroke-width="1.4" stroke-dasharray="5 3"/>
+        <line x1="55" y1="84.4"  x2="500" y2="84.4"  stroke="#c9772e" stroke-width="1.1" stroke-dasharray="3 3"/>
+        <line x1="55" y1="100.5" x2="500" y2="100.5" stroke="#3f8a6e" stroke-width="1.4" stroke-dasharray="5 3"/>
+        <!-- y ticks -->
+        <g font-size="10" fill="#5a6675">
+          <text x="50" y="24" text-anchor="end">100%</text>
+          <text x="50" y="69" text-anchor="end">80</text>
+          <text x="50" y="104" text-anchor="end">65</text>
+          <text x="50" y="253" text-anchor="end">0</text>
+        </g>
+        <!-- threshold labels -->
+        <g font-size="10.5" font-weight="700">
+          <text x="500" y="62"   text-anchor="end" fill="#a4304a">EPS &gt; 80%</text>
+          <text x="360" y="82"   text-anchor="end" fill="#c9772e">prolactin &gt; 72%</text>
+          <text x="500" y="113"  text-anchor="end" fill="#2f6a52">response &gt; 65%</text>
+          <text x="300" y="90"   text-anchor="middle" fill="#2f6a52" font-size="9.5" font-style="italic">therapeutic window</text>
+        </g>
+        <!-- standard antagonist curve -->
+        <polyline points="55,158 150,120 230,101 300,66 400,45 500,39" fill="none" stroke="#3b6ea8" stroke-width="2.4"/>
+        <text x="152" y="135" font-size="10.5" font-weight="700" fill="#3b6ea8">D2 antagonist</text>
+        <text x="150" y="147" font-size="9" fill="#5a6675">(haloperidol, risperidone, olanzapine…)</text>
+        <!-- partial agonist marker -->
+        <circle cx="470" cy="34" r="4" fill="#2c5c96"/>
+        <text x="463" y="30" font-size="10" font-weight="700" fill="#2c5c96" text-anchor="end">partial agonist &gt;90%, no EPS</text>
+        <text x="463" y="41" font-size="8.6" fill="#5a6675" text-anchor="end">aripiprazole · brexpiprazole · cariprazine</text>
+        <!-- fast-off marker -->
+        <path d="M55,205 Q170,150 300,150 T500,150" fill="none" stroke="#9a5a12" stroke-width="2" stroke-dasharray="6 3"/>
+        <text x="330" y="168" font-size="10" font-weight="700" fill="#9a5a12">fast-off: low / transient D2</text>
+        <text x="330" y="179" font-size="8.6" fill="#5a6675">clozapine · quetiapine</text>
+        <!-- x label -->
+        <text x="277" y="270" text-anchor="middle" font-size="10.5" fill="#5a6675">dose  →</text>
+      </svg>
+      <p class="cap">Illustrative pattern — not measured data. Thresholds (65 / 72 / 80% D2) from Kapur 2000 &amp; Seeman 2002.</p>
+    </div>
+
+    <!-- SERT hyperbola -->
+    <div class="viz">
+      <h3>Antidepressants — ~80% SERT at the minimum dose</h3>
+      <svg viewBox="0 0 520 285" role="img" aria-labelledby="stt std">
+        <title id="stt">Serotonin transporter occupancy versus SSRI dose</title>
+        <desc id="std">SSRI serotonin-transporter occupancy rises steeply at low dose and plateaus near 80% at the minimum therapeutic dose; higher doses add little occupancy.</desc>
+        <!-- axes -->
+        <line x1="55" y1="20" x2="55" y2="250" stroke="#8a97a6" stroke-width="1"/>
+        <line x1="55" y1="250" x2="500" y2="250" stroke="#8a97a6" stroke-width="1"/>
+        <!-- 80% efficacy threshold (SOURCED) -->
+        <line x1="55" y1="66" x2="500" y2="66" stroke="#3f8a6e" stroke-width="1.4" stroke-dasharray="5 3"/>
+        <text x="500" y="61" text-anchor="end" font-size="10.5" font-weight="700" fill="#2f6a52">~80% SERT — efficacy threshold</text>
+        <!-- y ticks -->
+        <g font-size="10" fill="#5a6675">
+          <text x="50" y="24" text-anchor="end">100%</text>
+          <text x="50" y="69" text-anchor="end">80</text>
+          <text x="50" y="253" text-anchor="end">0</text>
+        </g>
+        <!-- hyperbolic curve -->
+        <polyline points="55,250 72,182 90,128 110,92 135,72 165,64 250,60 370,57 500,55" fill="none" stroke="#3f8a6e" stroke-width="2.6"/>
+        <!-- min-dose marker -->
+        <line x1="150" y1="250" x2="150" y2="68" stroke="#b3541e" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <circle cx="150" cy="68" r="4" fill="#b3541e"/>
+        <text x="158" y="120" font-size="10.5" font-weight="700" fill="#b3541e">minimum</text>
+        <text x="158" y="132" font-size="10.5" font-weight="700" fill="#b3541e">therapeutic dose</text>
+        <text x="270" y="86" font-size="9.5" font-style="italic" fill="#5a6675">plateau — higher doses add little</text>
+        <!-- x label -->
+        <text x="277" y="270" text-anchor="middle" font-size="10.5" fill="#5a6675">dose  →</text>
+      </svg>
+      <p class="cap">Illustrative pattern — not measured data. ~80% SERT at the minimum therapeutic dose from Meyer 2004 &amp; Sørensen 2021 (SNRIs add NET higher up; bupropion ~26% DAT).</p>
+    </div>
+  </section>
+
+  <div class="frame">
+    <h3>How to read the occupancy column</h3>
+    <div class="thr">
+      <span class="chip"><b>65%</b> D2 → antipsychotic response</span>
+      <span class="chip"><b>72%</b> D2 → prolactin ↑</span>
+      <span class="chip"><b>80%</b> D2 → EPS</span>
+      <span class="chip" style="border-color:#bcd8c9"><b style="color:#2f6a52">80%</b> SERT → antidepressant efficacy</span>
+    </div>
+    <ul>
+      <li><span class="tag pa">partial agonist</span> can exceed 90% D2 <em>without</em> EPS (intrinsic activity) — occupancy alone doesn't predict EPS here.</li>
+      <li><span class="tag fo">fast-off</span> low/transient D2 despite antipsychotic effect (clozapine, quetiapine) — little EPS/prolactin.</li>
+      <li><span class="tag lo">low / non-D2</span> mesolimbic-preferential (lumateperone) or no D2 at all (pimavanserin).</li>
+    </ul>
+  </div>
+
+  <!-- ============ ANTIPSYCHOTICS ============ -->
+  <h2 class="sec ap"><svg class="icon" aria-hidden="true"><use href="#i-brain"/></svg> Antipsychotics — dose &amp; striatal D2 occupancy</h2>
+
+  <table class="ap">
+    <caption>First-generation (typical) — tight-binding D2 antagonists; cross 80% (EPS) readily</caption>
+    <thead><tr><th scope="col">Drug</th><th scope="col">Dose mg/day</th><th scope="col">Striatal D2 occupancy</th><th scope="col">Notes / secondary receptors</th></tr></thead>
+    <tbody>
+      <tr><td class="drug">Haloperidol</td><td class="dose">2–20</td><td class="occ">~53–67% at 2 mg; 70–90% ≥5 mg (response &gt;65%, EPS &gt;78%)</td><td>high-potency benchmark; QT with IV use</td></tr>
+      <tr><td class="drug">Fluphenazine</td><td class="dose">5–20</td><td class="occ">~70–90%</td><td>high-potency; LAI available</td></tr>
+      <tr><td class="drug">Trifluoperazine</td><td class="dose">15–40</td><td class="occ">~70–90%</td><td>high-potency</td></tr>
+      <tr><td class="drug">Thiothixene</td><td class="dose">15–60</td><td class="occ">~70–90%</td><td>high-potency</td></tr>
+      <tr><td class="drug">Perphenazine</td><td class="dose">12–64</td><td class="occ">~70–85%</td><td>mid-potency (CATIE comparator)</td></tr>
+      <tr><td class="drug">Loxapine</td><td class="dose">30–100</td><td class="occ">~70–85%</td><td>some 5-HT2A; inhaled 10 mg for agitation</td></tr>
+      <tr><td class="drug">Chlorpromazine</td><td class="dose">300–800</td><td class="occ">~70–90% at therapeutic doses</td><td>low-potency; 100 mg = 1 CPZ-eq; strong H1/M1/α1</td></tr>
+      <tr><td class="drug">Thioridazine</td><td class="dose">200–800</td><td class="occ">dose-dependent</td><td><span class="tag qt">QT</span> restricted; low-potency</td></tr>
+      <tr><td class="drug">Pimozide</td><td class="dose">1–10</td><td class="occ">high at therapeutic doses</td><td><span class="tag qt">QT</span> Tourette; CYP3A4</td></tr>
+      <tr><td class="drug">Amisulpride*</td><td class="dose">400–800 (50–300 low)</td><td class="occ">dose-dependent; limbic-selective D2/D3</td><td>*not FDA-approved; low dose → negative symptoms; prolactin</td></tr>
+    </tbody>
+  </table>
+
+  <table class="ap">
+    <caption>Second-generation (atypical) — three read differently: partial agonists, fast-off, and low/non-D2</caption>
+    <thead><tr><th scope="col">Drug</th><th scope="col">Dose mg/day</th><th scope="col">Striatal D2 occupancy</th><th scope="col">Notes / secondary receptors</th></tr></thead>
+    <tbody>
+      <tr><td class="drug">Risperidone</td><td class="dose">2–8</td><td class="occ">~66% at 2 mg → 72–79% at 4–6 mg → &gt;80% above 6–8 mg</td><td>near-saturating 5-HT2A; strong prolactin</td></tr>
+      <tr><td class="drug">Paliperidone</td><td class="dose">3–12</td><td class="occ">≈ risperidone (6 mg ≈ risp 4–6 mg)</td><td>risperidone's active metabolite; renally cleared; prolactin</td></tr>
+      <tr><td class="drug">Olanzapine</td><td class="dose">10–20</td><td class="occ">~55–70% at 10 mg → 70–80% at 20 mg</td><td>high H1/M1 → weight/metabolic</td></tr>
+      <tr><td class="drug">Ziprasidone</td><td class="dose">40–160</td><td class="occ">~45% at 40 mg → 60–80% at 120–160 mg</td><td><span class="tag qt">QT</span> take with food ≥500 kcal</td></tr>
+      <tr><td class="drug">Asenapine</td><td class="dose">10–20</td><td class="occ">~70–80% at 10–20 mg</td><td>sublingual only (oral BA &lt;2%)</td></tr>
+      <tr><td class="drug">Iloperidone</td><td class="dose">12–24</td><td class="occ">~60–80%</td><td><span class="tag qt">QT</span> strong α1 → orthostasis; slow titration</td></tr>
+      <tr><td class="drug">Lurasidone</td><td class="dose">40–160</td><td class="occ">40 mg→63–67% · 60 mg→77–84% · 80 mg→73–79%</td><td>5-HT7/1A; low metabolic; akathisia; food ≥350 kcal</td></tr>
+      <tr><td class="drug">Quetiapine</td><td class="dose">300–800</td><td class="occ"><span class="tag fo">fast-off</span> brief peak ~40–60%, &lt;30% at trough</td><td>very high H1 (sedation), α1; minimal EPS/prolactin</td></tr>
+      <tr><td class="drug">Clozapine</td><td class="dose">300–450 (to 900)</td><td class="occ"><span class="tag fo">fast-off</span> low steady-state ~40–60%</td><td>TRS only; agranulocytosis, myocarditis, seizures, ileus — REMS</td></tr>
+      <tr><td class="drug">Aripiprazole</td><td class="dose">10–30</td><td class="occ"><span class="tag pa">partial agonist</span> 40–95% (~87% at 10 mg), no EPS &gt;90%</td><td>akathisia/activation; lowers prolactin</td></tr>
+      <tr><td class="drug">Brexpiprazole</td><td class="dose">2–4</td><td class="occ"><span class="tag pa">partial agonist</span> ~80% at 4 mg</td><td>less akathisia than aripiprazole</td></tr>
+      <tr><td class="drug">Cariprazine</td><td class="dose">1.5–6</td><td class="occ"><span class="tag pa">partial agonist</span> D3-preferring, to &gt;90%</td><td>very long-acting metabolite (weeks); akathisia</td></tr>
+      <tr><td class="drug">Lumateperone</td><td class="dose">42 (fixed)</td><td class="occ"><span class="tag lo">low</span> striatal D2 ~40% (mesolimbic-preferential)</td><td>high 5-HT2A; low EPS/metabolic</td></tr>
+      <tr><td class="drug">Pimavanserin</td><td class="dose">34 (fixed)</td><td class="occ"><span class="tag lo">none</span> — no D2 activity</td><td>selective 5-HT2A inverse agonist; Parkinson's psychosis</td></tr>
+    </tbody>
+  </table>
+  <p class="note">"~" = representative of the PET review literature (Seeman 2002; Tauscher 2002); inline values are directly measured (Kapur 2000, Yokoi/Gründer 2002, Wong 2013, Seneca 2011). LAIs target the same 65–80% window at steady state.</p>
+
+  <!-- ============ ANTIDEPRESSANTS ============ -->
+  <h2 class="sec ad"><svg class="icon" aria-hidden="true"><use href="#i-pill"/></svg> Antidepressants — dose &amp; SERT / NET / DAT occupancy</h2>
+
+  <table class="ad">
+    <caption>SSRIs — ~80% SERT at the minimum therapeutic dose (dose-escalation sits on the plateau)</caption>
+    <thead><tr><th scope="col">Drug</th><th scope="col">Dose mg/day</th><th scope="col">SERT occupancy</th><th scope="col">Notes / secondary actions</th></tr></thead>
+    <tbody>
+      <tr><td class="drug">Fluoxetine</td><td class="dose">20–80</td><td class="occ">~80% at 20 mg</td><td>long t½ → least withdrawal; activating; CYP2D6/3A4 inhibitor</td></tr>
+      <tr><td class="drug">Sertraline</td><td class="dose">50–200</td><td class="occ">~80% at 50 mg</td><td>modest DAT at higher doses (unique, small); GI</td></tr>
+      <tr><td class="drug">Paroxetine</td><td class="dose">20–50</td><td class="occ">~80% at 20 mg</td><td>anticholinergic; short t½ → worst discontinuation; CYP2D6 inhibitor</td></tr>
+      <tr><td class="drug">Citalopram</td><td class="dose">20–40</td><td class="occ">~80% at 20 mg</td><td><span class="tag qt">QT cap 40 mg</span> 20 mg if &gt;60 y / CYP2C19-poor / hepatic</td></tr>
+      <tr><td class="drug">Escitalopram</td><td class="dose">10–20</td><td class="occ">~80% at 10–20 mg</td><td>cleanest SSRI profile; some regions need &gt;20 mg (Lundberg/Kim)</td></tr>
+      <tr><td class="drug">Fluvoxamine</td><td class="dose">100–300</td><td class="occ">~80% at ~50–100 mg</td><td>sigma-1 agonist; strong CYP1A2/2C19 inhibitor; OCD</td></tr>
+    </tbody>
+  </table>
+
+  <table class="ad">
+    <caption>SNRIs — SERT like an SSRI at low dose; NET added at higher doses</caption>
+    <thead><tr><th scope="col">Drug</th><th scope="col">Dose mg/day</th><th scope="col">SERT / NET</th><th scope="col">Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="drug">Venlafaxine</td><td class="dose">75–225 (to 375)</td><td class="occ">SERT ~80% at 75 mg; NET meaningful &gt;150 mg</td><td>short t½ → discontinuation; dose-dependent ↑BP</td></tr>
+      <tr><td class="drug">Desvenlafaxine</td><td class="dose">50 (50–100)</td><td class="occ">as venlafaxine (active metabolite)</td><td>flat dose-response above 50 mg</td></tr>
+      <tr><td class="drug">Duloxetine</td><td class="dose">40–120</td><td class="occ">SERT + NET above SERT threshold at usual doses</td><td>neuropathic pain, fibromyalgia; hepatic caution</td></tr>
+      <tr><td class="drug">Levomilnacipran</td><td class="dose">40–120</td><td class="occ">NET-preferring (NET &gt; SERT)</td><td>most noradrenergic SNRI</td></tr>
+      <tr><td class="drug">Milnacipran</td><td class="dose">100–200</td><td class="occ">balanced SERT/NET</td><td>US: fibromyalgia indication</td></tr>
+    </tbody>
+  </table>
+
+  <table class="ad">
+    <caption>Atypical / multimodal — receptor mechanisms; "SERT occupancy" does not describe several of these</caption>
+    <thead><tr><th scope="col">Drug</th><th scope="col">Dose mg/day</th><th scope="col">Occupancy / mechanism</th><th scope="col">Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="drug">Bupropion</td><td class="dose">150–450</td><td class="occ">DAT ~26% + modest NET; no SERT</td><td>NDRI; no sexual/weight effects; dose-dependent seizure risk</td></tr>
+      <tr><td class="drug">Vortioxetine</td><td class="dose">5–20</td><td class="occ">SERT ~50% at 5 mg → ~80%+ at 20 mg; + 5-HT1A/3/7</td><td>multimodal; nausea</td></tr>
+      <tr><td class="drug">Vilazodone</td><td class="dose">20–40</td><td class="occ">SERT + 5-HT1A partial agonist</td><td>take with food (↑ absorption)</td></tr>
+      <tr><td class="drug">Mirtazapine</td><td class="dose">15–45</td><td class="occ">no transporter occupancy — α2 antagonist, 5-HT2/3, H1</td><td>sedation/appetite strongest at low dose</td></tr>
+      <tr><td class="drug">Trazodone</td><td class="dose">150–400 (25–100 hypnotic)</td><td class="occ">5-HT2A antagonist; SERT only at higher doses; α1, H1</td><td>mostly a hypnotic; priapism risk</td></tr>
+      <tr><td class="drug">Nefazodone</td><td class="dose">300–600</td><td class="occ">5-HT2A antagonist + weak SERT</td><td>hepatotoxicity (boxed warning) — largely withdrawn</td></tr>
+    </tbody>
+  </table>
+
+  <table class="ad">
+    <caption>TCAs — SERT/NET balance from potency (not PET); dose by plasma level &amp; MAOIs — MAO-A/B inhibition, not occupancy</caption>
+    <thead><tr><th scope="col">Drug</th><th scope="col">Dose mg/day</th><th scope="col">Transporter / mechanism</th><th scope="col">Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="drug">Clomipramine</td><td class="dose">100–250</td><td class="occ">most serotonergic TCA (SERT)</td><td>OCD; seizure risk</td></tr>
+      <tr><td class="drug">Amitriptyline</td><td class="dose">75–150 (to 300)</td><td class="occ">balanced SERT/NET</td><td>potent H1/M1/α1; migraine/pain</td></tr>
+      <tr><td class="drug">Imipramine</td><td class="dose">75–300</td><td class="occ">SERT + NET</td><td>prototype TCA; enuresis</td></tr>
+      <tr><td class="drug">Nortriptyline</td><td class="dose">50–150</td><td class="occ">NET-preferring</td><td>window 50–150 ng/mL; best-tolerated TCA</td></tr>
+      <tr><td class="drug">Desipramine</td><td class="dose">100–300</td><td class="occ">NET-selective</td><td>most activating / least anticholinergic</td></tr>
+      <tr><td class="drug">Doxepin</td><td class="dose">75–300 (3–6 insomnia)</td><td class="occ">SERT + NET; pure H1 at 3–6 mg</td><td>low-dose = hypnotic</td></tr>
+      <tr><td class="drug">Tranylcypromine</td><td class="dose">30–60</td><td class="occ">irreversible MAO-A/B (concentration–occupancy unestablished)</td><td>tyramine diet; washout on switch</td></tr>
+      <tr><td class="drug">Phenelzine</td><td class="dose">45–90</td><td class="occ">irreversible MAO-A/B</td><td>tyramine-restricted diet</td></tr>
+      <tr><td class="drug">Isocarboxazid</td><td class="dose">20–60</td><td class="occ">irreversible MAO-A/B</td><td>tyramine diet</td></tr>
+      <tr><td class="drug">Selegiline (patch)</td><td class="dose">6–12 mg/24h</td><td class="occ">MAO-B oral / MAO-A+B patch</td><td>6 mg patch avoids diet restriction</td></tr>
+    </tbody>
+  </table>
+  <p class="note">TCAs/MAOIs: transporter occupancy poorly PET-characterised — potency balance and mechanism shown instead. TCAs are lethal in overdose; dose by plasma level.</p>
+
+  <!-- ============ SAFETY ============ -->
+  <section class="safety" aria-label="Critical safety — doses and combinations to avoid">
+    <div class="safety-head"><svg class="icon" aria-hidden="true"><use href="#i-ban"/></svg> CRITICAL SAFETY — DOSES &amp; COMBINATIONS TO AVOID</div>
+    <div class="safety-body">
+      <div><h3>🚫 MAOI + serotonergic → serotonin syndrome</h3><p>Never combine MAOIs with SSRIs, SNRIs, TCAs (esp. clomipramine), tramadol, linezolid, triptans, St John's wort. Washout ≥14 d — <strong>5 weeks after fluoxetine</strong>. MAOI + tyramine → hypertensive crisis.</p></div>
+      <div><h3>🚫 Don't chase D2 &gt; 80%</h3><p>Above the 65–80% window you add EPS, akathisia and prolactin — <strong>not</strong> efficacy (Kapur 2000). Partial agonists &amp; clozapine/quetiapine are the exceptions, read by mechanism not mg.</p></div>
+      <div><h3>⚠ QT dose caps &amp; monitoring</h3><p>Citalopram max 40 mg (20 mg elderly/CYP2C19-poor/hepatic). Watch ziprasidone, iloperidone, thioridazine, pimozide, IV haloperidol; don't stack QT-prolongers — check ECG, K⁺, Mg²⁺.</p></div>
+      <div><h3>⚠ Clozapine hazards</h3><p>Agranulocytosis, myocarditis, seizures, constipation/ileus. Mandatory ANC monitoring (REMS); reserved for treatment resistance.</p></div>
+      <div><h3>⚠ TCA overdose lethality</h3><p>Cardiac Na-channel blockade → lethal in overdose. Dispense cautiously in at-risk patients; avoid in conduction disease / recent MI.</p></div>
+      <div><h3>⚠ Serotonin syndrome — not only MAOIs</h3><p>Any serotonergic combination can trigger it (e.g. SSRI/SNRI + tramadol, triptan, or linezolid). Review the whole regimen, not just the antidepressant.</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p class="disclaimer">Clinical reference aid — not a substitute for clinical judgment or local protocol. Dose ranges from standard prescribing references; occupancy from the cited PET literature. Verify before prescribing.</p>
+    <p>Source: <em>Antipsychotics &amp; Antidepressants — Dose Range and Receptor Occupancy Reference</em> · rendered 2026-07-15 · PubMed 14 · trials 0</p>
+    <details>
+      <summary>Sources (PubMed — DOIs)</summary>
+      <ul>
+        <li>Kapur 2000, D2 thresholds — doi:10.1176/appi.ajp.157.4.514</li>
+        <li>Seeman 2002, fast-off / atypicality — PMID 11873706</li>
+        <li>Tauscher 2002, olanzapine/risperidone D2 kinetics — doi:10.1038/sj.mp.4001009</li>
+        <li>Yokoi/Gründer 2002, aripiprazole — doi:10.1016/S0893-133X(02)00304-4</li>
+        <li>Wong 2013, lurasidone — doi:10.1007/s00213-013-3103-z</li>
+        <li>Seneca 2011, cariprazine — doi:10.1007/s00213-011-2343-z</li>
+        <li>Wadenberg 2001, D2 common mechanism — doi:10.1016/S0893-133X(01)00261-5</li>
+        <li>Meyer 2004, five SSRIs SERT — doi:10.1176/appi.ajp.161.5.826</li>
+        <li>Sørensen 2021, antidepressant dose–SERT — doi:10.1038/s41380-021-01285-w</li>
+        <li>Hart 2024, SNRI NET / bupropion DAT / MAOI — doi:10.1097/FTD.0000000000001142</li>
+        <li>Lundberg 2007, escitalopram/citalopram — doi:10.1017/S1461145706007486</li>
+        <li>Kim 2017, escitalopram regional — doi:10.1007/s40262-016-0444-x</li>
+        <li>Stenkrona 2013, vortioxetine — doi:10.1016/j.euroneuro.2013.01.002</li>
+        <li>Learned-Coughlin 2003, bupropion DAT — doi:10.1016/s0006-3223(02)01834-6</li>
+      </ul>
+    </details>
+  </footer>
+</main>
+
+<!-- Inline icon sprite — self-contained, no external requests. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3 3 3 0 00-2 5.2A3 3 0 007 17a3 3 0 004 2.8V3zm2 0v16.8A3 3 0 0017 17a3 3 0 002-5.8A3 3 0 0015 6a3 3 0 00-1-3z"/></symbol>
+  <symbol id="i-pill" viewBox="0 0 24 24"><path d="M4.2 12.8l8.6-8.6a4 4 0 015.6 5.6l-8.6 8.6a4 4 0 01-5.6-5.6zm2.1 2.1l4.2-4.2 3.5 3.5-4.2 4.2z"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 015.29 14L6 6.71A7.96 7.96 0 0112 4zM4.71 6L18 17.29A8 8 0 014.71 6z"/></symbol>
+</svg>
+</body>
+</html>
