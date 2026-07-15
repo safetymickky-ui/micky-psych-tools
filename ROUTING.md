@@ -26,6 +26,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "make an infographic", "medical summary infographic", "clinical reference infographic", "turn this review/report into an infographic", "one-page visual summary"… | clinical-infographic | skill `clinical-infographic` |
 | Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic | clinical-infographic | `/infographic` |
 | when the user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs", "map a site", needs live web data in-session, wants Firecrawl in app code, or wants a web-powered… | firecrawl | skill `firecrawl` |
+| when the user says "redesign this page", "make this UI less generic", "review this interface", "needs a stronger grid", "Swiss style", "editorial layout", or asks to create, restyle, or critique a… | gridgeist | skill `gridgeist` |
 
 ## Plugins
 
@@ -102,3 +103,11 @@ Firecrawl onboarding and routing for web data: search the web, scrape clean mark
 Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
 
 - **skill `firecrawl`** (skill) — Routes any general-web data request to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyles…
+
+### gridgeist — design  _v0.1.0_
+
+Design, redesign, and review distinctive web interfaces with a strong grid, precise typography, and product-specific visual systems.
+
+Keywords: web-design, frontend, ui-review, grid, typography, design-system
+
+- **skill `gridgeist`** (skill) — Designs, redesigns, and reviews web interfaces around a rigorous grid, precise typography, quiet 1px rules, and Swiss/editorial or technical-minimal influence — replacing generic AI-generated SaaS aesthetics (rounded-ca…

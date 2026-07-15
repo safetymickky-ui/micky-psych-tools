@@ -118,6 +118,21 @@
         "web-data",
         "onboarding"
       ]
+    },
+    {
+      "name": "gridgeist",
+      "source": "./plugins/gridgeist",
+      "version": "0.1.0",
+      "description": "Design, redesign, and review distinctive web interfaces with a strong grid, precise typography, and product-specific visual systems.",
+      "category": "design",
+      "keywords": [
+        "web-design",
+        "frontend",
+        "ui-review",
+        "grid",
+        "typography",
+        "design-system"
+      ]
     }
   ]
 }
