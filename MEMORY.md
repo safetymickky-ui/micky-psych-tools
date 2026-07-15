@@ -11,11 +11,11 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-13
+## Current versions — 2026-07-15
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.10.0  |
+| marketplace catalog   | 1.11.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -24,6 +24,7 @@ a milestone.
 | comprehensive-review  | 0.2.0   |
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
+| gridgeist             | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -88,6 +89,15 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   no commands.
 
 ## Recent milestones
+
+- **2026-07-15** — Added **gridgeist 0.1.0** (ninth plugin; catalog → 1.11.0), the first
+  non-clinical plugin in the marketplace — a frontend/web-design skill (strong grid, precise
+  typography, product-specific visual systems) vendored from upstream `ohmiler` under MIT, with
+  the LICENSE kept at `plugins/gridgeist/LICENSE`. One skill (`gridgeist`), no commands; body
+  plus two references (`design-language.md`, `review-checklist.md`). Landed on `master` after a
+  rebase over 29 stale commits — the marketplace-entry conflict against firecrawl was resolved
+  by keeping both, and ROUTING.md was regenerated rather than hand-merged (9 plugins, 19
+  components).
 
 - **2026-07-14** — Filed **Matrix Intensive Outpatient Treatment — Comprehensive Review** to the vault via the
   comprehensive-review → vault-keeper flow (branch `claude/matrix-iop-review-w6v68x`). A **comprehensive
