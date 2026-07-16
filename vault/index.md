@@ -14,4 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-_(empty — drained to the Learn hub)_
+- [[Neuromodulation MOC]]

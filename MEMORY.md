@@ -90,6 +90,30 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-16** — Filed **Deep Transcranial Magnetic Stimulation (Deep TMS) — Comprehensive Review** to the vault
+  via the comprehensive-review → vault-keeper flow (branch `claude/deep-tms-protocol-review-z5ika8`). First
+  **neuromodulation** topic and first vault content since the 2026-07-15 empty-vault drain; new **Neuromodulation
+  MOC** (umbrella for brain-stimulation reviews — room for rTMS/ECT/tDCS/DBS/VNS) wired into `index.md`. Intent-lock
+  Step 0 ran but the picker was interrupted (permission stream closed) → proceeded on locked defaults, surfaced in
+  the preface: whole-modality review, protocols+efficacy emphasis, all indications, clinician self-study. Object is a
+  treatment *technology* not a disorder, so the ten-section disorder arc was **adapted to a device/modality arc**
+  (device class → reach → mechanism → course → selection → comparators → protocols&efficacy-by-indication → special
+  pops → durability → controversies); all 10 sections present, H3 used only inside Treatment (by indication). Spine
+  adjudicates the central tension: dTMS is **efficacious but not shown superior to standard figure-8 rTMS** — the H1
+  field reaches ~4–5 cm vs ~1.5 cm for figure-8 but the 81-study network meta-analysis found **deep rTMS not > sham**
+  while HF-rTMS was (OR 3.07), and "deep" likely means broader cortical/network engagement, not direct deep-structure
+  stimulation (biophysics consensus: TMS excites axon terminals at the gyral crown, superficial field, trans-synaptic
+  spread). Indication signals ranked honestly: **OCD strongest** (pivotal n=99, response 38.1 vs 11.1%),
+  **substance-use largest effect** (umbrella SMD 1.16; smoking pivotal n=262, quit 19.4 vs 8.7%, first-ever FDA
+  smoking-cessation device, 2020), **MDD moderate** (pivotal n=212, remission 32.6 vs 14.6%; a GRADE appraisal
+  dissents "insufficient"), **anxious depression** a 2021 label expansion with no dedicated trial, and **PTSD a
+  NEGATIVE pivotal** (n=125, sham numerically better, p=0.027; a second n=203 trial terminated). Durability rests on
+  maintenance (stable vs rise at 6/12 mo). Registry: addiction-heavy pipeline (AUD registration n=186 → 2027, meth,
+  cocaine+CM) + a single-sponsor reporting-transparency flag (large completed manufacturer trials with no CT.gov
+  results posted; several completed/unknown-status trials unpublished). Built with two parallel harvest subagents
+  (PubMed digest + CT.gov sweep), adjudicated and written in one pass. **42 PubMed + 17 registry trials**, all 10 arc
+  sections, DOI-only citations, clean prose. `validate.py` clean.
+
 - **2026-07-15** — **Emptied the vault into the Learn hub** (`empty-vault`, whole-vault scope, branch
   `claude/empty-vault-learn-hub-92vttb`). The entire **Psychopharmacology Reference** set —
   the dose–occupancy report + the receptor-fingerprint atlas + **both infographics** — moved into
