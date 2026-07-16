@@ -14,6 +14,7 @@
 <title>Perioperative Management of PPGL — Clinical Reference</title>
 <style>
   :root {
+    color-scheme:light;   /* light-locked paper — no prefers-color-scheme:dark block */
     --ink:#1a2230; --muted:#5a6675; --line:#e2e7ee; --bg:#ffffff;
     --c1:#3b6ea8; --c1-tint:#eef3f9;   /* Pre-op  */
     --c2:#3f8a6e; --c2-tint:#edf5f1;   /* Intra-op */
@@ -163,13 +164,6 @@
     .col,.card,.safety,.stat,.keyline,.viz,.tier,.half { break-inside:avoid; }
     .columns { gap:9px; }
     @page { margin:10mm; }
-  }
-  @media (prefers-color-scheme:dark){
-    :root { --bg:#12161c; --ink:#e9edf3; --muted:#9aa6b4; --line:#2a323d; }
-    .card,.stat,.viz,.tier { background:#171c24; }
-    .card.rule { background:#211a12; }
-    .keyline,.foundation { background:#161d26; }
-    .keyline p { color:#cdd6e0; } .foot a { color:#8fb4de; }
   }
 </style>
 </head>

@@ -19,10 +19,10 @@ a milestone.
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
-| vault-keeper          | 0.4.0   |
+| vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.2.0   |
-| clinical-infographic  | 0.2.1   |
+| clinical-infographic  | 0.2.2   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 
@@ -49,8 +49,10 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 - **vault-keeper** — shared knowledge-vault manager for repo-root `vault/`; five jobs: init, save,
   index, query, empty. The single place every skill's output lands. The `empty-vault` skill
   (+ `/empty-vault [topic]`) drains the vault into the Learn hub: hands each artifact to
-  learn-hub's `digest-report` skill (which authors atomic Learn notes + syncs to Supabase),
-  then deletes only after verified sync + git-committed state + explicit confirmation.
+  learn-hub's `digest-report` skill (→ atomic Learn notes) and each **infographic HTML asset**
+  to learn-hub's `ingest-infographic` skill (→ an `infographics` row that shows in the app;
+  0.5.0 — previously infographics were dropped as binaries), syncs to Supabase, then deletes
+  only after verified sync + git-committed state + explicit confirmation.
 - **psych-paper-digest** — watchlist literature surveillance; sweeps PubMed + ClinicalTrials.gov
   since `last_swept`, triages Act / Read / Suppressed, never adjudicates (Act items hand off to
   pubmed-research-note). Skill + `/digest [domain]`; state in `.psych-paper-digest.json`.
@@ -90,6 +92,17 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-16** — **Infographics now migrate into the Learn hub** (`vault-keeper` 0.5.0, branch
+  `claude/empty-vaults-skill-migration-ssvv53`). Found the gap the owner hit: `empty-vault` drained reports into the
+  hub but **deleted infographic HTML assets as un-migratable binaries** — so the Deep TMS protocol infographic never
+  reached the app. Fix, two repos: (1) new learn-hub **`ingest-infographic`** skill owns "infographic HTML asset →
+  `infographics` row" (files a `type: infographic` sidecar + sibling HTML into the source report's topic dir,
+  light-locks the HTML, syncs, verifies) — the digest-report sibling for infographics; (2) `empty-vault` now routes
+  infographic assets there (paired to their report via the MOC `## Assets` provenance, after `digest-report` so the
+  topic FK exists), and only true binaries (PNG previews) still drop with their topic. Also landed the actual Deep TMS
+  infographic: `deep-tms-protocol-reference-infographic` under the `deep-transcranial-magnetic-stimulation-comprehensive-review`
+  topic, light-lock-normalised (the source HTML shipped a `prefers-color-scheme:dark` block), verified live in
+  `infographics`. `validate.py` clean; router regenerated.
 - **2026-07-16** — **Deep TMS follow-ups on the same branch** — rendered a **clinical-infographic** and spun off a
   **pubmed-research-note** decision, both from the just-filed comprehensive review (user asked for intent-lock first;
   the picker was interrupted again → proceeded on surfaced defaults, both easily re-cut). **Infographic**

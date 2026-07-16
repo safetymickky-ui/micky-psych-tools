@@ -16,6 +16,11 @@
 <title>{{TITLE}} — Clinical Reference</title>
 <style>
   :root {
+    /* LIGHT-LOCKED: these are print-ready paper (white sheet, dark ink) rendered on a white
+       surface in the Learn hub. Author light-first and add NO prefers-color-scheme:dark block —
+       a partial dark override strands ink-on-tint rows + hardcoded SVG label colours as invisible
+       text under an OS dark theme. color-scheme:light pins it. See design-system.md. */
+    color-scheme:light;
     --ink:#1a2230; --muted:#5a6675; --line:#e2e7ee; --bg:#ffffff;
     /* Column accent families (accent / tint) — swap per topic, keep AA contrast. */
     --c1:#3b6ea8; --c1-tint:#eef3f9;
@@ -97,11 +102,7 @@
     .col,.card,.safety,.stat { break-inside:avoid; }
     @page { margin:12mm; }
   }
-  @media (prefers-color-scheme:dark){
-    /* Screen dark mode only; print stays light for legibility. */
-    :root { --bg:#12161c; --ink:#e9edf3; --muted:#9aa6b4; --line:#2a323d; }
-    .card,.stat { background:#171c24; }
-  }
+  /* NO prefers-color-scheme:dark block — infographics are light-locked (see :root above). */
 </style>
 </head>
 <body>

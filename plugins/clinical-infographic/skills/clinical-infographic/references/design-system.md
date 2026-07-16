@@ -114,6 +114,19 @@ A clinical reference must open on a locked-down hospital machine and print ident
   with `<use href="#...">`). Emoji (⚠ 🚫 💊) are an acceptable self-contained fallback.
 - **Works offline, forever.** Nothing on the page may depend on a request succeeding.
 
+## Light-locked — no dark mode, ever
+
+These are **print-ready paper**: a white sheet with dark ink, rendered on a white surface in
+the Learn hub. Author light-first and pin it with `:root { color-scheme: light; }`.
+
+- **Never add a `@media (prefers-color-scheme: dark)` block.** A partial dark override recolours
+  a few CSS variables but strands ink-on-tint table rows, the safety-banner body, hardcoded SVG
+  label colours, and rotated headers as invisible text under an OS dark theme. Inside the app's
+  sandboxed iframe `prefers-color-scheme` follows the viewer's OS and can't be overridden from
+  inside the document, so a dark block is a latent invisible-text bug — not a feature.
+- The Learn app supplies its own display-level eye-comfort dimming (a uniform filter on the
+  embedding, not CSS in the sheet), so the document itself never needs a dark variant.
+
 ## Print & page
 
 - Target **A4 / Letter**. Set `print-color-adjust: exact` so tints and the safety band survive

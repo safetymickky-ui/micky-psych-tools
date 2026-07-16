@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2 — 2026-07-16
+**Light-locked.** Removed the `@media (prefers-color-scheme:dark)` block from the template and
+the ppgl example, and pinned `:root { color-scheme:light }`. Infographics are print-ready paper
+rendered on a white surface in the Learn hub; a partial dark override stranded ink-on-tint rows
+and hardcoded SVG colours as invisible text under an OS dark theme (and can't be overridden from
+inside the app's sandboxed iframe). New **"Light-locked — no dark mode, ever"** rule in
+design-system.md. This is the source-side fix for the light-lock normalisation that learn-hub's
+`ingest-infographic` skill was having to apply on the way in.
+
 ## 0.2.0 — 2026-07-11
 
 **Visual-first.** After the first real run rendered a text-heavy first pass, the defaults now

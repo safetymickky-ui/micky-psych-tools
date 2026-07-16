@@ -1,6 +1,6 @@
 {
   "name": "vault-keeper",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty \u2014 the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill, deleting only after a verified sync.",
   "author": {
     "name": "Thanawat Suharit"

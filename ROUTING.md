@@ -59,13 +59,13 @@ Keywords: plugin, scaffold, meta, marketplace, generator
 - **`/refine-plugin`** (command) — Audit and refine an existing plugin or skill in the marketplace
 - **`/route`** (command) — Recommend which marketplace skill/plugin fits a request, from ROUTING.md
 
-### vault-keeper — productivity  _v0.4.0_
+### vault-keeper — productivity  _v0.5.0_
 
-Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill, deleting only after a verified sync.
+Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill (reports → notes) and ingest-infographic skill (infographic HTML → an in-app infographics row), deleting only after a verified sync.
 
 Keywords: vault, obsidian, knowledge, notes, index, moc
 
-- **skill `empty-vault`** (skill) — Drains the shared vault at the marketplace repo root (vault/) into the Learn hub: inventories the artifacts and notes, hands each report to the Learn repo's digest-report skill to become atomic Learn notes synced to Sup…
+- **skill `empty-vault`** (skill) — Drains the shared vault at the marketplace repo root (vault/) into the Learn hub: inventories artifacts, notes, and infographic assets, hands each report to learn-hub's digest-report skill (→ atomic Learn notes) and eac…
 - **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
 - **`/empty-vault`** (command) — Empty the shared vault into the Learn hub — move, verify, then delete; whole vault or one topic passed as argument
 
@@ -87,7 +87,7 @@ Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 - **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — the full arc: epidemiology, pathophysiology, clinical features, diagnosis, comorbidity, treatme…
 - **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
 
-### clinical-infographic — research  _v0.2.1_
+### clinical-infographic — research  _v0.2.2_
 
 Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/"medications to avoid" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.
 
