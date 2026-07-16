@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.2.2 — 2026-07-16
+
+**Contrast & legibility hardening.** An OCR/contrast audit of the two psychopharmacology
+infographics (rendered across light/dark × desktop/mobile with WCAG ratios computed) found three
+**template-level** defects, now fixed at source so nothing generated from the template inherits
+them:
+
+- **Light-locked — the dark mode is gone.** The template shipped a *partial*
+  `@media (prefers-color-scheme:dark)` block that re-coloured only a few vars, stranding
+  ink-on-tint table rows, the safety-banner body, and hardcoded SVG label colours as invisible
+  text under an OS dark theme. Removed; `:root { color-scheme:light }` locks the sheet to its
+  intended white-surface rendering. `design-system.md`/`SKILL.md` document the rule.
+- **AA-safe default accents.** `--c2` green `#3f8a6e`→`#3b8167` and `--c3` amber `#c9772e`→`#a4601f`
+  so white header text clears 4.5:1 (both failed before). New **"white-on-accent trap"** guidance:
+  a medium green/blue looks fine but fails white-text AA — verify, don't eyeball.
+- **Wide tables scroll, not the page.** Added a `.tscroll{overflow-x:auto}` wrapper + a rule so a
+  dense table/heat-map scrolls inside its box instead of pushing the sheet sideways on mobile.
+
+**Verify step extended.** Step 2.5 now checks white-on-accent contrast and renders once under a
+simulated **dark OS** (the sheet must stay light) and once narrow (no page-wide table overflow),
+not just clipping/overlap. Retrospective added as lesson #6 in `lessons-learned.md`.
+
 ## 0.2.0 — 2026-07-11
 
 **Visual-first.** After the first real run rendered a text-heavy first pass, the defaults now

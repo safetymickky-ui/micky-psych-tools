@@ -92,7 +92,7 @@
     {
       "name": "clinical-infographic",
       "source": "./plugins/clinical-infographic",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "description": "Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/\"medications to avoid\" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.",
       "category": "research",
       "keywords": [

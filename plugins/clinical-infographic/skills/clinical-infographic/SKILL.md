@@ -114,7 +114,14 @@ self-contained, print-ready skeleton — following the grammar in
   "avoid" content: a full-width, high-contrast band ("CRITICAL SAFETY — MEDICATIONS / ACTIONS
   TO AVOID") with prohibition iconography. Omit it *only* if the source truly has no such item.
 - **Accessibility is not optional.** Color is never the only signal — every color pairs with a
-  label or icon; contrast meets WCAG AA; headings are semantic; informative SVGs carry a label.
+  label or icon; contrast meets WCAG AA — **including white-on-accent headers and coloured cell
+  markers** (verify white-on-accent ≥ 4.5, a "medium" green/blue often fails); headings are
+  semantic; informative SVGs carry a label.
+- **Light-locked — never a dark mode.** It renders on a white surface (paper + the Learn hub's
+  white iframe). Keep `:root { color-scheme:light }` and ship **no** `@media
+  (prefers-color-scheme:dark)` block — a partial one strands tinted rows and the safety body as
+  invisible text under an OS dark theme. Wrap any wide table/heat-map in `.tscroll` so it scrolls
+  inside its box, not the whole page (mobile).
 - **A footer that keeps it honest** — the source title, the render date, and a collapsed
   Sources list (DOIs / NCT numbers), plus one line: *clinical reference aid, not a substitute
   for clinical judgment or local protocol.*
@@ -126,9 +133,14 @@ An infographic that was never rendered is a guess. Before it is filed:
 1. **Rasterise it** — render the HTML to an image (a headless-browser screenshot) and *look*:
    nothing clipped or overlapping, columns balanced, the safety banner intact, every diagram
    and curve label legible, arrows pointing the way the flow reads.
-2. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
+2. **Check contrast and the dark-OS case.** Confirm white-on-accent headers and any coloured
+   cell markers are legible (spot-check the ratios if unsure), and render once with the browser
+   emulating a **dark** OS theme (`prefers-color-scheme: dark`) — the sheet must stay light and
+   fully readable. If a row, the safety body, or an SVG label vanishes, a stray dark block
+   survived: remove it. Also render narrow (~390 px) to confirm no table pushes the page sideways.
+3. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
    not silently drop or overlap; the OCR text should contain the load-bearing numbers.
-3. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
+4. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
    deliverable** alongside the HTML — offer it for sharing or embedding.
 
 This is a *layout* check, never a content one — it changes how a fact sits on the page, never
@@ -181,7 +193,11 @@ This skill has failed if:
 - An `[unverified]` gap was rendered as a confident fact.
 - The HTML referenced any external CSS, JS, font, image, or CDN — i.e. it is not self-contained
   and would not open or print offline.
-- Color was the only signal for meaning, or contrast/heading semantics failed accessibility.
+- Color was the only signal for meaning, or contrast/heading semantics failed accessibility —
+  including a white-on-accent header or coloured cell marker below 4.5:1.
+- The document shipped a `@media (prefers-color-scheme:dark)` block (or was not light-locked), so
+  it renders with stranded/invisible text under an OS dark theme.
+- A wide table or heat-map was left unwrapped and scrolled the whole sheet sideways on mobile.
 - A schematic/illustrative figure was drawn without an "illustrative — not measured data"
   label, to a fabricated axis, or carrying a number not in the source.
 - The infographic was filed without ever being rendered and eyeballed for clipped text, broken

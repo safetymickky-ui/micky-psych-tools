@@ -16,11 +16,14 @@
 <title>{{TITLE}} — Clinical Reference</title>
 <style>
   :root {
+    color-scheme:light;   /* LIGHT-LOCKED: a paper reference, rendered on a white surface. */
     --ink:#1a2230; --muted:#5a6675; --line:#e2e7ee; --bg:#ffffff;
-    /* Column accent families (accent / tint) — swap per topic, keep AA contrast. */
-    --c1:#3b6ea8; --c1-tint:#eef3f9;
-    --c2:#3f8a6e; --c2-tint:#edf5f1;
-    --c3:#c9772e; --c3-tint:#fbf1e7;
+    /* Column accent families (accent / tint). Swap per topic, but KEEP AA:
+       white header text needs the accent dark enough (white-on-accent >= 4.5:1) —
+       a "medium" green/blue that looks fine often fails (e.g. #3f8a6e = 4.14). Verify. */
+    --c1:#3b6ea8; --c1-tint:#eef3f9;   /* white text: 5.3:1  ok */
+    --c2:#3b8167; --c2-tint:#edf5f1;   /* white text: 4.6:1  ok (was #3f8a6e = 4.1, failed) */
+    --c3:#a4601f; --c3-tint:#fbf1e7;   /* white text: 4.6:1  ok (as TEXT, #c9772e = 3.4, failed) */
     --danger:#a4304a; --danger-tint:#f7e9ed; --warn:#b3541e;
   }
   * { box-sizing:border-box; }
@@ -90,6 +93,10 @@
   .half.up { background:var(--danger-tint); border-color:#e3b9c4; } .half.up .ar,.half.up .th { color:var(--danger); }
   .half.down { background:#eaf1f7; border-color:#bcd2e6; } .half.down .ar,.half.down .th { color:#2f6ca8; }
 
+  /* Wide tables / heatmaps scroll INSIDE their box, never widen the page (mobile). */
+  .tscroll { overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 14px; }
+  .tscroll > table { margin-bottom:0; }
+
   @media (max-width:720px){ .columns{ grid-template-columns:1fr; } .safety-body{ grid-template-columns:1fr; } }
   @media print {
     body { font-size:12px; }
@@ -97,11 +104,12 @@
     .col,.card,.safety,.stat { break-inside:avoid; }
     @page { margin:12mm; }
   }
-  @media (prefers-color-scheme:dark){
-    /* Screen dark mode only; print stays light for legibility. */
-    :root { --bg:#12161c; --ink:#e9edf3; --muted:#9aa6b4; --line:#2a323d; }
-    .card,.stat { background:#171c24; }
-  }
+  /* Deliberately NO @media (prefers-color-scheme:dark). This is a print-ready paper
+     reference rendered on a white surface (print + the Learn hub's white iframe). A
+     PARTIAL dark override — the trap this template used to ship — re-colours only a few
+     vars and strands ink-on-tint rows, the safety-banner body, and hardcoded SVG label
+     colours as invisible text under an OS dark theme. color-scheme:light above keeps UA
+     chrome light; the sheet stays legible everywhere. Do not add a dark mode. */
 </style>
 </head>
 <body>

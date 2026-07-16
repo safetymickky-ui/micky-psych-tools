@@ -11,7 +11,7 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-15
+## Current versions — 2026-07-16
 
 | item                  | version |
 | --------------------- | ------- |
@@ -22,7 +22,7 @@ a milestone.
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.2.0   |
-| clinical-infographic  | 0.2.1   |
+| clinical-infographic  | 0.2.2   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 
@@ -90,6 +90,18 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-16** — **clinical-infographic 0.2.2 — contrast & dark-mode hardening** (branch
+  `claude/infographic-ocr-contrast-dqoap5`). An OCR/contrast audit of the two live
+  psychopharmacology infographics (rendered light/dark × desktop/mobile, WCAG ratios computed)
+  found three **template-level** defects — a partial `prefers-color-scheme:dark` block that
+  stranded tinted rows/safety-body/SVG labels as invisible text under an OS dark theme, "medium"
+  accents failing white-on-colour AA (`#3f8a6e`/`#c9772e`), and an unwrapped wide table scrolling
+  the page sideways on mobile. Fixed at source: template is now **light-locked** (`color-scheme:
+  light`, no dark block), default accents darkened to clear AA (`--c2 #3b8167`, `--c3 #a4601f`),
+  `.tscroll` wrapper added; design-system documents the **white-on-accent trap** + light-lock,
+  Step 2.5 now checks contrast + a dark-OS render, lesson #6 recorded. The two live infographics
+  were also fixed in `learn-hub` (HTML + Supabase) and the app gained a defensive dark-block
+  neutraliser.
 - **2026-07-15** — **Emptied the vault into the Learn hub** (`empty-vault`, whole-vault scope, branch
   `claude/empty-vault-learn-hub-92vttb`). The entire **Psychopharmacology Reference** set —
   the dose–occupancy report + the receptor-fingerprint atlas + **both infographics** — moved into

@@ -71,6 +71,27 @@ reading order and must not lean on arrow glyphs alone. The column rules already 
 > **Fix:** design-system diagram grammar spells out SVG `role="img"`/`<title>`/`<desc>`,
 > logical DOM order for flows, and "never arrow-glyph-only" for meaning.
 
+### 6. The template's dark mode and "medium" accents strand text — an OCR/contrast audit found it
+Auditing the two psychopharmacology infographics (dose-occupancy, receptor-fingerprints) by
+rendering them across light/dark × desktop/mobile and computing WCAG ratios surfaced three
+**template-level** defects — so they were baked into anything generated from it, not one-offs:
+- **A partial `@media (prefers-color-scheme:dark)` block.** It re-coloured only `--bg/--ink/
+  --muted`, so under an OS dark theme every tinted table row, the whole safety-banner body, and
+  the hardcoded SVG label colours became invisible light-on-light / dark-on-dark text (131–412
+  contrast failures per page). These are *paper* references on a white surface — a dark mode has
+  no business here, and a *partial* one is strictly worse than none.
+- **"Medium" accents that fail white-on-colour.** The green header (`#3f8a6e` = 4.1), the heat-map
+  `++` cells (`#4f86be` = 3.8), and the amber label (`#c9772e` = 3.4) all carried white/near-white
+  text below 4.5:1. They *look* fine; they measure as failing.
+- **An unwrapped wide table** scrolled the whole sheet sideways on a phone (482 px table, 390 px
+  viewport) instead of scrolling inside its own box.
+> **Fix:** the template is now **light-locked** (`color-scheme:light`, no dark block), its default
+> accents are darkened to clear white-on-accent AA (`--c2 #3b8167`, `--c3 #a4601f`), it ships a
+> `.tscroll` wrapper for wide tables, and design-system.md documents the **white-on-accent trap**
+> + the light-lock rule. Step 2.5 now checks contrast and a simulated dark-OS render, not just
+> clipping. (The app also neutralises any stray dark block defensively — but the document must be
+> correct at source.)
+
 ## The "next time" checklist (the one-screen version)
 
 1. Acquire sourced content (unchanged) — and ask the extractor for the **not-in-source** list.
@@ -78,7 +99,10 @@ reading order and must not lean on arrow glyphs alone. The column rules already 
 3. Draft **diagrams first** from the scaffolds; use prose cards only for the residue.
 4. Keep every number's units/qualifiers; label every schematic **illustrative**; carry all
    contraindications to the safety banner.
-5. **Render → look → (OCR) → fix.** Only then file via vault-keeper. Offer a PNG.
+5. **Light-lock** the sheet (`color-scheme:light`, no dark block); verify **white-on-accent ≥ 4.5**
+   and wrap any wide table in `.tscroll`.
+6. **Render → look → contrast-check → (OCR) → fix**, including a **dark-OS** render to prove the
+   sheet stays light. Only then file via vault-keeper. Offer a PNG.
 
 The through-line: the clinical contract was never the problem — **the visual defaults were.**
 Move the defaults toward diagrams and toward looking at the result, and the second-pass rework

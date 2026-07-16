@@ -33,12 +33,19 @@ Use **2–4** columns; more than four stops being scannable. Each column gets on
 applied to its header chip and (as a tint) its body. A documented, print-safe, AA-contrast
 starting palette (swap per topic, keep the contrast):
 
-| Slot | Accent | Tint | Typical role |
-|---|---|---|---|
-| c1 | deep blue `#3b6ea8` | `#eef3f9` | first phase / diagnosis |
-| c2 | green `#3f8a6e` | `#edf5f1` | middle phase / treatment |
-| c3 | amber-brown `#c9772e` | `#fbf1e7` | late phase / monitoring |
-| safety | crimson `#a4304a` | `#f7e9ed` | the do-not band |
+| Slot | Accent | Tint | White text on accent | Typical role |
+|---|---|---|---|---|
+| c1 | deep blue `#3b6ea8` | `#eef3f9` | 5.3:1 | first phase / diagnosis |
+| c2 | green `#3b8167` | `#edf5f1` | 4.6:1 | middle phase / treatment |
+| c3 | amber-brown `#a4601f` | `#fbf1e7` | 4.9:1 | late phase / monitoring |
+| safety | crimson `#a4304a` | `#f7e9ed` | 6.8:1 | the do-not band |
+
+**The white-on-accent trap.** A colored header/cell carries **white** text, so the *accent*
+must be dark enough that white clears **4.5:1** — a "medium" green or blue that looks perfectly
+fine to the eye often fails (`#3f8a6e` green = 4.1, `#4f86be` mid-blue = 3.8, amber `#c9772e`
+as text = 3.4). If you swap an accent, **verify white-on-accent ≥ 4.5** (and dark-ink-on-tint
+≥ 4.5) with a contrast checker — don't trust the eye. For a sequential heat-scale, keep white
+text only on the darkest steps and switch to dark ink on the light ones.
 
 Colour is **decoration, never the message**: every column is also named in its header, every
 rule also carries ⚠, every prohibition also carries 🚫 or a ban icon. A reader in greyscale (a
@@ -121,10 +128,21 @@ A clinical reference must open on a locked-down hospital machine and print ident
   across a page. Set a sensible `@page { margin }`.
 - **Formats:** *wall poster* (larger type, one page), *A4 handout* (default), *pocket card*
   (denser, two-up). Default to A4 handout unless the user asked otherwise.
+- **Light-locked — never a dark mode.** The sheet is rendered on a **white** surface (paper, and
+  the Learn hub's white iframe). Set `:root { color-scheme:light }` and ship **no**
+  `@media (prefers-color-scheme:dark)` block. A *partial* dark override (re-colouring only
+  `--bg/--ink/--muted`) strands ink-on-tint table rows, the safety-banner body, and hardcoded
+  SVG label colours as invisible text under an OS dark theme — and `color-scheme`/`<meta>` on the
+  embedding iframe cannot force the frame back to light, so the only fix is to not emit the block.
+- **Wide content scrolls inside its box, not the page.** A dense table or heat-map that is wider
+  than a phone viewport must sit in an `overflow-x:auto` wrapper (`.tscroll` in the template) so
+  it scrolls locally — an unwrapped wide table pushes the whole sheet sideways on mobile.
 
 ## Accessibility
 
-- **Contrast:** body text and every colored chip meet **WCAG AA** (4.5:1 text, 3:1 large).
+- **Contrast:** body text and every colored chip meet **WCAG AA** (4.5:1 text, 3:1 large) —
+  *including white-on-accent headers and coloured cell markers*, which is where it usually breaks
+  (see "the white-on-accent trap"). Verify with a checker, don't eyeball it.
 - **Not by colour alone:** pair every colour with a label or icon (see the color model).
 - **Semantics:** real headings (`h1`/`h3`), `lang` set, columns as `<article>`/`<section>` with
   `aria-label`; decorative SVGs `aria-hidden`, informative ones labelled.
