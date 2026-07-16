@@ -102,7 +102,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   topic FK exists), and only true binaries (PNG previews) still drop with their topic. Also landed the actual Deep TMS
   infographic: `deep-tms-protocol-reference-infographic` under the `deep-transcranial-magnetic-stimulation-comprehensive-review`
   topic, light-lock-normalised (the source HTML shipped a `prefers-color-scheme:dark` block), verified live in
-  `infographics`. `validate.py` clean; router regenerated.
+  `infographics`. `validate.py` clean; router regenerated. **Then ran the fixed empty-vault (whole-vault):** all
+  landings re-verified (review 13/13, vs-rtms 6/6, infographic present), the 2 reports + infographic HTML + PNG preview
+  + Neuromodulation MOC deleted (recoverable from git), `index.md` reset to the empty scaffold — **the vault is empty
+  again.** Also light-locked `clinical-infographic` (0.2.2) — template + example dark-block removed, `color-scheme:light`
+  pinned, "no dark mode, ever" rule added — the source-side fix so future infographics don't need downstream normalising.
 - **2026-07-16** — **Deep TMS follow-ups on the same branch** — rendered a **clinical-infographic** and spun off a
   **pubmed-research-note** decision, both from the just-filed comprehensive review (user asked for intent-lock first;
   the picker was interrupted again → proceeded on surfaced defaults, both easily re-cut). **Infographic**
