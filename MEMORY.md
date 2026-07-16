@@ -90,6 +90,24 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-16** — **Deep TMS follow-ups on the same branch** — rendered a **clinical-infographic** and spun off a
+  **pubmed-research-note** decision, both from the just-filed comprehensive review (user asked for intent-lock first;
+  the picker was interrupted again → proceeded on surfaced defaults, both easily re-cut). **Infographic**
+  (`vault/assets/deep-tms-protocol-reference-infographic.html` + render-verified `.preview.png`, 2400×2940) — a
+  protocol & efficacy reference card: signature mechanism strip (H-coil ~4–5 cm field + the "not proven > focal rTMS"
+  caveat), three colour-coded protocol columns (MDD/H1 · OCD/H7 · smoking/H4) with parameter stat tiles + pivotal
+  efficacy, an evidence-strength ladder (OCD→PTSD), and the mandatory critical-safety banner; rendered via headless
+  Chromium and eyeballed before filing; every fact traces to the review (fidelity contract held). **Decision**
+  (`vault/artifacts/deep-tms-vs-standard-rtms-depression.md`) — verdict-first: **for TRD, don't choose Deep TMS for
+  its depth** — the one adequately-sized *industry-independent* head-to-head (Filipčić, n=228) found NO remission
+  superiority over figure-8 (OR 1.74, ns), pro-deep signal only in secondary outcomes; newest NMA (141 trials, 10,587)
+  ranks iTBS top and doesn't place deep above sham on response; deep costs more, HTA favours HF-rTMS/iTBS → choose by
+  access/throughput/cost, not depth; confidence moderate (definitive double-blind head-to-head NCT06813313 reads out
+  ~2027). Resolved the parent review's earlier "unpublished n=228 mood-disorders" registry flag — it is the
+  *published* Filipčić head-to-head (NCT02917499). Both wired into the **Neuromodulation MOC** (## Artifacts + a new
+  ## Assets section) and cross-linked from the review; the decision's fresh dTMS-vs-rTMS evidence was harvested via a
+  background subagent (PubMed 12 · trials 4). `validate.py` clean.
+
 - **2026-07-16** — Filed **Deep Transcranial Magnetic Stimulation (Deep TMS) — Comprehensive Review** to the vault
   via the comprehensive-review → vault-keeper flow (branch `claude/deep-tms-protocol-review-z5ika8`). First
   **neuromodulation** topic and first vault content since the 2026-07-15 empty-vault drain; new **Neuromodulation

@@ -209,3 +209,8 @@ The maintenance evidence, though small, points one way. A controlled maintenance
 - NCT06524505 — Deep TMS in bipolar depression, recruiting, n=100, readout 2025-09
 - NCT06728280 — Deep TMS in adolescent depression (H1 vs H7), n=100, readout 2025-12
 - NCT07188506 — Deep TMS response predictors in youth mood/suicidality, n=180, readout 2027-12
+
+## Rendered references & spin-offs
+
+- **Infographic** — `assets/deep-tms-protocol-reference-infographic.html` (+ `.preview.png`): a print-ready protocol & efficacy reference card rendered from this review, filed under the [[Neuromodulation MOC]].
+- **Decision spin-off** — [[deep-tms-vs-standard-rtms-depression]]: a verdict-first decision report adjudicating Deep TMS vs standard figure-8 rTMS for treatment-resistant depression (the central tension of §6 and §10, resolved into an action).
