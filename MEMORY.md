@@ -90,6 +90,23 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-17** — **Emptied the vault into the Learn hub** (`empty-vault`, whole-vault scope, branch
+  `claude/empty-vaults-plugin-z8blf7`). The entire **Neuromodulation** set — the Deep TMS comprehensive
+  review, the dTMS-vs-standard-rTMS decision, and the TMS-in-ADHD/autism decision, plus the Deep TMS
+  protocol-reference infographic — moved into `learn-hub` and **deleted from this vault**
+  (move → verify → delete, explicit-confirmed). It landed as **3 Learn topics / 27 atomic notes**
+  (13 + 6 + 8, every provenance handshake satisfied) + **1 infographic**
+  (`deep-tms-protocol-reference-infographic`, `infographics` table). The first two reports and the
+  infographic were digested/ingested earlier on this same branch (commits `a4e862c`, `51d42d7`); this
+  run digested the **third** report (`tms-adhd-autism-evidence` → 8 notes, per-note `md5(body_md)`
+  verified **byte-exact** vs source, provenance count 8/8) and completed the drain. All content verified
+  in Supabase `juvoohejxuuvwolmgoep`; learn-hub committed + pushed. The vault is back to the empty
+  scaffold (`index.md` + `.gitkeep`s); everything git-recoverable. Toolchain note: learn-hub still has no
+  `.env.local`/service-role key, so the third topic's sync went through the Supabase MCP `execute_sql`
+  — scoped per-topic SQL generated via the sync's own `vault-sql` helpers (~24 KB, under the ~200 KB MCP
+  ceiling) rather than the full 204-topic vault; the deployed-app revalidate was skipped (no
+  `APP_URL`/`REVALIDATE_SECRET` locally) so content surfaces within the 1 h safety revalidate.
+
 - **2026-07-17** — **TMS in ADHD & autism evidence report** (branch `claude/tms-adhd-autism-evidence-gwt4tz`) —
   ran **pubmed-research-note** on the bare topic "TMS in ADHD and autism evidence" in an autonomous session (no
   interactive intent-lock available → built the decision brief self-serve, declared in the preface, as the Deep TMS

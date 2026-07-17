@@ -14,4 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Neuromodulation MOC]]
+_None yet — the vault is empty. New topic MOCs are added here as content is filed._
