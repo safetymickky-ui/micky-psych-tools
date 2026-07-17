@@ -90,6 +90,23 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-17** — **TMS in ADHD & autism evidence report** (branch `claude/tms-adhd-autism-evidence-gwt4tz`) —
+  ran **pubmed-research-note** on the bare topic "TMS in ADHD and autism evidence" in an autonomous session (no
+  interactive intent-lock available → built the decision brief self-serve, declared in the preface, as the Deep TMS
+  decision did). **Decision** (`vault/artifacts/tms-adhd-autism-evidence.md`): *do not offer rTMS for the core symptoms
+  of ADHD or autism outside a trial — both investigational, no regulator clearance.* Adjudicated the split ADHD
+  literature — headline effect sizes (inattention Hedges g up to −1.44) come from ~7 tiny, heterogeneous, mostly
+  unblinded trials and the pooled evidence is officially "inconclusive"; the careful syntheses (37-RCT network
+  meta-analysis, 2022 umbrella review, multiple null MAs) show rTMS doesn't beat sham and it's no stimulant substitute.
+  Autism: only a small, bias-prone LF-rTMS/DLPFC signal on *repetitive behaviour* in intellectually-capable youth; the
+  RCT-only network meta-analysis (16 RCTs, N=709) shows nothing on the social-communication core; flagged the common
+  conflation with TMS-for-comorbid-depression (a separate, cleared indication). Publication-bias sweep found the
+  industry deep-TMS programmes in both disorders terminated/unpublished; large multi-centre RCTs read out 2026–2029
+  (autism pBFS-iTBS NCT06255535 n=215 ~2026 the load-bearing one). PubMed 16 · trials 12; confidence moderate. Wired
+  into the **Neuromodulation MOC** (## Artifacts + frontmatter links). `validate.py` clean. Distinct from the
+  2026-07-14 *whole-disorder* ADHD/autism comprehensive reviews (since emptied to the Learn hub) — this is a
+  modality-specific decision report.
+
 - **2026-07-16** — **Deep TMS follow-ups on the same branch** — rendered a **clinical-infographic** and spun off a
   **pubmed-research-note** decision, both from the just-filed comprehensive review (user asked for intent-lock first;
   the picker was interrupted again → proceeded on surfaced defaults, both easily re-cut). **Infographic**
