@@ -1,0 +1,454 @@
+<!--
+  Concept animation — Transcranial Magnetic Stimulation: the electromagnetic chain.
+  General lane: established physics/engineering, illustrative values (not measured data).
+  Self-contained: inline CSS + SVG + JS. No external CSS/JS/fonts/images/CDN.
+-->
+<style>
+  :root{
+    --bg:#0a1020; --panel:#0f1830; --panel2:#12203f; --line:#22345c;
+    --ink:#eaf0ff; --muted:#a9b7d6; --faint:#7f8fb4;
+    --cur:#ffb84d; --cur-d:#8a5a12;      /* current / electricity (amber) */
+    --mag:#3fd6dc; --mag-d:#134f52;      /* magnetic field B (cyan)       */
+    --efield:#c39cff; --ef-d:#4a3a78;    /* induced E-field (violet)      */
+    --neur:#5fe39a; --neur-d:#1c5238;    /* neuron / spike (green)        */
+    --hot:#ff6b6b;                        /* emphasis / focal hotspot      */
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{
+    max-width:1040px; margin:0 auto; padding:22px 20px 30px;
+    background:var(--bg); color:var(--ink); min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.45;
+  }
+  h1{font-size:23px; margin:0 0 3px; letter-spacing:-0.01em}
+  .subtitle{margin:0 0 14px; color:var(--muted); font-size:13.5px}
+  .subtitle b{color:var(--mag)}
+  .stage-wrap{
+    background:linear-gradient(180deg,#0c1428,#0a1020);
+    border:1px solid var(--line); border-radius:14px; padding:8px;
+    box-shadow:0 8px 30px rgba(0,0,0,.35);
+  }
+  svg.stage{display:block; width:100%; height:auto}
+  text{font-family:inherit}
+
+  /* ---------- caption + equation ---------- */
+  .readout{margin:14px 2px 4px; min-height:64px}
+  .eq{
+    display:inline-block; font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:13px; color:#0a1020; background:var(--mag);
+    padding:4px 10px; border-radius:7px; margin-bottom:8px; font-weight:600;
+  }
+  .eq.blank{background:transparent; color:transparent; user-select:none}
+  .caption{font-size:15.5px; color:var(--ink); margin:0; max-width:78ch}
+  .scene-no{color:var(--faint); font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; margin:0 0 4px}
+
+  /* ---------- controls ---------- */
+  .controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 2px 0}
+  button{
+    font:inherit; font-size:13px; color:var(--ink); background:var(--panel2);
+    border:1px solid var(--line); border-radius:9px; padding:8px 13px; cursor:pointer;
+  }
+  button:hover{background:#1a2c54}
+  button:focus-visible{outline:2px solid var(--mag); outline-offset:2px}
+  button.primary{background:var(--mag); color:#06212a; border-color:var(--mag); font-weight:700}
+  button.primary:hover{background:#63e6ec}
+  .spacer{flex:1 1 auto}
+  .progress{display:flex; gap:6px; align-items:center}
+  .dot{width:11px; height:11px; border-radius:50%; background:var(--line); border:0; padding:0; cursor:pointer}
+  .dot[aria-current="true"]{background:var(--mag); box-shadow:0 0 0 3px rgba(63,214,220,.22)}
+  .indicator{color:var(--muted); font-size:12.5px; font-variant-numeric:tabular-nums; min-width:44px; text-align:right}
+
+  footer{margin:18px 2px 0; color:var(--faint); font-size:11.5px; line-height:1.5; border-top:1px solid var(--line); padding-top:10px}
+  footer .tag{color:var(--muted)}
+
+  /* ---------- shared svg text ---------- */
+  .lbl{fill:var(--muted); font-size:12px}
+  .lbl-s{fill:var(--faint); font-size:10.5px}
+  .lbl-hd{fill:var(--ink); font-size:12.5px; font-weight:700; letter-spacing:.04em}
+  .val{font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+
+  /* ---------- cross-scene visibility (JS sets opacity by data-from) ---------- */
+  [data-from]{opacity:0; transition:opacity .55s ease}
+
+  /* ---------- keyframe actions (gated by [data-scene=N]; pausable) ---------- */
+  .paused *{animation-play-state:paused !important}
+
+  @keyframes chargeFill{from{transform:scaleY(0)} to{transform:scaleY(1)}}
+  @keyframes gaugeRise{from{transform:scaleY(0)} to{transform:scaleY(1)}}
+  @keyframes flow{from{offset-distance:0%} to{offset-distance:100%}}
+  @keyframes drawIn{from{stroke-dashoffset:var(--len)} to{stroke-dashoffset:0}}
+  @keyframes bPulse{0%,100%{opacity:.35} 45%{opacity:1}}
+  @keyframes eCirc{to{stroke-dashoffset:-40}}
+  @keyframes eGlow{0%,100%{opacity:.12} 50%{opacity:.26}}
+  @keyframes spikeTravel{0%{offset-distance:0%; opacity:0} 8%{opacity:1} 92%{opacity:1} 100%{offset-distance:100%; opacity:0}}
+  @keyframes depol{0%,100%{fill:var(--mag)} 45%,70%{fill:var(--hot)}}
+  @keyframes hotPulse{0%,100%{opacity:.35; r:6} 50%{opacity:1; r:13}}
+  @keyframes switchClose{from{transform:rotate(-32deg)} to{transform:rotate(0deg)}}
+  @keyframes markerMove{0%{opacity:0} 30%{opacity:0} 55%{opacity:1} 100%{opacity:1}}
+
+  /* charge fill only while scene 2 */
+  [data-scene="2"] #chargeFill{transform-origin:bottom; animation:chargeFill 2.4s ease-out both}
+  [data-scene="2"] #vGauge{transform-origin:bottom; animation:gaugeRise 2.4s ease-out both}
+
+  /* switch closes on entering scene 3 */
+  [data-scene="3"] #switchLever{transform-box:fill-box; transform-origin:8px 50%; animation:switchClose .5s ease-out both}
+  /* current keeps flowing whenever the feed is shown (scene 3+) */
+  .cdot{offset-path:path('M 300 86 L 476 86 Q 566 86 592 140 L 626 176'); offset-rotate:0deg;
+        animation:flow 1.6s linear infinite}
+  .cdot.d2{animation-delay:-.53s} .cdot.d3{animation-delay:-1.06s}
+  [data-scene="1"] .cdot,[data-scene="2"] .cdot{visibility:hidden}
+
+  /* B-field lines draw on scene 4, pulse on scene 5+ */
+  .bline{stroke-dashoffset:0}
+  [data-scene="4"] .bline{animation:drawIn 1.5s ease-out both}
+  [data-scene="5"] .bline{animation:bPulse 1.5s ease-in-out infinite}
+  [data-scene="6"] .bline,[data-scene="7"] .bline{opacity:.7}
+
+  /* B waveform draws scene 4; E waveform + marker draw scene 5 */
+  [data-scene="4"] #bTrace,[data-scene="5"] #bTrace{animation:drawIn 1.6s ease-out both}
+  [data-scene="5"] #eTrace{animation:drawIn 1.6s ease-out .3s both}
+  [data-scene="5"] #slopeMark,[data-scene="6"] #slopeMark,[data-scene="7"] #slopeMark{animation:markerMove 2.2s ease-out both}
+  #bTrace,#eTrace{stroke-dashoffset:0}
+
+  /* induced E-field loop circulates + glows from scene 5 */
+  .eloop{animation:eCirc 1.1s linear infinite}
+  .eglow{animation:eGlow 1.8s ease-in-out infinite}
+
+  /* neuron: spike travels + membrane depolarizes in scene 6+ */
+  [data-scene="6"] #spike,[data-scene="7"] #spike{animation:spikeTravel 2.4s ease-in-out infinite}
+  [data-scene="6"] .memb,[data-scene="7"] .memb{animation:depol 2.4s ease-in-out infinite}
+  #spike{offset-path:path('M 690 508 L 760 508 Q 792 508 800 486'); opacity:0}
+
+  /* figure-8 focal hotspot pulses scene 6+ */
+  [data-scene="6"] #focalHot,[data-scene="7"] #focalHot{animation:hotPulse 1.8s ease-in-out infinite}
+
+  /* ---------- reduced motion: stepped storyboard, no motion ---------- */
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+    .cdot{visibility:visible !important; offset-distance:60%}
+    #chargeFill,#vGauge{transform:scaleY(1) !important}
+    .memb{fill:var(--hot) !important}
+    #spike{opacity:1 !important; offset-distance:55%}
+    #focalHot{opacity:1 !important}
+    #slopeMark{opacity:1 !important}
+  }
+  @media (max-width:560px){ h1{font-size:19px} .caption{font-size:14px} }
+</style>
+
+<div class="wrap">
+  <h1>How a TMS pulse reaches the brain — the electromagnetic chain</h1>
+  <p class="subtitle">Transcranial magnetic stimulation, from capacitor to cortex. The trigger is not the magnetic field but <b>how fast it changes.</b></p>
+
+  <div class="stage-wrap">
+    <svg class="stage" data-scene="1" viewBox="0 0 980 600" role="img" aria-labelledby="stTitle stDesc" preserveAspectRatio="xMidYMid meet">
+      <title id="stTitle">Transcranial magnetic stimulation device physics</title>
+      <desc id="stDesc">A pulse generator with a capacitor bank and solid-state switch drives a figure-of-eight coil on the scalp; the coil's fast-changing magnetic field induces an electric field in the cortex that depolarizes neurons.</desc>
+
+      <defs>
+        <marker id="arrCur" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--cur)"/>
+        </marker>
+        <marker id="arrMag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--mag)"/>
+        </marker>
+        <marker id="arrE" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--efield)"/>
+        </marker>
+        <radialGradient id="brainFill" cx="50%" cy="42%" r="65%">
+          <stop offset="0%" stop-color="#1b2b4d"/><stop offset="100%" stop-color="#101d38"/>
+        </radialGradient>
+        <radialGradient id="focalG" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="var(--hot)"/><stop offset="100%" stop-color="rgba(255,107,107,0)"/>
+        </radialGradient>
+      </defs>
+
+      <!-- ======================= HEAD + CORTEX (scene 1+) ======================= -->
+      <g data-from="1">
+        <!-- scalp dome -->
+        <path d="M 545 470 A 150 275 0 0 1 835 470 Z" fill="#16233f" stroke="#2c4066" stroke-width="2"/>
+        <!-- skull band -->
+        <path d="M 556 468 A 137 258 0 0 1 824 468" fill="none" stroke="#43578a" stroke-width="7" opacity=".85"/>
+        <!-- brain / cortex -->
+        <path d="M 566 468 A 126 244 0 0 1 814 468 Z" fill="url(#brainFill)" stroke="#2f4570" stroke-width="1"/>
+        <!-- cortical gyri (wavy surface line) -->
+        <path d="M 576 300 q 14 -20 28 0 t 28 0 t 28 0 t 28 0 t 28 0 t 28 0 t 28 0 t 28 0"
+              fill="none" stroke="#37507f" stroke-width="2" opacity=".7"/>
+        <text class="lbl-s" x="576" y="442">skull &amp; scalp — magnetically transparent (µ ≈ µ₀)</text>
+        <text class="lbl" x="638" y="418" text-anchor="middle">cortex</text>
+      </g>
+
+      <!-- ======================= FIGURE-8 COIL on scalp (scene 1+) ======================= -->
+      <g data-from="1">
+        <!-- two windings, seen in perspective on the crown -->
+        <ellipse cx="650" cy="196" rx="46" ry="16" fill="none" stroke="var(--cur)" stroke-width="5" opacity=".92"/>
+        <ellipse cx="730" cy="196" rx="46" ry="16" fill="none" stroke="var(--cur)" stroke-width="5" opacity=".92"/>
+        <ellipse cx="650" cy="196" rx="30" ry="9" fill="none" stroke="var(--cur-d)" stroke-width="3"/>
+        <ellipse cx="730" cy="196" rx="30" ry="9" fill="none" stroke="var(--cur-d)" stroke-width="3"/>
+        <!-- opposed circulation arrows -> reinforce under the junction -->
+        <path d="M 636 184 a 30 9 0 0 1 28 0" fill="none" stroke="var(--cur)" stroke-width="2.5" marker-end="url(#arrCur)"/>
+        <path d="M 744 184 a 30 9 0 0 0 -28 0" fill="none" stroke="var(--cur)" stroke-width="2.5" marker-end="url(#arrCur)"/>
+        <text class="lbl-hd" x="690" y="163" text-anchor="middle" fill="var(--cur)">figure-of-eight coil</text>
+      </g>
+
+      <!-- ======================= PULSE GENERATOR (scene 2+) ======================= -->
+      <g data-from="2">
+        <rect x="34" y="44" width="318" height="214" rx="11" fill="var(--panel)" stroke="var(--line)"/>
+        <text class="lbl-hd" x="50" y="68">PULSE GENERATOR</text>
+
+        <!-- station 1: capacitor bank -->
+        <text class="lbl" x="96" y="98" text-anchor="middle">capacitor</text>
+        <line x1="82" y1="110" x2="82" y2="178" stroke="#7f8fb4" stroke-width="3"/>
+        <line x1="110" y1="110" x2="110" y2="178" stroke="#7f8fb4" stroke-width="3"/>
+        <rect id="chargeFill" x="86" y="112" width="20" height="64" fill="var(--cur)" opacity=".55"/>
+        <text class="val lbl-s" x="96" y="200" text-anchor="middle">C ≈ 150 µF</text>
+
+        <!-- station 2: energy gauge -->
+        <text class="lbl" x="188" y="98" text-anchor="middle">energy</text>
+        <rect x="179" y="110" width="18" height="68" rx="3" fill="#0a1428" stroke="var(--line)"/>
+        <rect id="vGauge" x="181" y="112" width="14" height="64" rx="2" fill="var(--cur)"/>
+        <text class="val lbl-s" x="188" y="200" text-anchor="middle" fill="var(--cur)">≈ 2.8 kV</text>
+
+        <!-- station 3: solid-state switch -->
+        <text class="lbl" x="290" y="98" text-anchor="middle">switch</text>
+        <circle cx="262" cy="134" r="3.5" fill="var(--cur)"/>
+        <circle cx="318" cy="134" r="3.5" fill="var(--cur)"/>
+        <line id="switchLever" x1="262" y1="134" x2="314" y2="134" stroke="var(--cur)" stroke-width="3"/>
+        <text class="lbl-s" x="290" y="200" text-anchor="middle">IGBT / thyristor</text>
+
+        <text class="lbl-s" x="50" y="240">energy is stored, then released in one fast pulse</text>
+      </g>
+
+      <!-- ======================= FEED WIRE + CURRENT (scene 3+) ======================= -->
+      <g data-from="3">
+        <path d="M 300 86 L 476 86 Q 566 86 592 140 L 626 176"
+              fill="none" stroke="var(--cur-d)" stroke-width="4"/>
+        <path d="M 300 86 L 476 86 Q 566 86 592 140 L 626 176"
+              fill="none" stroke="var(--cur)" stroke-width="1.5" opacity=".5"/>
+        <circle class="cdot" r="4.5" fill="var(--cur)"/>
+        <circle class="cdot d2" r="4.5" fill="var(--cur)"/>
+        <circle class="cdot d3" r="4.5" fill="var(--cur)"/>
+        <text class="lbl-s" x="392" y="78" text-anchor="middle" fill="var(--cur)">I: several kA · dI/dt ≈ 10⁸ A/s</text>
+      </g>
+
+      <!-- ======================= B-FIELD LINES into brain (scene 4+) ======================= -->
+      <g data-from="4">
+        <!-- concentric dipole loops centred under the junction -->
+        <ellipse class="bline" cx="690" cy="312" rx="34"  ry="112" fill="none" stroke="var(--mag)" stroke-width="2.6" style="--len:470" stroke-dasharray="470"/>
+        <ellipse class="bline" cx="690" cy="318" rx="64"  ry="124" fill="none" stroke="var(--mag)" stroke-width="2.2" opacity=".8" style="--len:560" stroke-dasharray="560"/>
+        <ellipse class="bline" cx="690" cy="322" rx="96"  ry="134" fill="none" stroke="var(--mag)" stroke-width="1.8" opacity=".55" style="--len:660" stroke-dasharray="660"/>
+        <!-- direction: into the brain under the junction -->
+        <line x1="690" y1="214" x2="690" y2="252" stroke="var(--mag)" stroke-width="2.6" marker-end="url(#arrMag)"/>
+        <text class="lbl-hd" x="470" y="300" text-anchor="middle" fill="var(--mag)">B ≈ 1–2.5 T</text>
+        <text class="lbl-s"  x="470" y="318" text-anchor="middle">(≈ an MRI field, for ~100 µs)</text>
+      </g>
+
+      <!-- ======================= INDUCED E-FIELD in cortex (scene 5+) ======================= -->
+      <g data-from="5">
+        <ellipse class="eglow" cx="690" cy="300" rx="82" ry="30" fill="var(--efield)" opacity=".16"/>
+        <ellipse class="eloop" cx="690" cy="300" rx="72" ry="24" fill="none" stroke="var(--efield)" stroke-width="3"
+                 stroke-dasharray="8 6"/>
+        <path d="M 636 288 a 72 24 0 0 1 26 -10" fill="none" stroke="var(--efield)" stroke-width="2.5" marker-end="url(#arrE)"/>
+        <path d="M 744 312 a 72 24 0 0 1 -26 10" fill="none" stroke="var(--efield)" stroke-width="2.5" marker-end="url(#arrE)"/>
+        <text class="lbl-hd" x="906" y="296" text-anchor="end" fill="var(--efield)">induced E-field</text>
+        <text class="lbl-s"  x="906" y="313" text-anchor="end">eddy currents ≈ 100–150 V/m</text>
+      </g>
+
+      <!-- ======================= OSCILLOSCOPE (scene 4+) ======================= -->
+      <g data-from="4">
+        <rect x="34" y="300" width="318" height="248" rx="11" fill="var(--panel)" stroke="var(--line)"/>
+        <text class="lbl-hd" x="50" y="324">FIELD vs. ITS RATE OF CHANGE</text>
+        <!-- grid -->
+        <g stroke="#1b2c4e" stroke-width="1">
+          <line x1="60" y1="352" x2="336" y2="352"/><line x1="60" y1="392" x2="336" y2="392"/>
+          <line x1="60" y1="432" x2="336" y2="432"/><line x1="60" y1="472" x2="336" y2="472"/>
+          <line x1="60" y1="512" x2="336" y2="512"/>
+          <line x1="110" y1="344" x2="110" y2="516"/><line x1="160" y1="344" x2="160" y2="516"/>
+          <line x1="210" y1="344" x2="210" y2="516"/><line x1="260" y1="344" x2="260" y2="516"/>
+          <line x1="310" y1="344" x2="310" y2="516"/>
+        </g>
+        <!-- B(t): rise and fall (cyan) around mid-line y=412 -->
+        <path id="bTrace" d="M 60 412 C 120 412, 150 356, 196 356 C 250 356, 262 412, 300 412 L 336 412"
+              fill="none" stroke="var(--mag)" stroke-width="3" stroke-dasharray="360" style="--len:360"/>
+        <!-- E(t) ∝ -dB/dt (violet): peaks where B rises fastest -->
+        <path id="eTrace" d="M 60 490 C 108 490, 118 452, 138 452 C 150 452, 156 500, 176 512 C 196 520, 206 470, 232 470 C 262 470, 276 492, 336 490"
+              fill="none" stroke="var(--efield)" stroke-width="3" stroke-dasharray="380" style="--len:380"/>
+        <!-- slope marker: B steepest -> E extreme -->
+        <g id="slopeMark" opacity="0">
+          <line x1="138" y1="352" x2="138" y2="516" stroke="var(--hot)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <circle cx="138" cy="452" r="4.5" fill="var(--hot)"/>
+          <text class="lbl-s" x="148" y="340" fill="var(--hot)">steepest dB/dt → peak E</text>
+        </g>
+        <text class="lbl-s val" x="66" y="366" fill="var(--mag)">B(t)</text>
+        <text class="lbl-s val" x="66" y="486" fill="var(--efield)">E ∝ −dB/dt</text>
+        <text class="lbl-s" x="193" y="538" text-anchor="middle" fill="var(--faint)">illustrative — not measured data</text>
+      </g>
+
+      <!-- ======================= FIGURE-8 FOCALITY inset (scene 6+) ======================= -->
+      <g data-from="6">
+        <rect x="806" y="44" width="146" height="118" rx="10" fill="var(--panel)" stroke="var(--line)"/>
+        <text class="lbl-s" x="879" y="64" text-anchor="middle" fill="var(--muted)">why focal?</text>
+        <circle cx="857" cy="104" r="26" fill="none" stroke="var(--cur)" stroke-width="4"/>
+        <circle cx="901" cy="104" r="26" fill="none" stroke="var(--cur)" stroke-width="4"/>
+        <circle cx="879" cy="104" r="20" fill="url(#focalG)"/>
+        <circle id="focalHot" cx="879" cy="104" r="6" fill="var(--hot)"/>
+        <text class="lbl-s" x="879" y="152" text-anchor="middle">focal spot ~ cm at junction</text>
+      </g>
+
+      <!-- ======================= NEURON inset (scene 6+) ======================= -->
+      <g data-from="6">
+        <rect x="606" y="452" width="346" height="120" rx="11" fill="var(--panel)" stroke="var(--line)"/>
+        <text class="lbl-hd" x="622" y="474" fill="var(--neur)">AXON DEPOLARIZES</text>
+        <!-- axon with a bend -->
+        <path class="memb" d="M 622 508 L 700 508 Q 760 508 800 470" fill="none" stroke="var(--mag)" stroke-width="7" stroke-linecap="round"/>
+        <!-- induced E-field arrow along the axon -->
+        <line x1="636" y1="524" x2="712" y2="524" stroke="var(--efield)" stroke-width="2.5" marker-end="url(#arrE)"/>
+        <text class="lbl-s" x="636" y="540" fill="var(--efield)">induced E along axon</text>
+        <!-- spike travelling toward the bend -->
+        <circle id="spike" r="7" fill="var(--neur)"/>
+        <text class="lbl-s" x="812" y="500">activating fn ∝ ∂E/∂x</text>
+        <text class="lbl-s" x="812" y="516" fill="var(--neur)">Vₘ → threshold</text>
+        <text class="lbl-s" x="812" y="532" fill="var(--neur)">→ action potential</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="readout">
+    <p class="scene-no" id="sceneNo">Scene 1 of 7</p>
+    <div class="eq blank" id="eqTag" aria-hidden="true">·</div>
+    <p class="caption" id="caption" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" class="primary" aria-label="Play animation">▶ Play</button>
+    <button id="prevBtn" aria-label="Previous scene">‹ Prev</button>
+    <button id="nextBtn" aria-label="Next scene">Next ›</button>
+    <button id="restartBtn" aria-label="Restart from scene 1">⟲ Restart</button>
+    <span class="spacer"></span>
+    <div class="progress" role="tablist" aria-label="Scenes" id="dots"></div>
+    <span class="indicator" id="indicator">1 / 7</span>
+  </div>
+
+  <footer>
+    <span class="tag">Illustrative — established physics &amp; engineering.</span>
+    Values (capacitance, voltage, field strengths, induced E-field) are order-of-magnitude figures typical of clinical TMS devices, shown to convey scale — not measured data.
+    Teaching aid only; not device-specific specification or clinical guidance. Rendered 2026-07-19.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var stage = document.querySelector('.stage');
+  var captionEl = document.getElementById('caption');
+  var eqEl = document.getElementById('eqTag');
+  var sceneNoEl = document.getElementById('sceneNo');
+  var indicatorEl = document.getElementById('indicator');
+  var playBtn = document.getElementById('playBtn');
+  var dotsWrap = document.getElementById('dots');
+
+  var scenes = [
+    { eq:"",
+      cap:"To reach the cortex without surgery or contact, TMS delivers its energy magnetically — a coil rests on the scalp and never touches the brain." },
+    { eq:"E = ½·C·V²   — energy stored in the capacitor bank",
+      cap:"First the machine stores energy: a capacitor bank (≈150 µF) charges to kilovolts, holding on the order of a hundred joules." },
+    { eq:"dI/dt ≈ 10⁸ A/s   — RLC discharge through the coil",
+      cap:"A solid-state switch then dumps that charge through the coil — several kiloamperes rising in about 100 microseconds, an enormous rate of change of current." },
+    { eq:"B ∝ N·I   →   ~1–2.5 T at the coil face",
+      cap:"That surging current builds a brief magnetic field of about 1–2.5 tesla, which passes straight through scalp and skull because tissue is magnetically transparent." },
+    { eq:"∇ × E = −∂B/∂t   — Faraday's law of induction",
+      cap:"The trigger is not the field but its change: by Faraday's law the rapidly changing field (dB/dt) induces an electric field — circulating eddy currents — inside the conductive cortex." },
+    { eq:"activating function ∝ ∂E/∂x   →   Vₘ reaches threshold",
+      cap:"This induced E-field depolarizes axons where its gradient along the fibre is steepest; a figure-of-eight coil concentrates it into a focal spot a few centimetres across." },
+    { eq:"charge → current → B-field → induced E-field → spike",
+      cap:"The whole chain in one frame: stored charge becomes a fast current pulse, a changing magnetic field, an induced electric field, and finally a neural action potential." }
+  ];
+  var DUR = [7000, 9000, 10000, 9500, 11000, 10000, 10000];
+  var N = scenes.length;
+
+  var current = 0, playing = false, timer = null, sceneStart = 0, remaining = 0;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // build progress dots
+  var dotEls = [];
+  for (var i=0;i<N;i++){
+    var b = document.createElement('button');
+    b.className='dot'; b.type='button';
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-label','Go to scene '+(i+1));
+    (function(idx){ b.addEventListener('click',function(){ goTo(idx); pause(); }); })(i);
+    dotsWrap.appendChild(b); dotEls.push(b);
+  }
+
+  // set which groups are visible at scene `s` (0-based) via data-from
+  function applyVisibility(s){
+    var nodes = stage.querySelectorAll('[data-from]');
+    for (var k=0;k<nodes.length;k++){
+      var from = parseInt(nodes[k].getAttribute('data-from'),10) - 1;
+      nodes[k].style.opacity = (s >= from) ? '1' : '0';
+    }
+  }
+
+  function render(){
+    stage.setAttribute('data-scene', String(current+1));
+    applyVisibility(current);
+    captionEl.textContent = scenes[current].cap;
+    if (scenes[current].eq){ eqEl.textContent = scenes[current].eq; eqEl.classList.remove('blank'); }
+    else { eqEl.textContent='·'; eqEl.classList.add('blank'); }
+    sceneNoEl.textContent = 'Scene '+(current+1)+' of '+N;
+    indicatorEl.textContent = (current+1)+' / '+N;
+    for (var k=0;k<N;k++) dotEls[k].setAttribute('aria-current', k===current ? 'true':'false');
+  }
+
+  function clearTimer(){ if(timer){ clearTimeout(timer); timer=null; } }
+  function scheduleAdvance(ms){
+    clearTimer();
+    remaining = ms; sceneStart = performance.now();
+    timer = setTimeout(function(){
+      if (current < N-1){ current++; render(); scheduleAdvance(DUR[current]); }
+      else { pause(); }
+    }, ms);
+  }
+
+  function play(){
+    if (playing) return;
+    if (current === N-1) { current = 0; render(); }   // replay from start if at end
+    playing = true;
+    stage.classList.remove('paused');
+    playBtn.textContent = '∥ Pause';
+    playBtn.setAttribute('aria-label','Pause animation');
+    scheduleAdvance(remaining>0 && remaining<DUR[current] ? remaining : DUR[current]);
+  }
+  function pause(){
+    if (!playing){ stage.classList.add('paused'); return; }
+    playing = false;
+    clearTimer();
+    remaining = Math.max(0, remaining - (performance.now() - sceneStart));
+    stage.classList.add('paused');
+    playBtn.textContent = '▶ Play';
+    playBtn.setAttribute('aria-label','Play animation');
+  }
+  function goTo(idx){
+    current = Math.max(0, Math.min(N-1, idx));
+    remaining = DUR[current];
+    render();
+    if (playing) scheduleAdvance(DUR[current]);
+  }
+
+  playBtn.addEventListener('click', function(){ playing ? pause() : play(); });
+  document.getElementById('nextBtn').addEventListener('click', function(){ goTo(current+1); pause(); });
+  document.getElementById('prevBtn').addEventListener('click', function(){ goTo(current-1); pause(); });
+  document.getElementById('restartBtn').addEventListener('click', function(){ goTo(0); pause(); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.target && /^(BUTTON|INPUT|TEXTAREA)$/.test(e.target.tagName) && e.key!==' ') return;
+    if (e.key===' '){ e.preventDefault(); playing?pause():play(); }
+    else if (e.key==='ArrowRight'){ e.preventDefault(); goTo(current+1); pause(); }
+    else if (e.key==='ArrowLeft'){ e.preventDefault(); goTo(current-1); pause(); }
+  });
+
+  // init: scene 1 at rest, paused, animations frozen until Play
+  stage.classList.add('paused');
+  remaining = DUR[0];
+  render();
+})();
+</script>
