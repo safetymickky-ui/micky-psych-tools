@@ -26,6 +26,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "make an infographic", "medical summary infographic", "clinical reference infographic", "turn this review/report into an infographic", "one-page visual summary"… | clinical-infographic | skill `clinical-infographic` |
 | Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic | clinical-infographic | `/infographic` |
 | when the user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs", "map a site", needs live web data in-session, wants Firecrawl in app code, or wants a web-powered… | firecrawl | skill `firecrawl` |
+| when the user says "animate this concept", "create an animation", "make an animation of X", "animated explainer", "show it moving", "ทำแอนิเมชัน", "ภาพเคลื่อนไหว", or runs /animate. | concept-animation | skill `concept-animation` |
+| Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper | concept-animation | `/animate` |
 | when the user says "redesign this page", "make this UI less generic", "review this interface", "needs a stronger grid", "Swiss style", "editorial layout", or asks to create, restyle, or critique a… | gridgeist | skill `gridgeist` |
 
 ## Plugins
@@ -103,6 +105,15 @@ Firecrawl onboarding and routing for web data: search the web, scrape clean mark
 Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
 
 - **skill `firecrawl`** (skill) — Routes any general-web data request to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyles…
+
+### concept-animation — education  _v0.1.0_
+
+Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds the concept scene by scene with synchronized captions, player controls, and a reduced-motion fallback. Intent-lock is the mandatory Step 0 gate; any concept is in scope, but clinical facts come only from sourced reports (this session, the vault, or generated first by comprehensive-review / pubmed-research-note) — never invented. Files the finished animation to the vault as an asset via vault-keeper.
+
+Keywords: animation, concept-explainer, html, svg, motion, visual-teaching
+
+- **skill `concept-animation`** (skill) — Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS, nothing external) that plays in any browser, unfolding the concept scene by scene: mechanisms, pathways, processes…
+- **`/animate`** (command) — Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper
 
 ### gridgeist — design  _v0.1.0_
 

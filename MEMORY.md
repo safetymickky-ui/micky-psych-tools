@@ -11,11 +11,11 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-15
+## Current versions — 2026-07-19
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.11.0  |
+| marketplace catalog   | 1.12.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -25,6 +25,7 @@ a milestone.
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
+| concept-animation     | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -87,8 +88,35 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   not chained. Boundary: biomedical literature stays with the PubMed-facing plugins;
   `FIRECRAWL_API_KEY` lives in the environment, never the repo. One skill + 8 evals,
   no commands.
+- **concept-animation** — creates an animation that illustrates a given concept: one
+  self-contained HTML file (inline CSS/SVG/JS) unfolding the concept scene by scene with
+  synchronized captions, player controls, and a mandatory reduced-motion fallback. Prime
+  directive: motion must explain, never decorate. Intent-lock is the mandatory Step 0 gate;
+  any concept in scope, clinical facts only from sourced reports (session / vault / generated
+  via comprehensive-review or pubmed-research-note); files the animation as a vault asset via
+  vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
 
 ## Recent milestones
+
+- **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
+  `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given
+  concept, built exactly as the owner asked: **intent-lock first, then plugin-creator**. The
+  interview locked three forks on their recommended readings via one picker round: (1)
+  medium = one **self-contained HTML file** (inline CSS/SVG/JS, no external anything, opens
+  offline) — the animated sibling of clinical-infographic; (2) scope = **any concept**, with
+  the clinical fidelity contract firing only when content is clinical (drugs/doses/thresholds
+  come from a sourced report — session / vault / generated first via comprehensive-review or
+  pubmed-research-note — never invented); (3) wiring = **full pipeline citizen** (intent-lock
+  as the plugin's own mandatory Step 0 gate, vault filing as an asset via vault-keeper by
+  default). Prime directive: **motion must explain, never decorate** — every animated property
+  makes a nameable claim (a semantic motion vocabulary: sequence = causality, path = flow,
+  morph = state change…), the final frame is a complete labelled summary, and a
+  `prefers-reduced-motion` stepped-storyboard fallback is mandatory. Ships one skill
+  (storyboard-first procedure: gate → source → storyboard → build → render-&-verify scene by
+  scene → vault) + `/animate [concept-or-source]` + a motion-grammar reference (scene
+  architecture 3–8 scenes, technical contract, accessibility, on-screen fidelity rules).
+  New **education** category. Defaults chosen without asking (surfaced): name, command name,
+  category. `validate.py` clean; ROUTING.md regenerated (10 plugins, 21 components).
 
 - **2026-07-17** — **Emptied the vault into the Learn hub** (`empty-vault`, whole-vault scope, branch
   `claude/empty-vaults-plugin-z8blf7`). The entire **Neuromodulation** set — the Deep TMS comprehensive
