@@ -98,6 +98,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-19** — **concept-animation now has a home in the Learn hub** (branch
+  `claude/animation-illustrator-viz-page-casupf`, work done in the `learn-hub` repo). The Learn
+  app's **Infographics** section was renamed **Visualizations** and now MERGES two
+  self-contained-HTML content types: infographics (static, script-free) and **animations** (the
+  concept-animation output — HTML that runs its own JS scene controller). learn-hub gained a
+  new `animations` table (migration 0015, a twin of `infographics` — separate because an
+  animation renders under `sandbox="allow-scripts"` while an infographic must not), a merged
+  `/visualization` gallery, an immersive `/animation/[id]` viewer, and full parity on the topic
+  page + note reader. It also **cloned this repo's `concept-animation` skill** into
+  `.claude/skills/` (adapted to file into learn-hub's `/vault` + sync, carrying the same
+  animation-grammar reference) and added an **`ingest-animation`** skill (twin of
+  `ingest-infographic`) for filing finished animation HTML from this vault into the hub. This
+  repo's `concept-animation` plugin (0.1.0) is unchanged — it still authors + files to the
+  shared vault via vault-keeper; the hub is now the downstream destination for those assets.
+
 - **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
   `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given
   concept, built exactly as the owner asked: **intent-lock first, then plugin-creator**. The
