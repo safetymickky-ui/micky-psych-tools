@@ -115,6 +115,16 @@ vault/                             # shared knowledge vault — managed by vault
   biomedical literature stays with pubmed-research-note / comprehensive-review /
   psych-paper-digest — mixed requests are split, not grabbed. Keys never enter the repo —
   `FIRECRAWL_API_KEY` lives in the environment. One skill, no commands.
+- **concept-animation** — creates an animation that illustrates a given concept: one
+  self-contained HTML file (inline CSS/SVG/JS, no external anything) that unfolds the concept
+  scene by scene with synchronized captions, player controls, and a mandatory reduced-motion
+  fallback. Motion must explain, never decorate — every animated property makes a nameable
+  claim, and the final frame is a complete labelled summary. Intent-lock is the mandatory
+  Step 0 gate; any concept is in scope, but clinical facts come only from sourced reports
+  (session / vault / generated first via comprehensive-review or pubmed-research-note) —
+  never invented. Files the animation as an asset via vault-keeper. One skill + `/animate
+  [concept-or-source]` command; motion grammar under its
+  `skills/concept-animation/references/`.
 
 ## Style
 

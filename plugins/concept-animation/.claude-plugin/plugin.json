@@ -1,0 +1,17 @@
+{
+  "name": "concept-animation",
+  "version": "0.1.0",
+  "description": "Creates a self-contained HTML animation (inline CSS/SVG/JS) that illustrates a given concept scene by scene. Intent-lock gated; clinical facts come only from sourced reports; files the finished animation to the vault via vault-keeper.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "animation",
+    "concept-explainer",
+    "html",
+    "svg",
+    "motion",
+    "visual-teaching"
+  ]
+}
