@@ -61,13 +61,13 @@ Keywords: plugin, scaffold, meta, marketplace, generator
 - **`/refine-plugin`** (command) — Audit and refine an existing plugin or skill in the marketplace
 - **`/route`** (command) — Recommend which marketplace skill/plugin fits a request, from ROUTING.md
 
-### vault-keeper — productivity  _v0.4.0_
+### vault-keeper — productivity  _v0.5.0_
 
-Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill, deleting only after a verified sync.
+Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report (reports → atomic notes), ingest-infographic (infographic HTML), and ingest-animation (animation HTML) skills, deleting only after a verified sync.
 
 Keywords: vault, obsidian, knowledge, notes, index, moc
 
-- **skill `empty-vault`** (skill) — Drains the shared vault at the marketplace repo root (vault/) into the Learn hub: inventories the artifacts and notes, hands each report to the Learn repo's digest-report skill to become atomic Learn notes synced to Sup…
+- **skill `empty-vault`** (skill) — Drains the shared vault at the marketplace repo root (vault/) into the Learn hub: inventories artifacts, notes, and assets; hands each report to learn-hub's digest-report skill (atomic Learn notes synced to Supabase), e…
 - **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
 - **`/empty-vault`** (command) — Empty the shared vault into the Learn hub — move, verify, then delete; whole vault or one topic passed as argument
 

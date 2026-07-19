@@ -48,6 +48,14 @@
       "expected_output": "The move + verify beats may proceed, but the git gate blocks deletion: the skill refuses to delete uncommitted files and offers to commit the vault first (deleting uncommitted content is unrecoverable loss — git history is the archive). Deletion happens only after the content is committed AND the user confirms. FAILS if any uncommitted file is deleted.",
       "files": [],
       "assertions": []
+    },
+    {
+      "id": 7,
+      "name": "assets-route-by-kind",
+      "prompt": "Empty the vault. (The topic in scope has one report, one infographic HTML asset, one animation HTML asset, and a .preview.png.)",
+      "expected_output": "The report is handed to digest-report FIRST (it creates the Learn topic), then the infographic HTML goes to learn-hub's ingest-infographic skill and the animation HTML to its ingest-animation skill — routed by what each document IS (scripted, playing document = animation; static sheet = infographic), never swapped. The .preview.png is named in the manifest and deleted with the topic, not ingested. Each HTML asset is deleted only after its own ingest handshake (row id + topic id + non-trivial html bytes in Supabase) on top of the git + confirmation gates. FAILS if an asset is deleted without its handshake, handed to the wrong ingest skill, ingested before its topic's report landed, or written into the Learn repo's vault/ directly.",
+      "files": [],
+      "assertions": []
     }
   ]
 }

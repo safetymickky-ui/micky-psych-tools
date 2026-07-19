@@ -10,6 +10,8 @@ Run the `empty-vault` skill now.
   topic's artifacts, notes, and assets; every other MOC's content stays untouched.
 
 The skill owns the whole procedure — resolve both roots → inventory + manifest → hand each
-report to learn-hub's `digest-report` skill → verify the Supabase landing → double-gated
-delete (git-committed + explicit confirmation) → prune MOCs and rebuild `index.md`. This
-command is only the manual trigger for it.
+report to learn-hub's `digest-report` skill, each infographic HTML asset to its
+`ingest-infographic` skill, and each animation HTML asset to its `ingest-animation` skill
+→ verify the Supabase landing → double-gated delete (git-committed + explicit
+confirmation) → prune MOCs and rebuild `index.md`. This command is only the manual
+trigger for it.

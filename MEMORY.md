@@ -15,11 +15,11 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.12.0  |
+| marketplace catalog   | 1.13.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
-| vault-keeper          | 0.4.0   |
+| vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.0   |
 | comprehensive-review  | 0.2.0   |
 | clinical-infographic  | 0.2.1   |
@@ -51,7 +51,9 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   index, query, empty. The single place every skill's output lands. The `empty-vault` skill
   (+ `/empty-vault [topic]`) drains the vault into the Learn hub: hands each artifact to
   learn-hub's `digest-report` skill (which authors atomic Learn notes + syncs to Supabase),
-  then deletes only after verified sync + git-committed state + explicit confirmation.
+  each infographic HTML asset to its `ingest-infographic` skill, and each animation HTML asset
+  to its `ingest-animation` skill (routed by kind, reports digested first so the topic FK
+  exists), then deletes only after verified sync + git-committed state + explicit confirmation.
 - **psych-paper-digest** — watchlist literature surveillance; sweeps PubMed + ClinicalTrials.gov
   since `last_swept`, triages Act / Read / Suppressed, never adjudicates (Act items hand off to
   pubmed-research-note). Skill + `/digest [domain]`; state in `.psych-paper-digest.json`.
@@ -97,6 +99,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
 
 ## Recent milestones
+
+- **2026-07-19** — **vault-keeper 0.5.0 — empty-vault now drains animations too** (catalog →
+  1.13.0, branch `claude/empty-vault-skill-animation-06k9mk`). The `empty-vault` skill's asset
+  handling was rewritten from "assets are deleted with their topic" to **route HTML assets by
+  kind**: infographic HTML → learn-hub's `ingest-infographic` (the established practice the
+  SKILL.md had never caught up with), and **animation HTML → learn-hub's new `ingest-animation`**
+  (the concept-animation → `animations`-table pipeline). Ordering is explicit — reports digest
+  first so the Learn topic exists before any asset ingest (FK) — and each HTML asset joins the
+  deletable set only on its own row-landed handshake (row id + topic id + non-trivial html
+  bytes), on top of the git + confirmation gates. Routing is by what the document IS (scripted,
+  playing document = animation; static sheet = infographic — different tables, different render
+  sandboxes; swapping them is a named failure condition). Other binaries (`.preview.png`, decks)
+  keep the old deleted-with-topic, git-recoverable behavior. Updated SKILL.md (+ description),
+  `/empty-vault` command, plugin README/CHANGELOG, CLAUDE.md blurb; new eval
+  `assets-route-by-kind` (7 total). `validate.py` clean; ROUTING.md regenerated.
 
 - **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
   `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given

@@ -82,8 +82,11 @@ vault/                             # shared knowledge vault — managed by vault
   save, index, query, empty. Other plugins delegate vault writes to it rather than writing vault
   files themselves. The `empty-vault` skill (+ `/empty-vault [topic]`) drains the vault into the
   Learn hub — each artifact is handed to learn-hub's `digest-report` skill to become atomic Learn
-  notes, and files are deleted only after a verified Supabase sync, a git-committed state, and
-  explicit confirmation (move → verify → delete, never reordered).
+  notes, each infographic HTML asset to its `ingest-infographic` skill, and each animation HTML
+  asset to its `ingest-animation` skill (routed by kind — a scripted, playing document is an
+  animation; a static sheet is an infographic); files are deleted only after a verified Supabase
+  sync, a git-committed state, and explicit confirmation (move → verify → delete, never
+  reordered).
 - **psych-paper-digest** — watchlist-driven literature surveillance; windowed PubMed +
   ClinicalTrials.gov sweeps triaged into Act / Read / Suppressed, rendered as a read-once
   digest. Triage only, never adjudication: Act items hand off to pubmed-research-note; vault
