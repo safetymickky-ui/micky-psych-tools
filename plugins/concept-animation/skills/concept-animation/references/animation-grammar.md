@@ -38,6 +38,20 @@ data** — easing is style, position and order are semantics.
 
 ## Technical contract
 
+- **The whole animation fits one screen — no page scroll.** When the animation is embedded in a
+  fixed-height viewer (the Learn hub renders it in an iframe of `height: calc(100svh - 6rem)`), a
+  document taller than that pushes the player controls below the fold and the reader must scroll
+  to reach them. So lay the document out as a **viewport-height flex column** and let the SVG
+  scale to the *height* left over, not the width:
+  - `.wrap{ height:100dvh; display:flex; flex-direction:column; }` — **never** `min-height:100vh`
+    (that lets content grow past the viewport).
+  - the stage wrapper takes the leftover space: `flex:1 1 auto; min-height:0; display:flex;`
+  - `svg.stage{ width:100%; height:100%; max-height:100%; min-height:0 }` with
+    `preserveAspectRatio="xMidYMid meet"` on the `<svg>` — the diagram scales down to fit the box
+    and letterboxes, so title, captions, controls, and footer stay on screen at every viewport.
+  - keep the SVG `viewBox` reasonably wide (≈4:3, e.g. `0 0 980 600`); a very tall viewBox shrinks
+    to an unreadable sliver once it must fit the height. Verify (Step 3.5) that the document does
+    not scroll inside the viewer at a common laptop height (e.g. 1366×768).
 - **One HTML file.** Inline `<style>`, inline `<script>`, inline SVG. No external CSS, JS,
   fonts, images, or CDN — opens offline, identical everywhere. System font stack.
 - **CSS keyframes / Web Animations API on SVG + a small vanilla-JS scene controller.** No

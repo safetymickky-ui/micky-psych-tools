@@ -107,6 +107,13 @@ captions legible, the sequence reading in the order the storyboard claims, the f
 complete labelled summary. Fix and re-render until it holds. The **final-frame PNG is a
 companion deliverable** alongside the HTML. This is a layout check, never a content one.
 
+**Also check it fits one screen.** In a fixed-height viewer (the Learn hub uses an iframe of
+`height: calc(100svh - 6rem)`), embed the HTML at a common laptop height (e.g. 1366×768) and
+confirm the document does not scroll — the whole animation, including the player controls and
+footer, must be on screen without scrolling (see the fit-to-viewport rule in the grammar's
+technical contract). If it scrolls, the `.wrap` is growing past the viewport instead of the SVG
+scaling to fit — fix the flex-column layout, don't shrink the content.
+
 ## Step 4 — Where output goes
 
 1. **Write** the finished animation as a single `.html` file (plus the final-frame PNG) in
