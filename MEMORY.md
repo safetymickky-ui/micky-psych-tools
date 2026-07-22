@@ -11,7 +11,7 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-19
+## Current versions — 2026-07-20
 
 | item                  | version |
 | --------------------- | ------- |
@@ -25,7 +25,7 @@ a milestone.
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
-| concept-animation     | 0.1.0   |
+| concept-animation     | 0.1.1   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -98,6 +98,15 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-20** — **concept-animation 0.1.0 → 0.1.1** (`fix(concept-animation): animations fit
+  the viewer without scrolling`) — the reference layout used `.wrap{min-height:100vh}` with
+  `svg.stage{height:auto}`, so a fixed-aspect SVG scaled to viewer width grew taller than a
+  fixed-height embed (the Learn hub iframe is `calc(100svh-6rem)`), pushing player controls and
+  the footer below the fold. Re-laid as a viewport-height flex column
+  (`.wrap{height:100dvh; display:flex; flex-direction:column}`, stage wrapper
+  `flex:1 1 auto; min-height:0`, `svg.stage{height:100%; max-height:100%}` with
+  `preserveAspectRatio="xMidYMid meet"`); added a "fits one screen" rule to the animation
+  grammar's technical contract and an in-viewer fit check to Step 3.5.
 - **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
   `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given
   concept, built exactly as the owner asked: **intent-lock first, then plugin-creator**. The

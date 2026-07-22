@@ -125,6 +125,11 @@ vault/                             # shared knowledge vault — managed by vault
   never invented. Files the animation as an asset via vault-keeper. One skill + `/animate
   [concept-or-source]` command; motion grammar under its
   `skills/concept-animation/references/`.
+- **gridgeist** — the marketplace's first non-clinical plugin: designs, redesigns, and reviews
+  web interfaces around a strong grid, precise typography, and product-specific visual systems,
+  replacing generic AI-generated SaaS aesthetics. Vendored from upstream `ohmiler` under MIT
+  (LICENSE kept at `plugins/gridgeist/LICENSE`). One skill (`gridgeist`), no commands; body plus
+  two references (`design-language.md`, `review-checklist.md`).
 
 ## Style
 
