@@ -25,7 +25,7 @@ a milestone.
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
-| concept-animation     | 0.1.0   |
+| concept-animation     | 0.1.1   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -97,6 +97,17 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
 
 ## Recent milestones
+
+- **2026-07-26** — First artifact filed into the shared vault (it had been empty since the last
+  `/empty-vault` drain): **pubmed-research-note** run on *tramadol as a psychotropic in
+  psychiatric patients*, intent-lock gating the frame to a **contested-claim** ruling (the
+  co-prescribing-safety and tramadol-use-disorder readings were offered and killed at the gate).
+  Verdict: unsettled, leaning no independent mood effect — the only adequately powered human test
+  (NCT03309163, n=1230) missed its primary endpoint and survives as a high-risk subgroup.
+  Created `vault/MOCs/Psychopharmacology MOC.md` + `vault/artifacts/tramadol-psychotropic-effect-verdict.md`,
+  wired into `index.md`. Also corrected two stale generated/state records found on the way:
+  `ROUTING.md` and the MEMORY versions table both still said concept-animation 0.1.0 (actual: 0.1.1,
+  manifest/catalog parity was already fine).
 
 - **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
   `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given
