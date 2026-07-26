@@ -25,7 +25,7 @@ a milestone.
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
-| concept-animation     | 0.1.0   |
+| concept-animation     | 0.1.1   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -100,10 +100,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 - **2026-07-26** — Filed **Novel Antidepressants — FDA-Approved and in the Pipeline — Comprehensive
   Review** to the vault via the comprehensive-review → vault-keeper flow (branch
-  `claude/antidepressant-fda-approval-review-xz226r`). First **psychopharmacology drug-class** review
-  and the first vault content since the 2026-07-17 empty-vault drain; new **Psychopharmacology MOC**
-  (umbrella for approval cohorts, pipeline surveillance, dose/receptor references across psychotropic
-  classes) wired into `index.md`. Intent-lock Step 0 ran and the picker was **answered** (unlike the
+  `claude/antidepressant-fda-approval-review-xz226r`). First **psychopharmacology drug-class** review.
+  Filed under the **Psychopharmacology MOC** — which this branch and the tramadol branch (PR #24,
+  merged first) each created independently the same day; resolved on merge by **extending the one
+  MOC** to carry both artifacts rather than keeping two, and its scope line now spans drug-level
+  verdicts *and* class-level approval cohorts. Intent-lock Step 0 ran and the picker was **answered** (unlike the
   Deep TMS / dose-occupancy runs): locked **all agents approved since ~2010 regardless of mechanism**
   (not mechanism-novel only), **approved agents deep drug-by-drug + pipeline as landscape**, and a
   **FDA + EMA/global regulatory frame** (Thai availability lens explicitly out — surfaced in the
@@ -141,6 +142,17 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   and ADHD/ASD reviews were. Honest gaps left in place as `[unverified]`: brexanolone and gepirone EU
   status, CYP2D6-metaboliser-stratified efficacy for dextromethorphan–bupropion, zuranolone
   breastfeeding balance. `validate.py` clean; ROUTING.md regenerated.
+
+- **2026-07-26** — First artifact filed into the shared vault (it had been empty since the last
+  `/empty-vault` drain): **pubmed-research-note** run on *tramadol as a psychotropic in
+  psychiatric patients*, intent-lock gating the frame to a **contested-claim** ruling (the
+  co-prescribing-safety and tramadol-use-disorder readings were offered and killed at the gate).
+  Verdict: unsettled, leaning no independent mood effect — the only adequately powered human test
+  (NCT03309163, n=1230) missed its primary endpoint and survives as a high-risk subgroup.
+  Created `vault/MOCs/Psychopharmacology MOC.md` + `vault/artifacts/tramadol-psychotropic-effect-verdict.md`,
+  wired into `index.md`. Also corrected two stale generated/state records found on the way:
+  `ROUTING.md` and the MEMORY versions table both still said concept-animation 0.1.0 (actual: 0.1.1,
+  manifest/catalog parity was already fine).
 
 - **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
   `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given

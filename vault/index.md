@@ -14,5 +14,5 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Psychopharmacology MOC]] — drug-class and drug-mechanism work: approval cohorts, pipelines,
-  dose/receptor references, comparative-efficacy landscapes across psychotropic classes.
+- [[Psychopharmacology MOC]] — drug-level evidence reports, contested claims, interaction and
+  safety verdicts; drug-class approval cohorts and pipelines; dose/receptor references.
