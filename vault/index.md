@@ -4,7 +4,7 @@ created: 2026-07-09
 type: moc
 source: manual
 tags: [index]
-links: []
+links: [Psychopharmacology MOC]
 ---
 
 # Vault Index
@@ -14,4 +14,5 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-_None yet — the vault is empty. New topic MOCs are added here as content is filed._
+- [[Psychopharmacology MOC]] — drug-class and drug-mechanism work: approval cohorts, pipelines,
+  dose/receptor references, comparative-efficacy landscapes across psychotropic classes.

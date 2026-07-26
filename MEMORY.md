@@ -98,6 +98,50 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-26** — Filed **Novel Antidepressants — FDA-Approved and in the Pipeline — Comprehensive
+  Review** to the vault via the comprehensive-review → vault-keeper flow (branch
+  `claude/antidepressant-fda-approval-review-xz226r`). First **psychopharmacology drug-class** review
+  and the first vault content since the 2026-07-17 empty-vault drain; new **Psychopharmacology MOC**
+  (umbrella for approval cohorts, pipeline surveillance, dose/receptor references across psychotropic
+  classes) wired into `index.md`. Intent-lock Step 0 ran and the picker was **answered** (unlike the
+  Deep TMS / dose-occupancy runs): locked **all agents approved since ~2010 regardless of mechanism**
+  (not mechanism-novel only), **approved agents deep drug-by-drug + pipeline as landscape**, and a
+  **FDA + EMA/global regulatory frame** (Thai availability lens explicitly out — surfaced in the
+  preface). Object is an *approval cohort* not a disorder, so the ten-section arc was adapted
+  drug-class-wise (definition/nosology of "novel" → burden that created the market → mechanistic
+  rationale → what the drugs target → patient selection → comparators → agents by mechanism family →
+  populations → durability → pipeline); all 10 present, H3 only inside Treatment. **Spine:** the
+  cohort is **15 FDA approvals 2009–April 2025 + 18 phase 3 agents**, and the mechanistically novel
+  ones (esketamine, brexanolone, dextromethorphan–bupropion, zuranolone) were **none of them approved
+  for MDD as DSM-5 defines it** — TRD, PPD, acute suicidality; the niche came first and the diagnosis
+  fractured to fit the pharmacology. Adjudicated the field's real argument as **effect size, not
+  significance**, against the **6.5-point MADRS threshold the pivotal esketamine trials were designed
+  around**: adjunctive esketamine **−2.94** on independent IPD re-analysis (7 RCTs, n=1505, GRADE
+  moderate; sedation RR 3.70, dissociation RR 2.36, AE IRR 3.91, SAE ns) versus the strong
+  **monotherapy** result (n=378; −5.1/−6.8, ES 0.48/0.63, remission 22.5% vs 7.6%, approved
+  2025-01-21) and the strong **head-to-head** (ESCAPE-TRD remission 27.1% vs 17.6% quetiapine XR,
+  55.7% vs 36.3% at wk32 in the US-label subgroup) — with COMP360 psilocybin's two positive phase 3s
+  landing at **−3.6 / −3.8** and azetukalner at **−3.04 (p=0.14)**. Neurosteroids split by dosing
+  model: Cochrane (6 RCTs, 674 women, **all industry-sponsored, no child outcomes measured**) finds IV
+  brexanolone response **RR 1.24 (0.74–2.06)** with dropout **RR 2.77** but oral zuranolone response
+  **RR 1.26 (1.03–1.55)** / remission **RR 1.65** at day 45 — and zuranolone's MDD signal
+  (**−2.40 HAM-D**) drew an FDA **CRL**, with the EU likewise authorising PPD only (2025-09-17).
+  Vortioxetine's procognitive claim flagged as **contested** (2025 MA: DSST gain small and NS; umbrella
+  review: "robust" — the disagreement is placebo vs active comparator). Recorded the **kappa-opioid
+  graveyard** as the chapter's hardest lesson (aticaprant VENTURA discontinued 2025-03-06; navacaprant
+  KOASTAL-1/2/3 all failed → programme ended 2026-06 — despite **87–95% receptor occupancy**), and the
+  **blinding** threat (an enhanced-blinding fixed-order psilocybin trial found **no significant
+  difference vs placebo**; 40 CT.gov ketamine protocols handle expectancy inconsistently). Also
+  corrected the reflexive "rising placebo response" story — 121 studies 2001–2015 show a significant
+  **decrease**. Live pipeline captured with readouts (DT120/lysergide phase 3 Emerge **−8.1**, n=149,
+  2026-06; NBI-1065845 ×4 to 2029; seltorexant; azetukalner ×2; CYB003 ×2; Usona psilocybin; VA
+  psilocybin to 2030) plus **access as the binding constraint** (REMS 2 h observation, $600–1,200/session,
+  ~$6,785 first month). **41 PubMed + 24 registry trials**, DOI-only citations, clean prose; the
+  15–30-source budget was deliberately exceeded for the locked drug-by-drug breadth, as the Deep TMS
+  and ADHD/ASD reviews were. Honest gaps left in place as `[unverified]`: brexanolone and gepirone EU
+  status, CYP2D6-metaboliser-stratified efficacy for dextromethorphan–bupropion, zuranolone
+  breastfeeding balance. `validate.py` clean; ROUTING.md regenerated.
+
 - **2026-07-19** — Added **concept-animation 0.1.0** (tenth plugin; catalog → 1.12.0, branch
   `claude/animation-plugin-concept-2s2vlc`) — creates an animation that illustrates a given
   concept, built exactly as the owner asked: **intent-lock first, then plugin-creator**. The
