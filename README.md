@@ -24,10 +24,10 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
-The examples above install `pubmed-research-note`; swap in any of the other ten —
+The examples above install `pubmed-research-note`; swap in any of the other eleven —
 `intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
-`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, or `ml-concept-lab` (or
-any future plugin) by name — the commands are identical for all of them.
+`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, `code-explainer`, or
+`ml-concept-lab` (or any future plugin) by name — the commands are identical for all of them.
 
 ## Update it
 
@@ -59,7 +59,7 @@ characters), version parity between a plugin's manifest and its marketplace entr
 
 ## Plugins
 
-Eleven plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
+Twelve plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
 
 - **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
   quantified, trial-registry-checked evidence reports. Runs `intent-lock` first on every
@@ -91,6 +91,10 @@ Eleven plugins, all vendored under `plugins/` and listed in `.claude-plugin/mark
   explain, never decorate; clinical facts come only from sourced reports.
 - **gridgeist** — design, redesign, and review web interfaces with a strong grid, precise
   typography, and product-specific visual systems. Vendored from upstream under MIT.
+- **code-explainer** — explains given code as one self-contained interactive HTML page: the
+  source in a VS Code-styled editor on the left, the explanation on the right, cross-linked
+  line by line, with a step-through walkthrough and a flow diagram. Reproduces the source
+  verbatim and never invents a runtime value.
 - **ml-concept-lab** — the interactive sibling of `concept-animation` for machine-learning, AI,
   and computer-science concepts: a self-contained HTML explorable in which the real algorithm
   runs live and the learner drives it. Every number is computed rather than drawn, a self-check

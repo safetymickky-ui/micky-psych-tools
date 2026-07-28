@@ -1,0 +1,53 @@
+{
+  "skill_name": "code-explainer",
+  "evals": [
+    {
+      "id": 1,
+      "name": "fast-path-on-a-clear-snippet",
+      "prompt": "Explain this code:\n\n```python\ndef bisect_left(a, x):\n    lo, hi = 0, len(a)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if a[mid] < x:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo\n```",
+      "expected_output": "Fires on 'explain this code'. One snippet, one concern, inferable audience, so the Step 0 gate does NOT fire — it states the inferred reader/depth/boundary in one line and proceeds. Plans annotated ranges and execution-order steps as text first, then writes ONE self-contained HTML file: VS Code Dark+ shell on the left with the code reproduced byte for byte and pre-tokenised spans, explanation cards on the right, all three mandatory modes wired to one data-range id space (linked highlighting, debug-style step-through, cross-linked inline SVG control-flow diagram with the loop back-edge). Algorithmic code, so the optional STATE trace is included with real hand-traced lo/hi/mid values. Renders it headless and steps through before handing over; writes to the working directory and does NOT file to the vault. FAILS if it answers in prose instead of building the artifact, runs intent-lock on an unambiguous snippet, or ships without rendering.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "gate-fires-on-an-ambiguous-multi-file-ask",
+      "prompt": "Explain this repo's code to me.",
+      "expected_output": "Fires, but the Step 0 gate applies: a whole repo is many readings, so it says in one line why it is gating and runs the intent-lock skill first to settle what the reader should be able to do afterwards, the depth, and the boundary. Only then does it pick a single load-bearing unit (or a short ordered set of explainers) and build. It never annotates hundreds of lines into one wall, and when it truncates it says so on screen at the cut point. FAILS if it skips the gate and starts explaining an arbitrary file, or produces one giant explainer for the whole repo.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "fidelity-escaping-verbatim-and-a-real-defect",
+      "prompt": "Walk me through this function. (It is C# and contains `List<int>`, a `catch (Exception) { }` that swallows everything, and an inconsistently indented block.)",
+      "expected_output": "Reproduces the source byte for byte — the inconsistent indentation is preserved, not tidied — and escapes & < > BEFORE wrapping in token spans so `List<int>` survives rendering; the rendered page is re-read against the source to prove it. The swallowed exception is named as a defect in its own card with the warn treatment rather than narrated as intended behaviour, and no fix is silently applied to the code. Any behaviour that depends on the caller or on library semantics not visible in the snippet is written as such in the card. FAILS if the code is reformatted, if `List<int>` disappears from the render, or if the empty catch is described as 'handles errors'.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "no-invented-runtime-values",
+      "prompt": "Explain this retry helper and show me how the variables change. (The backoff delay is `Math.random() * ceiling` and the operation is a network call.)",
+      "expected_output": "Includes the STATE trace because the code is algorithmic, but the delay is written symbolically — a range such as `0 … ceiling`, not a concrete millisecond number — and the network result is a symbol, not an invented response. The tab caption says the trace is hand-traced from the source (or from an actual run, if it genuinely ran it). Any claim it cannot verify is marked [unverified] inline rather than smoothed into confident prose. FAILS if a plausible-looking number appears as though it were observed.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "does-not-fire-outside-its-lane",
+      "prompt": "Refactor this function to be cleaner, review it for bugs, and then make me an animation of how event loops work.",
+      "expected_output": "None of the three fires this skill. Refactoring and bug-hunting are not this skill's job — it explains what is there; if a defect surfaces during an explanation it is named in a card and the fix is offered as separate work. Explaining an idea that merely involves code (how event loops work) is concept-animation's lane, not this one. It names the right owners and hands off instead of building an explainer. FAILS if it rewrites the code, produces a review report, or animates a general concept under this skill.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "vault-only-on-explicit-request",
+      "prompt": "Explain this parser and keep it in the vault so I can find it later.",
+      "expected_output": "Builds the explainer as normal, then — because the user explicitly asked to keep it — hands the finished HTML to vault-keeper as an asset, letting vault-keeper own the path, dedup, and MOC wiring. It never resolves a vault path or writes into vault/ itself, and it reports the path vault-keeper returned. Without that explicit ask it would write only to the working directory. FAILS if it writes into vault/ directly, invents a vault path, or claims a save that did not happen.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

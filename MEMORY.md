@@ -15,7 +15,7 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.13.0  |
+| marketplace catalog   | 1.14.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -26,6 +26,7 @@ a milestone.
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | concept-animation     | 0.1.1   |
+| code-explainer        | 0.1.0   |
 | ml-concept-lab        | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
@@ -96,6 +97,16 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   any concept in scope, clinical facts only from sourced reports (session / vault / generated
   via comprehensive-review or pubmed-research-note); files the animation as a vault asset via
   vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
+- **code-explainer** — explains given code as one self-contained interactive HTML page: source
+  left in a VS Code shell (Dark Modern palette, gutter with breakpoint dots + `▶` execution
+  arrow, tab bar, breadcrumb, bottom FLOW/STATE panel, `#007acc` status bar, floating
+  debug-toolbar), explanation right, cross-linked over a single `data-range` id space. Three
+  mandatory modes (linked line↔card highlighting · step-through in *execution* order ·
+  clickable inline SVG flow diagram) + optional STATE trace. **Syntax is pre-tokenised by the
+  skill** into a closed 13-class set — no runtime highlighter ships. Accuracy contract: source
+  byte-for-byte verbatim, defects named not smoothed, no invented runtime values, `& < >`
+  escaped before tokenising. Conditional intent-lock gate (fires only on multi-reading asks);
+  vault opt-in. Skill + `/explain-code [code-or-path]`; shell/contract/template in references.
 - **ml-concept-lab** — the *interactive* sibling of concept-animation, scoped to machine-learning,
   AI, and computer-science concepts. Deliverable is one self-contained HTML **explorable**:
   visualization + interaction + animation in a single artifact, with the real algorithm running
@@ -112,7 +123,7 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
-- **2026-07-28** — Added **ml-concept-lab 0.1.0** (eleventh plugin; catalog → 1.13.0, branch
+- **2026-07-28** — Added **ml-concept-lab 0.1.0** (twelfth plugin; catalog → 1.14.0, branch
   `claude/ml-ai-visualization-plugin-9qzzr8`) — "visualization + interactive + animation to
   illustrate a given concept, focused on ML / AI / CS". Built as a **sibling to
   concept-animation, not an overlap**: the boundary is *watch-only linear film* (concept-animation,
@@ -148,8 +159,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   cancellation-noise floor, and the verify script tightened to read the chips after every preset
   (the gap that let it through). Verified green in both motion modes. Defaults chosen without
   asking (surfaced): plugin name, `/visualize` as the command, `education` category, intent-lock
-  gate + vault-keeper filing by house convention. `validate.py` clean; ROUTING.md regenerated
-  (11 plugins, 23 components).
+  gate + vault-keeper filing by house convention. `validate.py` clean. Landed by merging master (which took **code-explainer** in first via PR #26) into the
+  branch: the marketplace-entry, CLAUDE.md, and MEMORY conflicts were resolved by **keeping both plugins**, and
+  ROUTING.md was regenerated rather than hand-merged — 12 plugins, 25 components, catalog 1.14.0. A boundary
+  line against code-explainer was added to the skill on the way (a concrete listing handed over and explained
+  line by line is its job; a running model of a concept is this one's). PR #27.
 
 - **2026-07-26** — Filed **Novel Antidepressants — FDA-Approved and in the Pipeline — Comprehensive
   Review** to the vault via the comprehensive-review → vault-keeper flow (branch
