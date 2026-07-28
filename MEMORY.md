@@ -11,11 +11,11 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-19
+## Current versions — 2026-07-28
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.12.0  |
+| marketplace catalog   | 1.13.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -26,6 +26,7 @@ a milestone.
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | concept-animation     | 0.1.1   |
+| code-explainer        | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -95,6 +96,16 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   any concept in scope, clinical facts only from sourced reports (session / vault / generated
   via comprehensive-review or pubmed-research-note); files the animation as a vault asset via
   vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
+- **code-explainer** — explains given code as one self-contained interactive HTML page: source
+  left in a VS Code shell (Dark Modern palette, gutter with breakpoint dots + `▶` execution
+  arrow, tab bar, breadcrumb, bottom FLOW/STATE panel, `#007acc` status bar, floating
+  debug-toolbar), explanation right, cross-linked over a single `data-range` id space. Three
+  mandatory modes (linked line↔card highlighting · step-through in *execution* order ·
+  clickable inline SVG flow diagram) + optional STATE trace. **Syntax is pre-tokenised by the
+  skill** into a closed 13-class set — no runtime highlighter ships. Accuracy contract: source
+  byte-for-byte verbatim, defects named not smoothed, no invented runtime values, `& < >`
+  escaped before tokenising. Conditional intent-lock gate (fires only on multi-reading asks);
+  vault opt-in. Skill + `/explain-code [code-or-path]`; shell/contract/template in references.
 
 ## Recent milestones
 

@@ -125,6 +125,17 @@ vault/                             # shared knowledge vault — managed by vault
   never invented. Files the animation as an asset via vault-keeper. One skill + `/animate
   [concept-or-source]` command; motion grammar under its
   `skills/concept-animation/references/`.
+- **code-explainer** — explains given code as one self-contained interactive HTML page:
+  the source on the left in a VS Code-styled editor (Dark Modern, gutter, pre-tokenised
+  syntax), the explanation on the right, cross-linked over one `data-range` id space.
+  Three mandatory modes — hover/click line↔explanation highlighting, a debug-style
+  step-through in *execution* order, and a clickable inline SVG flow diagram — plus an
+  optional STATE trace for algorithmic code. Accuracy contract: source reproduced byte for
+  byte, real defects named not smoothed, no invented runtime values, `& < >` escaped before
+  tokenising. Intent-lock gates only ambiguous asks (a whole repo, several concerns); the
+  vault is opt-in, not the default. Not a review or a refactor. One skill +
+  `/explain-code [code-or-path]`; shell + contract + working template under its
+  `skills/code-explainer/references/`.
 
 ## Style
 

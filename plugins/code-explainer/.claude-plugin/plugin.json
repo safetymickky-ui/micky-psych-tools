@@ -1,0 +1,17 @@
+{
+  "name": "code-explainer",
+  "version": "0.1.0",
+  "description": "Explains given code as one self-contained, interactive HTML page — the source on the left in a VS Code-styled editor, the explanation on the right, cross-linked line by line, with a step-through walkthrough in execution order and an inline SVG flow diagram.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "code-explanation",
+    "vscode",
+    "interactive",
+    "html",
+    "walkthrough",
+    "syntax-highlighting"
+  ]
+}

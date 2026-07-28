@@ -29,6 +29,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "animate this concept", "create an animation", "make an animation of X", "animated explainer", "show it moving", "ทำแอนิเมชัน", "ภาพเคลื่อนไหว", or runs /animate. | concept-animation | skill `concept-animation` |
 | Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper | concept-animation | `/animate` |
 | when the user says "redesign this page", "make this UI less generic", "review this interface", "needs a stronger grid", "Swiss style", "editorial layout", or asks to create, restyle, or critique a… | gridgeist | skill `gridgeist` |
+| when the user says "explain this code", "explain the given code", "walk me through this function", "annotate this code", "code walkthrough", "what does this code do", "อธิบายโค้ดนี้", or runs… | code-explainer | skill `code-explainer` |
+| Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram | code-explainer | `/explain-code` |
 
 ## Plugins
 
@@ -122,3 +124,12 @@ Design, redesign, and review distinctive web interfaces with a strong grid, prec
 Keywords: web-design, frontend, ui-review, grid, typography, design-system
 
 - **skill `gridgeist`** (skill) — Designs, redesigns, and reviews web interfaces around a rigorous grid, precise typography, quiet 1px rules, and Swiss/editorial or technical-minimal influence — replacing generic AI-generated SaaS aesthetics (rounded-ca…
+
+### code-explainer — education  _v0.1.0_
+
+Explains given code as one self-contained, interactive HTML page — the original source on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked line by line. Ships three linked modes over one id space: hover/click line↔explanation highlighting, a debug-style step-through walkthrough in execution order, and a clickable inline SVG flow diagram. Reproduces the source verbatim, names real defects, and never invents a runtime value. Intent-lock gates only ambiguous asks; the vault is opt-in.
+
+Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highlighting
+
+- **skill `code-explainer`** (skill) — Explains given code as one interactive, self-contained HTML page — the original code on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked li…
+- **`/explain-code`** (command) — Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram

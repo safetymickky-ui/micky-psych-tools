@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -147,6 +147,21 @@
         "grid",
         "typography",
         "design-system"
+      ]
+    },
+    {
+      "name": "code-explainer",
+      "source": "./plugins/code-explainer",
+      "version": "0.1.0",
+      "description": "Explains given code as one self-contained, interactive HTML page — the original source on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked line by line. Ships three linked modes over one id space: hover/click line↔explanation highlighting, a debug-style step-through walkthrough in execution order, and a clickable inline SVG flow diagram. Reproduces the source verbatim, names real defects, and never invents a runtime value. Intent-lock gates only ambiguous asks; the vault is opt-in.",
+      "category": "education",
+      "keywords": [
+        "code-explanation",
+        "vscode",
+        "interactive",
+        "html",
+        "walkthrough",
+        "syntax-highlighting"
       ]
     }
   ]
