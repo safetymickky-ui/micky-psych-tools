@@ -29,6 +29,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "animate this concept", "create an animation", "make an animation of X", "animated explainer", "show it moving", "ทำแอนิเมชัน", "ภาพเคลื่อนไหว", or runs /animate. | concept-animation | skill `concept-animation` |
 | Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper | concept-animation | `/animate` |
 | when the user says "redesign this page", "make this UI less generic", "review this interface", "needs a stronger grid", "Swiss style", "editorial layout", or asks to create, restyle, or critique a… | gridgeist | skill `gridgeist` |
+| when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "explorable", "let me play with the parameters", "show me how X works", "animate this algorithm"… | ml-concept-lab | skill `ml-concept-lab` |
+| Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
 
 ## Plugins
 
@@ -122,3 +124,12 @@ Design, redesign, and review distinctive web interfaces with a strong grid, prec
 Keywords: web-design, frontend, ui-review, grid, typography, design-system
 
 - **skill `gridgeist`** (skill) — Designs, redesigns, and reviews web interfaces around a rigorous grid, precise typography, quiet 1px rules, and Swiss/editorial or technical-minimal influence — replacing generic AI-generated SaaS aesthetics (rounded-ca…
+
+### ml-concept-lab — education  _v0.1.0_
+
+Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.
+
+Keywords: machine-learning, ai, computer-science, interactive-visualization, explorable, algorithm
+
+- **skill `ml-concept-lab`** (skill) — Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file (inline CSS/SVG/Canvas/JS) in which the real algorithm runs live and the learner drive…
+- **`/visualize`** (command) — Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the vault via vault-keeper
