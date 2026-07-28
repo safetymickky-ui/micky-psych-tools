@@ -125,6 +125,19 @@ vault/                             # shared knowledge vault — managed by vault
   never invented. Files the animation as an asset via vault-keeper. One skill + `/animate
   [concept-or-source]` command; motion grammar under its
   `skills/concept-animation/references/`.
+- **ml-concept-lab** — the interactive sibling of concept-animation, for machine-learning, AI,
+  and computer-science concepts: one self-contained HTML **explorable** in which the real
+  algorithm runs live in the page and the learner drives it (visualization + interaction +
+  animation in one artifact). Prime directive: **the picture is computed, not drawn** — no
+  canned frames, seeded randomness with the seed on screen, a live self-check panel asserting
+  the algorithm's invariants (gradients vs finite differences, closed forms, sort/path
+  correctness), and controls that must reach the regime where the algorithm breaks. Intent-lock
+  is the mandatory Step 0 gate; verification means *driving* the page headless, not just
+  screenshotting it; files the HTML as an asset via vault-keeper. One skill + `/visualize
+  [concept]` command; build contract + a per-family pattern catalog under its
+  `skills/ml-concept-lab/references/`, worked lab under `examples/`. Boundary: watch-only
+  animations and clinical topics stay with concept-animation, charts of the user's own data
+  with dataviz.
 
 ## Style
 

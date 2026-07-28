@@ -24,10 +24,10 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
-The examples above install `pubmed-research-note`; swap in any of the other seven —
+The examples above install `pubmed-research-note`; swap in any of the other ten —
 `intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
-`clinical-infographic`, or `firecrawl` (or any future plugin) by name — the commands are
-identical for all of them.
+`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, or `ml-concept-lab` (or
+any future plugin) by name — the commands are identical for all of them.
 
 ## Update it
 
@@ -59,7 +59,7 @@ characters), version parity between a plugin's manifest and its marketplace entr
 
 ## Plugins
 
-Eight plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
+Eleven plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
 
 - **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
   quantified, trial-registry-checked evidence reports. Runs `intent-lock` first on every
@@ -86,3 +86,13 @@ Eight plugins, all vendored under `plugins/` and listed in `.claude-plugin/marke
   (regulator labels, guideline full texts — fetch-only, adjudication stays with the caller);
   deliverables gate through `intent-lock` and vault via `vault-keeper` on request. Biomedical
   literature stays with the PubMed-facing plugins, and API keys stay in the environment.
+- **concept-animation** — turns a concept into a self-contained HTML animation that unfolds it
+  scene by scene, with captions, player controls, and a reduced-motion fallback. Motion must
+  explain, never decorate; clinical facts come only from sourced reports.
+- **gridgeist** — design, redesign, and review web interfaces with a strong grid, precise
+  typography, and product-specific visual systems. Vendored from upstream under MIT.
+- **ml-concept-lab** — the interactive sibling of `concept-animation` for machine-learning, AI,
+  and computer-science concepts: a self-contained HTML explorable in which the real algorithm
+  runs live and the learner drives it. Every number is computed rather than drawn, a self-check
+  panel asserts the algorithm's invariants on screen, and the controls reach the regime where it
+  breaks. Verified by being driven headless, then filed as a vault asset via `vault-keeper`.

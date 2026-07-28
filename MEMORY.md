@@ -11,11 +11,11 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-19
+## Current versions — 2026-07-28
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.12.0  |
+| marketplace catalog   | 1.13.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -26,6 +26,7 @@ a milestone.
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | concept-animation     | 0.1.1   |
+| ml-concept-lab        | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -95,8 +96,60 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   any concept in scope, clinical facts only from sourced reports (session / vault / generated
   via comprehensive-review or pubmed-research-note); files the animation as a vault asset via
   vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
+- **ml-concept-lab** — the *interactive* sibling of concept-animation, scoped to machine-learning,
+  AI, and computer-science concepts. Deliverable is one self-contained HTML **explorable**:
+  visualization + interaction + animation in a single artifact, with the real algorithm running
+  in the page. Prime directive **the picture is computed, not drawn** (no canned frames, seeded
+  PRNG with the seed on screen, published numbers sourced or absent, toy scale labelled); second
+  directive **every control is a question and one of them must break it** (sliders reach
+  divergence/worst case; 3–5 named presets jump to the instructive regimes). Correctness is
+  enforced by a visible self-check panel asserting invariants live (∇ vs finite differences,
+  closed forms, sort/path/normalization checks). Intent-lock is the mandatory Step 0 gate; Step
+  3.5 *drives* the page headless (every control to both extremes, every preset, console clean,
+  no non-finite value rendered, fits 1366×768, both motion modes) before vault-keeper files it as
+  an asset. Skill + `/visualize [concept]`; build contract + 8-family pattern catalog in
+  references; a verified worked lab in `examples/`.
 
 ## Recent milestones
+
+- **2026-07-28** — Added **ml-concept-lab 0.1.0** (eleventh plugin; catalog → 1.13.0, branch
+  `claude/ml-ai-visualization-plugin-9qzzr8`) — "visualization + interactive + animation to
+  illustrate a given concept, focused on ML / AI / CS". Built as a **sibling to
+  concept-animation, not an overlap**: the boundary is *watch-only linear film* (concept-animation,
+  and clinical content stays there) versus *user-driven explorable where the algorithm runs live*
+  (this). The domain is what makes the split real — ML/AI/CS concepts are **executable**, so the
+  plugin's prime directive is **"the picture is computed, not drawn"**: the fake demo (a
+  hand-drawn curve that merely looks like gradient descent, an attention matrix of invented
+  numbers) is the failure mode it exists to prevent, and a fake demo is indistinguishable from a
+  real one until you poke it. Supporting rules: seeded PRNG with the seed visible (unseeded runs
+  are incomparable, which destroys the point of a control); toy models labelled with what they
+  preserve and drop; published numbers sourced or absent; **every control names the question it
+  asks** and the sliders must reach the broken end ("the lesson lives at the broken end" — the
+  pretty-regime clamp is listed as an anti-pattern). Correctness is enforced *in the artifact*
+  by a **self-check panel** asserting invariants on the running values. Ships one skill +
+  `/visualize [concept]` + two references: a **build contract** (state/step/render engine,
+  determinism, canvas-vs-SVG, complexity honesty via live counters, performance, fit-to-viewport,
+  accessibility, palette with roles, and a copy-ready Playwright **drive-it** recipe) and a
+  **concept-patterns catalog** covering eight families (optimization · NN internals · transformers
+  & LLM internals · classical ML · probability & information · algorithms & data structures ·
+  complexity & systems · RL), each with state, linked views, controls-as-questions, invariants,
+  failure regimes, and the misconception to kill — plus six named anti-patterns. Step 3.5 is
+  **drive-and-verify, not screenshot-and-hope** — the domain needs interaction proven, not layout.
+  Shipped with a **verified worked example**, `examples/learning-rate-and-conditioning.html`:
+  real least-squares descent on 40 seeded points, the loss field evaluated on a grid (not a drawn
+  ellipse), heavy-ball updates, and the Hessian's λmax with the stability bound **2/λmax computed
+  live** — 1.000 standardized vs **0.0022** on raw x (λmax 2.0 vs 903.9), which is the conditioning
+  lesson as a number the page derived. Five presets: converges (step 102) · stalls at the 3000-step
+  cap · **diverges at step 38** with lr 1.2 > bound 1.000, halted and explained, `NaN` never
+  rendered · ravine (1.09 from optimum at the cap) · **ravine + momentum, same lr → 7.5e-4**.
+  Driving it headless caught a **real bug in its own self-check**: the ∇-vs-finite-difference test
+  used a *relative* error, which blows up at the optimum where the gradient goes to zero and the
+  finite difference is pure floating-point cancellation — fixed to an absolute difference against a
+  cancellation-noise floor, and the verify script tightened to read the chips after every preset
+  (the gap that let it through). Verified green in both motion modes. Defaults chosen without
+  asking (surfaced): plugin name, `/visualize` as the command, `education` category, intent-lock
+  gate + vault-keeper filing by house convention. `validate.py` clean; ROUTING.md regenerated
+  (11 plugins, 23 components).
 
 - **2026-07-26** — Filed **Novel Antidepressants — FDA-Approved and in the Pipeline — Comprehensive
   Review** to the vault via the comprehensive-review → vault-keeper flow (branch
