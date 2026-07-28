@@ -24,10 +24,11 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
-The examples above install `pubmed-research-note`; swap in any of the other eleven —
+The examples above install `pubmed-research-note`; swap in any of the other twelve —
 `intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
-`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, `code-explainer`, or
-`ml-concept-lab` (or any future plugin) by name — the commands are identical for all of them.
+`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, `code-explainer`,
+`ml-concept-lab`, or `decision-interview` (or any future plugin) by name — the commands are
+identical for all of them.
 
 ## Update it
 
