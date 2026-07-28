@@ -17,7 +17,7 @@ a milestone.
 | --------------------- | ------- |
 | marketplace catalog   | 1.15.0  |
 | pubmed-research-note   | 1.6.0   |
-| intent-lock           | 0.4.0   |
+| intent-lock           | 0.4.1   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
@@ -47,6 +47,7 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   writes to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
   Ships `intent-lock` (the interview) + `misread-capture` (the compounding misread ledger).
+  Mid-task execution forks route onward to decision-interview.
 - **plugin-creator** — meta-plugin: `/new-plugin` scaffolds, `/refine-plugin` audits/refines,
   `/route` regenerates `ROUTING.md` and routes a request to the owning skill/command. Create and
   refine keep the router in sync automatically.
@@ -156,7 +157,20 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   request (decision, options, recommendation + reason) while everything unblocked finishes.
   One skill + `/resolve-decisions [task or scope]`; category productivity. Defaults chosen
   without asking (surfaced): plugin name, command name, category, no references/ (the skill
-  is self-contained). `validate.py` clean; ROUTING.md regenerated (13 plugins, 27 components).
+  is self-contained). **Hardened by an ultracode adversarial review** (11-agent workflow:
+  4 lenses → per-finding refutation; 7 findings confirmed, all fixed): the description now
+  front-loads the mid-task scoping so the boundary survives route.py's 200-char router cue
+  (unscoped "ask me everything at once" would have claimed pre-build requests that belong to
+  intent-lock); the unprompted trigger includes the single-blocking-decision case the body
+  legislated for; the single-decision fast path still states sweep defaults and records the
+  answer (skips only the multi-round machinery); blocker-first yields to dependency order
+  when the blocker is downstream; and destructive items can't launder through "already
+  answered" — only an explicit user choice qualifies, inherited defaults/assumptions re-enter
+  the interview. The boundary was also made **reciprocal**: intent-lock 0.4.1 carves out
+  mid-task execution forks in its description, routes them to decision-interview at the end
+  of its Phase 3, and its picker-caps line now correctly attributes the 3-question round cap
+  to the skill, not the tool (the tool's ceiling is four questions; the four-option ceiling
+  stands). `validate.py` clean; ROUTING.md regenerated (13 plugins, 27 components).
 
 - **2026-07-28** — Added **ml-concept-lab 0.1.0** (twelfth plugin; catalog → 1.14.0, branch
   `claude/ml-ai-visualization-plugin-9qzzr8`) — "visualization + interactive + animation to

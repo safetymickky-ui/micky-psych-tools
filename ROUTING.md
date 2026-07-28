@@ -33,7 +33,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram | code-explainer | `/explain-code` |
 | when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "explorable", "let me play with the parameters", "show me how X works", "animate this algorithm"… | ml-concept-lab | skill `ml-concept-lab` |
 | Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
-| when the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", runs /resolve-decisions… | decision-interview | skill `decision-interview` |
+| when, mid-task, the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", or runs… | decision-interview | skill `decision-interview` |
 | Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
 
 ## Plugins
@@ -46,7 +46,7 @@ Keywords: pubmed, clinical-trials, psychiatry, evidence
 
 - **skill `pubmed-research-note`** (skill) — Answers a clinical decision from primary literature and delivers a verdict-first, quantified report shaped to the decision, not the topic.
 
-### intent-lock — productivity  _v0.4.0_
+### intent-lock — productivity  _v0.4.1_
 
 Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.
 
@@ -153,5 +153,5 @@ Mid-task decision gate: collects every open decision the agent cannot make for t
 
 Keywords: decisions, interview, batching, clarification, elicitation, autonomy
 
-- **skill `decision-interview`** (skill) — Collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of…
+- **skill `decision-interview`** (skill) — Mid-task decision gate — fires after the goal is locked, when execution surfaces decisions only the user can make (scope forks, trade-offs, destructive or irreversible steps, missing preferences), and resolves them all…
 - **`/resolve-decisions`** (command) — Sweep the current task for every open decision that needs the user and resolve them all in one batched interview
