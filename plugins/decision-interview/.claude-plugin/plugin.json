@@ -1,0 +1,17 @@
+{
+  "name": "decision-interview",
+  "version": "0.1.0",
+  "description": "Mid-task decision gate. Collects every open decision the agent cannot make for the user and resolves them all in one batched option-picker interview — sweep, triage, ask, record, resume.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "decisions",
+    "interview",
+    "batching",
+    "clarification",
+    "elicitation",
+    "autonomy"
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: intent-lock
-description: Interrogates a request until it has exactly one reading, then executes it as written. Use this skill whenever the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ", "ล็อคเป้าหมาย" — and unprompted, offer it whenever a request is expensive, reusable, or ambiguous enough that a wrong reading would waste substantial work. The user may background the thread and return only to finished output, so the interview is the ONLY correction window. Rounds are uncapped: interrogate until saturation, or until the user says LOCK or stop asking. Never propose a better version of the request, never emit a portable prompt artifact, never publish the convergence gates, never ask permission to proceed — after GOAL UNIFIED, work. Not for quick throwaway or already-precise requests, or for capturing a past misread after delivery (that is misread-capture).
+description: Interrogates a request until it has exactly one reading, then executes it as written. Use this skill whenever the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ", "ล็อคเป้าหมาย" — and unprompted, offer it whenever a request is expensive, reusable, or ambiguous enough that a wrong reading would waste substantial work. The user may background the thread and return only to finished output, so the interview is the ONLY correction window. Rounds are uncapped: interrogate until saturation, or until the user says LOCK or stop asking. Never propose a better version of the request, never emit a portable prompt artifact, never publish the convergence gates, never ask permission to proceed — after GOAL UNIFIED, work. Not for quick throwaway or already-precise requests, mid-task execution forks (decision-interview), or for capturing a past misread after delivery (that is misread-capture).
 ---
 
 # Intent Lock
@@ -156,7 +156,7 @@ Which is what this skill already believes — killing a wrong reading is cheaper
 
 Mapping to the tool:
 
-- The caps that remain align by construction: **3 questions per round** is the tool's ceiling; **3 hypotheses + 1 escape** is its four-option ceiling. Rounds have no ceiling, so the tool imposes none.
+- The caps that remain align by construction: **3 questions per round** is this skill's own hard cap, sitting inside the tool's four-question ceiling; **3 hypotheses + 1 escape** is the tool's four-option ceiling. Rounds have no ceiling, so the tool imposes none.
 - Divergent-reading forks → `single_select`.
 - Anti-goals, scope boundary, edge cases — where several may hold at once → `multi_select`.
 - Trade-off forks with no dominant answer (depth vs breadth vs speed) → `rank_priorities`.
@@ -224,6 +224,8 @@ Assumed: <the material default(s), plainly> — say if wrong.
 ```
 
 If nothing material was assumed, guessed, or skipped, emit no line at all and ship the work clean. There is no `Reframed:` line, because there is no reframe. Never bury an assumption inside the body, and never present a guess in the voice of a fact — the one line exists so a wrong default is still catchable after the fact, which is the only reason it survives the cut.
+
+Execution will surface decisions this interview could not have seen — forks inside the locked goal, not readings of it. Those belong to the `decision-interview` skill: sweep them, batch them, resolve them there. Reopening this interview for them re-interrogates a goal that is already locked.
 
 ## Phase 4 — When the work comes back wrong
 
