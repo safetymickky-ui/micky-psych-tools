@@ -1,6 +1,6 @@
 ---
 name: decision-interview
-description: Collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Use when the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", runs /resolve-decisions — and unprompted, the moment mid-task work has accumulated two or more decisions that genuinely need the user. Sweeps the task end to end, triages by whether the answers change the work, asks in dependency order with a recommended option first, and records resolutions in a decision ledger that governs the rest of the session. Not for pre-build alignment on what a request means (intent-lock), capturing a delivered misread (misread-capture), or decisions the agent can settle itself from the code, the conversation, or repo conventions.
+description: Mid-task decision gate — fires after the goal is locked, when execution surfaces decisions only the user can make (scope forks, trade-offs, destructive or irreversible steps, missing preferences), and resolves them all in one batched option-picker interview instead of scattered questions or silent guessing. Use when, mid-task, the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", or runs /resolve-decisions — and unprompted, the moment two or more decisions accumulate or a single decision blocks the work now. Sweeps the task end to end, triages by whether the answers change the work, asks in dependency order with a recommended option first, and records resolutions in a decision ledger that governs the rest of the session. Not for pre-build alignment on what a request means (intent-lock), a delivered misread (misread-capture), or decisions the code, conversation, or repo conventions already settle.
 ---
 
 # Decision Interview
@@ -12,8 +12,8 @@ The scarcest resource in a session is the user's attention. Every scattered ques
 ## When it fires
 
 - The user asks: "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", or runs `/resolve-decisions`.
-- Unprompted: the moment a second above-threshold decision accumulates mid-task. One decision alone is not an interview — run the sweep anyway (it is cheap), and if it comes back with just the one, ask it directly through the picker and move on, no ledger ceremony.
-- A blocking decision does not wait its turn. If work is stopped now, sweep first regardless — the sweep costs a minute and prevents the second interview — then put the blocker at the head of round 1.
+- Unprompted: the moment a second above-threshold decision accumulates mid-task, or a single decision blocks work now. One decision alone is not an interview — run the sweep anyway (it is cheap), and if it comes back with a single `[ASK]`, ask it through a one-question picker call, state any defaults the sweep produced in the same message, and record the answer as a resolution like any other. The fast path skips the multi-round machinery, never the ledger's governance.
+- A blocking decision does not wait its turn. If work is stopped now, sweep first regardless — the sweep costs a minute and prevents the second interview — then put the blocker at the head of round 1. One exception: if the blocker itself depends on another surviving decision, the dependency rule wins — the upstream fork leads round 1 and the blocker follows in the next round.
 
 ## Procedure
 
@@ -38,7 +38,7 @@ Keep the sweep as an internal ledger, one line per decision — it is working st
 A decision earns a question only if the competing answers produce **materially different work** — different structure, different deliverable, different sources, or more than roughly a fifth of the effort. Everything below the line gets a stated default and no question. Two overrides:
 
 - **Destructive, irreversible, or outward-facing actions always earn a question**, regardless of size: delete, overwrite, publish, send, spend, force-push — anything a later undo cannot reach. These are never defaulted.
-- **Already answered is not a decision.** If the conversation, the code, the repo's conventions, or the user's stated preferences resolve it, resolve it there and name the source. Making the user repeat themselves teaches them to stop answering.
+- **Already answered is not a decision.** If the conversation, the code, the repo's conventions, or the user's stated preferences resolve it, resolve it there and name the source. Making the user repeat themselves teaches them to stop answering. For destructive items, answered means the user explicitly chose it — a stated default or an assumption inherited from an earlier gate does not qualify, and the item re-enters the interview.
 
 Padding the interview with sub-threshold preferences is the failure mode that kills batching: the user answers four preference questions, hits fatigue, and abandons the fork that mattered.
 
