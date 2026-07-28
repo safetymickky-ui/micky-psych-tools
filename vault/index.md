@@ -4,7 +4,7 @@ created: 2026-07-09
 type: moc
 source: manual
 tags: [index]
-links: [Psychopharmacology MOC]
+links: [Machine Learning MOC, Psychopharmacology MOC]
 ---
 
 # Vault Index
@@ -14,5 +14,7 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
+- [[Machine Learning MOC]] — machine learning, AI, and computer science: interactive
+  explorables, concept animations, code explanations, and the mathematics underneath them.
 - [[Psychopharmacology MOC]] — drug-level evidence reports, contested claims, interaction and
   safety verdicts; drug-class approval cohorts and pipelines; dose/receptor references.
