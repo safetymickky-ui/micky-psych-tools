@@ -31,6 +31,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "redesign this page", "make this UI less generic", "review this interface", "needs a stronger grid", "Swiss style", "editorial layout", or asks to create, restyle, or critique a… | gridgeist | skill `gridgeist` |
 | when the user says "explain this code", "explain the given code", "walk me through this function", "annotate this code", "code walkthrough", "what does this code do", "อธิบายโค้ดนี้", or runs… | code-explainer | skill `code-explainer` |
 | Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram | code-explainer | `/explain-code` |
+| when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "explorable", "let me play with the parameters", "show me how X works", "animate this algorithm"… | ml-concept-lab | skill `ml-concept-lab` |
+| Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
 
 ## Plugins
 
@@ -133,3 +135,12 @@ Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highl
 
 - **skill `code-explainer`** (skill) — Explains given code as one interactive, self-contained HTML page — the original code on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked li…
 - **`/explain-code`** (command) — Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram
+
+### ml-concept-lab — education  _v0.1.0_
+
+Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.
+
+Keywords: machine-learning, ai, computer-science, interactive-visualization, explorable, algorithm
+
+- **skill `ml-concept-lab`** (skill) — Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file (inline CSS/SVG/Canvas/JS) in which the real algorithm runs live and the learner drive…
+- **`/visualize`** (command) — Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the vault via vault-keeper

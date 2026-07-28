@@ -1,0 +1,710 @@
+<!--
+  ML Concept Lab — Learning rate & conditioning: when does gradient descent converge?
+  Everything on screen is computed live: least-squares loss on 40 generated points,
+  exact gradients, heavy-ball updates, the Hessian's largest eigenvalue and the
+  stability bound 2/lambda_max, and the closed-form OLS optimum.
+  Self-contained: inline CSS + JS + canvas. No external CSS/JS/fonts/images/CDN, no libraries.
+-->
+<style>
+  :root{
+    --bg:#0a1020; --panel:#0f1830; --panel2:#12203f; --line:#22345c;
+    --ink:#eaf0ff; --muted:#a9b7d6; --faint:#7f8fb4;
+    --data:#3fd6dc;    /* the data / the world      */
+    --model:#ffb84d;   /* the parameters being learnt */
+    --update:#c39cff;  /* the step just taken       */
+    --ok:#5fe39a; --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg)}
+  .wrap{
+    height:100dvh; display:flex; flex-direction:column; gap:8px;
+    padding:12px 16px 10px; color:var(--ink); background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.4;
+  }
+  h1{font-size:19px; margin:0; letter-spacing:-0.01em}
+  .q{margin:2px 0 0; color:var(--muted); font-size:13px}
+  .q b{color:var(--model); font-weight:600}
+
+  .stage{
+    flex:1 1 auto; min-height:0;
+    display:grid; grid-template-columns:1.32fr 1fr; grid-template-rows:1fr 1fr; gap:8px;
+  }
+  .panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:6px 8px 8px; display:flex; flex-direction:column; min-height:0; min-width:0;
+  }
+  .p-param{grid-row:1 / span 2}
+  .panel h2{
+    font-size:11px; margin:0 0 4px; color:var(--muted); font-weight:600;
+    letter-spacing:.05em; text-transform:uppercase; display:flex; gap:8px; align-items:baseline;
+  }
+  .panel h2 .note{text-transform:none; letter-spacing:0; color:var(--faint); font-weight:400}
+  canvas{flex:1 1 auto; min-height:0; width:100%; display:block; cursor:crosshair}
+  canvas.flat{cursor:default}
+
+  .banner{
+    border:1px solid var(--bad); background:rgba(255,107,107,.12); color:#ffd9d9;
+    border-radius:9px; padding:6px 10px; font-size:12.5px;
+  }
+  .banner.ok{border-color:var(--ok); background:rgba(95,227,154,.12); color:#d6ffe9}
+
+  .readout{
+    display:flex; flex-wrap:wrap; gap:14px; align-items:baseline;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:12px; font-variant-numeric:tabular-nums; color:var(--muted);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:6px 2px;
+  }
+  .readout b{color:var(--ink); font-weight:600}
+  .readout .k{color:var(--faint)}
+
+  .deck{display:flex; flex-direction:column; gap:7px}
+  .row{display:flex; flex-wrap:wrap; gap:7px; align-items:center}
+  button{
+    font:inherit; font-size:12.5px; color:var(--ink); background:var(--panel2);
+    border:1px solid var(--line); border-radius:8px; padding:6px 11px; cursor:pointer;
+  }
+  button:hover{background:#1a2c54}
+  button:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid var(--data); outline-offset:2px}
+  button.primary{background:var(--data); color:#06212a; border-color:var(--data); font-weight:700}
+  button.primary:hover{background:#63e6ec}
+  button[data-preset]{border-color:#2d4176; background:#101c38}
+  button[data-preset][aria-pressed="true"]{border-color:var(--model); color:var(--model)}
+  .sep{width:1px; height:22px; background:var(--line); margin:0 3px}
+  .ctl{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted)}
+  .ctl input[type=range]{width:112px; accent-color:var(--model)}
+  .ctl .val{
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace; font-size:11.5px;
+    color:var(--ink); min-width:52px; font-variant-numeric:tabular-nums;
+  }
+  .ctl input[type=number]{
+    width:64px; font:inherit; font-size:12px; padding:3px 6px; color:var(--ink);
+    background:var(--panel2); border:1px solid var(--line); border-radius:6px;
+  }
+  select{font:inherit; font-size:12px; padding:4px 6px; color:var(--ink); background:var(--panel2); border:1px solid var(--line); border-radius:6px}
+  .keys{color:var(--faint); font-size:11.5px; margin-left:auto}
+
+  .checks{display:flex; flex-wrap:wrap; gap:7px; align-items:center; font-size:11.5px}
+  .chip{
+    border:1px solid var(--line); border-radius:999px; padding:3px 10px;
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace; color:var(--muted);
+  }
+  .chip[data-pass="true"][data-state="ok"]{border-color:#2c6b4c; color:var(--ok)}
+  .chip[data-pass="true"][data-state="na"]{border-color:var(--line); color:var(--faint)}
+  .chip[data-pass="false"]{border-color:var(--bad); color:var(--bad)}
+  .checks .lbl{color:var(--faint); text-transform:uppercase; letter-spacing:.05em}
+
+  footer{color:var(--faint); font-size:10.5px; line-height:1.45; border-top:1px solid var(--line); padding-top:6px}
+  footer b{color:var(--muted); font-weight:600}
+
+  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Learning rate &amp; conditioning — when does gradient descent converge?</h1>
+    <p class="q">The model is <b>y = w·x + b</b> on 40 generated points. The loss surface below is the
+      real mean-squared error; the walk on it is real gradient descent. Push the learning rate past the
+      computed stability bound and watch it break.</p>
+  </header>
+
+  <main class="stage">
+    <section class="panel p-param">
+      <h2>Parameter space <span class="note">— loss over (w, b), trajectory, ★ = closed-form optimum · click to set the start</span></h2>
+      <canvas id="cvParam" role="img" aria-label="Loss surface over the two parameters w and b, drawn as a heat map with contour bands. The descent trajectory is drawn as a violet path from the starting point to the current parameters; a green star marks the closed-form least-squares optimum."></canvas>
+    </section>
+    <section class="panel p-data">
+      <h2>Data space <span class="note">— what this (w, b) means</span></h2>
+      <canvas id="cvData" class="flat" role="img" aria-label="Scatter plot of the 40 generated data points in cyan with the current fitted line in amber and the residual of each point drawn as a short vertical segment."></canvas>
+    </section>
+    <section class="panel p-loss">
+      <h2>Full-batch loss vs step <span class="note">— log scale</span></h2>
+      <canvas id="cvLoss" class="flat" role="img" aria-label="The full-batch mean squared error plotted against the step number on a logarithmic vertical axis."></canvas>
+    </section>
+  </main>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <div class="readout" id="readout"></div>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+
+  <div class="deck">
+    <div class="row">
+      <button id="play" class="primary">▶ Play</button>
+      <button id="step">Step</button>
+      <button id="reset">Reset</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button data-preset="converges">1 · converges</button>
+      <button data-preset="stalls">2 · too small, stalls</button>
+      <button data-preset="diverges">3 · too large, diverges</button>
+      <button data-preset="ravine">4 · unscaled x, ravine</button>
+      <button data-preset="momentum">5 · ravine + momentum</button>
+      <span class="keys">space play/pause · → step · R reset · 1–5 presets</span>
+    </div>
+    <div class="row">
+      <label class="ctl">learning rate
+        <input id="lr" type="range" min="0" max="1" step="0.001" value="0.7273">
+        <span class="val" id="lrVal"></span>
+      </label>
+      <label class="ctl">momentum
+        <input id="mom" type="range" min="0" max="0.99" step="0.01" value="0">
+        <span class="val" id="momVal"></span>
+      </label>
+      <label class="ctl">batch
+        <input id="batch" type="range" min="1" max="40" step="1" value="40">
+        <span class="val" id="batchVal"></span>
+      </label>
+      <label class="ctl">noise σ
+        <input id="noise" type="range" min="0" max="4" step="0.1" value="1.2">
+        <span class="val" id="noiseVal"></span>
+      </label>
+      <label class="ctl"><input id="std" type="checkbox" checked> standardize x</label>
+      <label class="ctl">seed <input id="seed" type="number" value="7" min="0" step="1"></label>
+      <label class="ctl">speed
+        <select id="speed"><option value="1">1×</option><option value="5" selected>5×</option><option value="25">25×</option></select>
+      </label>
+    </div>
+  </div>
+
+  <div class="checks" id="checks"><span class="lbl">self-checks</span></div>
+
+  <footer>
+    Everything here is computed live in your browser by the code in this file — <b>least-squares loss
+    L(w,b) = mean((w·x + b − y)²)</b>, its exact gradient, the heavy-ball update
+    <b>v ← μv − η∇L; θ ← θ + v</b>, the Hessian's largest eigenvalue, and the closed-form normal-equation
+    optimum. Data comes from seed <b id="seedEcho">7</b>; the same seed reproduces this run exactly.
+    <b>Toy scale:</b> two parameters, so the whole loss surface can be drawn — a real network has
+    millions and no drawable surface, but the update rule and the stability condition on screen are the
+    ones it uses. Nothing on this page is measured from a published experiment.
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s) => document.querySelector(s);
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const C = { bg:"#0a1020", panel:"#0f1830", line:"#22345c", ink:"#eaf0ff", muted:"#a9b7d6",
+              faint:"#7f8fb4", data:"#3fd6dc", model:"#ffb84d", update:"#c39cff",
+              ok:"#5fe39a", bad:"#ff6b6b" };
+
+  const N = 40, W_TRUE = 0.8, B_TRUE = -3, MAX_STEPS = 3000, STEPS_PER_SEC = 20;
+
+  // ---------- seeded PRNG: the only source of randomness in the page ----------
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ---------- state: one object, the single source of truth for a frame ----------
+  const S = {
+    seed:7, lr:0.1, mom:0, batch:N, noise:1.2, std:true, speed:5,
+    x:[], y:[], M:null, wStar:0, bStar:0, lamMax:1, bound:1,
+    w:0, b:0, vw:0, vb:0, t:0, loss:0, gw:0, gb:0, monotoneBroken:false,
+    w0:0, b0:0, traj:[], hist:[], status:"ready", note:"",
+    order:[], cursor:0, rng:null, win:{cw:0, cb:0, hw:1, hb:1},
+    checks:[]
+  };
+
+  // ---------- the model ----------
+  // L(w,b) = w²·E[x²] + b² + E[y²] + 2wb·E[x] − 2w·E[xy] − 2b·E[y]   (exactly mean((wx+b−y)²))
+  function moments(x, y){
+    let Exx=0, Ex=0, Exy=0, Ey=0, Eyy=0;
+    for(let i=0;i<x.length;i++){ Exx+=x[i]*x[i]; Ex+=x[i]; Exy+=x[i]*y[i]; Ey+=y[i]; Eyy+=y[i]*y[i]; }
+    const n = x.length;
+    return { Exx:Exx/n, Ex:Ex/n, Exy:Exy/n, Ey:Ey/n, Eyy:Eyy/n };
+  }
+  const lossAt = (w,b,M) => w*w*M.Exx + b*b + M.Eyy + 2*w*b*M.Ex - 2*w*M.Exy - 2*b*M.Ey;
+  const gradAt = (w,b,M) => [ 2*(w*M.Exx + b*M.Ex - M.Exy), 2*(w*M.Ex + b - M.Ey) ];
+
+  function buildData(){
+    S.rng = mulberry32(S.seed|0);
+    const rng = S.rng;
+    const gauss = () => Math.sqrt(-2*Math.log(1-rng())) * Math.cos(2*Math.PI*rng());
+    const xr = [], y = [];
+    for(let i=0;i<N;i++){
+      const xi = 10 + 20*rng();                       // x is far from the origin on purpose
+      xr.push(xi); y.push(W_TRUE*xi + B_TRUE + S.noise*gauss());
+    }
+    let x = xr;
+    if(S.std){
+      const m = xr.reduce((a,v)=>a+v,0)/N;
+      const sd = Math.sqrt(xr.reduce((a,v)=>a+(v-m)*(v-m),0)/N) || 1;
+      x = xr.map(v => (v-m)/sd);
+    }
+    S.x = x; S.y = y; S.M = moments(x, y);
+
+    // closed form: [[E[x²],E[x]],[E[x],1]]·θ = [E[xy],E[y]]
+    const M = S.M, det = M.Exx - M.Ex*M.Ex;
+    S.wStar = (M.Exy - M.Ex*M.Ey) / det;
+    S.bStar = M.Ey - M.Ex*S.wStar;
+
+    // Hessian H = 2[[E[x²],E[x]],[E[x],1]] → largest eigenvalue → the stability bound 2/λmax
+    const T = 2*(M.Exx + 1), D = 4*det;
+    S.lamMax = (T + Math.sqrt(Math.max(0, T*T - 4*D))) / 2;
+    S.bound = 2 / S.lamMax;
+
+    // a window that frames the valley whatever the conditioning
+    S.win = { cw:S.wStar, cb:S.bStar, hw: 3/Math.sqrt(Math.max(1e-9, M.Exx)), hb: 3 };
+    S.w0 = S.wStar + 0.8*S.win.hw;
+    S.b0 = S.bStar + 0.8*S.win.hb;
+    field.key = "";                                   // the loss field must be repainted
+  }
+
+  function reshuffle(){
+    S.order = Array.from({length:N}, (_,i)=>i);
+    for(let i=N-1;i>0;i--){ const j = Math.floor(S.rng()*(i+1)); const t=S.order[i]; S.order[i]=S.order[j]; S.order[j]=t; }
+    S.cursor = 0;
+  }
+
+  function batchGrad(){
+    if(S.batch >= N) return gradAt(S.w, S.b, S.M);
+    if(S.cursor + S.batch > N) reshuffle();
+    let gw = 0, gb = 0;
+    for(let k=0;k<S.batch;k++){
+      const i = S.order[S.cursor + k];
+      const r = S.w*S.x[i] + S.b - S.y[i];
+      gw += r*S.x[i]; gb += r;
+    }
+    S.cursor += S.batch;
+    return [ 2*gw/S.batch, 2*gb/S.batch ];
+  }
+
+  function resetRun(keepData){
+    if(!keepData) buildData();
+    reshuffle();
+    S.w = S.w0; S.b = S.b0; S.vw = 0; S.vb = 0; S.t = 0;
+    S.traj = [[S.w, S.b]];
+    S.loss = lossAt(S.w, S.b, S.M);
+    const g = gradAt(S.w, S.b, S.M); S.gw = g[0]; S.gb = g[1];
+    S.hist = [S.loss];
+    S.status = "ready"; S.note = "";
+    S.monotoneBroken = false;
+    stop();
+    runChecks();
+    render();
+  }
+
+  // one step = one parameter update, which is what the Step button and the counter mean
+  function doStep(){
+    if(S.status === "diverged" || S.status === "converged" || S.status === "maxed") return;
+    const prevLoss = S.loss;
+    const [gw, gb] = batchGrad();
+    S.vw = S.mom*S.vw - S.lr*gw;
+    S.vb = S.mom*S.vb - S.lr*gb;
+    S.w += S.vw; S.b += S.vb; S.t++;
+
+    const full = gradAt(S.w, S.b, S.M); S.gw = full[0]; S.gb = full[1];
+    S.loss = lossAt(S.w, S.b, S.M);
+    S.traj.push([S.w, S.b]);
+    S.hist.push(S.loss);
+
+    if(stableRegime() && S.loss > prevLoss*(1 + 1e-9) + 1e-12) S.monotoneBroken = true;
+
+    if(!isFinite(S.w) || !isFinite(S.b) || !isFinite(S.loss) || Math.abs(S.loss) > 1e12){
+      S.status = "diverged";
+      S.note = `diverged at step ${S.t} — the learning rate ${fmt(S.lr)} is above the stability bound 2/λmax = ${fmt(S.bound)}, so every update overshoots further than the last.`;
+      stop();
+    } else if(Math.hypot(S.gw, S.gb) < 1e-9 && Math.hypot(S.vw, S.vb) < 1e-9){
+      S.status = "converged";
+      S.note = `converged at step ${S.t} — the gradient is numerically zero at the least-squares optimum.`;
+      stop();
+    } else if(S.t >= MAX_STEPS){
+      S.status = "maxed";
+      S.note = `stopped at the ${MAX_STEPS}-step cap — still ${fmt(Math.hypot(S.w-S.wStar, S.b-S.bStar))} away from the optimum. A learning rate this small converges, eventually.`;
+      stop();
+    }
+  }
+  const stableRegime = () => S.mom === 0 && S.batch >= N && S.lr < S.bound;
+
+  // ---------- self-checks: asserted on the values actually running ----------
+  function runChecks(){
+    const M = S.M, out = [];
+
+    // 1. analytic gradient vs central finite difference, at the parameters actually running
+    //    (falling back to the start point once a diverged run has left the finite numbers).
+    //    Reported as an ABSOLUTE difference: near the optimum the gradient itself goes to zero,
+    //    so a relative error there measures floating-point cancellation, not correctness.
+    const pw = isFinite(S.w) ? S.w : S.w0, pb = isFinite(S.b) ? S.b : S.b0;
+    const h = 1e-4*Math.max(1, Math.abs(pw), Math.abs(pb));
+    const fdw = (lossAt(pw+h, pb, M) - lossAt(pw-h, pb, M)) / (2*h);
+    const fdb = (lossAt(pw, pb+h, M) - lossAt(pw, pb-h, M)) / (2*h);
+    const [aw, ab] = gradAt(pw, pb, M);
+    const diff  = Math.max(Math.abs(aw-fdw), Math.abs(ab-fdb));
+    const scale = Math.max(Math.abs(aw), Math.abs(ab), Math.abs(fdw), Math.abs(fdb));
+    const floor = 20 * Number.EPSILON * Math.max(1, Math.abs(lossAt(pw, pb, M))) / h;  // cancellation noise
+    const gradOk = isFinite(diff) && diff <= Math.max(1e-6*scale, floor);
+    out.push({ pass:gradOk, state:gradOk?"ok":"fail", text:`∇ vs finite diff  |Δ| ${diff.toExponential(1)}` });
+
+    // 2. the closed-form optimum really is a stationary point of the same loss
+    const [sw, sb] = gradAt(S.wStar, S.bStar, M);
+    const res = Math.hypot(sw, sb) / Math.max(1e-12, Math.hypot(M.Exy, M.Ey));
+    const olsOk = res < 1e-9;
+    out.push({ pass:olsOk, state:olsOk?"ok":"fail", text:`OLS ∇L(θ*) ≈ 0  ${res.toExponential(1)}` });
+
+    // 3. gradient descent's guarantee: full batch, no momentum, η below the bound → loss decreases
+    if(!stableRegime()){
+      out.push({ pass:true, state:"na", text:"loss monotone — n/a outside the stable regime" });
+    } else {
+      out.push({ pass:!S.monotoneBroken, state:S.monotoneBroken?"fail":"ok",
+                 text:`loss monotone for η < 2/λmax  (η ${fmt(S.lr)} < ${fmt(S.bound)})` });
+    }
+
+    // 4. nothing unprintable is about to reach the screen
+    const finite = [S.w,S.b,S.loss,S.gw,S.gb].every(isFinite) || S.status === "diverged";
+    out.push({ pass:finite, state:finite?"ok":"fail", text:"no non-finite value rendered" });
+
+    S.checks = out;
+  }
+
+  // ---------- rendering ----------
+  const cvParam = $("#cvParam"), cvData = $("#cvData"), cvLoss = $("#cvLoss");
+  const field = { canvas:document.createElement("canvas"), key:"" };
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, r = cv.getBoundingClientRect();
+    const w = Math.max(1, Math.round(r.width*dpr)), h = Math.max(1, Math.round(r.height*dpr));
+    if(cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; if(cv === cvParam) field.key = ""; }
+    const ctx = cv.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w:r.width, h:r.height };
+  }
+  const fmt = (v) => (v === 0 ? "0" : Math.abs(v) >= 1e4 || Math.abs(v) < 1e-3 ? v.toExponential(2) : v.toPrecision(4));
+
+  const px = (w, W) => ((w - (S.win.cw - S.win.hw)) / (2*S.win.hw)) * W;
+  const py = (b, H) => H - ((b - (S.win.cb - S.win.hb)) / (2*S.win.hb)) * H;
+  const invx = (x, W) => (S.win.cw - S.win.hw) + (x/W)*2*S.win.hw;
+  const invy = (y, H) => (S.win.cb - S.win.hb) + ((H-y)/H)*2*S.win.hb;
+
+  const RAMP = [[0,[10,16,32]], [0.28,[24,42,92]], [0.55,[70,64,160]], [0.78,[169,110,180]], [1,[255,184,77]]];
+  function ramp(u){
+    u = Math.min(1, Math.max(0, u));
+    for(let i=1;i<RAMP.length;i++){
+      if(u <= RAMP[i][0]){
+        const [a, ca] = RAMP[i-1], [z, cz] = RAMP[i], t = (u-a)/(z-a || 1);
+        return [ca[0]+(cz[0]-ca[0])*t, ca[1]+(cz[1]-ca[1])*t, ca[2]+(cz[2]-ca[2])*t];
+      }
+    }
+    return RAMP[RAMP.length-1][1];
+  }
+
+  // the loss field is a parameter-change job, cached and blitted per frame
+  function paintField(W, H){
+    const key = [S.seed, S.noise, S.std, Math.round(W), Math.round(H)].join("|");
+    if(field.key === key) return;
+    const fw = Math.max(2, Math.round(W/2)), fh = Math.max(2, Math.round(H/2));
+    field.canvas.width = fw; field.canvas.height = fh;
+    const ictx = field.canvas.getContext("2d"), img = ictx.createImageData(fw, fh);
+    const M = S.M, Lmin = lossAt(S.wStar, S.bStar, M);
+    let Lmax = 0;
+    const vals = new Float64Array(fw*fh);
+    for(let j=0;j<fh;j++) for(let i=0;i<fw;i++){
+      const w = invx((i+0.5)/fw*W, W), b = invy((j+0.5)/fh*H, H);
+      const L = lossAt(w, b, M); vals[j*fw+i] = L; if(L > Lmax) Lmax = L;
+    }
+    const span = Math.max(1e-12, Lmax - Lmin), band = new Uint8Array(fw*fh);
+    for(let k=0;k<vals.length;k++){
+      const u = Math.pow((vals[k]-Lmin)/span, 0.28);
+      band[k] = Math.min(11, Math.floor(u*12));
+      const [r,g,bl] = ramp(u);
+      img.data[k*4] = r; img.data[k*4+1] = g; img.data[k*4+2] = bl; img.data[k*4+3] = 255;
+    }
+    for(let j=0;j<fh;j++) for(let i=1;i<fw;i++){       // contour lines = band edges
+      const k = j*fw+i;
+      if(band[k] !== band[k-1] || (j > 0 && band[k] !== band[k-fw])){
+        img.data[k*4] = Math.min(255, img.data[k*4]+70);
+        img.data[k*4+1] = Math.min(255, img.data[k*4+1]+80);
+        img.data[k*4+2] = Math.min(255, img.data[k*4+2]+90);
+      }
+    }
+    ictx.putImageData(img, 0, 0);
+    field.key = key;
+  }
+
+  function drawParam(){
+    const { ctx, w:W, h:H } = fit(cvParam);
+    ctx.clearRect(0,0,W,H);
+    paintField(W, H);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(field.canvas, 0, 0, W, H);
+
+    // trajectory
+    ctx.lineWidth = 1.6; ctx.strokeStyle = C.update; ctx.globalAlpha = 0.95;
+    ctx.beginPath();
+    for(let i=0;i<S.traj.length;i++){
+      const x = px(S.traj[i][0], W), y = py(S.traj[i][1], H);
+      if(!isFinite(x) || !isFinite(y)) break;
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.globalAlpha = 1;
+
+    // start, optimum, current
+    dot(ctx, px(S.w0,W), py(S.b0,H), 3.5, C.faint);
+    star(ctx, px(S.wStar,W), py(S.bStar,H), 8, C.ok);
+    const cx = px(S.w,W), cy = py(S.b,H);
+    if(isFinite(cx) && isFinite(cy)){
+      // the update just taken, as an arrow: −η∇L direction
+      const gn = Math.hypot(S.gw, S.gb);
+      if(gn > 1e-12 && S.status !== "diverged"){
+        const sx = -S.gw/gn * 0.10*W*0.5, sy = S.gb/gn * 0.10*H*0.5;
+        ctx.strokeStyle = C.update; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx+sx, cy+sy); ctx.stroke();
+        head(ctx, cx, cy, cx+sx, cy+sy, C.update);
+      }
+      dot(ctx, cx, cy, 5, C.model, "#1a1206");
+    }
+    label(ctx, 8, 14, "w →", C.faint);
+    label(ctx, 8, H-8, "↑ b", C.faint);
+    label(ctx, W-6, 14, S.status === "diverged" ? "θ left the frame" : "★ optimum · ● current θ", C.faint, "right");
+  }
+
+  function drawData(){
+    const { ctx, w:W, h:H } = fit(cvData);
+    ctx.clearRect(0,0,W,H);
+    const pad = 22;
+    let x0 = Math.min(...S.x), x1 = Math.max(...S.x), y0 = Math.min(...S.y), y1 = Math.max(...S.y);
+    const mx = (x1-x0)*0.08 || 1, my = (y1-y0)*0.12 || 1;
+    x0 -= mx; x1 += mx; y0 -= my; y1 += my;
+    const X = (v) => pad + (v-x0)/(x1-x0)*(W-pad-8);
+    const Y = (v) => H-pad - (v-y0)/(y1-y0)*(H-pad-10);
+
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, 6); ctx.lineTo(pad, H-pad); ctx.lineTo(W-6, H-pad); ctx.stroke();
+    label(ctx, W-8, H-8, "x", C.faint, "right"); label(ctx, 6, 12, "y", C.faint);
+
+    if(isFinite(S.w) && isFinite(S.b)){                    // residuals, then the line
+      ctx.strokeStyle = "rgba(255,107,107,.45)"; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for(let i=0;i<N;i++){ const fx = X(S.x[i]); ctx.moveTo(fx, Y(S.y[i])); ctx.lineTo(fx, Y(S.w*S.x[i]+S.b)); }
+      ctx.stroke();
+      ctx.strokeStyle = C.model; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(X(x0), Y(S.w*x0+S.b)); ctx.lineTo(X(x1), Y(S.w*x1+S.b)); ctx.stroke();
+    }
+    for(let i=0;i<N;i++) dot(ctx, X(S.x[i]), Y(S.y[i]), 2.6, C.data);
+    label(ctx, W-8, 14, isFinite(S.w) ? `line: w=${fmt(S.w)} b=${fmt(S.b)}` : "line off scale", C.faint, "right");
+  }
+
+  function drawLoss(){
+    const { ctx, w:W, h:H } = fit(cvLoss);
+    ctx.clearRect(0,0,W,H);
+    const pad = 30, n = S.hist.length;
+    const finite = S.hist.filter(v => isFinite(v) && v > 0);
+    const lo = Math.max(1e-12, Math.min(...finite, 1e12)), hi = Math.max(...finite, lo*10);
+    const lgLo = Math.log10(lo)-0.1, lgHi = Math.log10(hi)+0.1;
+    const X = (i) => pad + i/Math.max(30, n-1)*(W-pad-8);
+    const Y = (v) => H-18 - (Math.log10(Math.max(v, lo))-lgLo)/(lgHi-lgLo)*(H-18-10);
+
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, 6); ctx.lineTo(pad, H-18); ctx.lineTo(W-6, H-18); ctx.stroke();
+    for(let e = Math.ceil(lgLo); e <= Math.floor(lgHi); e++){
+      const y = Y(Math.pow(10, e));
+      ctx.strokeStyle = "rgba(34,52,92,.7)"; ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W-6, y); ctx.stroke();
+      label(ctx, pad-4, y+3, `1e${e}`, C.faint, "right", 9);
+    }
+    const optimal = lossAt(S.wStar, S.bStar, S.M);
+    if(optimal > 0){
+      ctx.setLineDash([4,3]); ctx.strokeStyle = C.ok; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(pad, Y(optimal)); ctx.lineTo(W-6, Y(optimal)); ctx.stroke();
+      ctx.setLineDash([]);
+      label(ctx, W-8, Y(optimal)-4, "best possible loss", C.ok, "right", 9.5);
+    }
+    ctx.strokeStyle = S.status === "diverged" ? C.bad : C.model; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    let started = false;
+    for(let i=0;i<n;i++){
+      const v = S.hist[i];
+      if(!isFinite(v) || v <= 0) break;
+      const x = X(i), y = Y(v);
+      started ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), started = true);
+    }
+    ctx.stroke();
+    label(ctx, W-8, H-5, "step →", C.faint, "right", 9.5);
+  }
+
+  function dot(ctx, x, y, r, fill, ring){
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fillStyle = fill; ctx.fill();
+    if(ring){ ctx.lineWidth = 1.5; ctx.strokeStyle = ring; ctx.stroke(); }
+  }
+  function star(ctx, x, y, r, fill){
+    ctx.save(); ctx.translate(x, y); ctx.beginPath();
+    for(let i=0;i<10;i++){
+      const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r*0.44 : r;
+      i ? ctx.lineTo(Math.cos(a)*rr, Math.sin(a)*rr) : ctx.moveTo(Math.cos(a)*rr, Math.sin(a)*rr);
+    }
+    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    ctx.lineWidth = 1.2; ctx.strokeStyle = "#06301c"; ctx.stroke(); ctx.restore();
+  }
+  function head(ctx, x0, y0, x1, y1, color){
+    const a = Math.atan2(y1-y0, x1-x0), s = 6;
+    ctx.beginPath(); ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - s*Math.cos(a-0.4), y1 - s*Math.sin(a-0.4));
+    ctx.lineTo(x1 - s*Math.cos(a+0.4), y1 - s*Math.sin(a+0.4));
+    ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+  }
+  function label(ctx, x, y, text, color, align, size){
+    ctx.fillStyle = color; ctx.textAlign = align || "left";
+    ctx.font = `${size || 10.5}px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif`;
+    ctx.fillText(text, x, y); ctx.textAlign = "left";
+  }
+
+  // ---------- DOM ----------
+  const els = { readout:$("#readout"), banner:$("#banner"), checks:$("#checks"), live:$("#live") };
+  let liveAt = 0;
+
+  function render(){
+    drawParam(); drawData(); drawLoss();
+
+    const dist = Math.hypot(S.w-S.wStar, S.b-S.bStar);
+    els.readout.innerHTML = [
+      ["step", `<b id="stepCount">${S.t}</b>`],
+      ["loss", `<b>${isFinite(S.loss) ? fmt(S.loss) : "overflow"}</b>`],
+      ["w", `<b>${isFinite(S.w) ? fmt(S.w) : "overflow"}</b>`],
+      ["b", `<b>${isFinite(S.b) ? fmt(S.b) : "overflow"}</b>`],
+      ["|∇L|", `<b>${isFinite(S.gw) && isFinite(S.gb) ? fmt(Math.hypot(S.gw,S.gb)) : "overflow"}</b>`],
+      ["‖θ−θ*‖", `<b>${isFinite(dist) ? fmt(dist) : "overflow"}</b>`],
+      ["λmax", `<b>${fmt(S.lamMax)}</b>`],
+      ["stable while η &lt;", `<b>${fmt(S.bound)}</b>`],
+      ["η", `<b style="color:${S.lr < S.bound ? C.ok : C.bad}">${fmt(S.lr)}</b>`],
+    ].map(([k,v]) => `<span><span class="k">${k}</span> ${v}</span>`).join("");
+
+    if(S.note){ els.banner.hidden = false; els.banner.textContent = S.note;
+      els.banner.classList.toggle("ok", S.status === "converged"); }
+    else els.banner.hidden = true;
+
+    runChecks();
+    els.checks.innerHTML = '<span class="lbl">self-checks</span>' + S.checks.map(c =>
+      `<span class="chip" data-check data-pass="${c.pass}" data-state="${c.state}">${c.state === "na" ? "–" : c.pass ? "✓" : "✗"} ${c.text}</span>`).join("");
+
+    const now = performance.now();
+    if(now - liveAt > 1000){
+      liveAt = now;
+      els.live.textContent = `step ${S.t}, loss ${fmt(S.loss)}, ${S.status}`;
+    }
+  }
+
+  // ---------- driver ----------
+  let raf = null, last = 0, acc = 0;
+  function loop(ts){
+    if(!last) last = ts;
+    acc += Math.min(0.1, (ts-last)/1000) * STEPS_PER_SEC * S.speed;
+    last = ts;
+    let guard = 0;
+    while(acc >= 1 && S.status === "running" && guard++ < 3000){ acc -= 1; doStep(); }
+    render();
+    raf = S.status === "running" ? requestAnimationFrame(loop) : (last = 0, null);
+    if(S.status !== "running") $("#play").textContent = "▶ Play";
+  }
+  function play(){
+    if(["diverged","converged","maxed"].includes(S.status)) return;
+    if(REDUCED){                                   // no autoplay under reduced motion: run it out at once
+      S.status = "running";
+      while(S.status === "running" && S.t < MAX_STEPS) doStep();
+      if(S.status === "running"){ S.status = "paused"; }
+      render(); return;
+    }
+    S.status = "running"; acc = 0; last = 0;
+    $("#play").textContent = "❚❚ Pause";
+    raf = requestAnimationFrame(loop);
+  }
+  function stop(){
+    if(raf) cancelAnimationFrame(raf);
+    raf = null; last = 0; acc = 0;
+    if(S.status === "running") S.status = "paused";
+    $("#play").textContent = "▶ Play";
+  }
+  const toggle = () => (S.status === "running" ? stop() : play(), render());
+
+  // ---------- controls ----------
+  const lrFromSlider = (t) => Math.pow(10, -5 + 5.5*t);
+  const sliderFromLr = (lr) => (Math.log10(lr) + 5) / 5.5;
+
+  function syncLabels(){
+    $("#lrVal").textContent = fmt(S.lr);
+    $("#momVal").textContent = S.mom.toFixed(2);
+    $("#batchVal").textContent = S.batch >= N ? `${N} (full)` : String(S.batch);
+    $("#noiseVal").textContent = S.noise.toFixed(1);
+    $("#seedEcho").textContent = String(S.seed);
+  }
+
+  function bindRange(id, apply, rebuild){
+    $(id).addEventListener("input", (e) => {
+      apply(parseFloat(e.target.value));
+      syncLabels();
+      stop();
+      resetRun(!rebuild);                      // a parameter change always re-runs from a defined point
+      clearPreset();
+    });
+  }
+  bindRange("#lr",    (v) => S.lr = lrFromSlider(v), false);
+  bindRange("#mom",   (v) => S.mom = v,              false);
+  bindRange("#batch", (v) => S.batch = Math.round(v),false);
+  bindRange("#noise", (v) => S.noise = v,            true);
+  $("#std").addEventListener("change", (e) => { S.std = e.target.checked; stop(); resetRun(false); clearPreset(); });
+  $("#seed").addEventListener("change", (e) => { S.seed = Math.max(0, parseInt(e.target.value||"0", 10)); syncLabels(); stop(); resetRun(false); clearPreset(); });
+  $("#speed").addEventListener("change", (e) => { S.speed = parseFloat(e.target.value); });
+
+  $("#play").addEventListener("click", toggle);
+  $("#step").addEventListener("click", () => { stop(); doStep(); render(); });
+  $("#reset").addEventListener("click", () => { stop(); resetRun(true); });
+
+  // click the loss surface to choose where descent starts
+  cvParam.addEventListener("pointerdown", (e) => {
+    const r = cvParam.getBoundingClientRect();
+    S.w0 = invx(e.clientX - r.left, r.width);
+    S.b0 = invy(e.clientY - r.top,  r.height);
+    stop(); resetRun(true); clearPreset();
+  });
+
+  const PRESETS = {
+    converges: { std:true,  lr:0.1,  mom:0,   batch:N, noise:1.2 },
+    stalls:    { std:true,  lr:1e-4, mom:0,   batch:N, noise:1.2 },
+    diverges:  { std:true,  lr:1.2,  mom:0,   batch:N, noise:1.2 },
+    ravine:    { std:false, lrRel:0.99, mom:0,   batch:N, noise:1.2 },
+    momentum:  { std:false, lrRel:0.99, mom:0.9, batch:N, noise:1.2 },
+  };
+  function clearPreset(){ document.querySelectorAll("[data-preset]").forEach(b => b.setAttribute("aria-pressed","false")); }
+  function loadPreset(name){
+    const p = PRESETS[name]; if(!p) return;
+    stop();
+    S.std = p.std; S.noise = p.noise; S.mom = p.mom; S.batch = p.batch;
+    buildData();                                     // the bound depends on the data, so build first
+    S.lr = "lrRel" in p ? p.lrRel*S.bound : p.lr;
+    $("#std").checked = S.std;
+    $("#noise").value = S.noise; $("#mom").value = S.mom; $("#batch").value = S.batch;
+    $("#lr").value = Math.min(1, Math.max(0, sliderFromLr(S.lr)));
+    syncLabels();
+    resetRun(true);
+    clearPreset();
+    const btn = document.querySelector(`[data-preset="${name}"]`);
+    if(btn) btn.setAttribute("aria-pressed","true");
+    play();
+  }
+  document.querySelectorAll("[data-preset]").forEach(b =>
+    b.addEventListener("click", () => loadPreset(b.dataset.preset)));
+
+  document.addEventListener("keydown", (e) => {
+    if(e.target.matches("input,select,textarea")) return;
+    if(e.key === " "){ e.preventDefault(); toggle(); }
+    else if(e.key === "ArrowRight" || e.key === "."){ e.preventDefault(); stop(); doStep(); render(); }
+    else if(e.key === "r" || e.key === "R"){ stop(); resetRun(true); }
+    else if(/^[1-5]$/.test(e.key)) loadPreset(Object.keys(PRESETS)[+e.key - 1]);
+  });
+
+  new ResizeObserver(() => render()).observe(document.querySelector(".stage"));
+
+  // ---------- boot ----------
+  S.lr = lrFromSlider(parseFloat($("#lr").value));
+  syncLabels();
+  resetRun(false);
+  if(REDUCED) els.live.textContent = "reduced motion: presets run to completion instantly; use Step to advance one update at a time.";
+})();
+</script>

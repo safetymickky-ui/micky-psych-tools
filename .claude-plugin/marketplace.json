@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -162,6 +162,21 @@
         "html",
         "walkthrough",
         "syntax-highlighting"
+      ]
+    },
+    {
+      "name": "ml-concept-lab",
+      "source": "./plugins/ml-concept-lab",
+      "version": "0.1.0",
+      "description": "Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.",
+      "category": "education",
+      "keywords": [
+        "machine-learning",
+        "ai",
+        "computer-science",
+        "interactive-visualization",
+        "explorable",
+        "algorithm"
       ]
     }
   ]

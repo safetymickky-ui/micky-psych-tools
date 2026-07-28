@@ -1,0 +1,17 @@
+{
+  "name": "ml-concept-lab",
+  "version": "0.1.0",
+  "description": "Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file where the real algorithm runs live in the page and the learner drives it with controls, steps, and animation. Intent-lock gated; every number on screen is computed, never hand-drawn; filed to the vault as an asset via vault-keeper.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "machine-learning",
+    "ai",
+    "computer-science",
+    "interactive-visualization",
+    "explorable",
+    "algorithm"
+  ]
+}
