@@ -109,6 +109,55 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-28** — Added **code-explainer 0.1.0** (eleventh plugin; catalog → 1.13.0, branch
+  `claude/code-explain-plugin-vscode-0zn2yj`, PR #26) — explains given code as one
+  self-contained interactive HTML page, source left in a **VS Code shell**, explanation right.
+  Owner asked for "original code on the left, explanation on the right, interactive +
+  visualization, code looking like VS Code"; the four shaping forks were **answered** via one
+  picker: name `code-explainer`, **conditional** intent-lock gate (fast path for a clear
+  snippet, gate only on multi-reading asks — unlike concept-animation's mandatory Step 0),
+  **vault opt-in** (like psych-paper-digest, unlike the other writers), and three mandatory
+  visual modes with the **state trace optional**. Design spine: **the walkthrough is a debug
+  session** — gutter breakpoint dots on annotated range starts, the `▶` stack-frame arrow on
+  the first *executable* line, a floating debug pill (Restart · Prev · Play · Next), and the
+  flow diagram in a **bottom panel with FLOW/STATE tabs** (VS Code's terminal-panel idiom).
+  All three modes share **one `data-range` id space**, so line, card, diagram node and state
+  row are four indexes into the same ranges. **Syntax is pre-tokenised by the skill** into a
+  closed 13-class Dark+ set — no runtime highlighter ships, which is what keeps the file
+  self-contained for any language. Dark Modern palette throughout with one deliberate
+  exception: the classic Dark+ **`#007acc`** status bar, kept for recognisability.
+  **Built with the Workflow tool (ultracode)**: 9 agents — two independent candidates (one
+  optimising visual fidelity, one explanatory power) → three adversarial judge lenses (visual /
+  interaction+a11y / code fidelity, each driving the pages in headless Chromium) → merge with
+  all 24 confirmed defects fixed → derive the template → two final acceptance passes;
+  ~1.83M subagent tokens, 0 errors. Winner A 23.5/30 vs B 20.5. **The adversarial layer earned
+  its keep twice over:** the final passes returned `pass: false` on **both** artifacts with 4
+  blockers, all real — (1) the status-bar step chip washed `#007acc` with white to **3.39:1**,
+  under the spec's own 4.5:1 chrome floor (fixed by darkening the wash, not the base → 6.21:1
+  measured composited); (2) three places claimed the loop condition is unreachable for any
+  `retries >= 0`, true only for **integers** — `retries = 2.5` runs 3 attempts and `"3"` out of
+  env/JSON runs 4, both exiting via the condition with `lastError` set, because
+  `attempt === retries` is strict (confirmed by *executing* the real source: 3→4/E3, 2.5→3/E2,
+  "3"→4/E3, −1→0/undefined); (3) the template told authors the script tolerated a deleted
+  breadcrumb — it did not: an unguarded `crumbs.innerHTML` threw on every render, silently
+  killing the mandatory `aria-live` step announcement, and the hard-coded grid row collapsed
+  the code pane to **22px** (instruction withdrawn, write guarded and moved last, two-row
+  `:has()` fallback added); (4) the template's checklist forbade touching the style block and
+  script while three required per-explainer edits live there. Two spec errors of my own were
+  corrected on the way: I had asserted the `#6a9955` comment green fails AA (it measures
+  **≈4.9:1** and passes — the real sub-AA value is the `#6e7681` line number at ≈3.6:1, which
+  is *why* line numbers are `aria-hidden` decoration), and the breadcrumb rule said to delete
+  the element for a scopeless snippet (now: show the bare filename, never delete — the row is
+  part of the grid). One test-harness false alarm worth remembering: framing looked broken at 3
+  of 12 steps under default motion until the check waited for the **smooth scroll to settle** —
+  0 off-screen lines at both motion settings once it does. Ships one skill + `/explain-code`,
+  two reference specs (`vscode-shell.md`, `explanation-contract.md`), the working
+  `explainer-template.html`, 6 evals, and a worked example (45-line JS `withRetry`, 11 ranges /
+  12 steps — one card legitimately serves two steps, since `sleep` is *bound* at line 7 and its
+  body *runs* at lines 8–18). Rendered code verified **byte-identical** to source (md5
+  `68f33ca0`). New use of the **education** category (second, with concept-animation).
+  `validate.py` clean; ROUTING.md regenerated (11 plugins, 23 components).
+
 - **2026-07-26** — Filed **Novel Antidepressants — FDA-Approved and in the Pipeline — Comprehensive
   Review** to the vault via the comprehensive-review → vault-keeper flow (branch
   `claude/antidepressant-fda-approval-review-xz226r`). First **psychopharmacology drug-class** review.
