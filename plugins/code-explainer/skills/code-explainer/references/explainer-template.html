@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{FILENAME}} — code explainer</title>
+<!--
+  ============================================================================
+  code-explainer — WORKING SKELETON. Copy this file, then work top to bottom.
+  It runs as-is: open it and the two placeholder steps step, link and play.
+
+  1. Substitute every {{PLACEHOLDER}}. These are pure find-and-replace:
+       {{FILENAME}}      bare filename — title bar, tab, breadcrumb, footer
+       {{SOURCE}}        real path, or the words "pasted snippet" (footer)
+       {{LANGUAGE}}      language name — status bar and footer
+       {{LANG_TAG}}      2-3 char glyph for the tab's file icon (JS, TS, PY)
+       {{LINE_COUNT}}    lines rendered; if you truncated, say so in the footer
+       {{RANGE_COUNT}}   number of .card elements
+       {{STEP_COUNT}}    STEPS.length — the contract wants 4-12
+       {{DATE}}          generation date, ISO
+       {{BRANCH}}        git branch for the status bar, or delete that .sitem
+     Every other {{...}} is prose you have to write, not substitute.
+
+  2. REGENERATE the five blocks marked "REGENERATE" below: the code lines, the
+     minimap (or delete it), the flow diagram, the state trace (or delete it),
+     and the explanation cards. Then the STEPS array in the script.
+
+  3. Leave the <style> block and the script below STEPS alone EXCEPT for the three
+     spots marked PER-EXPLAINER — the .jsico language swatch colour, the .flowsvg
+     min-width/height box (must match your diagram's viewBox), and syncMM()'s H
+     constant (must equal LINE_COUNT * 4) — plus any block you are told to delete
+     wholesale (the minimap, the STATE tab). Everything else there is generic.
+
+  Two hard rules that fail silently:
+    * ESCAPE FIRST. In the code pane & -> &amp;, < -> &lt;, > -> &gt; BEFORE
+      wrapping anything in token spans. Miss it on a generic, a JSX tag, an
+      HTML snippet or a << shift and the browser eats the code. Check the
+      RENDERED page, not the source you wrote.
+    * ONE ID SPACE. A data-range value must match across the gutter lines, its
+      card, its diagram node(s) and its state row. A mismatch drops the link
+      without an error.
+
+  The full rules live in references/vscode-shell.md (palette, closed token set,
+  chrome) and references/explanation-contract.md (the three mandatory modes,
+  fidelity, escaping, a11y, verification).
+  ============================================================================
+-->
+<style>
+/* ====================================================================
+   FIXED — copy this whole stylesheet verbatim into every explainer.
+   Nothing here is per-explainer except the two spots marked PER-EXPLAINER
+   below (the .jsico language swatch and the .flowsvg box). The palette is
+   VS Code Dark Modern, with the one deliberate Dark+ exception the shell
+   reference calls for: the status bar stays #007acc. Do not improvise a
+   value, do not add a light theme, do not add prefers-color-scheme.
+   ==================================================================== */
+:root{
+  --vsc-editor-bg:#1f1f1f; --vsc-editor-fg:#cccccc;
+  --vsc-titlebar-bg:#181818; --vsc-activitybar-bg:#181818;
+  --vsc-activitybar-fg:#868686; --vsc-activitybar-fg-active:#d7d7d7;
+  --vsc-sidebar-bg:#181818; --vsc-tabbar-bg:#181818;
+  --vsc-tab-active-bg:#1f1f1f; --vsc-tab-inactive-bg:#181818; --vsc-tab-inactive-fg:#9d9d9d;
+  --vsc-breadcrumb-fg:#a9a9a9; --vsc-border:#2b2b2b;
+  --vsc-linenr:#6e7681; --vsc-linenr-active:#cccccc;
+  --vsc-line-highlight:#282828; --vsc-selection:#264f78;
+  --vsc-statusbar-bg:#007acc; --vsc-statusbar-fg:#ffffff;
+  --vsc-accent:#0078d4; --vsc-focus:#0078d4; --vsc-scrollbar:#79797966;
+  --vsc-stackframe:rgba(255,255,0,0.18); --vsc-breakpoint:#e51400;
+  --vsc-arrow:#ffcc00; --vsc-warn:#cca700;
+  --font-code:ui-monospace,"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;
+  --font-ui:system-ui,"Segoe UI",-apple-system,"Helvetica Neue",sans-serif;
+  --lh:20px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#101010;color-scheme:dark}
+body{margin:0;background:var(--vsc-editor-bg);color:var(--vsc-editor-fg);
+  font-family:var(--font-ui);font-size:13px;-webkit-font-smoothing:antialiased}
+h1,h2{margin:0;font-weight:600}
+code{font-family:var(--font-code);font-size:.92em}
+:focus-visible{outline:2px solid var(--vsc-focus);outline-offset:1px;border-radius:2px}
+::selection{background:var(--vsc-selection)}
+
+/* CLOSED SET — these thirteen classes are the entire syntax vocabulary.
+   Map every language onto them; never invent a fourteenth, never recolour
+   one to make a point the code does not make. Unclassified text inherits
+   --vsc-editor-fg. */
+/* syntax tokens ---------------------------------------------------- */
+.t-com{color:#6a9955}.t-str{color:#ce9178}.t-num{color:#b5cea8}.t-key{color:#c586c0}
+.t-dec{color:#569cd6}.t-fn{color:#dcdcaa}.t-typ{color:#4ec9b0}.t-var{color:#9cdcfe}
+.t-con{color:#569cd6}.t-op{color:#d4d4d4}.t-rgx{color:#d16969}.t-esc{color:#d7ba7d}
+.t-inv{color:#f44747}
+
+/* scrollbars ------------------------------------------------------- */
+.scroll{scrollbar-width:thin;scrollbar-color:var(--vsc-scrollbar) transparent}
+.scroll::-webkit-scrollbar{width:14px;height:14px}
+.scroll::-webkit-scrollbar-track{background:transparent}
+.scroll::-webkit-scrollbar-thumb{background:var(--vsc-scrollbar);border:4px solid transparent;
+  background-clip:padding-box;border-radius:8px}
+.scroll::-webkit-scrollbar-thumb:hover{background:#a6a6a680;background-clip:padding-box}
+.scroll::-webkit-scrollbar-corner{background:transparent}
+
+/* ================= shell ==========================================
+   Base (no JS) = a single readable column in normal document flow:
+   code first, explanation second, panel last. `.is-interactive`
+   upgrades it to the fixed 100svh VS Code grid.                      */
+.app{display:block}
+html.is-interactive,html.is-interactive body{height:100%;overflow:hidden}
+html.is-interactive .app{height:100svh;min-height:0;
+  display:grid;grid-template-rows:35px minmax(0,1fr) 22px}
+
+/* title bar */
+.titlebar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  height:35px;flex:0 0 35px;background:var(--vsc-titlebar-bg);
+  border-bottom:1px solid var(--vsc-border);padding:0 10px;font-size:12px}
+.dots{display:flex;gap:8px;align-items:center}
+.dots i{width:12px;height:12px;border-radius:50%;display:block}
+.dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}
+.dots i:nth-child(3){background:#28c840}
+.titlebar h1{color:#cccccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:12px;font-weight:400;text-align:center}
+.titlebar h1 b{font-weight:600}
+.titlebar h1 span{color:#9d9d9d}
+.tbicons{display:flex;justify-content:flex-end;gap:12px;color:#9d9d9d}
+.tbicons svg{display:block}
+
+/* body row */
+.main{display:flex;flex-direction:column}
+.editorcol{order:1}.rail{order:2}.panel{order:3}
+html:not(.is-interactive) .activitybar{display:none}
+html:not(.is-interactive) .minimap{display:none}
+html:not(.is-interactive) .rail{border-left:0;border-top:1px solid var(--vsc-border)}
+html.is-interactive .main{display:grid;min-height:0;
+  grid-template-columns:48px minmax(0,1fr) 384px;
+  grid-template-rows:minmax(0,1fr) 280px;
+  grid-template-areas:"act ed rail" "act pan rail"}
+html.is-interactive .activitybar{grid-area:act}
+html.is-interactive .editorcol{grid-area:ed}
+html.is-interactive .panel{grid-area:pan}
+html.is-interactive .rail{grid-area:rail}
+
+/* activity bar */
+.activitybar{width:48px;flex:0 0 48px;background:var(--vsc-activitybar-bg);
+  border-right:1px solid var(--vsc-border);display:flex;flex-direction:column;align-items:center;
+  padding-top:4px;gap:2px;color:var(--vsc-activitybar-fg)}
+.activitybar .ai{width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+  border-left:2px solid transparent}
+.activitybar .ai.on{color:var(--vsc-activitybar-fg-active);border-left-color:var(--vsc-accent)}
+.activitybar .sp{flex:1}
+
+/* editor column */
+.editorcol{display:flex;flex-direction:column;min-width:0}
+html.is-interactive .editorcol{display:grid;min-height:0;
+  grid-template-rows:35px 22px minmax(0,1fr)}
+/* fallback: the 22px row above is the breadcrumb's. If #crumbs is ever absent the
+   editor would land in it and the code pane would collapse to 22px, so drop to two
+   rows. Keeping the breadcrumb is still the supported path — see its comment. */
+html.is-interactive .editorcol:not(:has(.breadcrumb)){grid-template-rows:35px minmax(0,1fr)}
+
+.tabbar{display:flex;align-items:stretch;height:35px;flex:0 0 35px;
+  background:var(--vsc-tabbar-bg);border-bottom:1px solid var(--vsc-border)}
+.tab{display:flex;align-items:center;gap:8px;padding:0 12px;font-size:13px;
+  background:var(--vsc-tab-inactive-bg);color:var(--vsc-tab-inactive-fg);
+  border-right:1px solid var(--vsc-border);position:relative;white-space:nowrap}
+.tab.active{background:var(--vsc-tab-active-bg);color:#ffffff}
+.tab.active::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--vsc-accent)}
+/* PER-EXPLAINER (colour only): this swatch is JavaScript yellow. For another
+   language change the background here — TS #3178c6, Python #3572a5, Go #00add8,
+   Rust #dea584, shell #4d5a5e — and keep the 2-3 character glyph. */
+.tab .jsico{width:16px;height:16px;border-radius:2px;background:#f0db4f;color:#1f1f1f;
+  font:700 9px/16px var(--font-ui);text-align:center;letter-spacing:-.3px}
+.tab .dirty{width:8px;height:8px;border-radius:50%;background:#cccccc;opacity:.85}
+.tabfill{flex:1;background:var(--vsc-tabbar-bg)}
+
+.breadcrumb{display:flex;align-items:center;gap:4px;height:22px;flex:0 0 22px;padding:0 14px;
+  background:var(--vsc-editor-bg);color:var(--vsc-breadcrumb-fg);font-size:12px;
+  border-bottom:1px solid transparent;overflow:hidden;white-space:nowrap}
+.breadcrumb .sep{opacity:.6}
+.breadcrumb .cur{color:#e7e7e7}
+
+/* editor surface */
+.editor{position:relative;display:flex;min-height:0;background:var(--vsc-editor-bg)}
+.codewrap{flex:1;min-width:0;overflow:auto;position:relative}
+html:not(.is-interactive) .codewrap{overflow:visible}
+.code{font-family:var(--font-code);font-size:13px;line-height:var(--lh);
+  padding:40px 0 24px;min-width:max-content}
+html:not(.is-interactive) .code{padding-top:10px}
+.ln{display:grid;grid-template-columns:26px 32px 1fr;align-items:center;height:var(--lh);
+  position:relative}
+.ln .mk{position:relative;height:var(--lh)}
+.ln .lnum{text-align:right;padding-right:12px;color:var(--vsc-linenr);
+  user-select:none;-webkit-user-select:none;font-variant-numeric:tabular-nums}
+.ln .lcode{white-space:pre;padding-right:24px}
+/* every annotated range start keeps its breakpoint dot, always; the execution
+   arrow is offset beside it so the two never fight for the same pixels. */
+.ln .bp{position:absolute;left:3px;top:50%;transform:translateY(-50%);
+  width:9px;height:9px;border-radius:50%;background:var(--vsc-breakpoint)}
+.ln .arw{position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--vsc-arrow);font-size:11px;line-height:1;display:none}
+html.is-interactive .ln.is-exec .arw{display:block}
+html.is-interactive .ln.is-exec .lnum{color:var(--vsc-linenr-active)}
+html.is-interactive .ln.is-hover{background:var(--vsc-line-highlight)}
+html.is-interactive .ln.is-sel{background:rgba(38,79,120,.45)}
+html.is-interactive .ln.is-step{background:var(--vsc-stackframe)}
+html.is-interactive .ln.is-step.is-first{box-shadow:inset 0 1px 0 rgba(255,255,0,.35)}
+html.is-interactive .ln.is-step.is-last{box-shadow:inset 0 -1px 0 rgba(255,255,0,.35)}
+html.is-interactive .codewrap{cursor:default}
+
+/* OPTIONAL — a minimap belongs only to files over ~40 lines. Delete the
+   .minimap <div> from the markup for anything shorter (syncMM() is
+   null-guarded, so nothing else needs touching). One <rect> per source
+   line, 4px pitch: y = (line - 1) * 4, width proportional to the line's
+   length, #4a6b45 for comment lines and #59636e for code. */
+/* minimap — fixed 4px-per-line pitch, top-anchored: 45 lines = 180px, and the
+   rest of the column stays empty exactly as VS Code leaves it for a short file. */
+.minimap{width:64px;flex:0 0 64px;background:var(--vsc-editor-bg);
+  border-left:1px solid rgba(255,255,255,.04);position:relative;overflow:hidden;
+  padding-top:6px}
+.minimap svg{display:block}
+
+/* debug toolbar */
+.dbgbar{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:20;
+  display:flex;align-items:center;gap:1px;background:#181818;border:1px solid var(--vsc-border);
+  border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.55);padding:3px 5px}
+html:not(.is-interactive) .dbgbar{display:none}
+.dbgbar .grip{width:10px;height:18px;margin-right:3px;color:#6e7681;
+  background:radial-gradient(circle,#6e7681 1px,transparent 1.2px) 0 0/5px 6px;opacity:.7}
+.dbgbar button{appearance:none;background:transparent;border:0;border-radius:4px;
+  width:30px;height:26px;display:flex;align-items:center;justify-content:center;
+  color:#cccccc;cursor:pointer;padding:0}
+.dbgbar button:hover{background:rgba(255,255,255,.09)}
+/* boundary buttons stay focusable and keep AA contrast; the dimmed glyph is the
+   second, non-colour signal alongside aria-disabled. */
+.dbgbar button[aria-disabled="true"]{color:#a6a6a6;cursor:default}
+.dbgbar button[aria-disabled="true"]:hover{background:transparent}
+.dbgbar button[aria-disabled="true"] svg{opacity:.85}
+.dbgbar .sep{width:1px;height:16px;background:var(--vsc-border);margin:0 3px}
+.dbgbar .stepchip{font-size:11px;color:#cccccc;padding:0 8px 0 5px;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+
+/* ================= bottom panel =================================== */
+.panel{display:flex;flex-direction:column;min-height:0;background:var(--vsc-sidebar-bg);
+  border-top:1px solid var(--vsc-border)}
+.paneltabs{display:flex;align-items:center;gap:2px;height:30px;flex:0 0 30px;padding:0 12px;
+  border-bottom:1px solid var(--vsc-border)}
+html:not(.is-interactive) .paneltabs{display:none}
+.paneltabs button{appearance:none;background:transparent;border:0;border-bottom:1px solid transparent;
+  color:#9d9d9d;font:600 11px/1 var(--font-ui);letter-spacing:.6px;text-transform:uppercase;
+  padding:8px 10px 7px;cursor:pointer}
+.paneltabs button[aria-selected="true"]{color:#e7e7e7;border-bottom-color:#e7e7e7}
+.paneltabs button:hover{color:#e7e7e7}
+.paneltabs .phint{margin-left:auto;color:#a9a9a9;font-size:11px}
+html:not(.is-interactive) .paneltabs .phint{display:none}
+.panelbody{flex:1;min-height:0;overflow:auto;padding:6px 12px 8px;position:relative}
+html.is-interactive .panelview[hidden]{display:none}
+.panelview h2{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#9d9d9d;
+  margin:10px 0 6px}
+html.is-interactive .panelview h2{position:absolute;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap}
+/* The diagram is height-driven, never width-driven: it can never grow past the
+   panel body, and it never shrinks below the size that keeps its labels ≥ 11px —
+   below that the panel scrolls horizontally instead. */
+/* PER-EXPLAINER: min-width is the width below which the labels would drop under
+   11px, height is the diagram's box. Match the viewBox to this box (the skeleton
+   uses 906x198, which fills the panel at 1366px); below min-width the panel
+   scrolls horizontally instead of shrinking the labels. */
+.flowsvg{display:block;width:100%;min-width:906px;height:198px;margin:0 auto}
+.flowlegend{font-size:11.5px;line-height:1.5;color:#a9a9a9;margin:3px 0 0}
+.flowlegend b{color:#d4d4d4;font-weight:600}
+.flowlegend .sw{display:inline-block;width:16px;height:0;vertical-align:3px;margin-right:4px}
+.flowlegend .sw.back{border-top:2px solid #c586c0}
+.flowlegend .sw.dash{border-top:2px dashed #6e6e6e}
+
+/* OPTIONAL BLOCK — belongs to the STATE tab. For config, schema, markup or
+   straight-line glue, delete the STATE tab button, its <div class="panelview">
+   and this block wholesale rather than shipping an empty table. */
+/* state table */
+.statecap{font-size:12px;line-height:1.55;color:#c5c5c5;margin:0 0 8px;max-width:110ch}
+.statecap code{color:#dcdcaa}
+table.state{border-collapse:collapse;font-size:12px;width:100%}
+table.state th,table.state td{border:1px solid var(--vsc-border);padding:3px 8px;text-align:left;
+  white-space:nowrap;vertical-align:top;color:#c5c5c5;font-weight:400}
+table.state thead th{background:#202020;color:#e7e7e7;font-weight:600;position:sticky;top:0;z-index:2}
+table.state .c-num{font-family:var(--font-code)}
+table.state .c-note{white-space:normal;font-family:var(--font-ui)}
+table.state td b,table.state th b{color:#e8dca6;font-weight:600}
+table.state .srow{color:var(--vsc-arrow);visibility:hidden;margin-right:3px}
+table.state tbody th{color:#9d9d9d}
+html.is-interactive table.state tr.future{opacity:.3}
+html.is-interactive table.state tr.now th,html.is-interactive table.state tr.now td{
+  background:var(--vsc-stackframe);color:#f0f0f0}
+html.is-interactive table.state tr.now .srow{visibility:visible}
+html.is-interactive table.state tbody tr{cursor:pointer}
+.rowjump{appearance:none;background:none;border:0;padding:0;margin:0;color:inherit;
+  font:inherit;cursor:pointer;text-align:left}
+.rowjump:hover{color:#ffffff;text-decoration:underline}
+
+/* ================= explanation rail =============================== */
+.rail{background:var(--vsc-sidebar-bg);border-left:1px solid var(--vsc-border);
+  display:flex;flex-direction:column;min-height:0;min-width:0}
+.railhead{flex:0 0 auto;padding:7px 13px 8px;border-bottom:1px solid var(--vsc-border)}
+.rh-top{display:flex;align-items:baseline;gap:8px}
+.railhead h2{font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:#cccccc}
+.rh-meta{margin-left:auto;font-size:11px;color:#a9a9a9}
+/* one line of live step narration — the card carries the prose, this only says
+   where the walkthrough is standing. */
+.rh-step{margin:5px 0 0;font-size:12.5px;line-height:1.4;color:#d4d4d4}
+html:not(.is-interactive) .rh-step{display:none}
+.rh-step .rh-idx{display:inline-block;font:600 10.5px/1.6 var(--font-code);color:#ffffff;
+  background:var(--vsc-accent);border-radius:3px;padding:0 5px;margin-right:5px;
+  font-variant-numeric:tabular-nums;vertical-align:1px}
+.rh-step .rh-rng{color:#9cdcfe;font-family:var(--font-code);font-size:11.5px;margin-right:5px}
+.rh-step code{color:#dcdcaa}
+.raillist{flex:1;min-height:0;overflow:auto;padding:9px 11px 10px;display:flex;
+  flex-direction:column;gap:8px;position:relative}
+html:not(.is-interactive) .raillist{overflow:visible}
+.card{display:block;width:100%;text-align:left;font-family:var(--font-ui);
+  background:var(--vsc-editor-bg);border:1px solid var(--vsc-border);border-left:3px solid transparent;
+  border-radius:4px;padding:9px 12px 11px;cursor:pointer;color:inherit}
+html:not(.is-interactive) .card{cursor:default}
+.card:hover,.card.is-hover{background:#232323;border-left-color:#5a5a5a}
+.card.is-sel{border-left-color:var(--vsc-accent);background:#232323}
+/* stack-frame yellow is reserved for the gutter arrow and this 3px edge */
+.card.is-step{border-color:#3d4a57;border-left-color:var(--vsc-arrow);background:#242424}
+.card .khead{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.card .knum{font:600 10px/1.6 var(--font-code);color:#9d9d9d;background:transparent;
+  border:1px solid #3a3a3a;border-radius:3px;padding:0 4px;flex:0 0 auto}
+.card.is-step .knum{background:var(--vsc-accent);border-color:var(--vsc-accent);color:#ffffff}
+.card .krange{font:400 11px/1.6 var(--font-code);color:#9cdcfe;flex:0 0 auto}
+.card .kchip{margin-left:auto;font:600 10px/1.6 var(--font-ui);color:#4daafc;display:none}
+.card.is-step .kchip{display:block}
+.card .ctitle{display:block;font-size:15.5px;font-weight:600;color:#e7e7e7;line-height:1.35;
+  margin-bottom:5px}
+.card .ctitle code{color:#dcdcaa;font-size:14.5px}
+.card .claim{display:block;font-size:14.5px;line-height:1.5;color:#d4d4d4}
+.card .claim code{color:#9cdcfe;font-size:13.5px}
+.card .b{display:block;font-size:14px;line-height:1.55;color:#b8b8b8;margin-top:7px}
+.card .b code{color:#9cdcfe;font-size:13px}
+.card .b.warn,.card .b.note{padding:7px 9px 7px 10px;border-radius:3px;border-left:3px solid}
+.card .b.warn{background:rgba(204,167,0,.10);border-left-color:var(--vsc-warn);color:#e8dca6}
+.card .b.warn code{color:#f0dfa6}
+.card .b.note{background:rgba(0,120,212,.12);border-left-color:var(--vsc-accent);color:#c9dcf0}
+.card .b.note code{color:#a9d4f5}
+.card .b .lbl{display:inline-block;font:700 10px/1.7 var(--font-ui);letter-spacing:.7px;
+  margin-right:6px;vertical-align:1px}
+.card .b.warn .lbl{color:#ffd866}
+.card .b.note .lbl{color:#7fc0f5}
+.railnote{font-size:12px;line-height:1.55;color:#a9a9a9;margin:2px 2px 0}
+.railnote b{color:#cccccc;font-weight:600}
+
+/* ================= status bar ===================================== */
+.statusbar{display:flex;align-items:center;height:22px;flex:0 0 22px;
+  background:var(--vsc-statusbar-bg);color:var(--vsc-statusbar-fg);font-size:12px;padding:0 8px;gap:0}
+.statusbar .sitem{display:flex;align-items:center;gap:5px;padding:0 8px;height:22px;white-space:nowrap}
+.statusbar .spacer{flex:1}
+.statusbar .stepnow{background:rgba(255,255,255,.18);font-variant-numeric:tabular-nums;font-weight:600}
+.statusbar svg{display:block}
+
+/* live region + pinned key legend */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.footrail{display:none;font-size:10.5px;line-height:1.4;color:#b0b0b0;white-space:nowrap;
+  border-top:1px solid var(--vsc-border);padding:4px 10px 5px;background:#181818;flex:0 0 auto;
+  overflow-x:auto;scrollbar-width:none}
+.footrail::-webkit-scrollbar{height:0}
+html.is-interactive .footrail{display:block}
+.footrail kbd{font:600 10px/1.4 var(--font-code);background:#2b2b2b;border:1px solid #3a3a3a;
+  border-radius:3px;padding:0 2px;color:#e7e7e7}
+
+.stepnojs{display:none !important}
+html:not(.is-interactive) .stepnojs{display:flex !important}
+html:not(.is-interactive) #sb-step,html:not(.is-interactive) #sb-ln{display:none}
+
+/* nojs banner */
+.nojs{background:#202020;border-bottom:1px solid var(--vsc-border);color:#c5c5c5;
+  font-size:12px;padding:7px 14px;margin:0}
+html.is-interactive .nojs{display:none}
+
+/* flow diagram */
+.flowsvg .nd rect,.flowsvg .nd polygon{fill:#252526;stroke:#3f3f46;stroke-width:1.2}
+.flowsvg .nd text{fill:#d4d4d4;font-family:var(--font-ui);font-size:15px}
+.flowsvg .nd .sub{fill:#9cdcfe;font-family:var(--font-ui);font-size:14px}
+.flowsvg .nd.term rect{fill:#1c2b1c;stroke:#4a6b4a}
+.flowsvg .nd.bad rect{fill:#2e1f1f;stroke:#7a4a4a}
+.flowsvg .nd.def rect{fill:#1f1f1f;stroke:#4f4f57;stroke-dasharray:5 3}
+.flowsvg .edge{fill:none;stroke:#8a8a8a;stroke-width:1.5}
+.flowsvg .edge.back{stroke:#c586c0;stroke-width:2}
+.flowsvg .edge.dash{stroke-dasharray:5 4;stroke:#6e6e6e}
+.flowsvg .elabel{fill:#a9a9a9;font-family:var(--font-ui);font-size:14px}
+.flowsvg .elabel.back{fill:#c586c0}
+html.is-interactive .flowsvg .nd{cursor:pointer}
+html.is-interactive .flowsvg .nd:hover rect,html.is-interactive .flowsvg .nd:hover polygon,
+html.is-interactive .flowsvg .nd.is-hover rect,html.is-interactive .flowsvg .nd.is-hover polygon{
+  stroke:#8a8a8a;fill:#2d2d30}
+html.is-interactive .flowsvg .nd.is-sel rect,html.is-interactive .flowsvg .nd.is-sel polygon{
+  stroke:var(--vsc-accent);stroke-width:2}
+html.is-interactive .flowsvg .nd.is-step rect,html.is-interactive .flowsvg .nd.is-step polygon{
+  stroke:var(--vsc-arrow);stroke-width:2.4;fill:#3a3520}
+html.is-interactive .flowsvg .nd.is-step text{fill:#ffffff}
+/* declared last, and at the same specificity as the state rules above, so the
+   focus ring always wins */
+html.is-interactive .flowsvg .nd:focus-visible rect,
+html.is-interactive .flowsvg .nd:focus-visible polygon{stroke:var(--vsc-focus);
+  stroke-width:3;filter:drop-shadow(0 0 4px #0078d4)}
+html.is-interactive .flowsvg .nd:focus-visible text{fill:#ffffff}
+
+/* no-JS extras */
+.steplist{margin:0;padding:10px 14px 12px 32px;font-size:13px;line-height:1.6;color:#bdbdbd;
+  border-bottom:1px solid var(--vsc-border)}
+html.is-interactive .steplist{display:none}
+.steplist li{margin-bottom:5px}
+.steplist b{color:#e7e7e7;font-weight:600}
+.steplist code{color:#9cdcfe}
+
+/* ================= responsive ===================================== */
+@media (max-width:900px){
+  html.is-interactive,html.is-interactive body{height:auto;overflow:auto}
+  html.is-interactive .app{height:auto;display:block;padding-bottom:22px}
+  html.is-interactive .main{display:flex;flex-direction:column}
+  html.is-interactive .editorcol{display:flex;flex-direction:column}
+  .activitybar{display:none}
+  html.is-interactive .codewrap{max-height:56vh}
+  html.is-interactive .raillist{max-height:none;overflow:visible}
+  html.is-interactive .panel{min-height:300px}
+  .rail{border-left:0;border-top:1px solid var(--vsc-border)}
+  /* sticky cannot work on the last child of its containing block, so the single
+     most recognisable pixel in VS Code is taken out of flow instead */
+  html.is-interactive .statusbar{position:fixed;bottom:0;left:0;right:0;z-index:30}
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .card{transition:border-color .12s ease,background .12s ease}
+  html.is-interactive .ln{transition:background .1s linear}
+  html.is-interactive .flowsvg .nd rect,html.is-interactive .flowsvg .nd polygon{
+    transition:fill .12s linear,stroke .12s linear}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- title bar — filename + plugin name. The three dots are pure decoration. -->
+  <header class="titlebar">
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <h1><b>{{FILENAME}}</b> <span>&mdash; code-explainer</span></h1>
+    <div class="tbicons" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M5.8 2.5v11"/></svg>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M1.5 10h13"/></svg>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M10.2 2.5v11"/></svg>
+    </div>
+  </header>
+
+  <!-- shown only when JS is off; keep the counts in step with the real content, and
+       drop "and the state trace" if you deleted the STATE tab. -->
+  <p class="nojs">JavaScript is off, so the walkthrough, the linked highlighting and the panel
+  tabs are not available. Everything below still reads in order: the full highlighted source,
+  all {{RANGE_COUNT}} explanation cards, the {{STEP_COUNT}}-step execution-order list, the
+  {{DIAGRAM_KIND}} diagram and the state trace.</p>
+
+  <div class="main">
+
+    <!-- activity bar — decoration only: aria-hidden, no buttons, no hover affordance.
+         Never make it look clickable, and never add an icon that does nothing more. -->
+    <nav class="activitybar" aria-hidden="true"><div class="ai on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6l2 2h8v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg></div><div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></div><div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="6" r="2.4"/><circle cx="7" cy="18" r="2.4"/><circle cx="17" cy="10" r="2.4"/><path d="M7 8.4v7.2M9.2 7.2 14.8 9"/></svg></div><div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5 18.5 12 6 19.5z"/></svg></div><div class="ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/><path d="M17 3.5v7M13.5 7h7"/></svg></div><div class="sp"></div></nav>
+
+    <div class="editorcol">
+
+      <!-- one tab per file actually explained. More than one only if they really switch. -->
+      <div class="tabbar" role="presentation">
+        <div class="tab active"><span class="jsico" aria-hidden="true">{{LANG_TAG}}</span>
+          <span>{{FILENAME}}</span><span class="dirty" aria-hidden="true"></span></div>
+        <div class="tabfill"></div>
+      </div>
+
+      <!-- breadcrumb: the real path through the code, rewritten each step from
+           STEPS[].c. KEEP this div. For a snippet with no enclosing scope, emit
+           just the filename in STEPS[].c (["snippet.py"]) rather than faking a
+           path — do not delete the element. The script and the grid both tolerate
+           it missing, but an empty breadcrumb row is the intended look, and the
+           only tested one. -->
+      <div class="breadcrumb" id="crumbs" aria-hidden="true">
+        <span>{{FILENAME}}</span><span class="sep">&rsaquo;</span><span class="cur">(module)</span>
+      </div>
+
+      <main class="editor" aria-label="Source code, {{FILENAME}}">
+        <h2 class="sr">Source &mdash; {{FILENAME}}, {{LINE_COUNT}} lines of {{LANGUAGE}}</h2>
+        <!-- debug toolbar — real buttons, real labels. Keep all four and the ids. -->
+        <div class="dbgbar" role="toolbar" aria-label="Walkthrough playback">
+          <span class="grip" aria-hidden="true"></span>
+          <button type="button" id="b-restart" title="Restart &middot; R" aria-label="Restart the walkthrough"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.6-3.7"/><path d="M13.2 2.2v2.9h-2.9"/></svg></button>
+          <button type="button" id="b-prev" title="Previous step &middot; &larr; or P" aria-label="Previous step"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.5 3.2v9.6L6.4 8z"/><rect x="3.4" y="3.2" width="1.7" height="9.6" rx=".4"/></svg></button>
+          <button type="button" id="b-play" title="Play &middot; Space" aria-label="Play the walkthrough" aria-pressed="false"><svg id="i-play" width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.6 13 8l-9 5.4z"/></svg><svg id="i-pause" style="display:none" width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3.6" y="3" width="3.2" height="10" rx=".5"/><rect x="9.2" y="3" width="3.2" height="10" rx=".5"/></svg></button>
+          <button type="button" id="b-next" title="Next step &middot; &rarr; or N" aria-label="Next step"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 3.2v9.6L9.6 8z"/><rect x="10.9" y="3.2" width="1.7" height="9.6" rx=".4"/></svg></button>
+          <span class="sep" aria-hidden="true"></span>
+          <span class="stepchip" id="stepchip" aria-hidden="true">Step 1 / {{STEP_COUNT}}</span>
+        </div>
+        <!-- REGENERATE: one .ln div per source line, in SOURCE order, reproduced
+             byte for byte — whitespace, blank lines and comments included.
+               data-line  the 1-based source line number (drives the yellow band)
+               data-range the annotated range this line belongs to
+               .bp        breakpoint dot — ONLY on a range's first line
+               .arw       execution arrow — on EVERY line, CSS reveals the current one
+             A blank source line is <span class="lcode"></span>, kept, not dropped.
+             Leading indentation lives as literal spaces inside .lcode (white-space:pre).
+             Tokens come from the closed set in vscode-shell.md; text with no class
+             inherits the editor foreground. -->
+        <div class="codewrap scroll" id="codewrap">
+          <div class="code"><div class="ln" data-line="1" data-range="1-1"><span class="mk" aria-hidden="true"><span class="bp" aria-hidden="true"></span><span class="arw">&#9654;</span></span><span class="lnum" aria-hidden="true">1</span><span class="lcode"><span class="t-com">// {{FILENAME}} &mdash; REPLACE these three lines with the real source</span></span></div>
+<div class="ln" data-line="2" data-range="2-3"><span class="mk" aria-hidden="true"><span class="bp" aria-hidden="true"></span><span class="arw">&#9654;</span></span><span class="lnum" aria-hidden="true">2</span><span class="lcode"><span class="t-dec">const</span> <span class="t-var">kept</span> <span class="t-op">=</span> <span class="t-var">items</span><span class="t-op">.</span><span class="t-fn">filter</span><span class="t-op">((</span><span class="t-var">it</span><span class="t-op">)</span> <span class="t-op">=&gt;</span> <span class="t-var">it</span><span class="t-op">.</span><span class="t-var">size</span> <span class="t-op">&lt;</span> <span class="t-var">cap</span> <span class="t-op">&amp;&amp;</span> <span class="t-op">!</span><span class="t-var">it</span><span class="t-op">.</span><span class="t-var">stale</span><span class="t-op">);</span></span></div>
+<div class="ln" data-line="3" data-range="2-3"><span class="mk" aria-hidden="true"><span class="arw">&#9654;</span></span><span class="lnum" aria-hidden="true">3</span><span class="lcode"><span class="t-fn">emit</span><span class="t-op">(</span><span class="t-var">kept</span><span class="t-op">);</span></span></div></div>
+        </div>
+        <!-- REGENERATE, or DELETE. A minimap belongs only to files over ~40 lines;
+             for anything shorter delete this whole div (syncMM() is null-guarded).
+             Keep the svg height and syncMM()'s H equal to LINE_COUNT * 4. One rect
+             per line: y = (line - 1) * 4, width proportional to the line's length,
+             #4a6b45 for comments, #59636e for code. #mm-view is the viewport box and
+             #mm-step the current step's band — the script positions both. -->
+        <div class="minimap" aria-hidden="true"><svg viewBox="0 0 64 12" width="64" height="12" preserveAspectRatio="xMinYMin meet"><rect id="mm-view" x="0" y="0" width="64" height="12" fill="rgba(255,255,255,.05)"/><rect x="3.0" y="1" width="46.5" height="2" fill="#4a6b45"/><rect x="3.0" y="5" width="44.2" height="2" fill="#59636e"/><rect x="3.0" y="9" width="12.0" height="2" fill="#59636e"/><rect id="mm-step" x="0" y="0" width="64" height="4" fill="rgba(255,255,0,.28)"/></svg></div>
+      </main>
+
+    </div><!-- /editorcol -->
+
+      <section class="panel" aria-label="Flow diagram and state trace">
+        <!-- real tabs: buttons, role=tab, arrow-key operable. Delete the State button
+             together with its panelview if there is no trace. -->
+        <div class="paneltabs" role="tablist" aria-label="Panel">
+          <button type="button" role="tab" id="tab-flow" aria-controls="pv-flow" aria-selected="true">Flow</button>
+          <button type="button" role="tab" id="tab-state" aria-controls="pv-state" aria-selected="false" tabindex="-1">State</button>
+          <span class="phint">click a node or a step row to jump the walkthrough</span>
+        </div>
+        <div class="panelbody scroll" id="panelbody">
+          <div class="panelview" id="pv-flow" role="tabpanel" aria-labelledby="tab-flow">
+            <h2>Flow &mdash; {{DIAGRAM_KIND}} of {{SUBJECT}}</h2>
+            <!-- REGENERATE. Pick the shape the code's own structure asks for (control
+                 flow / call graph / data flow / state machine / containment tree — the
+                 table in explanation-contract.md), hand-author the SVG, and cross-link
+                 it: every <g class="nd"> carries a data-range from the same id space,
+                 and the node named by STEPS[i].nd lights as the walkthrough advances.
+                 An uncross-linked diagram is decoration.
+                   .nd            plain step        .nd.def   dashed, definition/load
+                   .nd.term       green terminal    .nd.bad   red terminal (throw)
+                   rect or polygon — a diamond polygon for a decision
+                   .edge / .edge.dash / .edge.back (magenta, curved back-edge)
+                 Node ids are referenced by STEPS[].nd — keep them unique and stable.
+                 Several nodes may share one data-range (add data-alt="1" on the extra
+                 ones); all of them light on selection, only STEPS[].nd on the step.
+                 Labels are real <text>, >= 11px, AA contrast. Give the svg a <title>,
+                 role="img" and an aria-label that summarises the flow in one sentence,
+                 and a <title> on every node. Match the viewBox to the .flowsvg box. -->
+<svg class="flowsvg" viewBox="0 0 906 198" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{FLOW_ARIA_LABEL — one sentence describing the whole flow, in order, for someone who cannot see it}}"><title>{{SUBJECT}} &mdash; {{DIAGRAM_KIND}}</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8a8a8a"/></marker><marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#c586c0"/></marker><marker id="ard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6e6e6e"/></marker></defs>
+<path class="edge dash" d="M232 100 H343" marker-end="url(#ard)"></path><text class="elabel" x="287" y="92" text-anchor="middle">{{EDGE_1}}</text><path class="edge" d="M557 100 H668" marker-end="url(#ar)"></path><text class="elabel" x="612" y="92" text-anchor="middle">{{EDGE_2}}</text>
+<!-- a loop back-edge, when the code has one — curved so a loop reads as a loop:
+     <path class="edge back" d="M778 126 C778 170 778 182 700 182 L200 182 C128 182 128 150 128 126" marker-end="url(#arb)"></path>
+     <text class="elabel back" x="453" y="196" text-anchor="middle">back-edge &#8212; next iteration</text> -->
+<g class="nd def" id="n-1" data-range="1-1"><title>{{NODE_1_TITLE}} &mdash; line 1</title><rect x="24" y="74" width="208" height="52" rx="4"/><text x="128" y="97" text-anchor="middle">{{NODE_1}}</text><text class="sub" x="128" y="115" text-anchor="middle">{{NODE_1_SUB}}</text></g><g class="nd" id="n-2" data-range="2-3"><title>{{NODE_2_TITLE}} &mdash; line 2</title><polygon points="453,70 557,100 453,130 349,100"/><text x="453" y="105" text-anchor="middle">{{NODE_2}}</text></g><g class="nd term" id="n-3" data-range="2-3" data-alt="1"><title>{{NODE_3_TITLE}} &mdash; line 3</title><rect x="674" y="74" width="208" height="52" rx="4"/><text x="778" y="97" text-anchor="middle">{{NODE_3}}</text><text class="sub" x="778" y="115" text-anchor="middle">{{NODE_3_SUB}}</text></g></svg>
+            <!-- the legend names only what the diagram actually shows; add
+                 <span class="sw back"></span>magenta = the loop back-edge
+                 when you add a back-edge. -->
+            <p class="flowlegend"><b>{{DIAGRAM_KIND}}.</b> Diamonds decide &middot;
+            <span class="sw dash"></span>dashed = {{EDGE_1_MEANING}}.</p>
+          </div>
+          <!-- OPTIONAL TAB. Include a state trace for algorithmic code — loops,
+               accumulators, recursion, reducers, counters. For config, schema, markup
+               or straight-line glue DELETE this whole <div class="panelview"> AND the
+               #tab-state button above AND the "state table" block in the CSS: an empty
+               or trivially-constant table is worse than no tab.
+               REGENERATE: one <tr> per step, in step order — row index i jumps to
+               STEPS[i]. One column per variable worth watching, plus "what changed".
+               VALUES MUST BE REAL: either you ran the code or you hand-traced it
+               deterministically, and the caption says which. Anything that depends on
+               I/O, randomness or the clock is written as a symbol, never as an invented
+               number. A dash means the variable does not exist at that step. -->
+          <div class="panelview" id="pv-state" role="tabpanel" aria-labelledby="tab-state">
+            <h2>State &mdash; variable trace</h2>
+            <p class="statecap" id="statecap">{{TRACE_PROVENANCE &mdash; say exactly one:
+            &ldquo;Hand-traced from the source, not from an actual run&rdquo; or
+            &ldquo;Observed from an actual run&rdquo;}}. Inputs traced:
+            {{TRACE_INPUTS}}. A value that depends on I/O, randomness or the clock is
+            written as a symbol (<code>t&#8320;</code>, <code>&lt;response&gt;</code>),
+            never as an invented number. A dash means the variable does not exist at
+            that step &mdash; not created yet, or already out of scope.</p>
+            <table class="state" aria-describedby="statecap">
+              <caption class="sr">Key values across the {{STEP_COUNT}} walkthrough steps</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">{{VAR_1}}</th><th scope="col">{{VAR_2}}</th><th scope="col">what changed</th></tr></thead>
+              <tbody id="statebody">
+<tr data-step="0" data-range="1-1"><th scope="row" class="c-num"><span class="srow" aria-hidden="true">&#9654;</span>1</th><td class="c-num">&mdash;</td><td class="c-num">&mdash;</td><td class="c-note">{{ROW_1_CHANGE}}</td></tr>
+<tr data-step="1" data-range="2-3"><th scope="row" class="c-num"><span class="srow" aria-hidden="true">&#9654;</span>2</th><td class="c-num">{{ROW_2_VAR_1}}</td><td class="c-num">{{ROW_2_VAR_2}}</td><td class="c-note">{{ROW_2_CHANGE}}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    <aside class="rail" aria-label="Explanation">
+      <div class="railhead">
+        <div class="rh-top">
+          <h2>Explanation</h2>
+          <span class="rh-meta">{{RANGE_COUNT}} ranges &middot; {{STEP_COUNT}} steps</span>
+        </div>
+        <!-- live narration line; the script rewrites all three spans every step. -->
+        <p class="rh-step" id="rh-step"><span class="rh-idx" id="rh-idx">Step 1 / {{STEP_COUNT}}</span><span class="rh-rng" id="rh-rng">line 1</span><span class="rh-t" id="rh-t">{{STEP_1_HEADLINE}}</span></p>
+      </div>
+      <!-- no-JS only: the same steps as a plain ordered list, in EXECUTION order,
+           one <li> per STEPS entry. Keep it in sync with STEPS. -->
+      <ol class="steplist"><li><b>Step 1 &mdash; {{STEP_1_TITLE}}</b> (line 1). {{STEP_1_PROSE}}</li><li><b>Step 2 &mdash; {{STEP_2_TITLE}}</b> (lines 2-3). {{STEP_2_PROSE}}</li></ol>
+      <!-- REGENERATE: one card per annotated range, in SOURCE order (the walkthrough
+           reorders them; the rail stays readable top to bottom). data-range must match
+           the gutter lines, the diagram node(s) and the state row. .knum is the card's
+           ordinal, .krange the human label ("line 1" / "lines 2-3"), .ctitle the idea,
+           .claim the one sentence the reader takes away, then any number of .b blocks.
+           .b.warn (CAUTION) names a real defect the code actually has — an off-by-one,
+           a swallowed exception, a leak, an unawaited promise. .b.note (BY DESIGN)
+           explains a deliberate choice. Never smooth a defect, never claim intent the
+           code does not show, and write uncertainty down inline as [unverified]. -->
+      <div class="raillist scroll" id="raillist"><button type="button" class="card" data-range="1-1"><span class="khead"><span class="knum">01</span><span class="krange">line 1</span><span class="kchip">&#9654; current step</span></span><span class="ctitle">{{CARD_1_TITLE}}</span><span class="claim">{{CARD_1_CLAIM &mdash; one sentence: what this range does, and what the reader learns from it. Inline <code>code</code> belongs here.}}</span><span class="b">{{CARD_1_DETAIL &mdash; an optional plain body block. Add as many as the range needs, or none.}}</span><span class="b note"><span class="lbl">BY DESIGN</span>{{CARD_1_NOTE &mdash; use a note block for a deliberate choice worth defending. Delete the block if there is none.}}</span></button>
+<button type="button" class="card" data-range="2-3"><span class="khead"><span class="knum">02</span><span class="krange">lines 2-3</span><span class="kchip">&#9654; current step</span></span><span class="ctitle">{{CARD_2_TITLE}}</span><span class="claim">{{CARD_2_CLAIM}}</span><span class="b warn"><span class="lbl">CAUTION</span>{{CARD_2_WARNING &mdash; name a defect the code really has, where it lives. Delete the block if the code has none; never invent one, never soften one.}}</span></button>
+      <!-- the footer keeps the artefact honest: provenance, language, size, any
+           truncation, the date, and the disclaimer. Do not delete the last sentence. -->
+      <p class="railnote"><b>{{SOURCE}}</b> &middot; {{LANGUAGE}} &middot; {{LINE_COUNT}} lines
+      &middot; explained {{DATE}} &middot; the walkthrough runs in <b>execution order</b>, which
+      is not source order. This <b>explains the code as written &mdash; not a review or a
+      correctness guarantee.</b></p></div>
+      <!-- every shortcut the script binds is listed here; an unlisted one does not exist. -->
+      <div class="footrail"><kbd>&rarr;</kbd><kbd>N</kbd>next &middot; <kbd>&larr;</kbd><kbd>P</kbd>prev &middot; <kbd>Space</kbd>play &middot; <kbd>R</kbd>restart &middot; <kbd>Home</kbd><kbd>End</kbd>first/last</div>
+    </aside>
+
+  </div><!-- /main -->
+
+  <!-- status bar — keep #007acc, and keep #sb-step in sync (the script does it). -->
+  <footer class="statusbar">
+    <span class="sitem" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="4.6" cy="3.6" r="1.8"/><circle cx="4.6" cy="12.4" r="1.8"/><circle cx="11.4" cy="6.6" r="1.8"/><path d="M4.6 5.4v5.2M6.4 3.6h3.2a1.8 1.8 0 0 1 1.8 1.8v-.6"/></svg>{{BRANCH}}</span>
+    <span class="sitem" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 1.6 14.2 8 8 14.4 1.8 8z"/></svg>0&nbsp;&#9888; 0&nbsp;&#9432;</span>
+    <span class="spacer"></span>
+    <span class="sitem" id="sb-ln">Ln 1, Col 1</span>
+    <span class="sitem">UTF-8</span>
+    <span class="sitem">{{LANGUAGE}}</span>
+    <span class="sitem stepnow" id="sb-step">Step 1 / {{STEP_COUNT}}</span>
+    <span class="sitem stepnojs">{{STEP_COUNT}}-step walkthrough</span>
+  </footer>
+
+  <!-- the step announcement for screen readers; the script writes it. -->
+  <div class="sr" id="live" role="status" aria-live="polite" aria-atomic="true"></div>
+
+</div>
+<script>
+(function () {
+  "use strict";
+  /* ====================================================================
+     FIXED ENGINE — everything below the STEPS array is generic. The only
+     per-explainer edit in this script is STEPS itself (plus deleting the
+     minimap sync if you dropped the minimap).
+
+     ONE ID SPACE. `data-range` is the only thing tying the four indexes
+     together, and every value used in STEPS must appear on:
+       * the gutter lines it covers   <div class="ln" data-range="2-3">
+       * exactly one card             <button class="card" data-range="2-3">
+       * at least one diagram node    <g class="nd" data-range="2-3">
+       * its state row, if a trace    <tr data-step="1" data-range="2-3">
+     A typo in one of the four silently drops that link; nothing throws.
+     ==================================================================== */
+  var doc = document, root = doc.documentElement;
+  root.classList.add("is-interactive");
+
+  /* ------------------------------------------------------------------ STEPS
+     REGENERATE THIS ARRAY, and nothing else in this script.
+
+     Execution order, not source order. Where the code runs out of source
+     order (hoisting, callbacks, await resumption, recursion) keep the
+     divergence — it is usually the most valuable thing on the page.
+     The contract wants 4-12 steps; the two below exist only to make this
+     skeleton runnable.
+
+       r   the data-range this step lights. Must exist on the lines, on one
+           card, and on at least one node. Two steps may share an r (the
+           same range entered twice) — stepForRange() picks the next one.
+       a,b first and last source line the yellow stack-frame band covers.
+           May be narrower than r: r is the annotation, a-b is the frame.
+       ln  the line the ▶ arrow and the status bar's "Ln n, Col 1" point at.
+           Must satisfy a <= ln <= b.
+       nd  id of the flow-diagram node highlighted at this step. Must exist.
+       c   breadcrumb segments, outermost first; last one renders as current.
+       t   PLAIN TEXT title — goes to the live region and the no-JS list.
+       h   HTML headline for the rail; inline <code> and entities are fine.
+       g   human range label: "line 1", "lines 2-3". Shown in the rail.        */
+  var STEPS = [
+    {"r":"1-1","a":1,"b":1,"ln":1,"nd":"n-1","c":["{{FILENAME}}","(module)"],
+     "t":"{{STEP_1_TITLE}}","h":"{{STEP_1_HEADLINE}} &mdash; inline <code>code</code> is allowed here","g":"line 1"},
+    {"r":"2-3","a":2,"b":3,"ln":2,"nd":"n-2","c":["{{FILENAME}}","{{SCOPE}}"],
+     "t":"{{STEP_2_TITLE}}","h":"{{STEP_2_HEADLINE}}","g":"lines 2-3"}
+  ];
+  var N = STEPS.length;
+  var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  var reduced = function () { return !!(RM && RM.matches); };
+
+  /* generic queries — no per-explainer ids below this line */
+  var lines    = [].slice.call(doc.querySelectorAll(".ln"));
+  var cards    = [].slice.call(doc.querySelectorAll(".card"));
+  var nodes    = [].slice.call(doc.querySelectorAll(".flowsvg .nd"));
+  var rows     = [].slice.call(doc.querySelectorAll("#statebody tr"));
+  var live     = doc.getElementById("live");
+  var chip     = doc.getElementById("stepchip");
+  var sbstep   = doc.getElementById("sb-step");
+  var sbln     = doc.getElementById("sb-ln");
+  var crumbs   = doc.getElementById("crumbs");
+  var codewrap = doc.getElementById("codewrap");
+  var raillist = doc.getElementById("raillist");
+  var panelbody= doc.getElementById("panelbody");
+  var rhIdx    = doc.getElementById("rh-idx");
+  var rhRng    = doc.getElementById("rh-rng");
+  var rhT      = doc.getElementById("rh-t");
+  var bPrev    = doc.getElementById("b-prev");
+  var bNext    = doc.getElementById("b-next");
+  var bPlay    = doc.getElementById("b-play");
+  var bRestart = doc.getElementById("b-restart");
+  var iPlay    = doc.getElementById("i-play");
+  var iPause   = doc.getElementById("i-pause");
+  var mmView   = doc.getElementById("mm-view");
+  var mmStep   = doc.getElementById("mm-step");
+
+  var cur = 0, playing = false, timer = null;
+
+  /* diagram nodes become real controls */
+  nodes.forEach(function (n) {
+    n.setAttribute("tabindex", "0");
+    n.setAttribute("role", "button");
+    var t = n.querySelector("title");
+    n.setAttribute("aria-label", (t ? t.textContent : "flow node") + " — jump the walkthrough here");
+  });
+
+  /* INVARIANT: state row order == step order, one row per step. Row index i
+     jumps to STEPS[i]; data-step is documentation, the index is what is used. */
+  /* the state table becomes a third index: one real focusable control per row */
+  rows.forEach(function (tr, i) {
+    var th = tr.querySelector("th");
+    if (!th) return;
+    var b = doc.createElement("button");
+    b.type = "button";
+    b.className = "rowjump";
+    b.setAttribute("aria-label", "Jump to step " + (i + 1));
+    while (th.firstChild) { b.appendChild(th.firstChild); }
+    th.appendChild(b);
+    b.addEventListener("click", function (e) { e.stopPropagation(); stop(); go(i, "state"); });
+    tr.addEventListener("click", function () { stop(); go(i, "state"); });
+  });
+
+  function byRange(list, rng) {
+    return list.filter(function (el) { return el.getAttribute("data-range") === rng; });
+  }
+
+  /* ---------------------------------------------------------- framing
+     One explicit scroll per pane per step. Three chained smooth
+     scrollIntoView() calls would supersede one another and silently drop
+     the framing; this computes the target once and moves the pane only. */
+  function frame(box, first, last, exec, animate, pad) {
+    if (!box || !first || !last) return;
+    var max = box.scrollHeight - box.clientHeight;
+    if (max <= 1) return;                       /* not a scroller right now */
+    var padT = pad == null ? 46 : pad, padB = 12;  /* 46 clears the debug pill */
+    var top = first.offsetTop - padT;
+    var bot = last.offsetTop + last.offsetHeight + padB;
+    var v0 = box.scrollTop, v1 = v0 + box.clientHeight, t = v0;
+    if (bot - top > box.clientHeight) t = (exec || first).offsetTop - padT;
+    else if (top < v0) t = top;
+    else if (bot > v1) t = bot - box.clientHeight;
+    t = Math.max(0, Math.min(t, max));
+    if (Math.abs(t - v0) < 1) return;
+    if (box.scrollTo) { box.scrollTo({ top: t, behavior: (animate && !reduced()) ? "smooth" : "auto" }); }
+    else { box.scrollTop = t; }
+  }
+
+  /* ---------------------------------------------------- hover linking */
+  function setHover(rng, on, except) {
+    [lines, cards, nodes].forEach(function (list) {
+      list.forEach(function (el) {
+        if (el === except) return;
+        if (el.getAttribute("data-range") === rng) el.classList.toggle("is-hover", on);
+      });
+    });
+  }
+  function wireHover(el, isNode) {
+    var rng = el.getAttribute("data-range");
+    if (!rng) return;
+    el.addEventListener("mouseenter", function () { setHover(rng, true); });
+    el.addEventListener("mouseleave", function () { setHover(rng, false); });
+    /* a focused node must show its own focus ring, not a hover outline */
+    el.addEventListener("focus", function () { setHover(rng, true, isNode ? el : null); });
+    el.addEventListener("blur", function () { setHover(rng, false, isNode ? el : null); });
+  }
+  lines.forEach(function (el) { wireHover(el, false); });
+  cards.forEach(function (el) { wireHover(el, false); });
+  nodes.forEach(function (el) { wireHover(el, true); });
+
+  /* ------------------------------------------------------- selection */
+  function stepForRange(rng) {
+    var hits = [];
+    STEPS.forEach(function (s, i) { if (s.r === rng) hits.push(i); });
+    if (!hits.length) return -1;
+    for (var k = 0; k < hits.length; k++) if (hits[k] > cur) return hits[k];
+    return hits[0];
+  }
+  function selectRange(rng, from) {
+    var i = stepForRange(rng);
+    if (i >= 0) { stop(); go(i, from); }
+  }
+  function wireClick(el, from) {
+    var rng = el.getAttribute("data-range");
+    if (!rng) return;
+    el.addEventListener("click", function () { selectRange(rng, from); });
+    if (el.classList.contains("nd")) {
+      el.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+          e.preventDefault(); e.stopPropagation(); selectRange(rng, from);
+        }
+      });
+    }
+  }
+  lines.forEach(function (el) { wireClick(el, "code"); });
+  cards.forEach(function (el) { wireClick(el, "card"); });
+  nodes.forEach(function (el) { wireClick(el, "flow"); });
+
+  /* ------------------------------------------------------- rendering */
+  function render(from) {
+    var s = STEPS[cur], rng = s.r, a = s.a, b = s.b, animate = from !== "init";
+
+    lines.forEach(function (el) {
+      var n = +el.getAttribute("data-line");
+      var inStep = n >= a && n <= b;
+      el.classList.toggle("is-step", inStep);
+      el.classList.toggle("is-first", n === a);
+      el.classList.toggle("is-last", n === b);
+      el.classList.toggle("is-exec", n === s.ln);
+      el.classList.toggle("is-sel", el.getAttribute("data-range") === rng && !inStep);
+    });
+    if (from !== "code") frame(codewrap, lines[a - 1], lines[b - 1], lines[s.ln - 1], animate);
+
+    cards.forEach(function (el) {
+      var on = el.getAttribute("data-range") === rng;
+      el.classList.toggle("is-step", on);
+      el.classList.toggle("is-sel", on);
+      if (on) { el.setAttribute("aria-current", "step"); }
+      else { el.removeAttribute("aria-current"); }
+    });
+    var card = byRange(cards, rng)[0];
+    if (from !== "card") frame(raillist, card, card, card, animate, 10);
+
+    nodes.forEach(function (el) {
+      el.classList.toggle("is-step", el.id === s.nd);
+      el.classList.toggle("is-sel", el.getAttribute("data-range") === rng);
+    });
+
+    rows.forEach(function (tr, i) {
+      tr.classList.toggle("now", i === cur);
+      tr.classList.toggle("future", i > cur);
+    });
+    if (from !== "state" && rows[cur] && rows[cur].offsetParent) {
+      frame(panelbody, rows[cur], rows[cur], rows[cur], animate, 10);
+    }
+
+    var label = "Step " + (cur + 1) + " / " + N;
+    chip.textContent = label;
+    sbstep.textContent = label;
+    sbln.textContent = "Ln " + s.ln + ", Col 1";
+    rhIdx.textContent = label;
+    rhRng.textContent = s.g;
+    rhT.innerHTML = s.h;
+    live.textContent = "Step " + (cur + 1) + " of " + N + " — " + s.g + " — " + s.t;
+
+    /* boundary buttons stay focusable: aria-disabled, and the handler no-ops */
+    bPrev.setAttribute("aria-disabled", cur === 0 ? "true" : "false");
+    bNext.setAttribute("aria-disabled", cur === N - 1 ? "true" : "false");
+
+    /* LAST, and guarded. The breadcrumb is the one piece of optional chrome, so a
+       missing #crumbs must never decapitate the live region or the buttons above
+       it — an unguarded write here threw and silently killed the step
+       announcement for every step. Keep this assignment last. */
+    if (crumbs) {
+      crumbs.innerHTML = s.c.map(function (p, i) {
+        return (i ? '<span class="sep">›</span>' : "") +
+               '<span class="' + (i === s.c.length - 1 ? "cur" : "") + '">' + p + "</span>";
+      }).join("");
+    }
+
+    if (mmStep) {
+      mmStep.setAttribute("y", String((a - 1) * 4));
+      mmStep.setAttribute("height", String((b - a + 1) * 4));
+    }
+  }
+
+  function go(i, from) {
+    if (i < 0) i = 0;
+    if (i > N - 1) i = N - 1;
+    cur = i;
+    render(from);
+  }
+
+  /* ---------------------------------------------------------- player */
+  function stop() {
+    playing = false;
+    if (timer) { clearTimeout(timer); timer = null; }
+    iPlay.style.display = ""; iPause.style.display = "none";
+    bPlay.setAttribute("aria-label", "Play the walkthrough");
+    bPlay.setAttribute("aria-pressed", "false");
+    if (!reduced()) bPlay.title = "Play · Space";
+  }
+  function dwell() {                          /* ~4.5s, or the step title's
+                                                 reading time when that is longer */
+    var s = STEPS[cur];
+    var words = (s.t + " " + s.g).split(/\s+/).length;
+    return Math.max(4500, Math.min(8000, Math.round(words / 2.2 * 1000)));
+  }
+  function tick() {
+    if (cur >= N - 1) { stop(); return; }
+    go(cur + 1);
+    if (cur >= N - 1) { stop(); return; }
+    timer = setTimeout(tick, dwell());
+  }
+  function play() {
+    if (reduced()) return;                    /* no auto-advance, by contract */
+    if (cur >= N - 1) go(0);
+    playing = true;
+    iPlay.style.display = "none"; iPause.style.display = "";
+    bPlay.setAttribute("aria-label", "Pause the walkthrough");
+    bPlay.setAttribute("aria-pressed", "true");
+    bPlay.title = "Pause · Space";
+    timer = setTimeout(tick, dwell());
+  }
+  function toggle() { playing ? stop() : play(); }
+
+  bPrev.addEventListener("click", function () { stop(); if (cur > 0) go(cur - 1); });
+  bNext.addEventListener("click", function () { stop(); if (cur < N - 1) go(cur + 1); });
+  bRestart.addEventListener("click", function () { stop(); go(0); });
+  bPlay.addEventListener("click", toggle);
+
+  function applyRM() {
+    if (reduced()) {
+      stop();
+      bPlay.setAttribute("aria-disabled", "true");
+      bPlay.title = "Auto-advance is off because your system asks for reduced motion — use Next";
+    } else {
+      bPlay.setAttribute("aria-disabled", "false");
+      bPlay.title = "Play · Space";
+    }
+  }
+  if (RM) { (RM.addEventListener ? RM.addEventListener("change", applyRM)
+                                 : RM.addListener(applyRM)); }
+  applyRM();
+
+  /* -------------------------------------------------------- keyboard */
+  doc.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target;
+    if (t && (t.isContentEditable ||
+        /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName || ""))) return;
+    /* never swallow keys that belong to a scroll region the user is inside */
+    if (t && t.closest && t.closest("#codewrap, #panelbody, #raillist") &&
+        !t.closest("button, .nd, [role='tab']")) return;
+    var isCtl = t && t.closest && t.closest("button, .nd, [role='tab']");
+    var k = e.key;
+    if (k === "ArrowRight" || k === "n" || k === "N") { e.preventDefault(); stop(); go(cur + 1); }
+    else if (k === "ArrowLeft" || k === "p" || k === "P") { e.preventDefault(); stop(); go(cur - 1); }
+    else if (k === "Home") { e.preventDefault(); stop(); go(0); }
+    else if (k === "End") { e.preventDefault(); stop(); go(N - 1); }
+    else if (k === "r" || k === "R") { e.preventDefault(); stop(); go(0); }
+    else if ((k === " " || k === "Spacebar") && !isCtl) { e.preventDefault(); toggle(); }
+  });
+
+  /* ------------------------------------------------------ panel tabs */
+  var tabs = [].slice.call(doc.querySelectorAll("[role='tab']"));
+  function showTab(id) {
+    tabs.forEach(function (tb) {
+      var on = tb.id === id;
+      tb.setAttribute("aria-selected", on ? "true" : "false");
+      tb.tabIndex = on ? 0 : -1;
+      var p = doc.getElementById(tb.getAttribute("aria-controls"));
+      if (p) { if (on) { p.removeAttribute("hidden"); } else { p.setAttribute("hidden", ""); } }
+    });
+    if (id === "tab-state" && rows[cur]) frame(panelbody, rows[cur], rows[cur], rows[cur], false, 10);
+  }
+  tabs.forEach(function (tb, i) {
+    tb.addEventListener("click", function () { showTab(tb.id); });
+    tb.addEventListener("keydown", function (e) {
+      var j = null;
+      if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+      if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+      if (j !== null) { e.preventDefault(); e.stopPropagation(); tabs[j].focus(); showTab(tabs[j].id); }
+    });
+  });
+  showTab("tab-flow");
+
+  /* --------------------------------------------------- minimap sync */
+  /* minimap sync. PER-EXPLAINER: H must equal the minimap svg's height,
+     i.e. LINE_COUNT * 4. Delete this function and its two listeners along
+     with the minimap markup. */
+  function syncMM() {
+    if (!mmView || !codewrap) return;
+    var pitch = 4, lh = 20, padTop = 40, H = 180;
+    var y = ((codewrap.scrollTop - padTop) / lh) * pitch;
+    var h = (codewrap.clientHeight / lh) * pitch;
+    h = Math.min(H, Math.max(8, h));
+    y = Math.max(0, Math.min(y, H - h));
+    mmView.setAttribute("y", y.toFixed(1));
+    mmView.setAttribute("height", h.toFixed(1));
+  }
+  if (codewrap) codewrap.addEventListener("scroll", syncMM, { passive: true });
+  window.addEventListener("resize", syncMM);
+  syncMM();
+
+  render("init");
+})();
+</script>
+</body>
+</html>

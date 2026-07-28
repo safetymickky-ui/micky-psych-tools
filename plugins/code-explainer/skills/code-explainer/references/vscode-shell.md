@@ -123,8 +123,9 @@ in `--font-ui` (the rail is prose — do not set it in mono).
   Multiple tabs only if you are genuinely explaining multiple files, and then they must
   actually switch.
 - **Breadcrumb** — the real path through the code (`file › Class › method`), driven by
-  the current step when stepping. Skip it for a snippet with no enclosing scope rather
-  than faking a path.
+  the current step when stepping. For a snippet with no enclosing scope, show just the
+  filename — never fake a path, and never delete the element (the row is part of the
+  editor's grid).
 - **Gutter** — right-aligned line numbers; the current step's first line gets the active
   colour plus a `▶` execution arrow; every annotated range start carries a
   breakpoint-style dot in `--vsc-breakpoint`. Line numbers are `user-select: none` and
