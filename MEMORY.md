@@ -15,7 +15,7 @@ a milestone.
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.14.0  |
+| marketplace catalog   | 1.15.0  |
 | pubmed-research-note   | 1.6.0   |
 | intent-lock           | 0.4.0   |
 | plugin-creator        | 0.3.0   |
@@ -28,6 +28,7 @@ a milestone.
 | concept-animation     | 0.1.1   |
 | code-explainer        | 0.1.0   |
 | ml-concept-lab        | 0.1.0   |
+| decision-interview    | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -120,8 +121,42 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   no non-finite value rendered, fits 1366×768, both motion modes) before vault-keeper files it as
   an asset. Skill + `/visualize [concept]`; build contract + 8-family pattern catalog in
   references; a verified worked lab in `examples/`.
+- **decision-interview** — mid-task decision gate, the execution-phase sibling of intent-lock:
+  collects every open decision the agent cannot make for the user (blockers, silent defaults,
+  lookahead) and resolves them all in one batched option-picker interview. Admission threshold
+  gates the questions (materially-different-work only; destructive/irreversible/outward-facing
+  always ask; already-answered resolved in place); dependency order, recommended option first;
+  resolutions land in a decision ledger that is never re-asked. Autonomous fallback: reversible
+  → recommended default in a "Decided without you" ledger; destructive → halt with a written
+  decision request. Skill + `/resolve-decisions [task or scope]`.
 
 ## Recent milestones
+
+- **2026-07-28** — Added **decision-interview 0.1.0** (thirteenth plugin; catalog → 1.15.0,
+  branch `claude/interview-plugin-agent-decisions-g70cbb`) — "interview the user to resolve
+  all decisions when the agent needs a user decision". Built as the **execution-phase sibling
+  of intent-lock**, not an overlap: intent-lock converges on what a request *means* before
+  work starts; this fires *mid-task*, once execution has surfaced concrete decisions inside
+  the locked goal (which file wins, overwrite-or-merge, which trade-off), and its prime move
+  is **batching** — sweep the task end to end first (blockers + silent defaults + lookahead;
+  "the second interview is the one you were supposed to prevent"), then one interview the
+  user can clear in a single visit instead of scattered one-off questions or silent guesses.
+  Borrowed intent-lock's admission threshold (a question only when the competing answers
+  produce materially different work; everything else a stated default) with two overrides:
+  destructive/irreversible/outward-facing actions **always** ask and are never defaulted,
+  and anything the conversation/code/conventions already answer is resolved in place, source
+  named. Interview mechanics: dependency order (never a question whose relevance hangs on an
+  unanswered one), ≤4 questions per picker round, options as concrete outcomes, recommended
+  option first so tapping recommendations clears the interview, typed answers beat the option
+  set. Output is one compact **decision ledger** (`Decided: … / Defaults: … — say if wrong`)
+  that governs the rest of the session — resolved decisions never re-asked, resolutions
+  generalize, later decisions batch again. **Autonomous fallback** (built for unattended
+  remote sessions): reversible decisions take the recommended default surfaced in a
+  `Decided without you:` ledger; destructive ones halt that thread with a written decision
+  request (decision, options, recommendation + reason) while everything unblocked finishes.
+  One skill + `/resolve-decisions [task or scope]`; category productivity. Defaults chosen
+  without asking (surfaced): plugin name, command name, category, no references/ (the skill
+  is self-contained). `validate.py` clean; ROUTING.md regenerated (13 plugins, 27 components).
 
 - **2026-07-28** — Added **ml-concept-lab 0.1.0** (twelfth plugin; catalog → 1.14.0, branch
   `claude/ml-ai-visualization-plugin-9qzzr8`) — "visualization + interactive + animation to

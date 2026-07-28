@@ -149,6 +149,17 @@ vault/                             # shared knowledge vault — managed by vault
   `skills/ml-concept-lab/references/`, worked lab under `examples/`. Boundary: watch-only
   animations and clinical topics stay with concept-animation, charts of the user's own data
   with dataviz.
+- **decision-interview** — mid-task decision gate: when the agent hits decisions only the
+  user can make, it sweeps the task end to end (blockers, silent defaults, lookahead),
+  triages against an admission threshold (destructive/irreversible/outward-facing actions
+  always ask; sub-threshold items get stated defaults; already-answered items are resolved
+  in place, never re-asked of the user), and resolves everything in one batched
+  option-picker interview — dependency order, recommended option first, resolutions
+  recorded in a decision ledger that governs the rest of the session. Autonomous fallback:
+  reversible decisions take the recommended default surfaced in a "Decided without you"
+  ledger; destructive ones halt with a written decision request. The execution-phase
+  sibling of intent-lock (which owns pre-build alignment; misread-capture owns
+  post-delivery). One skill + `/resolve-decisions [task or scope]` command.
 
 ## Style
 

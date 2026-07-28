@@ -33,6 +33,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram | code-explainer | `/explain-code` |
 | when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "explorable", "let me play with the parameters", "show me how X works", "animate this algorithm"… | ml-concept-lab | skill `ml-concept-lab` |
 | Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
+| when the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", runs /resolve-decisions… | decision-interview | skill `decision-interview` |
+| Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
 
 ## Plugins
 
@@ -144,3 +146,12 @@ Keywords: machine-learning, ai, computer-science, interactive-visualization, exp
 
 - **skill `ml-concept-lab`** (skill) — Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file (inline CSS/SVG/Canvas/JS) in which the real algorithm runs live and the learner drive…
 - **`/visualize`** (command) — Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the vault via vault-keeper
+
+### decision-interview — productivity  _v0.1.0_
+
+Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Sweeps the task end to end, triages by whether the answers change the work, asks with a recommended option first, and records the resolutions in a decision ledger that governs the rest of the session. The execution-phase sibling of intent-lock, which owns pre-build alignment.
+
+Keywords: decisions, interview, batching, clarification, elicitation, autonomy
+
+- **skill `decision-interview`** (skill) — Collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of…
+- **`/resolve-decisions`** (command) — Sweep the current task for every open decision that needs the user and resolve them all in one batched interview
