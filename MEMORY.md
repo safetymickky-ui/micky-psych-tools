@@ -133,6 +133,37 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-29** — Filed **Psychosocial Treatment of Bipolar Disorder — IPSRT in Context —
+  Comprehensive Review** via comprehensive-review → vault-keeper (same branch); first content
+  under a new **Bipolar Disorder MOC** (wired into `index.md`, cross-linked to the lithium
+  artifact under Psychopharmacology). Asked as "review of IPSRT for bipolar", but the intent-lock
+  picker was **answered** and widened the object to the **whole psychosocial layer** with IPSRT as
+  the anchor, depth locked on **theory/mechanism + components & delivery**, clinician self-study
+  register. Object is a *treatment class*, so the ten-section arc was adapted class-wise
+  (etiology → theory of change; clinical features → what the treatments must target across the
+  course; assessment → the measurement apparatus, SRM/actigraphy/FAST/fidelity); all 10 present,
+  H3 only inside Treatment. **Spine:** the modality brands are weaker than the field's marketing —
+  the 39-trial component NMA (n=3,863) puts adjunctive manualised therapy at **OR 0.56 (0.43–0.74)**
+  for recurrence but localises the effect in *ingredients and format*, not protocol identity
+  (psychoeducation with guided skills practice in a **family/group** format vs the same
+  individually: **OR 0.12, 0.02–0.94**; cognitive restructuring, **routine regulation**, and
+  communication training the three carrying components), and STEP-BD (n=293) found **no
+  significant difference among IPSRT, FFT, and CBT** while intensity separated arms (recovery
+  **64.4% vs 51.5%**, HR 1.47). IPSRT's own pivotal trial (n=175) is read precisely: **no acute
+  benefit**, prophylaxis *purchased* by acute-phase assignment (P=.01), rhythm regularity moved
+  (P<.001) and mediated at **P=.05** — mechanism supported, not demonstrated. Durability crown goes
+  to **group psychoeducation** (5-year: 3.86 vs 8.37 recurrences, **154 vs 586 days ill**); CBT's
+  ceiling is the **<12-episode** interaction (overall HR 1.05, ns); bipolar II is the surprise
+  moderator (German group RCT n=305: BD-II **61%** relapse, **70%** on the structured protocol, and
+  SEKT ≈ FEST overall — the nonspecific-factors challenge). Also carries Judd's **47.3% of weeks
+  symptomatic** (depression 31.9% vs mania 8.9%) as the burden the layer exists for, the
+  functional-recovery lag, and **implementation as the binding constraint** (the field's own move
+  to component-based low-training delivery). Registry: **6 trials**, incl. NCT04815239 (IPSRT vs
+  active healthy-lifestyle control in at-risk youth, 2027) and NCT02604277 (four-way psychosocial
+  comparison, 2026); no registered trial randomises *components*. **16 PubMed + 6 registry**;
+  honest gaps left as `[unverified]` (older adults — no dedicated psychosocial trial found; and
+  low-resource/non-Western delivery). `validate.py` clean; ROUTING.md regenerated unchanged.
+
 - **2026-07-29** — Filed **Lithium Serum Level — Target for Efficacy Against Adverse Effects** to
   the vault via pubmed-research-note → vault-keeper (branch
   `claude/lithium-level-efficacy-adverse-xvq3si`); **Psychopharmacology MOC now 3 artifacts**.
