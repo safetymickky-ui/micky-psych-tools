@@ -133,6 +133,41 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-29** — Filed **Lithium Serum Level — Target for Efficacy Against Adverse Effects** to
+  the vault via pubmed-research-note → vault-keeper (branch
+  `claude/lithium-level-efficacy-adverse-xvq3si`); **Psychopharmacology MOC now 3 artifacts**.
+  Intent-lock Step 0 ran and the picker was **answered**: locked the *dosing decision* ("which
+  level do I aim for in this patient") over the teaching and whole-topic readings, scope = bipolar
+  maintenance/mania **+** unipolar augmentation **+** older adults, counterweight = long-term organ
+  harm **+** acute toxicity **+** tolerability/adherence. **Verdict:** 0.60–0.80 mmol/L for adult
+  maintenance with **0.6 as a floor, not a midpoint** — the level-stratified post hoc of the
+  104-week quetiapine-withdrawal trial found lithium <0.6 mEq/L (n=137) indistinguishable from
+  placebo (n=404) while 0.6–1.2 (n=201) beat both; 0.8–1.0 reserved for manic-predominant illness
+  and acute mania; 0.4–0.6 as a deliberate good-response/poor-tolerance choice, moved in ≤0.2 steps
+  (abrupt reduction >0.2 mmol/L is itself a relapse risk — which is also how the 1989 Gelenberg
+  RCT, relapse 13% vs 38%, RR 2.6, overstates the low-level penalty); ≥0.5 mEq/L for unipolar
+  augmentation (OR 3.31, NNT 3.7); geriatric 0.4–0.6 maintenance but 0.80–0.99 for acute mania per
+  GERI-BD (response 79% vs 73% divalproex, only 57% reached target, more tremor). The chapter's
+  hardest adjudication is **renal**: the registry signals (CKD3 HR 1.93 with above-median levels;
+  Danish HR 3.65 at ≥60 prescriptions) lose to the best-controlled longitudinal test (n=1,120,
+  13,963 eGFR values, 12 y) in which **toxicity episodes, age, baseline eGFR and nephrotoxic
+  co-prescriptions predicted decline — mean level and duration did not** → chasing a lower level
+  for renal protection trades real prophylaxis for an undetectable benefit. Thyroid is the
+  level-sensitive harm worth acting on (hypothyroidism OR 5.78 vs placebo; aHR 2.08 at higher
+  levels) and the answer is thyroxine, not a lower target. Also carries the **measurement** point
+  (eLi 12-hour estimation: 10% vs 25% mean deviation, closer in 97% of 102 off-schedule samples —
+  a sampling artefact is as wide as the decision band) and three "don't promise" clauses (in-range
+  ≠ toxicity-proof; low level ≠ renoprotective; ~0.5 ≠ anti-suicide — the 519-patient VA trial was
+  stopped for futility at mean 0.54/0.46). **Publication-bias sweep is the headline negative:
+  no trial anywhere randomises patients to competing target levels**, so the 0.6–0.8 standard (an
+  ISBD/IGSLI Delphi consensus built on **zero** studies meeting strict inclusion criteria) will not
+  be tested; the live registry is measurement + adjacent (NCT07306039 eLi12 feasibility 2027,
+  NCT05409794 LIPS level-vs-suicidal-events 2026, NCT06184581 LiLa-Bipolar 2027, NCT06662526
+  trace-dose cognition 2029) plus one flag — NCT05044611 (amiloride for lithium NDI, n=148) reached
+  primary completion 2025-03-03 with no results posted. **24 PubMed + 5 registry trials**,
+  DOI-only citations; confidence moderate (moderate-low for the geriatric target and every
+  level-specific harm threshold). `validate.py` clean; ROUTING.md regenerated unchanged.
+
 - **2026-07-28** — Added **decision-interview 0.1.0** (thirteenth plugin; catalog → 1.15.0,
   branch `claude/interview-plugin-agent-decisions-g70cbb`) — "interview the user to resolve
   all decisions when the agent needs a user decision". Built as the **execution-phase sibling
