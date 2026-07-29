@@ -4,7 +4,7 @@ created: 2026-07-09
 type: moc
 source: manual
 tags: [index]
-links: [Bipolar Disorder MOC, Machine Learning MOC, Psychopharmacology MOC]
+links: []
 ---
 
 # Vault Index
@@ -14,9 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Bipolar Disorder MOC]] — bipolar disorder as a disorder: whole-topic reviews,
-  treatment-modality chapters (psychosocial and psychotherapeutic), course and outcome.
-- [[Machine Learning MOC]] — machine learning, AI, and computer science: interactive
-  explorables, concept animations, code explanations, and the mathematics underneath them.
-- [[Psychopharmacology MOC]] — drug-level evidence reports, contested claims, interaction and
-  safety verdicts; drug-class approval cohorts and pipelines; dose/receptor references.
+_None yet._
