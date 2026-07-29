@@ -133,6 +133,20 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-29** — **Vault emptied into the Learn hub** via `empty-vault` (branch
+  `claude/empty-vault-atomize-z0e168`). All four artifacts and the one asset were digested by
+  learn-hub's `digest-report` / `ingest-animation` into **51 atomic notes across 5 new Learn
+  topics**, verified provenance-scoped in Supabase *before* deletion (move → verify → delete):
+  `lithium-serum-level-target` → 9, `tramadol-psychotropic-effect-verdict` → 10,
+  `novel-antidepressants-approved-and-pipeline` → 14, `psychosocial-treatment-bipolar-ipsrt` → 14,
+  and `assets/differentiation-three-ways.html` → a **`differentiation-three-ways` chapter of 4
+  notes hosting the explorable as an `animations` row** (filed as an animation, not an
+  infographic — it runs its own JS and needs the `allow-scripts` sandbox; poster baked from its
+  reduced-motion frame). The asset was named in the deletion manifest and the user confirmed a
+  full empty; git history is its archive. All three MOCs ended empty and were removed;
+  `index.md` is back to the empty scaffold with the `.gitkeep` tree intact. `validate.py` clean.
+  **The vault is now empty** — the next `save` starts a fresh MOC.
+
 - **2026-07-29** — Filed **Psychosocial Treatment of Bipolar Disorder — IPSRT in Context —
   Comprehensive Review** via comprehensive-review → vault-keeper (same branch); first content
   under a new **Bipolar Disorder MOC** (wired into `index.md`, cross-linked to the lithium
