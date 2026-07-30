@@ -4,7 +4,7 @@ created: 2026-07-09
 type: moc
 source: manual
 tags: [index]
-links: [Obesity and Cognition]
+links: [Obesity and Cognition, Sparse Regularization and Functional Analysis]
 ---
 
 # Vault Index
@@ -15,3 +15,4 @@ a MOC. Managed by the `vault-keeper` skill.
 ## MOCs
 
 - [[Obesity and Cognition]]
+- [[Sparse Regularization and Functional Analysis]]

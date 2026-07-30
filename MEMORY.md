@@ -133,6 +133,25 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-30** — Filed **Sparse Regularization: from L1 Corners to Dirac Measures** (branch
+  `claude/regularization-functional-analysis-grzd41`), a ~33,400-word / 71-section newcomer study
+  guide covering all 25 requested topics from lasso-vs-ridge geometry through representer theorems
+  for $\mathcal{M}$-norm regularization. **First non-clinical artifact in the vault** — the topic
+  is mathematics, so `comprehensive-review` (whole-*disorder* literature reviews) did not own it
+  and the work was done bespoke against a written authoring contract; new MOC
+  **Sparse Regularization and Functional Analysis**, wired into `index.md`. Built by a 6-writer /
+  6-checker workflow, but **6 of 13 agents died to transient API errors** (one 500, five 529s in
+  one overload burst) and a later re-run was killed by an interrupt — so Parts IV and VI were
+  verified by hand in the foreground instead. Lesson worth keeping: a `write:` stage that returns
+  null makes `pipeline()` **drop the item**, so its downstream `verify:` agent is never created —
+  the gap is silent, and resuming the original script would have re-run the writer and overwritten
+  the already-verified file. Verification found real defects at a steady rate (10 / 14 / 14 in
+  Parts I / II / V; 1 each in IV / VI), including a wrong divided-difference multiple in the
+  unequal-spacing operator ($(k-1)!(x_{i+k}-x_i)$, not $k!$), Krein–Milman being credited with
+  §VI.4's sparsity theorem, and a smoother-convention slip in the effective-df numbers. Every
+  worked number in the artifact is independently reproduced; `validate.py` clean, `ROUTING.md`
+  unchanged.
+
 - **2026-07-29** — **Vault emptied into the Learn hub** via `empty-vault` (branch
   `claude/empty-vault-atomize-z0e168`). All four artifacts and the one asset were digested by
   learn-hub's `digest-report` / `ingest-animation` into **51 atomic notes across 5 new Learn
