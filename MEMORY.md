@@ -139,7 +139,10 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   for $\mathcal{M}$-norm regularization. **First non-clinical artifact in the vault** — the topic
   is mathematics, so `comprehensive-review` (whole-*disorder* literature reviews) did not own it
   and the work was done bespoke against a written authoring contract; new MOC
-  **Sparse Regularization and Functional Analysis**, wired into `index.md`. Built by a 6-writer /
+  **Sparse Regularization and Functional Analysis**, wired into `index.md`. Merged `master` after
+  PR #33 emptied the vault a second time (that empty deleted the Obesity and Cognition MOC and its
+  two artifacts and reset `index.md`); resolved the `index.md` conflict by keeping only the new
+  MOC, so **the vault currently holds exactly one MOC and one artifact**. Built by a 6-writer /
   6-checker workflow, but **6 of 13 agents died to transient API errors** (one 500, five 529s in
   one overload burst) and a later re-run was killed by an interrupt — so Parts IV and VI were
   verified by hand in the foreground instead. Lesson worth keeping: a `write:` stage that returns
