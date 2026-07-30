@@ -4,7 +4,7 @@ created: 2026-07-09
 type: moc
 source: manual
 tags: [index]
-links: []
+links: [Obesity and Cognition]
 ---
 
 # Vault Index
@@ -14,4 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-_None yet._
+- [[Obesity and Cognition]]
