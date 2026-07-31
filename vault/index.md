@@ -4,7 +4,7 @@ created: 2026-07-09
 type: moc
 source: manual
 tags: [index]
-links: [Cognitive Enhancement and Supplements, Sparse Regularization and Functional Analysis]
+links: []
 ---
 
 # Vault Index
@@ -14,5 +14,4 @@ a MOC. Managed by the `vault-keeper` skill.
 
 ## MOCs
 
-- [[Cognitive Enhancement and Supplements]]
-- [[Sparse Regularization and Functional Analysis]]
+_None yet._

@@ -133,6 +133,25 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-07-31** — **Emptied the vault into the Learn hub** (branch
+  `claude/empty-vault-make-note-rpc26i`), the first `empty-vault` run to drain *both* remaining
+  artifacts in one pass. **The vault is now the bare scaffold: zero MOCs, zero artifacts,
+  `index.md` reset.** Landed in learn-hub as **9 chapters / 65 notes**:
+  *supplements-for-cognition-healthy-adults* → 1 standalone chapter, 8 notes; the sparse
+  regularization study guide (2,116 lines, 71 sections) → **1 book, 8 chapters, 57 notes**, one
+  chapter per Part so each lands in `digest-report`'s 6–12 band, with domains kept contiguous in
+  reading order so learn-hub's `resolveNoteNeighbours` flows I → II → … → VII. Verified before
+  deleting anything: provenance-scoped counts (`sources[]` = artifact basename) returned exactly
+  **8** and **57**, 9 topics, `notes` 2417 → 2482, all 2,482 carrying vectors, 0 dangling edges
+  out of 136 new ones, and the post-sync similarity snapshot (run #4) reported **the pair worklist
+  unchanged** — i.e. 65 new notes introduced no new duplication against a 2,400-note corpus.
+  Two traps worth keeping: (1) `PUPPETEER_EXECUTABLE_PATH` was **unset** in the cloud session,
+  the exact condition that silently wiped 462 notes' diagrams on 2026-07-30 — set it to
+  `/opt/pw-browsers/chromium` before any sync command, and confirm the bake by counting `<svg>` in
+  the generated SQL rather than trusting the log, whose `Rendered N…` line goes to *stderr* and can
+  be lost when a long run is backgrounded; (2) one unquoted `summary:` containing `": "` crashed
+  the whole `npm run sync` (where `sync:apply` would have skipped and warned) — frontmatter scalars
+  carrying a colon-space must be quoted.
 - **2026-07-30** — Filed **Sparse Regularization: from L1 Corners to Dirac Measures** (branch
   `claude/regularization-functional-analysis-grzd41`), a ~33,400-word / 71-section newcomer study
   guide covering all 25 requested topics from lasso-vs-ridge geometry through representer theorems
