@@ -11,13 +11,13 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-07-28
+## Current versions — 2026-08-06
 
 | item                  | version |
 | --------------------- | ------- |
-| marketplace catalog   | 1.15.0  |
+| marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.6.0   |
-| intent-lock           | 0.4.1   |
+| intent-lock           | 0.4.2   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
@@ -28,7 +28,8 @@ a milestone.
 | concept-animation     | 0.1.1   |
 | code-explainer        | 0.1.0   |
 | ml-concept-lab        | 0.1.0   |
-| decision-interview    | 0.1.0   |
+| decision-interview    | 0.1.1   |
+| plan-critique         | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -130,8 +131,66 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   resolutions land in a decision ledger that is never re-asked. Autonomous fallback: reversible
   → recommended default in a "Decided without you" ledger; destructive → halt with a written
   decision request. Skill + `/resolve-decisions [task or scope]`.
+- **plan-critique** — adversarial critique of an existing plan that ends in a better plan;
+  third gate in the alignment family (intent-lock = pre-build request meaning, this = an
+  existing plan artifact, decision-interview = the agent's own mid-execution decisions) and
+  the inversion of intent-lock's rule: handed a plan, proposing better IS the job — but only
+  the plan moves, never the goal. Nine lenses (goal-fit, completeness, sequencing,
+  feasibility, risk, hidden assumptions, verifiability, simplicity, alternatives), every
+  finding carries a repair or a fork; dominant repairs applied, owner-held forks resolved in
+  a relentless batched option-picker interview (uncapped rounds, dependency order,
+  recommended repair first; ends only on saturation, a user stop, or two empty rounds).
+  Verdict-first delivery: verdict → findings by severity → full revised plan under a
+  decision ledger; changes trace to findings/answers. Destructive/irreversible/outward
+  plan steps always earn a question, never a silent repair; evidence questions route to
+  pubmed-research-note; drafting-from-scratch routes to intent-lock. Autonomous fallback:
+  reversible forks take the recommended repair (`Decided without you:`), destructive ones
+  ship as marked decision points. Skill + `/critique-plan [plan-or-path]`; lens catalog in
+  references; vault opt-in only.
 
 ## Recent milestones
+
+- **2026-08-06** — Added **plan-critique 0.1.0** (fourteenth plugin; catalog → 1.16.0, branch
+  `claude/plugin-creator-plan-critique-8uu5uk`) — "critique an existing plan, find the way to
+  improve it, and interview the user relentlessly when a decision needs the user". Built via
+  plugin-creator as the **third gate in the alignment family**, completing the timeline:
+  intent-lock owns what a *request* means before work starts (and never proposes better),
+  plan-critique owns an *existing plan artifact* (where proposing better IS the job — but only
+  the plan moves, never the goal), decision-interview owns the *agent's own* mid-execution
+  decisions. Nine critique lenses (goal-fit, completeness, sequencing, feasibility, risk,
+  hidden assumptions, verifiability, simplicity, alternatives — full probe catalog in
+  `references/critique-lenses.md`) with a hard **repair-or-fork contract** on every finding
+  ("commentary is cut"); dominant repairs applied directly, owner-held forks (scope cuts,
+  deadline vs quality, risk appetite) resolved in a relentless batched option-picker
+  interview — uncapped rounds, dependency order, concrete revised-plan outcomes as options,
+  recommended repair first, ended only by saturation, a sovereign user stop, or the
+  two-empty-rounds guard; destructive/irreversible/outward-facing plan steps always earn a
+  question, never a silent repair. Verdict-first delivery (sound / sound with repairs / needs
+  rework / wrong plan for the goal → findings by severity → the **full revised plan** under a
+  decision ledger, unresolved forks marked inline); every change traces to a finding or an
+  answer. Evidence stays out of scope: factual/clinical claims inside a plan are flagged and
+  routed to pubmed-research-note, never adjudicated. Autonomous fallback mirrors
+  decision-interview (`Decided without you:` for reversible forks; destructive ones ship as
+  marked decision points). One skill + `/critique-plan [plan-or-path]` + 6 evals (Thai
+  triggers included). Defaults chosen without asking (surfaced): plugin name, command name,
+  `productivity` category, lens-catalog reference file, vault opt-in only. **Hardened by an
+  ultracode adversarial review** (14-agent workflow: 4 lenses → per-finding refutation; 24
+  raw findings, 10 verified, 10 confirmed, 0 refuted — all fixed): the abandoned-picker
+  contradiction resolved (an explicit "stop"/"LOCK" ships unresolved forks as inline
+  `[OPEN …]` markers; silence/abandonment routes to the autonomous fallback), the
+  two-empty-rounds guard got the destructive-fork carve-out, the settled-clause can no
+  longer swallow the always-fork override (a plan merely scheduling a destructive step
+  never counts as the user confirming it), the yardstick round got its own option format
+  (candidate constraint values, nothing "(Recommended)" — recommending a constraint is
+  inventing it), answers re-triage the board (a contradicted repair is never shipped
+  alongside the answer that broke it), an adopted lens-9 alternative becomes the object and
+  is re-critiqued by lenses 1–8, and the Thai triggers were moved inside route.py's
+  200-char cue window. The boundary was made **reciprocal**: intent-lock → 0.4.2 and
+  decision-interview → 0.1.1, each description + body Not-for now carving out
+  plan-critique's territory. From the review's sub-threshold tail: ramble-embedded partial
+  plans are extracted, not rejected; an unattended missing yardstick ships as an assumed
+  reading in the `Decided without you:` ledger; the fork materiality test is explicit; and
+  "executing the plan" joined the description's Not-for.
 
 - **2026-07-30** — Filed **Sparse Regularization: from L1 Corners to Dirac Measures** (branch
   `claude/regularization-functional-analysis-grzd41`), a ~33,400-word / 71-section newcomer study

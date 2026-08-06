@@ -1,0 +1,10 @@
+{
+  "name": "plan-critique",
+  "version": "0.1.0",
+  "description": "Critique an existing plan, repair what has one right answer, and resolve every fork only the plan's owner can decide in a relentless batched interview — delivering a verdict-first critique and the full revised plan.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": ["plan", "critique", "plan-review", "trade-offs", "interview", "improvement"]
+}

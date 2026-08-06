@@ -9,7 +9,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Use when the request is about… | Plugin | Route |
 | --- | --- | --- |
 | when asked to "research", "what does the literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether a drug, device, or intervention is worth using, building a… | pubmed-research-note | skill `pubmed-research-note` |
-| whenever the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ"… | intent-lock | skill `intent-lock` |
+| when the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ"… | intent-lock | skill `intent-lock` |
 | when the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time"… | intent-lock | skill `misread-capture` |
 | when the user says "make me a plugin", "create a plugin", "scaffold a plugin", "scaffold a skill/command/agent", "new plugin", "add a plugin to the marketplace", or runs /new-plugin. | plugin-creator | skill `plugin-creator` |
 | when the user says "improve my plugin", "refine this skill", "audit my plugin", "audit this skill", "tighten the trigger description", "review my plugin", "fix version parity", "polish this skill"… | plugin-creator | skill `refine-plugin` |
@@ -35,6 +35,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
 | when, mid-task, the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", or runs… | decision-interview | skill `decision-interview` |
 | Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
+| when the user presents a plan and says "critique this plan", "review my plan", "improve this plan", "วิจารณ์แผน", "ช่วยปรับแผนให้ดีขึ้น", "find weaknesses in my plan", "poke holes in my plan"… | plan-critique | skill `plan-critique` |
+| Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan | plan-critique | `/critique-plan` |
 
 ## Plugins
 
@@ -46,7 +48,7 @@ Keywords: pubmed, clinical-trials, psychiatry, evidence
 
 - **skill `pubmed-research-note`** (skill) — Answers a clinical decision from primary literature and delivers a verdict-first, quantified report shaped to the decision, not the topic.
 
-### intent-lock — productivity  _v0.4.1_
+### intent-lock — productivity  _v0.4.2_
 
 Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.
 
@@ -147,7 +149,7 @@ Keywords: machine-learning, ai, computer-science, interactive-visualization, exp
 - **skill `ml-concept-lab`** (skill) — Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file (inline CSS/SVG/Canvas/JS) in which the real algorithm runs live and the learner drive…
 - **`/visualize`** (command) — Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the vault via vault-keeper
 
-### decision-interview — productivity  _v0.1.0_
+### decision-interview — productivity  _v0.1.1_
 
 Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Sweeps the task end to end, triages by whether the answers change the work, asks with a recommended option first, and records the resolutions in a decision ledger that governs the rest of the session. The execution-phase sibling of intent-lock, which owns pre-build alignment.
 
@@ -155,3 +157,12 @@ Keywords: decisions, interview, batching, clarification, elicitation, autonomy
 
 - **skill `decision-interview`** (skill) — Mid-task decision gate — fires after the goal is locked, when execution surfaces decisions only the user can make (scope forks, trade-offs, destructive or irreversible steps, missing preferences), and resolves them all…
 - **`/resolve-decisions`** (command) — Sweep the current task for every open decision that needs the user and resolve them all in one batched interview
+
+### plan-critique — productivity  _v0.1.0_
+
+Adversarial critique of an existing plan that ends in a better plan: nine lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) find where it breaks, repairs with one right answer are applied, and every fork only the plan's owner can decide is resolved in a relentless batched option-picker interview. Verdict-first critique + the full revised plan under a decision ledger. One skill (plan-critique) + /critique-plan [plan-or-path].
+
+Keywords: plan, critique, plan-review, trade-offs, interview, improvement
+
+- **skill `plan-critique`** (skill) — Critiques an existing plan and rebuilds it stronger — runs nine adversarial lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) over a plan the user already has,…
+- **`/critique-plan`** (command) — Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan

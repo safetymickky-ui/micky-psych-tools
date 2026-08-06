@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -22,7 +22,7 @@
     {
       "name": "intent-lock",
       "source": "./plugins/intent-lock",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "description": "Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.",
       "category": "productivity",
       "keywords": [
@@ -182,7 +182,7 @@
     {
       "name": "decision-interview",
       "source": "./plugins/decision-interview",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Sweeps the task end to end, triages by whether the answers change the work, asks with a recommended option first, and records the resolutions in a decision ledger that governs the rest of the session. The execution-phase sibling of intent-lock, which owns pre-build alignment.",
       "category": "productivity",
       "keywords": [
@@ -192,6 +192,21 @@
         "clarification",
         "elicitation",
         "autonomy"
+      ]
+    },
+    {
+      "name": "plan-critique",
+      "source": "./plugins/plan-critique",
+      "version": "0.1.0",
+      "description": "Adversarial critique of an existing plan that ends in a better plan: nine lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) find where it breaks, repairs with one right answer are applied, and every fork only the plan's owner can decide is resolved in a relentless batched option-picker interview. Verdict-first critique + the full revised plan under a decision ledger. One skill (plan-critique) + /critique-plan [plan-or-path].",
+      "category": "productivity",
+      "keywords": [
+        "plan",
+        "critique",
+        "plan-review",
+        "trade-offs",
+        "interview",
+        "improvement"
       ]
     }
   ]
