@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.2 — 2026-08-06
+
+- **Reciprocal boundary with plan-critique.** The skill description's Not-for clause now
+  carves out critiquing or improving an existing plan (plan-critique), alongside the
+  existing decision-interview and misread-capture carve-outs. Phrasing tightened to fit
+  the 1024-char cap ("Use when…" canonical form; no meaning change).
+
 ## 0.4.0 — 2026-07-10
 
 - **Fixed the misread ledger.** `misread-capture` addressed the ledger as a bare

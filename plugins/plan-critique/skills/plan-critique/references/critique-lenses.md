@@ -1,7 +1,7 @@
 # Critique lenses — the nine passes
 
 Run all nine, in this order, over the whole plan — even after the first fatal finding,
-so the interview batches once. Each lens lists what it hunts, the probes to run, and the
+so the fork interview batches instead of dripping. Each lens lists what it hunts, the probes to run, and the
 classic failure it exists to catch. A lens that finds nothing reports nothing; never pad.
 
 Finding format, every lens the same:
@@ -101,6 +101,10 @@ What is the plan not taken?
   buy instead of build, half the size in half the time — and say plainly why the current
   plan beats it or loses to it. If it loses, that is a fork for the owner, not a rewrite:
   the alternative is offered, never imposed.
+- If the owner adopts the alternative, the adopted shape becomes the object: flesh out its
+  concrete steps — each tracing to that interview answer — and re-run lenses 1–8 over the
+  adopted shape before delivery. Winning the comparison is not a critique of the winner.
+  New forks this pass surfaces go back to the interview under its normal termination rules.
 - Classic catch: the plan is the first idea, formatted.
 
 ## Severity

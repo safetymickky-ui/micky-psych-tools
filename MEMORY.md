@@ -17,7 +17,7 @@ a milestone.
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.6.0   |
-| intent-lock           | 0.4.1   |
+| intent-lock           | 0.4.2   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.0   |
@@ -28,7 +28,7 @@ a milestone.
 | concept-animation     | 0.1.1   |
 | code-explainer        | 0.1.0   |
 | ml-concept-lab        | 0.1.0   |
-| decision-interview    | 0.1.0   |
+| decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
@@ -173,7 +173,24 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   decision-interview (`Decided without you:` for reversible forks; destructive ones ship as
   marked decision points). One skill + `/critique-plan [plan-or-path]` + 6 evals (Thai
   triggers included). Defaults chosen without asking (surfaced): plugin name, command name,
-  `productivity` category, lens-catalog reference file, vault opt-in only.
+  `productivity` category, lens-catalog reference file, vault opt-in only. **Hardened by an
+  ultracode adversarial review** (14-agent workflow: 4 lenses → per-finding refutation; 24
+  raw findings, 10 verified, 10 confirmed, 0 refuted — all fixed): the abandoned-picker
+  contradiction resolved (an explicit "stop"/"LOCK" ships unresolved forks as inline
+  `[OPEN …]` markers; silence/abandonment routes to the autonomous fallback), the
+  two-empty-rounds guard got the destructive-fork carve-out, the settled-clause can no
+  longer swallow the always-fork override (a plan merely scheduling a destructive step
+  never counts as the user confirming it), the yardstick round got its own option format
+  (candidate constraint values, nothing "(Recommended)" — recommending a constraint is
+  inventing it), answers re-triage the board (a contradicted repair is never shipped
+  alongside the answer that broke it), an adopted lens-9 alternative becomes the object and
+  is re-critiqued by lenses 1–8, and the Thai triggers were moved inside route.py's
+  200-char cue window. The boundary was made **reciprocal**: intent-lock → 0.4.2 and
+  decision-interview → 0.1.1, each description + body Not-for now carving out
+  plan-critique's territory. From the review's sub-threshold tail: ramble-embedded partial
+  plans are extracted, not rejected; an unattended missing yardstick ships as an assumed
+  reading in the `Decided without you:` ledger; the fork materiality test is explicit; and
+  "executing the plan" joined the description's Not-for.
 
 - **2026-07-30** — Filed **Sparse Regularization: from L1 Corners to Dirac Measures** (branch
   `claude/regularization-functional-analysis-grzd41`), a ~33,400-word / 71-section newcomer study
