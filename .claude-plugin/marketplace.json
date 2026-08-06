@@ -1,6 +1,6 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -192,6 +192,21 @@
         "clarification",
         "elicitation",
         "autonomy"
+      ]
+    },
+    {
+      "name": "plan-critique",
+      "source": "./plugins/plan-critique",
+      "version": "0.1.0",
+      "description": "Adversarial critique of an existing plan that ends in a better plan: nine lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) find where it breaks, repairs with one right answer are applied, and every fork only the plan's owner can decide is resolved in a relentless batched option-picker interview. Verdict-first critique + the full revised plan under a decision ledger. One skill (plan-critique) + /critique-plan [plan-or-path].",
+      "category": "productivity",
+      "keywords": [
+        "plan",
+        "critique",
+        "plan-review",
+        "trade-offs",
+        "interview",
+        "improvement"
       ]
     }
   ]

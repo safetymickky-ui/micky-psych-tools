@@ -1,0 +1,53 @@
+{
+  "skill_name": "plan-critique",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger-critique",
+      "prompt": "Here's my 12-week plan for migrating the clinic's records to the new EHR (attached). Critique this plan and find weaknesses in my plan before I take it to the director.",
+      "expected_output": "The skill fires. It reads the whole plan, establishes the yardstick (goal, deadline reality, resources), runs all nine lenses, applies dominant repairs, and puts owner-held forks (e.g. big-bang vs phased cutover, what slips if the deadline holds) through batched option-picker rounds until resolved or stopped. Delivers a verdict line first, findings by severity, then the full revised plan under a decision ledger.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "positive-trigger-thai",
+      "prompt": "นี่คือแผนอ่านหนังสือเตรียมสอบบอร์ดจิตเวช 6 เดือนของผม ช่วยวิจารณ์แผนและปรับแผนให้ดีขึ้นหน่อย",
+      "expected_output": "The skill fires on the Thai trigger phrases (วิจารณ์แผน / ปรับแผน). Same procedure: yardstick (exam date, hours available), nine lenses — verifiability usually bites here (activities, not outcomes, as milestones) — batched interview on forks like breadth vs depth of coverage, then verdict + revised plan, register matching the user's Thai–English code-switching.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "negative-no-plan-exists",
+      "prompt": "Plan my study schedule for the psychiatry boards — six months out, working full time.",
+      "expected_output": "Does not fire. No plan exists to critique — this is a request to draft one, which hits the 'Not for drafting a plan from a bare goal' clause. The request routes through intent-lock for alignment, the plan gets drafted, and plan-critique is offered on the draft afterwards.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "negative-mid-task-decisions",
+      "prompt": "While you're refactoring, don't keep pinging me — collect your questions and ask me everything at once.",
+      "expected_output": "Does not fire. These are the agent's own mid-task execution decisions inside a locked goal — decision-interview owns the batched sweep-and-ask there. No existing plan artifact is being critiqued.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "negative-code-review",
+      "prompt": "Critique this Python script and tell me how to improve it.",
+      "expected_output": "Does not fire. The object is code, not a plan — 'Not for reviewing code or prose'. A code review proceeds outside this skill; plan-critique would only apply to a plan about the code (e.g. a refactoring roadmap), not the source itself.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
+      "name": "negative-execute-the-plan",
+      "prompt": "Here's the migration plan we agreed on — go ahead and execute it.",
+      "expected_output": "Does not fire. The user asked for execution, not judgment. Work proceeds on the plan as written; forks that execution surfaces are swept and batched by decision-interview, not re-critiqued here.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

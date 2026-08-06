@@ -35,6 +35,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
 | when, mid-task, the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", or runs… | decision-interview | skill `decision-interview` |
 | Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
+| when the user presents a plan and says "critique this plan", "review my plan", "improve this plan", "find weaknesses in my plan", "poke holes in my plan", "stress-test my plan", "is this plan any… | plan-critique | skill `plan-critique` |
+| Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan | plan-critique | `/critique-plan` |
 
 ## Plugins
 
@@ -155,3 +157,12 @@ Keywords: decisions, interview, batching, clarification, elicitation, autonomy
 
 - **skill `decision-interview`** (skill) — Mid-task decision gate — fires after the goal is locked, when execution surfaces decisions only the user can make (scope forks, trade-offs, destructive or irreversible steps, missing preferences), and resolves them all…
 - **`/resolve-decisions`** (command) — Sweep the current task for every open decision that needs the user and resolve them all in one batched interview
+
+### plan-critique — productivity  _v0.1.0_
+
+Adversarial critique of an existing plan that ends in a better plan: nine lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) find where it breaks, repairs with one right answer are applied, and every fork only the plan's owner can decide is resolved in a relentless batched option-picker interview. Verdict-first critique + the full revised plan under a decision ledger. One skill (plan-critique) + /critique-plan [plan-or-path].
+
+Keywords: plan, critique, plan-review, trade-offs, interview, improvement
+
+- **skill `plan-critique`** (skill) — Critiques an existing plan and rebuilds it stronger — runs nine adversarial lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) over a plan the user already has,…
+- **`/critique-plan`** (command) — Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan

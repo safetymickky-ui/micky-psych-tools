@@ -149,6 +149,20 @@ vault/                             # shared knowledge vault — managed by vault
   `skills/ml-concept-lab/references/`, worked lab under `examples/`. Boundary: watch-only
   animations and clinical topics stay with concept-animation, charts of the user's own data
   with dataviz.
+- **plan-critique** — adversarial critique of an existing plan that ends in a better plan:
+  nine lenses (goal-fit, completeness, sequencing, feasibility, risk, hidden assumptions,
+  verifiability, simplicity, alternatives) find where it breaks, every finding carries a
+  repair or a fork, repairs with one right answer are applied, and every fork only the
+  plan's owner can decide (scope cuts, deadline vs quality, risk appetite) is resolved in
+  a relentless batched option-picker interview — uncapped rounds, dependency order,
+  recommended repair first, ended only by saturation, a user stop, or the two-empty-rounds
+  guard. Verdict-first delivery: verdict line → findings by severity → the full revised
+  plan under a decision ledger; every change traces to a finding or an answer, the goal
+  never moves. Third gate in the alignment family: intent-lock owns pre-build request
+  meaning, decision-interview owns the agent's own mid-execution decisions, this owns an
+  existing plan artifact. Autonomous fallback mirrors decision-interview; vault filing via
+  vault-keeper on explicit request only. One skill + `/critique-plan [plan-or-path]`; lens
+  catalog under its `skills/plan-critique/references/`.
 - **decision-interview** — mid-task decision gate: when the agent hits decisions only the
   user can make, it sweeps the task end to end (blockers, silent defaults, lookahead),
   triages against an admission threshold (destructive/irreversible/outward-facing actions
