@@ -35,7 +35,7 @@ is a claim about a pipeline until the specification space is shown.
 ## Artifacts
 
 - [[Generation Z and Generation Alpha — a psychiatric and developmental evidence review]] —
-  Tier 4 exhaustive review, 85 sources, 21 findings, 18 tables. Covers the epidemiological
+  Tier 4 exhaustive review, 86 sources, 21 findings, 22 tables. Covers the epidemiological
   shift and its partial 2021–2024 reversal; the Orben/Twenge specification dispute settled by
   scope rather than by verdict; developmental sensitivity windows (girls 11–13, boys 14–15,
   both at 19); the mediation evidence putting 48–58% of effect through problematic use and
