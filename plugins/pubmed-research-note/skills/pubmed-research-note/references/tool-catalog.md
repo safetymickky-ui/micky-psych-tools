@@ -36,7 +36,7 @@ find_related_articles · convert_article_ids · lookup_article_by_citation
 |------|-----|----------|
 | `search_articles` | Find papers. The workhorse. | `query` (field tags `[Title]`, `[Author]`, `[MeSH Terms]`, `[Publication Type]`, boolean AND/OR/NOT), `max_results`, `sort` (`relevance` / `pub_date`), `date_from` / `date_to`. No `*` wildcards, no empty query. |
 | `get_article_metadata` | Full record — **capture PMID, title, journal, year, DOI**. | `pmids: ["...", "..."]` |
-| `get_full_text_article` | PMC full text (~6M articles). Use for the 2–3 papers the verdict actually hinges on. | `pmc_ids: ["PMC..."]` |
+| `get_full_text_article` | PMC full text (~6M articles). Use for the papers the verdict actually hinges on — however many the question has; every load-bearing study owed the full per-study treatment is a candidate. | `pmc_ids: ["PMC..."]` |
 | `find_related_articles` | Close gaps; find full-text availability. | `pmids`, `link_type` |
 | `convert_article_ids` | PMID ↔ PMCID ↔ DOI. | ids |
 | `lookup_article_by_citation` | Resolve a half-remembered citation. | citation fields |

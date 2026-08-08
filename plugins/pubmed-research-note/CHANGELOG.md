@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.7.0 — 2026-08-08
+
+- **Freed the report's shape.** The verdict-first mandate and the ban on topic-domain
+  headings are gone — the report now takes whatever structure serves the question:
+  decision-shaped, topic-shaped (*Mechanism → Efficacy → Harms → Verdict*), chronological,
+  or mixed. What remains non-negotiable: an explicit, **marked** verdict must exist
+  (leading or closing), findable in seconds, with a confidence level and the one clause it
+  is not higher. The two failure directions are now the *unanswered survey* and the
+  *hollowed answer* — not the encyclopedia.
+- **Made depth contractual.** New depth contract, born from real use (reports were
+  over-summarizing): every load-bearing study is reported as a developed paragraph —
+  design, population, n, comparator, endpoint, effect size with CI, key harms — never a
+  name-plus-conclusion clause; mechanism and background are woven in wherever they help
+  the reader understand the verdict; compression is named the characteristic failure
+  mode, padding the lesser one.
+- **Removed the 6–12 source ceiling.** Sources are capped by relevance, never by count —
+  a load-bearing study is never dropped for leanness, and abstracts that add nothing are
+  still excluded.
+- **References updated to match**: `report-craft.md` rewritten around choosing the shape
+  and the depth contract (worked topic-shaped example added); `decision-brief.md` admits
+  understanding-shaped questions and drops the source ceiling; `intent-lock-pairing.md`
+  reworded; evals rewritten to test marked-verdict + depth instead of verdict-first +
+  heading bans, plus a new depth-over-compression eval.
+
 ## 1.6.0 — 2026-07-13
 
 - **Fifth engine: Firecrawl — the general-web document engine.** Load-bearing when the

@@ -11,17 +11,17 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-08-06
+## Current versions — 2026-08-08
 
 | item                  | version |
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
-| pubmed-research-note   | 1.6.0   |
+| pubmed-research-note   | 1.7.0   |
 | intent-lock           | 0.4.2   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
-| psych-paper-digest    | 0.1.0   |
-| comprehensive-review  | 0.2.0   |
+| psych-paper-digest    | 0.1.1   |
+| comprehensive-review  | 0.3.0   |
 | clinical-infographic  | 0.2.1   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
@@ -37,15 +37,18 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Plugins at a glance
 
-- **pubmed-research-note** — clinical decision from primary literature; verdict-first,
-  quantified, trial-registry-checked evidence reports whose shape follows the decision, not the
-  topic. Default output pipeline: write md → show inline → file to vault as an artifact via
-  vault-keeper; atomic notes on "atomize" only. ALWAYS runs intent-lock first as a mandatory
-  Step 0 gate (explicit opt-out only — "just search"). **No fixed frames, no fixed template**
-  (removed in 1.5.0): the interview builds a bespoke *decision brief* (decision · verdict's
-  shape · what settles it · what's counted · mandatory checks · anti-goal), and the report
-  takes whatever shape the decision demands, guided by principles not rules. Delegates vault
-  writes to vault-keeper.
+- **pubmed-research-note** — answers a clinical question from primary literature; quantified,
+  adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full
+  per-study depth. Default output pipeline: write md → show inline → file to vault as an
+  artifact via vault-keeper; atomic notes on "atomize" only. ALWAYS runs intent-lock first as
+  a mandatory Step 0 gate (explicit opt-out only — "just search"). **No fixed frames, no fixed
+  template, no fixed shape** (frames/template removed in 1.5.0; the verdict-first mandate,
+  topic-heading ban, and 6–12 source ceiling removed in 1.7.0): the interview builds a bespoke
+  *decision brief*, and the report takes whatever shape serves the question — decision-shaped
+  or topic-shaped — under a binding depth contract (load-bearing studies as developed
+  paragraphs, mechanism woven in, sources capped by relevance never count; the two failure
+  directions are the unanswered survey and the hollowed answer). Delegates vault writes to
+  vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
   Ships `intent-lock` (the interview) + `misread-capture` (the compounding misread ledger).
   Mid-task execution forks route onward to decision-interview.
@@ -60,8 +63,11 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 - **psych-paper-digest** — watchlist literature surveillance; sweeps PubMed + ClinicalTrials.gov
   since `last_swept`, triages Act / Read / Suppressed, never adjudicates (Act items hand off to
   pubmed-research-note). Skill + `/digest [domain]`; state in `.psych-paper-digest.json`.
-- **comprehensive-review** — whole-disorder academic reviews, textbook-chapter breadth across a
-  ten-section arc (definition → controversies), never collapsed into Rx-only. Intent-lock is the
+- **comprehensive-review** — whole-disorder academic reviews, textbook-chapter breadth across
+  ten coverage domains (definition → controversies), never silently narrowed to Rx-only.
+  **Coverage is the contract, structure is free** (0.3.0): the arc is a coverage map, the
+  outline is designed per topic (reorder/split/merge/nest, H3 anywhere, subdivide-don't-cut),
+  load-bearing studies get full per-study depth, no source ceiling. Intent-lock is the
   mandatory Step 0 gate; own PubMed + CT.gov pipeline; deliverable is an md file filed to the
   vault via vault-keeper (chat gets the Close, not the chapter). Skill + `/comprehensive-review
   [topic]`. Decisions still route to pubmed-research-note.
@@ -149,6 +155,31 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   references; vault opt-in only.
 
 ## Recent milestones
+
+- **2026-08-08** — **Freed the report shape and made depth contractual** in the two literature
+  writers: **pubmed-research-note → 1.7.0** and **comprehensive-review → 0.3.0** (branch
+  `claude/plugin-pubmed-research-23gnyf`), via a refine-plugin pain-point interview with the
+  owner. The pain: both plugins' output was *too rigidly structured* and *over-summarized* —
+  reports needed rework and re-research. The owner picked "make structure fully adaptive" over
+  a depth-dial or audit-first. What changed: **PRN** dropped the verdict-first mandate (a
+  marked verdict must exist — leading or closing — with confidence; the two failure directions
+  are now the *unanswered survey* and the *hollowed answer*), unbanned topic-domain headings
+  (Mechanism/Adverse effects are legitimate structure, chosen not copied), and removed the
+  6–12 source ceiling; **CR** demoted the ten-section arc to a coverage map (outline designed
+  per topic; every domain present or consciously excluded in the preface; treatment never
+  absorbs the review), dropped H3-only-in-Treatment and "cut, don't chunk" (subdivide, don't
+  amputate), and removed the 15–30 source budget (which past reviews had already repeatedly
+  been forced to exceed). Both gained the same **depth contract**: load-bearing studies as
+  developed paragraphs (design, population, n, comparator, endpoint, effect size + CI),
+  mechanism/background woven in, sources capped by relevance never count, compression named
+  the characteristic failure mode. **The PRN↔CR boundary is now scope, not shape** (one
+  question vs whole disorder) — routing carve-outs unchanged. References rewritten
+  (report-craft, decision-brief, intent-lock-pairing, review-arc), evals retargeted + new
+  depth/adaptive-structure cases, CR gained its missing README + CHANGELOG (audit gap),
+  descriptions retrimmed under the 1024 cap, ROUTING.md regenerated, `validate.py` clean.
+  Collateral: **psych-paper-digest → 0.1.1** (its description + README described PRN's output
+  as "verdict-first" — retagged to the new contract), root README count fixed (fourteen
+  plugins) and its PRN blurb updated, PRN's atomic-note-template register note reworded.
 
 - **2026-08-06** — Added **plan-critique 0.1.0** (fourteenth plugin; catalog → 1.16.0, branch
   `claude/plugin-creator-plan-critique-8uu5uk`) — "critique an existing plan, find the way to

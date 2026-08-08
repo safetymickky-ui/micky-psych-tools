@@ -14,11 +14,11 @@ This plugin fills the temporal gap next to `pubmed-research-note`:
 |---|---|---|
 | Trigger | a decision you're about to make | time passing |
 | Scope | one question, searched deep | every watchlist domain, swept shallow |
-| Output | verdict-first decision report | triaged digest |
+| Output | marked-verdict, full-depth evidence report | triaged digest |
 | Adjudicates? | yes — that is its job | **never** — it names the decision an item raises and hands it off |
 
 Every practice-changing item in the digest ends with a handoff: run `pubmed-research-note`
-on the decision it raises to get the full verdict-first report.
+on the decision it raises to get the full evidence report and its verdict.
 
 ## The three tiers
 

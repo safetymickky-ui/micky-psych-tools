@@ -5,7 +5,7 @@
       "id": 1,
       "name": "positive-trigger",
       "prompt": "Write me a comprehensive review of intermittent explosive disorder",
-      "expected_output": "The skill fires, chains to intent-lock first to lock audience/emphasis/length, then covers the full arc (definition, epidemiology, pathophysiology, clinical features, diagnosis, differential/comorbidity, treatment across all modalities with the ClinicalTrials.gov check, special populations, prognosis, controversies), writes one md file, and files it to the vault via vault-keeper under the disorder's MOC. Chat shows only the Close summary, not the whole chapter.",
+      "expected_output": "The skill fires, chains to intent-lock first to lock audience/emphasis/length, then covers every coverage domain (definition, epidemiology, pathophysiology, clinical features, diagnosis, differential/comorbidity, treatment across all modalities with the ClinicalTrials.gov check, special populations, prognosis, controversies) — with the chapter's outline designed for the topic rather than forced into a fixed skeleton, load-bearing studies given full per-study detail, writes one md file, and files it to the vault via vault-keeper under the disorder's MOC. Chat shows only the Close summary, not the whole chapter.",
       "files": [],
       "assertions": []
     },
@@ -13,7 +13,7 @@
       "id": 2,
       "name": "negative-trigger",
       "prompt": "Should I use prazosin for PTSD nightmares in my clinic patients?",
-      "expected_output": "Does not fire — this is a single clinical decision ('should I use X for Y'), which the Not-for clause routes to pubmed-research-note for a verdict-first evidence report.",
+      "expected_output": "Does not fire — this is a single clinical decision ('should I use X for Y'), which the Not-for clause routes to pubmed-research-note for an evidence report.",
       "files": [],
       "assertions": []
     },
@@ -22,6 +22,22 @@
       "name": "negative-trigger-surveillance",
       "prompt": "Anything new in the literature on my watchlist this week?",
       "expected_output": "Does not fire — windowed multi-domain surveillance belongs to psych-paper-digest, per the Not-for clause.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "adaptive-structure-coverage-held",
+      "prompt": "Comprehensive review of deep brain stimulation in psychiatry — structure it however makes sense for a device, don't force the disorder outline.",
+      "expected_output": "The skill designs a device-shaped outline (e.g. device class → mechanism → patient selection → efficacy by indication → durability → pipeline) rather than forcing the classic disorder order — reordering, renaming, splitting, and nesting are all legal, H3/H4 anywhere. What still holds: every coverage domain is present somewhere or consciously excluded and named in the preface; treatment/efficacy coverage does not absorb the review; the registry check runs; load-bearing trials carry design, population, n, comparator, endpoint, and effect size with CI as developed paragraphs; no section (other than definition/nosology) lacks a number; sources are capped by relevance, not a count. FAILS if a domain silently vanishes or if the free structure is used as cover for a treatment-only essay.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "depth-over-compression",
+      "prompt": "Comprehensive review of treatment-resistant schizophrenia — make it the reference I actually study from, not a summary.",
+      "expected_output": "The depth contract governs: the pivotal trials and definitive cohorts each get a developed paragraph (design, population, n, comparator, endpoint, effect size with CI) — never a name plus a conclusion; mechanism and background are woven into the narrative so the chapter teaches rather than lists; there is no source ceiling — every source that changes or deepens a section is kept, and none is dropped for bibliography tidiness. A long section is subdivided with sub-headings, not amputated. Coverage still spans all domains; prose stays clean of inline citations with one-line DOI Sources.",
       "files": [],
       "assertions": []
     }

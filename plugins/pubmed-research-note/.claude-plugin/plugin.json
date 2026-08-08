@@ -1,7 +1,7 @@
 {
   "name": "pubmed-research-note",
-  "version": "1.6.0",
-  "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.",
+  "version": "1.7.0",
+  "description": "Answers a clinical question from primary literature. Quantified, adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full per-study depth, in whatever shape serves the question \u2014 decision-shaped or topic-shaped. Runs the intent-lock plugin first to lock the question, then renders the report inline and files it to the vault by default; atomic notes on request.",
   "author": {
     "name": "Thanawat Suharit"
   },

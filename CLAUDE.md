@@ -65,11 +65,12 @@ vault/                             # shared knowledge vault — managed by vault
 
 ## Plugins
 
-- **pubmed-research-note** — clinical decision from primary literature; verdict-first evidence
-  reports whose shape follows the decision, not the topic; runs intent-lock first to build a
-  bespoke decision brief (no fixed frames); five engines (PubMed backbone, CT.gov, Open
-  Library, Wikipedia, firecrawl for general-web documents — labels, guidelines); delegates
-  vault saving to vault-keeper.
+- **pubmed-research-note** — answers a clinical question from primary literature; quantified,
+  adjudicated evidence reports with a clearly marked verdict and full per-study depth, in
+  whatever shape serves the question (decision-shaped or topic-shaped — no fixed frames, no
+  fixed shape); runs intent-lock first to build a bespoke decision brief; five engines
+  (PubMed backbone, CT.gov, Open Library, Wikipedia, firecrawl for general-web documents —
+  labels, guidelines); delegates vault saving to vault-keeper.
 - **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
 - **plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS marketplace
   (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation), and
@@ -91,8 +92,10 @@ vault/                             # shared knowledge vault — managed by vault
   file by default). One skill + `/digest [domain]` command; config + `last_swept` state in
   `.psych-paper-digest.json`.
 - **comprehensive-review** — whole-disorder academic literature reviews at textbook-chapter
-  breadth: a ten-section arc from definition to controversies, never collapsed into a
-  treatment-only report. Intent-lock is the mandatory Step 0 gate; searches PubMed +
+  breadth: ten coverage domains from definition to controversies, with the chapter's
+  structure designed per topic (coverage is the contract, structure is free) and
+  load-bearing studies in full per-study depth — never silently narrowed to a treatment
+  essay. Intent-lock is the mandatory Step 0 gate; searches PubMed +
   ClinicalTrials.gov itself (guideline/regulator full texts via firecrawl when a section
   needs them); the deliverable is an md file filed to the vault via vault-keeper.
   Decisions route to pubmed-research-note. One skill + `/comprehensive-review [topic]` command.

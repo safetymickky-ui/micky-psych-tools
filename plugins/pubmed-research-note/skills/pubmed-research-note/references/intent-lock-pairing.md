@@ -7,9 +7,9 @@ copy of it. Never bundle, never re-implement, never paraphrase its phases here.
 
 Both skills exist because of the same fact: **the user leaves the tab.** They ask, they close
 the window, and they return to finished output. `intent-lock` protects the window before the
-work; the verdict-first report protects the reading after it. Run alone, each has a blind spot
-the other covers — an interview that produces an encyclopedia, or a perfectly-spined report
-answering a question nobody asked.
+work; the marked-verdict, full-depth report protects the reading after it. Run alone, each has
+a blind spot the other covers — an interview that produces an unanswered survey, or a
+beautifully argued report answering a question nobody asked.
 
 ## Trigger rule
 
@@ -46,8 +46,10 @@ At `GOAL UNIFIED`, these are closed. Search cannot begin until all four exist �
 *what-the-user-wants* half of the decision brief (the evidence-side slots you derive yourself;
 see `references/decision-brief.md`):
 
-1. **The decision** — the concrete thing that will be done differently, in one sentence. Never
-   the topic.
+1. **The question** — the concrete thing that will be done, or understood, differently, in
+   one sentence. Never the bare topic. (A pure understanding question is legitimate; the
+   slot then holds the understanding sought and the use it will be put to — see
+   `references/decision-brief.md`.)
 2. **The verdict's shape** — what a good answer physically looks like for this decision (a
    dose, a build/don't-with-conditions, a true/false/unsettled, a spoken sentence, a
    probability). Named for this request, not chosen from a menu.
@@ -72,8 +74,9 @@ reading, and it wastes the only correction window they had.
 
 `intent-lock` Phase 3 says the assumptions are the first thing the user reads. In this skill's
 default runtime the deliverable is a **file**, and the chat recap is two lines — so the
-`Assumed / Reframed / Skipped` block goes **inside the report**, directly under the date line
-and above the verdict. It does not go only in the chat, where it will scroll away unread.
+`Assumed / Reframed / Skipped` block goes **inside the report**, directly under the date
+line, before the body — wherever the chosen shape then places the verdict. It does not go
+only in the chat, where it will scroll away unread.
 
 When intent-lock did not run, that block is replaced by one line naming the decision and the
 reading it beat. The reader must always know which question was answered.
