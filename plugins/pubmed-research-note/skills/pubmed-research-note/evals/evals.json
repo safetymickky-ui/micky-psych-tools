@@ -53,7 +53,7 @@
       "id": 7,
       "name": "atomize-gate-open",
       "prompt": "Look up the evidence on lithium for suicide prevention in bipolar disorder, then atomize it for my vault.",
-      "expected_output": "Report AND an atomic note produced. The note uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. To create it, the skill follows atomic-note-template.md to assemble title (Concept — Qualifier) and body, then HANDS OFF to vault-keeper rather than acting on the vault itself: it passes title, body, target type (note/artifact), suggested MOC topic, source-skill identity/tags, plus optional extra frontmatter fields (sources with PMID/DOI, board_pearls, review_count: 0, last_reviewed, aliases) as a flat map. The skill itself never dedup-greps the vault, never resolves a vault path, and never writes YAML frontmatter or content into vault/ directly — vault-keeper owns paths, dedup, MOC wiring, and the index, and reports back what it did. The report file itself still lands per the default (working directory, or report_dir from .pubmed-research-note.json) unless the user also wants the report kept in the vault, in which case it too is handed to vault-keeper as an artifact. No fabricated vault path is ever printed by this skill.",
+      "expected_output": "Report AND an atomic note produced. The note uses ordinary concept headings (Mechanism, Dosing, Efficacy) because a note has no decision to spine on. To create it, the skill follows atomic-note-template.md to assemble title (Concept — Qualifier) and body, then HANDS OFF to vault-keeper rather than acting on the vault itself: it passes title, body, target type (note/artifact), suggested MOC topic, source-skill identity/tags, plus optional extra frontmatter fields (sources with PMID/DOI, board_pearls, review_count: 0, last_reviewed, aliases) as a flat map. The skill itself never dedup-greps the vault, never resolves a vault path, and never writes YAML frontmatter or content into vault/ directly — vault-keeper owns paths, dedup, MOC wiring, and the index, and reports back what it did. The report file still lands per the default write → show → file pipeline: written to the working directory (or report_dir from .pubmed-research-note.json), shown inline, AND handed to vault-keeper as an artifact by default — 'atomize' adds the atomic-note handoff on top; it does not gate the report's own vault filing. No fabricated vault path is ever printed by this skill.",
       "files": [],
       "assertions": []
     },
@@ -107,7 +107,7 @@
     },
     {
       "id": 14,
-      "name": "does-not-chain-on-quick-check",
+      "name": "quick-check-intent-lock-self-skips",
       "prompt": "Is prazosin still considered first-line for PTSD nightmares?",
       "expected_output": "intent-lock self-skips the questions: the decision is obvious and attached, cost of a wrong reading is one reading. Searches immediately without an interview, ledger, or convergence gate appearing to the user. FAILS if ad-hoc clarifying questions are asked before searching.",
       "files": [],
@@ -125,7 +125,7 @@
       "id": 16,
       "name": "vault-artifact-without-atomize",
       "prompt": "Research vortioxetine for anhedonia in MDD and save the report into my vault, not just the working directory.",
-      "expected_output": "Vault mode triggers on the explicit request to save into the vault (per 'Where output goes' rule 2), independent of atomize. The skill hands the finished report to vault-keeper as an artifact — passing title, body, target type = artifact, and suggested MOC topic — rather than resolving a vault path, dedup-grepping, or writing frontmatter itself; vault-keeper owns placement, dedup, MOC wiring, and the index and is the one that reports back where it landed. Does NOT produce atomic notes: the word 'atomize'/'ทำโน้ต' was never said, so the atomize gate stays closed and only the report itself is handed off.",
+      "expected_output": "The explicit 'save into my vault' request is redundant with the default — filing to the vault is step 3 of the write → show → file pipeline and runs on every request absent an opt-out; it is independent of atomize either way. The skill hands the finished report to vault-keeper as an artifact — passing title, body, target type = artifact, and suggested MOC topic — rather than resolving a vault path, dedup-grepping, or writing frontmatter itself; vault-keeper owns placement, dedup, MOC wiring, and the index and is the one that reports back where it landed. Does NOT produce atomic notes: the word 'atomize'/'ทำโน้ต' was never said, so the atomize gate stays closed and only the report itself is handed off.",
       "files": [],
       "assertions": []
     },

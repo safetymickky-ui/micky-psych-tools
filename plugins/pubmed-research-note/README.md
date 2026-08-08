@@ -78,8 +78,9 @@ written by default:
 ```
 
 If absent, reports land in the working directory. See "Where output goes" in
-`skills/pubmed-research-note/SKILL.md` for the full precedence (working directory /
-`report_dir` → vault mode → no-filesystem inline render).
+`skills/pubmed-research-note/SKILL.md` for the full pipeline (write to the working
+directory / `report_dir` → show inline → file to the vault via vault-keeper by default;
+no-filesystem sessions render inline and state that nothing was written or filed).
 
 ## Vault handoff
 

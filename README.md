@@ -24,10 +24,11 @@ git remote add origin git@github.com:<you>/micky-psych-tools.git && git push -u 
 Relative `source` paths (`./plugins/…`) resolve only when the marketplace is added via git or
 a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
-The examples above install `pubmed-research-note`; swap in any of the other eleven —
+The examples above install `pubmed-research-note`; swap in any of the other thirteen —
 `intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
-`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, `code-explainer`, or
-`ml-concept-lab` (or any future plugin) by name — the commands are identical for all of them.
+`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, `code-explainer`,
+`ml-concept-lab`, `decision-interview`, or `plan-critique` (or any future plugin) by name —
+the commands are identical for all of them.
 
 ## Update it
 
@@ -101,3 +102,9 @@ Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/ma
   runs live and the learner drives it. Every number is computed rather than drawn, a self-check
   panel asserts the algorithm's invariants on screen, and the controls reach the regime where it
   breaks. Verified by being driven headless, then filed as a vault asset via `vault-keeper`.
+- **decision-interview** — mid-task decision gate: sweeps the task for every decision only the
+  user can make and resolves them all in one batched option-picker interview, recorded in a
+  decision ledger. The execution-phase sibling of `intent-lock`.
+- **plan-critique** — adversarial nine-lens critique of an existing plan that ends in a better
+  plan: repairs with one right answer are applied, owner-held forks are resolved in a batched
+  interview, and the full revised plan ships under a decision ledger.
