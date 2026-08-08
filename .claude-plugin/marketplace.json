@@ -9,8 +9,8 @@
     {
       "name": "pubmed-research-note",
       "source": "./plugins/pubmed-research-note",
-      "version": "1.6.0",
-      "description": "Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.",
+      "version": "1.7.0",
+      "description": "Answers a clinical question from primary literature. Quantified, adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full per-study depth, in whatever shape serves the question — decision-shaped or topic-shaped. Runs the intent-lock plugin first to lock the question, then renders the report inline and files it to the vault by default; atomic notes on request.",
       "category": "research",
       "keywords": [
         "pubmed",
@@ -63,7 +63,7 @@
     {
       "name": "psych-paper-digest",
       "source": "./plugins/psych-paper-digest",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.",
       "category": "research",
       "keywords": [
@@ -78,8 +78,8 @@
     {
       "name": "comprehensive-review",
       "source": "./plugins/comprehensive-review",
-      "version": "0.2.0",
-      "description": "Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.",
+      "version": "0.3.0",
+      "description": "Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across every coverage domain (epidemiology to prognosis), with the chapter's structure designed to fit the topic and load-bearing studies in full per-study depth, never silently narrowed to a treatment essay. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.",
       "category": "research",
       "keywords": [
         "psychiatry",

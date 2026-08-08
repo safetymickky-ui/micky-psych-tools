@@ -5,10 +5,11 @@ vault note.** The report is the default and only deliverable. Never produce a no
 the topic "seems noteworthy" — an unrequested atomic note is clutter with a `review_count`
 nobody will ever increment.
 
-Note the register shift: the *report* is a verdict-first decision instrument, read once and
-discarded. The *note* is the opposite — a durable, atomic, reviewable unit. Do not carry the
-report's structure across. Re-atomize the content, and here the ordinary topic headings
-(Mechanism, Dosing, Side Effects) are correct, because a note has no decision to spine on.
+Note the register shift: the *report* is a full-depth answer to one question, whatever shape
+it took. The *note* is a different unit — durable, atomic, reviewable, one idea each. Do not
+carry the report's structure across. Re-atomize the content into one-idea notes with ordinary
+concept headings (Mechanism, Dosing, Side Effects) — a note spines on its concept, not on the
+report's question.
 
 ## One concept per note
 

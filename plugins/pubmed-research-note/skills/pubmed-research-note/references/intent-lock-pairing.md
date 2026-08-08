@@ -7,9 +7,9 @@ copy of it. Never bundle, never re-implement, never paraphrase its phases here.
 
 Both skills exist because of the same fact: **the user leaves the tab.** They ask, they close
 the window, and they return to finished output. `intent-lock` protects the window before the
-work; the verdict-first report protects the reading after it. Run alone, each has a blind spot
-the other covers — an interview that produces an encyclopedia, or a perfectly-spined report
-answering a question nobody asked.
+work; the marked-verdict, full-depth report protects the reading after it. Run alone, each has
+a blind spot the other covers — an interview that produces an unanswered survey, or a
+beautifully argued report answering a question nobody asked.
 
 ## Trigger rule
 

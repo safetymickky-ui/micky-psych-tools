@@ -1,9 +1,11 @@
 # pubmed-research-note
 
-Research a psychiatry or biomedical topic from primary literature and get back a
-verdict-first, quantified evidence report — not an encyclopedia article. The report answers
-a decision — shown inline and filed to the vault by default; atomic notes are opt-in,
-produced only on "atomize".
+Research a psychiatry or biomedical question from primary literature and get back a
+quantified, adjudicated evidence report with a clearly marked verdict and the full evidence
+behind it — shown inline and filed to the vault by default; atomic notes are opt-in,
+produced only on "atomize". The report takes whatever shape serves the question —
+decision-shaped, topic-shaped, or mixed — and load-bearing studies are reported in full
+per-study detail, never compressed to clauses.
 
 ## The decision brief — built, not chosen
 
@@ -11,7 +13,8 @@ There is no fixed set of frames. Every request is turned into a bespoke **decisi
 before any search runs, built fresh from the same anatomy every good decision shares
 (`skills/pubmed-research-note/references/decision-brief.md`):
 
-- **The decision** — what the user will do differently, in one sentence. Never the topic.
+- **The question** — what the user will do, or understand, differently, in one sentence.
+  Never a bare topic.
 - **The verdict's shape** — what a good answer physically looks like for *this* decision (a
   dose + what not to promise; a build/don't + conditions in the service's units; a
   true/false/unsettled + why; a sentence you can say aloud + its expiry; a probability + a
@@ -27,13 +30,17 @@ brief; the skill derives the evidence-side slots. If a request names a topic wit
 or carries two readings that tie on cost, the interview is where that gets settled rather than
 guessed — see `skills/pubmed-research-note/references/intent-lock-pairing.md`.
 
-## The report — shaped to the decision
+## The report — shaped to serve the question
 
-There is no fixed template either. The report is the verdict shown its working, and it takes
-whatever shape carries *this* decision from evidence to action in the fewest sections that
-earn their place — headings minted from the decision, never the topic; verdict first; numbers
-in every section; disagreements adjudicated, not listed; as long as the decision needs and no
-longer. The full guide is `skills/pubmed-research-note/references/report-craft.md`.
+There is no fixed template and no mandated shape. The report is the answer shown its
+working, at the depth the evidence deserves: an explicit, marked verdict (leading or
+closing — a skimmer finds it in seconds) with its confidence level; structure chosen per
+report — topic-domain headings like *Mechanism* or *Adverse effects* are legitimate
+whenever they organize the evidence best; numbers in every section, with load-bearing
+studies given full per-study detail (design, population, n, comparator, endpoint, effect
+size with CI); mechanism and background woven in wherever they illuminate; disagreements
+adjudicated, not listed; sources capped by relevance, never by count. The full guide is
+`skills/pubmed-research-note/references/report-craft.md`.
 
 ## Source engines
 

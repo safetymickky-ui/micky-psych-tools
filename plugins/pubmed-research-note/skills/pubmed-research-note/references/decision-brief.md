@@ -13,16 +13,20 @@ The interview (or, on an explicit opt-out, you) fixes the first four slots — t
 
 ---
 
-## 1. The decision — what will be done differently
+## 1. The question — what will be done, or understood, differently
 
-One sentence. Not the topic, the **decision**: the concrete thing that changes depending on
+One sentence. Not the topic, the **question**: the concrete thing that changes depending on
 the answer. "Prazosin for this patient's PTSD nightmares this afternoon" is a decision.
-"Prazosin in PTSD" is a topic, and a topic has no answer — only a survey, which is the thing
-this skill refuses to produce.
+"Prazosin in PTSD" is a bare topic, and a bare topic has no answer until it is turned into a
+question. Usually the question is a decision. A pure understanding question is also
+legitimate — "understand the ketamine evidence well enough to brief the department" — and
+then this slot holds the understanding sought *and the use it will be put to*, which is what
+keeps the search targeted.
 
-If you cannot write the decision as a sentence with a verb the user will act on, the request
-is still a topic. That is not yours to resolve by guessing — it is exactly what intent-lock is
-there to settle. Go back to Step 0.
+If you cannot write the question as a sentence — a decision with a verb the user will act
+on, or an understanding with a named use — the request is still a bare topic. That is not
+yours to resolve by guessing — it is exactly what intent-lock is there to settle. Go back to
+Step 0.
 
 ## 2. The verdict's shape — what a good answer physically looks like
 
@@ -87,26 +91,30 @@ These are what you hunt for — not "evidence about the topic" in general.
 
 Name the specific failure this decision invites, so the report can dodge it by design. The
 most common: efficacy in a specialist RCT population generalising silently to a Klaeng OPD
-patient with three comorbidities and no monitoring; the encyclopedia that answers the topic
-instead of the decision; the balanced catalogue that lists both sides of a disagreement and
-adjudicates neither.
+patient with three comorbidities and no monitoring; the survey that catalogues the topic and
+never answers the question; the balanced catalogue that lists both sides of a disagreement
+and adjudicates neither; the answer hollowed by compression — a verdict whose load-bearing
+trials arrive as clauses instead of studies.
 
 ---
 
 ## When the request carries two readings
 
-Do not straddle. A brief built for two decisions serves neither and reverts to the
-encyclopedia — the exact failure this skill exists to prevent. Pick the reading whose **wrong
-answer costs more**, build the brief for that one, and declare the choice in a single line
-under the title (which reading you took, and the one it beat). If the two readings genuinely
+Do not straddle. A brief built for two questions serves neither — the report answers both
+halfway and neither fully, which is the unanswered survey by another route. Pick the reading
+whose **wrong answer costs more**, build the brief for that one, and declare the choice in a
+single line under the title (which reading you took, and the one it beat). If the two readings genuinely
 tie on cost, or the request names a topic with no decision at all, that is not yours to resolve
 by guessing — hand it back to intent-lock, which exists precisely to settle it.
 
 ## How the brief drives everything downstream
 
-- **The search** hunts the evidence named in slots 3–5, runs the mandatory checks, and stops
-  at 6–12 sources that actually bear on the decision — not 40 that bear on the topic.
-- **The report** is shaped by slots 1–2: the verdict takes the form named in slot 2 and leads;
-  the body is built from the two-to-four questions the decision actually turns on; the sources
-  are compressed to one auditable line each. See
-  [report-craft.md](report-craft.md).
+- **The search** hunts the evidence named in slots 3–5, runs the mandatory checks, and
+  gathers **every source that genuinely bears on the question — capped by relevance, never
+  by count.** A load-bearing study is never dropped to keep the report lean; an abstract
+  that neither changes nor deepens the answer is never kept to look thorough.
+- **The report** answers slot 1 in the form named in slot 2 — explicitly marked, wherever
+  the chosen shape places it. The brief *informs* the report's shape; it no longer dictates
+  it — structure is chosen for the question and the reader, topic-shaped sections included,
+  and load-bearing studies get the full per-study treatment. See
+  [report-craft.md](report-craft.md) for choosing the shape and the depth contract.

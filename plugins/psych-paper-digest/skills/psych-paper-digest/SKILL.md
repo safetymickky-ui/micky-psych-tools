@@ -8,7 +8,7 @@ description: >-
   "อัปเดตงานวิจัย", "มีเปเปอร์ใหม่ไหม", runs /digest, or asks to manage the watchlist ("add X
   to my watchlist", "show my watchlist"). Initializes its .psych-paper-digest.json config on
   first run. Triage only, never adjudication: each practice-changing item names the decision
-  it raises and offers a pubmed-research-note handoff for the verdict-first report. NOT for:
+  it raises and offers a pubmed-research-note handoff for the full evidence report. NOT for:
   answering a clinical decision or researching one named topic (pubmed-research-note);
   non-biomedical monitoring (deep-research); writing into the vault directly (content is
   handed to vault-keeper on explicit request only).

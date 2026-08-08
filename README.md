@@ -59,10 +59,11 @@ characters), version parity between a plugin's manifest and its marketplace entr
 
 ## Plugins
 
-Twelve plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
+Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/marketplace.json`:
 
-- **pubmed-research-note** — answers a clinical decision from primary literature. Verdict-first,
-  quantified, trial-registry-checked evidence reports. Runs `intent-lock` first on every
+- **pubmed-research-note** — answers a clinical question from primary literature. Quantified,
+  adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full
+  per-study depth, in whatever shape serves the question. Runs `intent-lock` first on every
   request, and delegates vault saving to `vault-keeper`.
 - **intent-lock** — pre-build alignment gate. Interrogates a request until it has exactly one
   reading, then builds it.

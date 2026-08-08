@@ -9,5 +9,6 @@ Run the `comprehensive-review` skill now.
   explosive disorder`) → seed the review with it.
 - `$ARGUMENTS` empty → ask which disorder or topic to review, then proceed.
 
-The skill owns the whole procedure — intent-lock gate → arc → per-section search → write →
-file to the vault via vault-keeper. This command is only the manual trigger for it.
+The skill owns the whole procedure — intent-lock gate → coverage map + designed outline →
+per-domain search → write → file to the vault via vault-keeper. This command is only the
+manual trigger for it.

@@ -1,7 +1,7 @@
 {
   "name": "comprehensive-review",
-  "version": "0.2.0",
-  "description": "Whole-disorder academic literature reviews of psychiatric topics \u2014 textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Output is an md file filed to the vault via vault-keeper.",
+  "version": "0.3.0",
+  "description": "Whole-disorder academic literature reviews of psychiatric topics \u2014 textbook-chapter breadth across every coverage domain (epidemiology to prognosis), with the chapter's structure designed to fit the topic and load-bearing studies in full per-study depth, never silently narrowed to a treatment essay. Output is an md file filed to the vault via vault-keeper.",
   "author": {
     "name": "Thanawat Suharit (Micky)"
   },

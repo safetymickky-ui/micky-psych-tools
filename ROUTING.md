@@ -8,7 +8,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 | Use when the request is about… | Plugin | Route |
 | --- | --- | --- |
-| when asked to "research", "what does the literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether a drug, device, or intervention is worth using, building a… | pubmed-research-note | skill `pubmed-research-note` |
+| when asked to "research", "what does the literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether a drug or intervention is worth using, building a service on, or… | pubmed-research-note | skill `pubmed-research-note` |
 | when the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ"… | intent-lock | skill `intent-lock` |
 | when the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time"… | intent-lock | skill `misread-capture` |
 | when the user says "make me a plugin", "create a plugin", "scaffold a plugin", "scaffold a skill/command/agent", "new plugin", "add a plugin to the marketplace", or runs /new-plugin. | plugin-creator | skill `plugin-creator` |
@@ -40,13 +40,13 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.6.0_
+### pubmed-research-note — research  _v1.7.0_
 
-Answers a clinical decision from primary literature. Verdict-first, quantified, trial-registry-checked evidence reports whose shape follows the decision, not the topic. Runs the intent-lock plugin first to build the decision, then renders the report inline and files it to the vault by default; atomic notes on request.
+Answers a clinical question from primary literature. Quantified, adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full per-study depth, in whatever shape serves the question — decision-shaped or topic-shaped. Runs the intent-lock plugin first to lock the question, then renders the report inline and files it to the vault by default; atomic notes on request.
 
 Keywords: pubmed, clinical-trials, psychiatry, evidence
 
-- **skill `pubmed-research-note`** (skill) — Answers a clinical decision from primary literature and delivers a verdict-first, quantified report shaped to the decision, not the topic.
+- **skill `pubmed-research-note`** (skill) — Answers a clinical question from primary literature — a quantified, adjudicated evidence report with a clearly marked verdict and full per-study depth, in whatever shape serves the question (decision-shaped or topic-sha…
 
 ### intent-lock — productivity  _v0.4.2_
 
@@ -79,7 +79,7 @@ Keywords: vault, obsidian, knowledge, notes, index, moc
 - **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
 - **`/empty-vault`** (command) — Empty the shared vault into the Learn hub — move, verify, then delete; whole vault or one topic passed as argument
 
-### psych-paper-digest — research  _v0.1.0_
+### psych-paper-digest — research  _v0.1.1_
 
 Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.
 
@@ -88,13 +88,13 @@ Keywords: pubmed, digest, psychiatry, surveillance, clinical-trials, current-awa
 - **skill `psych-paper-digest`** (skill) — Sweeps every domain on the user's watchlist for literature published since the last sweep and delivers a triaged, read-once digest — practice-changing first, then worth-reading, plus registry trial readouts; noise suppr…
 - **`/digest`** (command) — Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument
 
-### comprehensive-review — research  _v0.2.0_
+### comprehensive-review — research  _v0.3.0_
 
-Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across the full arc (epidemiology to prognosis), never collapsed into a treatment-only report. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.
+Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across every coverage domain (epidemiology to prognosis), with the chapter's structure designed to fit the topic and load-bearing studies in full per-study depth, never silently narrowed to a treatment essay. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.
 
 Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 
-- **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — the full arc: epidemiology, pathophysiology, clinical features, diagnosis, comorbidity, treatme…
+- **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — covering definition, epidemiology, pathophysiology, clinical features, diagnosis, comorbidity,…
 - **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
 
 ### clinical-infographic — research  _v0.2.1_
