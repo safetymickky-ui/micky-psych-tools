@@ -62,13 +62,15 @@ sources:
   - "https://doi.org/10.1098/rstb.2014.0214"
   - "https://doi.org/10.3390/jcm9051598"
   - "https://doi.org/10.1016/j.jshs.2021.08.004"
+  - "https://doi.org/10.1016/j.brs.2015.06.013"
+  - "https://doi.org/10.1016/j.arr.2021.101377"
 audience: clinician self-study
 emphasis: evidence and interventions
 ---
 
 # Cognitive and affective neuroenhancement in healthy adults — comprehensive review
 
-*2026-08-09 · PubMed 52 · trials 6 · sections 10*
+*2026-08-09 · PubMed 54 · trials 6 · sections 10*
 
 > Assumed: written in English at clinician self-study register; no length cap was set, so the
 > chapter runs to the depth the evidence supports; "healthy" is taken throughout to mean
@@ -572,6 +574,16 @@ doing something detectable, just not something the person can use. At a larger, 
 50 µg dose, the sub-acute profile 24 hours later was the mixed afterglow-and-hangover described in
 §3.
 
+The contrast with *full* doses is the one place in this chapter where a durable affective change in
+healthy people has been documented, and it is worth stating precisely because it is so often
+borrowed to justify the low-dose practice. Under double-blind conditions with significant controls
+for expectancy bias, psilocybin occasions complete mystical-type experiences in the majority of
+healthy volunteers studied; the effects are dose-dependent, specific to psilocybin against placebo
+or a psychoactive control, and have enduring impact on mood, attitudes and behaviour as assessed
+both by participant self-report and by ratings from community observers. That is a different
+intervention — a supervised, high-dose, single-session experience — and its evidence transfers to
+microdosing not at all.
+
 The honest summary: microdosing produces measurable acute physiological and neural effects, does
 not produce the mood, creativity or cognitive benefits claimed for it in the grey literature when
 tested under blind conditions, and its most robust objective finding to date is that people sleep
@@ -831,6 +843,8 @@ to a focused evidence appraisal rather than reading a verdict off this chapter.
 - Anodal tDCS and working memory in healthy and neuropsychiatric populations, online versus offline — [doi:10.1016/j.brs.2015.10.006](https://doi.org/10.1016/j.brs.2015.10.006)
 - DLPFC tDCS stimulation parameters and the healthy-versus-patient response asymmetry — [doi:10.1016/j.brs.2016.04.006](https://doi.org/10.1016/j.brs.2016.04.006)
 - tDCS and inhibitory control; effect size and its shrinkage after publication-bias correction — [doi:10.1016/j.brs.2020.05.006](https://doi.org/10.1016/j.brs.2020.05.006)
+- Single-session anodal tDCS and language measures in healthy adults; verbal fluency and offline protocols — [doi:10.1016/j.brs.2015.06.013](https://doi.org/10.1016/j.brs.2015.06.013)
+- tDCS and cognition-related reaction time in healthy older adults; online versus offline protocols and the age gradient — [doi:10.1016/j.arr.2021.101377](https://doi.org/10.1016/j.arr.2021.101377)
 - tACS and cognition across healthy, ageing and psychiatric populations; phase-dependent bidirectional effects — [doi:10.1126/scitranslmed.abo2044](https://doi.org/10.1126/scitranslmed.abo2044)
 - tDCS combined with cognitive training for working memory in healthy older adults; session-count and intensity subgroups — [doi:10.3389/fnagi.2024.1454755](https://doi.org/10.3389/fnagi.2024.1454755)
 - tDCS for age-related cognitive decline in healthy older adults; the unusable effect-size range — [doi:10.2147/NDT.S259499](https://doi.org/10.2147/NDT.S259499)
