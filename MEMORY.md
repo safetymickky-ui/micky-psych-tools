@@ -156,6 +156,47 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-08-09** — Filed **Psychotherapy for Social Anxiety Disorder — a Comprehensive Clinical
+  Manual** to the vault via comprehensive-review → vault-keeper (branch
+  `claude/psychotherapy-social-anxiety-0l8pgd`). First **Social Anxiety Disorder MOC**. Intent-lock
+  Step 0 ran and the picker was **answered**: "manual + evidence" over an academic-review-only or
+  protocol-only reading — a session-level delivery manual that is also fully sourced — filed to
+  the marketplace vault over a Learn-hub digest. Register locked to practising clinician,
+  adults primary (special populations in their own section), pharmacotherapy present only as
+  comparator/combination since the object is psychotherapy. Built as a 13-domain parallel harvest
+  (964 raw sources / 215 registry hits) reduced to a **760-DOI, 141-NCT registry independently
+  verified against NCBI esummary and the ClinicalTrials.gov API v2** (754 exact PubMed matches,
+  5 pre-DOI-era records recovered via CrossRef with journal+year cross-checks and one false
+  match caught and dropped, one bad agent-reported DOI corrected) *before* a single section was
+  drafted — the highest-leverage point to catch a fabricated citation is before it reaches prose.
+  15 sections written from that verified base and each adversarially re-checked at high effort
+  against the harvest and the registry, catching and fixing 12 real defects across both passes:
+  an inverted SMD direction that would have told a clinician self-help outperforms SSRIs when the
+  opposite is true, swapped BDD↔SAD comorbidity percentages, a reversed-direction youth-iCBT
+  trial finding, a mislabelled self-report-vs-clinician outcome measure, wrong ns (437 vs the
+  correct 323 randomised responders in the paroxetine relapse trial), a wrong arm count, a
+  misattributed NCT termination reason, and several conflated-trial citations. Final cross-check
+  found **zero** fabricated DOIs or NCTs across all 746 citations (586 unique) in the assembled
+  manual. **Spine:** individual cognitive therapy on the Clark and Wells model carries the
+  largest effect in the field's anchor 101-trial NICE network meta-analysis (SMD −1.56 vs
+  waitlist) and is one of only two classes — with the antidepressants — that beats its own
+  matched placebo, but that specificity is modest (−0.56 vs psychological placebo, next to
+  SSRIs' −0.44 vs pill placebo): roughly half of even the best treatment's apparent effect is
+  non-specific, and waitlist-vs-placebo choice explains most of the field's apparent
+  disagreements (pre-post d 1.29 for pill placebo, 0.83 for psychological placebo, 0.20 for
+  waitlist). SOPHO-NET's psychodynamic-vs-CBT gap closes by 2-year follow-up (≈70%/≈40% response/
+  remission both arms); the combination-with-medication evidence is genuinely contradictory
+  (one trial finds combination beats both monotherapies, one finds it adds nothing, one finds it
+  is *worse* than cognitive therapy alone at 12 months); d-cycloserine augmentation is
+  indistinguishable from zero and shrinking with study quality; and social anxiety disorder
+  carries among the lowest CBT remission rates of any anxiety disorder. Sections span the
+  disorder and its models (§1–2), assessment and differential/comorbidity (§3–4), the full
+  comparative-efficacy evidence (§5), individual CT and group CBT/exposure as session-level
+  protocols (§6–7), third-wave/psychodynamic/IPT/digital alternatives (§8–10), medication
+  combination (§11), special populations (§12), non-response (§13), outcome/durability (§14),
+  and controversies plus the live registry pipeline (§15) — 15 sections, ~78,000 words.
+  `validate.py` clean; ROUTING.md unchanged (no plugin/skill/command touched).
+
 - **2026-08-08** — **Freed the report shape and made depth contractual** in the two literature
   writers: **pubmed-research-note → 1.7.0** and **comprehensive-review → 0.3.0** (branch
   `claude/plugin-pubmed-research-23gnyf`), via a refine-plugin pain-point interview with the
