@@ -1,0 +1,313 @@
+intent-lock-1 [high] intent-lock: the silent output contract is contradicted by many leftover visible-output instructions. Instead 
+intent-lock-2 [high] intent-lock: the mandatory picker contract cannot always be executed in Claude Code. It names claude.ai picker
+intent-lock-3 [high] The misread ledger cannot compound as designed. It is runtime-written state inside the plugin install director
+intent-lock-4 [high] misread-capture: the load-bearing `Prior:` line has no eliciting question. The two permitted questions ask for
+intent-lock-5 [high] Cross-plugin interface drift: callers print and expect preface fields intent-lock removed in 0.3.0 (Reframed, 
+intent-lock-6 [medium] intent-lock: internal contradiction on what the Phase 3 preface contains and where [UNTESTED] sits.
+intent-lock-7 [medium] intent-lock: the degenerate-loop guard is logically inconsistent with the survival-probe text and drifts from 
+intent-lock-8 [medium] intent-lock: 'craft my prompt' is a trigger, but emitting a prompt is a failure condition — and ledger prior #
+intent-lock-9 [medium] The misread ledger's contents contradict both skills' rules. Priors are written in third person ('he'), i.e. n
+intent-lock-10 [medium] misread-capture description promises a 'review or edit priors' mode with no procedure behind it, and it duplic
+intent-lock-11 [medium] intent-lock body carries version-history narration, which is time-sensitive content that belongs in the CHANGE
+intent-lock-12 [medium] intent-lock description: body procedure and internal jargon spend budget, leaving 4 chars under the cap. This 
+intent-lock-13 [low] failure-conditions.md has entries left stale by the 0.3.0 silent-run change, plus one unmeasurable condition.
+intent-lock-14 [low] Ambiguous stated-default surfacing: Phase 0 says each sub-threshold item gets a stated `Default: X. Say so if 
+intent-lock-15 [low] CHANGELOG skips 0.4.1; README install uses a placeholder owner; README design commitments are stale.
+intent-lock-16 [low] Evals are descriptive only: `assertions: []` in all 13 cases across both skills, there is no runner, and there
+decision-interview-1 [medium] No evals, README, or CHANGELOG. It is the only gate in the family without them, so the 0.1.0→0.1.1 boundary ch
+decision-interview-2 [medium] The description's unprompted trigger is looser than the body's rule (it drops the materiality threshold), invi
+decision-interview-3 [medium] The fallback trigger conditions cannot be detected, and there is no path for 'picker tool unavailable or error
+decision-interview-4 [low] Family vocabulary contradiction on silence: here silence 'is a stop', while plan-critique says silence is 'not
+decision-interview-5 [low] Question cap is 4 per round here but 3 in intent-lock, where the lower cap is argued from user attention ('bey
+decision-interview-6 [low] The description sits 11 chars from the 1024 cap and exceeds 1024 in UTF-8 bytes (1053). validate.py counts cha
+plan-critique-1 [medium] Command and skill disagree on what to do when no plan exists.
+plan-critique-2 [medium] The drafting hand-off to intent-lock is not reachable by routing. intent-lock's description has no plan-drafti
+plan-critique-3 [medium] The load-bearing termination and stop rules are packed into single mega-bullets, which makes them hard to foll
+plan-critique-4 [low] Silence semantics are worded opposite to both siblings (same behavior, contradictory words).
+plan-critique-5 [low] The description spends ~170 chars on the lens enumeration (already in the body and reference), pushing 'Use wh
+plan-critique-6 [low] No misread-capture carve-out: a user rejecting the delivered revised plan ('this isn't what I wanted') has no 
+plan-critique-7 [low] 'review my plan' collides with ledger Active prior #1, which fires intent-lock on any 'review' request, so the
+plan-critique-8 [low] Evals cannot catch regressions: assertions are empty, and the riskiest branches have no cases.
+intent-lock (learn-hub clone)-1 [high] The fork splits the single compounding ledger into two. Priors captured in learn-hub sessions are invisible to
+intent-lock (learn-hub clone)-2 [medium] The 'mandatory Step 0' is not guaranteed in learn-hub either. The learn-hub-local marketplace is not enabled b
+intent-lock (learn-hub clone)-3 [medium] No sync or parity mechanism for vendored copies. The 'unmodified' claim is true today only by coincidence (ups
+intent-lock (learn-hub clone)-4 [low] intent-lock's Phase 3 hand-off target (decision-interview) is not vendored into learn-hub, so the instruction 
+plugin-creator-1 [high] The plugin is distributed as an installable plugin, but every step depends on cwd being the marketplace repo r
+plugin-creator-2 [medium] The scaffold produces a plugin that fails the sibling audit. It writes no README.md, no CHANGELOG.md and no ev
+plugin-creator-3 [medium] The meta-plugin breaks its own description rule. Both skill descriptions are imperative, and refine-plugin use
+plugin-creator-4 [medium] The negative scope misroutes edits of existing plugins to manual editing plus bump.py instead of the sibling r
+plugin-creator-5 [medium] refine-plugin bumps the version without writing a CHANGELOG entry, although its own checklist requires 'one ch
+plugin-creator-6 [medium] The {{PLACEHOLDER}} syntax in the templates is not valid YAML because it parses as a flow mapping. A placehold
+plugin-creator-7 [medium] The hooks template gives no guidance to use ${CLAUDE_PLUGIN_ROOT} for script paths. A relative script path bre
+plugin-creator-8 [medium] The MCP rules forbid stdio servers, which Claude Code accepts. The plugin.json template also lacks the mcpServ
+plugin-creator-9 [low] The procedure contradicts the reference on hooks descriptions.
+plugin-creator-10 [low] The length floor encourages padding: descriptions under 200 characters must be 'expanded with more trigger phr
+plugin-creator-11 [low] The plugin's own manifest breaks its own checklist on keyword count, and it drifts from the catalog entry.
+plugin-creator-12 [low] The scaffold workflow skips the repo-level bookkeeping that CLAUDE.md requires: the root README plugin list, t
+plugin-creator-13 [low] The authoring standards leave out current best practice: skill name limits (lowercase-hyphen, 64 characters ma
+plugin-creator-14 [low] The /route command reads ROUTING.md and then says to regenerate it first, and it writes to the repo to answer 
+vault-keeper-1 [high] Resolving the vault root through the plugin root is wrong for an installed plugin. The skill claims `${CLAUDE_
+vault-keeper-2 [high] The walk-up root detection matches any marketplace repo. From a learn-hub cwd it resolves learn-hub/vault, the
+vault-keeper-3 [high] The learn-hub root detection in empty-vault is stale. The marker directory it requires no longer exists, so a 
+vault-keeper-4 [high] empty-vault deletes assets that learn-hub now has receivers for and expects to be handed. The learn-hub skills
+vault-keeper-5 [medium] The instruction to 'invoke the Learn repo's digest-report skill' is load-bearing but has no mechanism. In a mi
+vault-keeper-6 [medium] The job count is inconsistent across surfaces: the skill says four, while the manifest, README and catalog say
+vault-keeper-7 [medium] The 'Obsidian-style' vault produces wikilinks Obsidian cannot resolve. Links are written by frontmatter title,
+vault-keeper-8 [medium] The index job is deterministic but written as prose, and it contradicts itself on links. The skill says a dang
+vault-keeper-9 [medium] The plugin CHANGELOG is two releases behind the version.
+vault-keeper-10 [low] The README accepts a producer target type ('MOC') that the save procedure never handles. Save only decides bet
+vault-keeper-11 [low] empty-vault hands vault notes to digest-report as supplementary input, but digest-report's input contract list
+vault-keeper-12 [low] A Windows absolute path is hardcoded as the fallback location for the learn-hub repo.
+vault-keeper-13 [low] The reference file adds little because the body restates it, which undercuts the 'single source of truth' clai
+vault-keeper-14 [low] The manifest is inconsistent with its sibling plugins, and bump.py has escaped its non-ASCII characters.
+vault-keeper-15 [low] The evals cannot be graded: every assertions array is empty and no runner exists. Eval 3 relies on a kebab-to-
+firecrawl-1 [high] The vendor guide described as kept verbatim is outdated in load-bearing places. Claude would skip a required i
+firecrawl-2 [medium] The install command the skill mandates adds a vendor skill also named `firecrawl`, with overlapping triggers, 
+firecrawl-3 [medium] The skill writes the API key and scratch output into cwd without making sure they are gitignored. In this repo
+firecrawl-4 [medium] The body is large (367 lines, about 4.2k tokens) and loads in full on every trigger. Most of it is vendor mate
+firecrawl-5 [medium] The docs call the body verbatim, but the changelog lists two local adaptations and the skill appends marketpla
+firecrawl-6 [medium] Some instructions cannot be executed as written: a browser flow in a headless container, and raw HTTP inside a
+firecrawl-7 [low] The skill and its eval disagree on when to verify the install. The skill always verifies, which writes a file 
+firecrawl-8 [low] Cross-plugin dependencies (intent-lock, vault-keeper) are undeclared, although CLI 2.1.280 recognizes a plugin
+firecrawl-9 [low] The description's broad trigger and category are questionable: 'search the web' can capture ordinary web searc
+firecrawl-10 [low] The evals cannot be graded (assertions are empty), and eval 6 locks in the outdated keyless-REST behavior.
+validate.py-1 [high] The script crashes with a traceback instead of reporting FAIL on malformed input, and evals success is printed
+validate.py-2 [medium] The docstring and the README both overstate what the script covers relative to the CLI. The CLI does checks th
+validate.py-3 [medium] The frontmatter parser is hand-rolled. It counts the quotes in a quoted description, needs LF line endings, ca
+validate.py-4 [medium] The script rejects valid stdio MCP servers, ignores an auto-discovered .mcp.json that plugin.json does not dec
+validate.py-5 [low] Checks that are mechanical and cheap are missing: leftover {{placeholders}}, the evals schema (skill_name matc
+validate.py-6 [low] The 200-character minimum is a house heuristic but is reported as a hard failure.
+route.py / ROUTING.md-1 [medium] ROUTING.md is a lossy, token-heavy copy of what Claude already routes on. Every cue is a verbatim substring of
+route.py / ROUTING.md-2 [medium] route.py ignores command-line arguments, so `--help` regenerates the file, a write triggered by a help flag.
+route.py / ROUTING.md-3 [medium] ROUTING.md embeds plugin versions, but bump.py never reruns route.py, and the documented workflow runs the rou
+route.py / ROUTING.md-4 [low] Cue extraction is regex-based and fragile, and the constraints it places on descriptions are recorded only in 
+route.py / ROUTING.md-5 [low] The routing surface over-reaches: when nothing matches, it tells Claude to build a new plugin.
+bump.py-1 [medium] It rewrites JSON with ASCII escapes and no trailing newline, which causes noisy diffs and hurts readability.
+bump.py-2 [medium] It updates only two of the version-bearing surfaces. It never touches the plugin CHANGELOG, the MEMORY.md vers
+bump.py-3 [low] Its stated reason for version parity conflicts with what the CLI now reports: at install time plugin.json wins
+bump.py-4 [low] There is no dry run and no rollback: files are written before validation, and a failing validation leaves them
+marketplace.json-1 [low] The plugin.json manifests and the catalog entries have drifted in description and keywords, and the author and
+marketplace.json-2 [low] Optional metadata is missing: owner.email, $schema, and per-entry author, homepage, repository and license (gr
+marketplace.json-3 [low] The catalog's top-level version is bumped by hand, since no tool manages it.
+README.md (root)-1 [medium] The recommended CLI validation command lacks --strict. Version drift and other warnings would pass with exit 0
+README.md (root)-2 [medium] The README states that the validator enforces version parity 'the CLI does not'. That is false for CLI 2.1.280
+README.md (root)-3 [low] It says a GitHub-sourced marketplace must be public, but MEMORY.md records a private origin that is installed 
+README.md (root)-4 [low] It tells the user to run `git add -A` while .gitignore does not exclude .env, which the firecrawl skill writes
+CLAUDE.md (micky-psych-tools)-1 [medium] Always-loaded instructions mandate a large amount of extra reading: MEMORY.md first (about 27k tokens) and ROU
+CLAUDE.md (micky-psych-tools)-2 [medium] The plugin list is stale: it leaves out gridgeist, which is in the catalog, the README and MEMORY.md.
+CLAUDE.md (micky-psych-tools)-3 [low] The workflow order leaves ROUTING.md with stale versions, because route runs before bump. The health check als
+CLAUDE.md (micky-psych-tools)-4 [low] Stale facts about firecrawl: the vendor now installs two segments by default, and the build segment needs `fir
+CLAUDE.md (micky-psych-tools)-5 [low] The layout section omits components that the refine audit requires or that plugins ship: README.md, CHANGELOG.
+learn-hub-local-1 [high] The catalog is never registered or enabled for a session, so none of its plugins load by default. Always-loade
+learn-hub-local-2 [medium] Name collisions with micky-psych-tools: intent-lock, pubmed-research-note and comprehensive-review are cloned 
+learn-hub-local-3 [medium] Versioning is undecided. With versionless entries and every plugin.json pinned at 0.1.0 with no bump script, a
+learn-hub-local-4 [low] No marketplace-level description (validator warning).
+learn-hub-local-5 [low] The validator from polish-plan P1-1 was never built, so nothing tests name/dir/catalog agreement or the descri
+learn-hub-local-6 [low] Catalog descriptions drift from plugin.json descriptions (two sources of truth).
+digest-report-1 [high] The input contract contradicts the current producers. The skill requires preserving inline author-year/PMID ci
+digest-report-2 [high] The skill is not loaded in a default session: its plugin is not enabled, and the .claude/skills copy was delet
+digest-report-3 [medium] Stale sync-cost claim that contradicts sync-vault's incremental content-hash cache.
+digest-report-4 [medium] The README and the skill disagree on how to run voice QC. The README form fails with a usage error.
+digest-report-5 [medium] Voice QC cannot run as written. `--base` needs the new files committed, but no step commits them. `--worktree`
+digest-report-6 [medium] The 'deterministic slug' rule is not what real digests produced, so the 'same id every run' guarantee is ficti
+digest-report-7 [medium] 'Digest the pending reports' is defined two conflicting ways: the skill digests every un-landed report, while 
+digest-report-8 [medium] Windows-only process check in a skill that runs in the Linux cloud container.
+digest-report-9 [low] The topic field list omits `source:` (book|research|review|digest, migration 0022), which decides the /books s
+digest-report-10 [low] Missing authoring and safety rules that bite digests: escaping literal `$` for money (remark-math), fetch-firs
+digest-report-11 [low] The provenance SQL is given without naming the tool or project ref. Cloud sessions need the Supabase MCP with 
+digest-report-12 [low] The description sits near the hard cap and includes stale app-surface text ('graph').
+source-to-vault-1 [high] It writes production rows with no /vault source. That violates the repo's core pipeline (vault → sync), and th
+source-to-vault-2 [high] A no-arg run batch-ingests everything in Book/, the shared inbox where pdf-pipeline lands uploads and where so
+source-to-vault-3 [high] Routing collision with no negative scope: its triggers match atomize-book, pdf-pipeline and ingest-article req
+source-to-vault-4 [high] The note upsert omits every sync-owned derived column (embedding, diagrams, images). Ingested notes are invisi
+source-to-vault-5 [medium] The links writes ignore the links.to_note FK (migration 0020) and the chapter-reference rule. A `[[topic-id]]`
+source-to-vault-6 [medium] It never busts the app cache, yet claims the content is visible immediately. getVaultContent/getNoteContent ar
+source-to-vault-7 [medium] It reads a whole book into one context (20-page windows 'no page cap') with no chapter slicing, loss measureme
+source-to-vault-8 [low] Stale app surface list: the Graph page was removed and /search now redirects to /books.
+source-to-vault-9 [low] The schema pointer is stale: it cites the init migration as the column spec.
+source-to-vault-10 [low] Three names for one thing (plugin source-to-vault, skill ingest-source, command /ingest). There is no README, 
+vault-atomizer-1 [medium] The survey criterion now flags over a third of the vault, and it overlaps the depth gate's own target. atomize
+vault-atomizer-2 [medium] Stale time-sensitive statistics in the opening argument.
+vault-atomizer-3 [medium] The sync runs in the foreground, chained with &&. That contradicts the repo rule (background job writing a log
+vault-atomizer-4 [low] False premise that children arrive without vectors. apply-sync embeds every changed note it writes; vectors:mi
+vault-atomizer-5 [low] A stale UI reference: the graph view was removed.
+vault-atomizer-6 [low] Garbled safety claim.
+vault-atomizer-7 [low] 'Look at it in the app' is unactionable without a mechanism. Cloud sessions need the verify skill to mint a se
+vault-atomizer-8 [low] No README, CHANGELOG or evals.
+vault-vectors-1 [medium] The command contradicts the skill on syncing: the command's default path syncs, while the skill says syncing i
+vault-vectors-2 [low] The command defines a --no-report flag the skill never handles. vectors:check always writes the report.
+vault-vectors-3 [low] The 'read-only' check writes a git-tracked doc, dirtying the tree on every run.
+vault-vectors-4 [low] Stale corpus sizes and timings.
+vault-vectors-5 [low] The timing promise conflicts with the skill.
+vault-vectors-6 [low] The step 1 instruction to 'merge origin/master' is an unguarded git write on the user's branch.
+pk-plasma-animation-1 [medium] The filing step asks Claude to hand-build a 'targeted upsert' that mirrors apply-sync's animation path, includ
+pk-plasma-animation-2 [medium] The research brief contradicts the skill it is handed to, with no precedence rule. The brief prescribes titles
+pk-plasma-animation-3 [medium] Step 1 hard-depends on sibling plugins that are not guaranteed to be installed, and gives no fallback if pubme
+pk-plasma-animation-4 [low] Eager, unconditional loading of every reference, including on the rebuild path.
+pk-plasma-animation-5 [low] The 'web engine' named for labels is undefined in this repo.
+pk-plasma-animation-6 [low] The app check has no mechanism: auth is required, and the verify skill is not named.
+pk-plasma-animation-7 [low] A file name the reference build does not use. The reference directory has pk-engine.test.mjs, not report-fidel
+pk-plasma-animation-8 [low] Duplicate MCP server declarations, identical to two sibling plugins and to the session's built-in connectors.
+pk-plasma-animation-9 [low] Author metadata drifts from siblings ('Thanawat Suharit (Micky)' plus a license field, versus 'Thanawat Suhari
+atomize-book-1 [high] The skill contradicts itself, its own qc-gate.py and CLAUDE.md on whether a body [[topic-id]] wikilink is vali
+atomize-book-2 [high] Stale sync economics. The skill says sync:apply re-embeds the whole vault from scratch, but it is incremental 
+atomize-book-3 [high] Four drafting rules that CLAUDE.md says must live in the drafting spec are absent from the skill and both refe
+atomize-book-4 [high] Over-long body: 1,256 lines, ~21.3k tokens loaded on every trigger. Roughly 60% is reference-grade material (f
+atomize-book-5 [medium] The QC <details> bash 'equivalent' still builds its id set from every .md file, including vault/articles. That
+atomize-book-6 [medium] The prefix-collision check uses a one-level glob that silently skips the nested books. That is the exact failu
+atomize-book-7 [medium] Mermaid validation guidance contradicts ingest-article and ignores the repo's deterministic checker. atomize-b
+atomize-book-8 [medium] note-format.md holds up a TOPIC id as the example of an existing note to wikilink. That is exactly the topic-a
+atomize-book-9 [medium] Scale guidance contradicts the depth contract. The opener sizes a 16-chapter book at ~20 notes, while the dept
+atomize-book-10 [medium] Deterministic checks are written as prose or ad-hoc shell instead of scripts. Examples: the Calibre figure-mar
+atomize-book-11 [medium] The PDF route is not executable in the cloud environment. PyMuPDF is required but not installed, and the skill
+atomize-book-12 [low] Section numbering is out of order (5.0, 5.1, 5.2, 5d, 5a, 5b, 5c), which makes the cross-references ('see 5a',
+atomize-book-13 [low] The description is 1,075 chars, over the 1024-char cap, and includes a trigger that belongs to sync-vault.
+atomize-book-14 [low] Time-sensitive counts are stated as current facts.
+ingest-article-1 [high] The watched-folder inbox hardcodes a Windows absolute path, then operates on it with repo-relative paths. The 
+ingest-article-2 [high] The documented semantic-floor command cannot run. measure-source-cover.mjs only accepts `ch*.txt` files (the a
+ingest-article-3 [medium] The reference contradicts its own prose and SKILL.md on required measure-loss flags, and keeps a manual recomp
+ingest-article-4 [medium] Stale sync-cost claim: sync:apply is incremental.
+ingest-article-5 [medium] Its mermaid-validation rule contradicts atomize-book and pdf-pipeline. It reinvents, as an inline node snippet
+ingest-article-6 [medium] The no-.env.local fallback hand-extracts SQL from the whole-vault dump and writes diagrams `{}`. That bypasses
+ingest-article-7 [medium] Loads roughly 18-19k tokens every run: the ~6.7k body plus ~12k of mandatory references, including a 32.5k-cha
+ingest-article-8 [medium] Cross-skill script coupling by path. The PDF paths also need PyMuPDF, which the cloud env lacks.
+ingest-article-9 [low] Stale count of seed files.
+ingest-article-10 [low] Description over the cap, invalid strict YAML, and a trigger collision.
+ingest-slides-1 [high] The script paths are wrong as written. From the repo root, `python scripts/extract_pdf.py` hits learn-hub/scri
+ingest-slides-2 [high] Routing conflict with the declared PDF front door: pdf-pipeline sends slide decks to atomize-book (mini) and d
+ingest-slides-3 [medium] The script docstring claims PyMuPDF is 'already available'. It is not in the cloud env, and no extractor engin
+ingest-slides-4 [medium] The sync tail contradicts ingest-article, and the cross-reference to ingest-article points at the wrong step.
+ingest-slides-5 [medium] It claims to reuse ingest-article 'wholesale' but applies none of its gates: no figure manifest or check-figur
+ingest-slides-6 [low] Help text drifted from the code: the default output dir is named `_grill_text` in help but `_slide_text` in co
+ingest-slides-7 [low] The description exceeds 1024 chars.
+ingest-infographic-1 [high] The description and the handshake section build on a producer and caller contract that no longer exists. empty
+ingest-infographic-2 [high] Wrong claim about the sync. `npm run sync` writes no rows, so a 'targeted upsert' is not equivalent to it.
+ingest-infographic-3 [medium] Internal contradiction on the permitted edits.
+ingest-infographic-4 [medium] Stale app route: the Infographics gallery at /infographic now redirects to the merged Visualizations gallery.
+ingest-infographic-5 [medium] A missing topic sends Claude to a skill that is not guaranteed loaded.
+ingest-infographic-6 [low] Invalid strict YAML frontmatter.
+ingest-animation-1 [high] Same dead producer and caller contract as ingest-infographic: empty-vault never hands animations over and wait
+ingest-animation-2 [medium] The sanity check misses the two animation defects CLAUDE.md documents as universal: the stage-collapse layout 
+ingest-animation-3 [medium] A missing topic requires a skill that is not guaranteed to be installed.
+ingest-animation-4 [low] Invalid strict YAML frontmatter.
+pdf-pipeline-1 [high] Slide decks are routed to atomize-book (mini), contradicting ingest-slides, which owns them and turns them int
+pdf-pipeline-2 [high] The apply-path rule cannot be met and contradicts the sub-skills. It says run `npm run sync` and apply through
+pdf-pipeline-3 [medium] Wrong vault path for books: atomize-book writes flat `vault/<topic-id>/`, and CLAUDE.md treats the nested layo
+pdf-pipeline-4 [medium] Verification steps target UI that no longer exists or has changed.
+pdf-pipeline-5 [medium] The preflight premise is stale for cloud sessions.
+pdf-pipeline-6 [medium] surface-checklist restricts mermaid types that atomize-book allows, and tells Claude to re-run `npm run sync`,
+pdf-pipeline-7 [low] The id-prefix check in routing.md uses a one-level glob that misses nested books.
+pdf-pipeline-8 [low] Routing is written as prose tables, although a deterministic pre-classifier (DOI/abstract/TOC/ISBN/page-count/
+sync-vault-1 [high] Recommends the nested `vault/<book-slug>/<chapter-topic-id>/` layout that CLAUDE.md documents as the trap that
+sync-vault-2 [high] The default step path (1–3: npm run sync, read sync.sql, apply through MCP) only applies to a vault ≲200KB, wh
+sync-vault-3 [medium] The verification step compares whole-table counts against parser counts, which cannot match: the project is sh
+sync-vault-4 [medium] The deletion guidance ignores the purge:hidden workflow and the progress/activity cascade. Deleting a note row
+sync-vault-5 [low] Stale inventory: it lists 3 tables although the sync writes 6 types, and the note count is out of date.
+vault-coverage-1 [medium] The source map is badly behind the vault. Most books (44 of 70) will report 'not in the source map', and no im
+vault-coverage-2 [medium] A hardcoded Windows path in the primary command, and the skill cannot run in the cloud environment, where no s
+vault-coverage-3 [low] Time-sensitive 'last run' status presented as current.
+check-repetition-1 [low] Missing negative scope against sibling redundancy tools, so routing between check-repetition, similarity:detec
+check-repetition-2 [low] The revalidation mechanism is inconsistent with the rest of the group.
+verify-1 [medium] It references working scripts that do not exist in the skill. They lived in an ephemeral session scratchpad, s
+verify-2 [low] The description has no trigger phrases or negative scope, and the body hardcodes cloud-container paths.
+clinical-infographic-1 [high] The template and the worked example ship a prefers-color-scheme:dark block. learn-hub, the downstream renderer
+clinical-infographic-2 [high] The mechanism strip scaffold cramps on phones. Its items are `flex:1 1 0; min-width:0`, and there is no mobile
+clinical-infographic-3 [medium] The palette claims 'AA-contrast', but white header text fails WCAG AA on two of the three column accents. The 
+clinical-infographic-4 [medium] The template violates the design system's own legibility minimum.
+clinical-infographic-5 [medium] The render/verify step is vague and partly non-executable. It names no browser, script or viewport set. The op
+clinical-infographic-6 [medium] Vault filing leads to a dead end. The asset is filed to vault/assets, but vault-keeper's empty-vault deletes a
+clinical-infographic-7 [low] The CHANGELOG is stale: the plugin is at 0.2.1, but the CHANGELOG's newest entry is 0.2.0.
+clinical-infographic-8 [low] The examples README links a source report that no longer exists, and eval 1 depends on it.
+clinical-infographic-9 [low] lessons-learned.md is a time-bound retrospective that is loaded with a vague instruction. It duplicates fixes 
+clinical-infographic-10 [low] The SKILL never points at the worked example or the preview PNG. The only pointer is in examples/README.md.
+concept-animation-1 [high] The layout contract prescribes the rule that learn-hub measured collapsing every animation's stage on phones. 
+concept-animation-2 [high] The fit check is the one learn-hub proved cannot fail on the shape it guards: a single laptop viewport, asking
+concept-animation-3 [medium] The viewer geometry it cites is stale.
+concept-animation-4 [medium] The example is a doctype-less fragment with no color-scheme, so it renders in quirks mode inside the app ifram
+concept-animation-5 [medium] The description sits at the hard limit (1022 of 1024 characters). Any edit will breach it, which directly cont
+concept-animation-6 [medium] Scope overlaps with ml-concept-lab, and there is no reciprocal boundary. The description claims 'algorithms, s
+concept-animation-7 [medium] Vault filing leads to a dead end. The asset goes to vault/assets, but empty-vault deletes assets instead of ha
+concept-animation-8 [low] The render/verify step names no tool or script. Per-scene screenshots, the self-contained scan and the reduced
+concept-animation-9 [low] The worked example is orphaned. It is not referenced from SKILL.md, and there is no README.
+concept-animation-10 [low] There are no evals, so the trigger boundary with ml-concept-lab and clinical-infographic is untested.
+ml-concept-lab-1 [high] The layout rule is the stage-collapse bug. The example fails learn-hub's layout audit, and a real ML output fi
+ml-concept-lab-2 [high] The copy-ready verify recipe fails as written in this environment: the bare ESM playwright import does not res
+ml-concept-lab-3 [medium] The contract prescribes a relative-error gradient check, which the plugin's own worked example found produces 
+ml-concept-lab-4 [medium] The clinical-concept routing contradicts itself. The description sends clinical concepts to clinical-infograph
+ml-concept-lab-5 [medium] The worked-example path is wrong relative to the skill directory. The file lives at the plugin root, so 'copy 
+ml-concept-lab-6 [medium] The body is over-long, and it includes a 60-line JS verify script embedded as prose in a reference; a determin
+ml-concept-lab-7 [low] The trigger phrases overlap with concept-animation and are over-broad.
+ml-concept-lab-8 [low] The example is a doctype-less fragment, so it renders in quirks mode in learn-hub's iframe, and it declares no
+ml-concept-lab-9 [low] There are no evals, no CHANGELOG and no plugin README.
+code-explainer-1 [high] The SKILL's primary starting artifact does not exist and never did. The README also lists a missing template a
+code-explainer-2 [medium] The byte-for-byte fidelity check is prose. It is a deterministic comparison (the code pane's textContent vs th
+code-explainer-3 [low] The theme is named inconsistently: 'Dark+' in the description, marketplace entry and evals; 'Dark Modern' in t
+code-explainer-4 [low] The contract asks for explanation cards to be <button> elements while they contain headings and paragraphs, wh
+code-explainer-5 [low] The fit rule relies on a single laptop viewport and conflicts slightly with the stacked mobile layout. The she
+code-explainer-6 [low] The boundary with ml-concept-lab is asymmetric, and there is no CHANGELOG.
+gridgeist-1 [low] The plugin ships a Codex-only metadata file and three image assets that nothing in Claude Code reads. This is 
+gridgeist-2 [low] It is omitted from the CLAUDE.md plugin inventory, which claims to describe every plugin.
+gridgeist-3 [low] There are no evals, no README, no CHANGELOG and no command, and the vendored upstream revision is not recorded
+gridgeist-4 [low] The marketplace description is minimal and imperative, and its routing signal is weaker than the skill descrip
+concept-animation (learn-hub copy)-1 [high] The frontmatter is invalid under strict YAML. The unquoted description contains ': ', so PyYAML (and any stric
+concept-animation (learn-hub copy)-2 [medium] The grammar's stage floor is the bare min() form that learn-hub's own CLAUDE.md says is wrong. It gives a 116p
+concept-animation (learn-hub copy)-3 [medium] The verify step lists 4 viewports and omits landscape phone, which learn-hub CLAUDE.md and the executable pk-p
+concept-animation (learn-hub copy)-4 [medium] It calls the example 'complete, compliant', but the example violates the grammar it accompanies: it is a docty
+concept-animation (learn-hub copy)-5 [medium] The sync instruction contradicts learn-hub's documented gotcha. `npm run sync` is the dry SQL emitter, and the
+concept-animation (learn-hub copy)-6 [low] The builder path is stale; the referenced file does not exist.
+concept-animation (learn-hub copy)-7 [low] It duplicates ingest-animation's filing/verify procedure instead of delegating to it, so the two copies of the
+concept-animation (learn-hub copy)-8 [low] There is a name and trigger collision with the micky plugin when both are installed. Both trigger on 'animate 
+pubmed-research-note-1 [high] Preface contract is stale against the installed intent-lock 0.4.2: the skill mandates a 'Reframed:' line and a
+pubmed-research-note-2 [high] Decision-brief slot arithmetic is self-contradictory and does not match what intent-lock is said to fix: brief
+pubmed-research-note-3 [medium] Atomic-note template contradicts the SKILL's Sources rule and the vault-keeper handoff contract: says the repo
+pubmed-research-note-4 [medium] Eval 6 contradicts the default Show step: it expects a two-line chat response with contents 'NOT restated inli
+pubmed-research-note-5 [medium] Hardcoded plugin-scoped MCP prefixes with an explicit 'No ToolSearch step' ignore an equivalent connector that
+pubmed-research-note-6 [medium] No failure path if intent-lock or vault-keeper is not installed, although both are mandatory default steps ('A
+pubmed-research-note-7 [medium] CHANGELOG is missing the 1.3.0 and 1.4.0 releases (both recorded only in MEMORY.md), yet the 1.6.0 entry cites
+pubmed-research-note-8 [low] NCT Sources-line grammar is specified two different ways inside the same skill.
+pubmed-research-note-9 [low] Version-history narration and time-relative wording inside operational instructions (Claude does not need the 
+pubmed-research-note-10 [low] Report file has no naming/slug convention and no schema for .pubmed-research-note.json; 'write into the workin
+pubmed-research-note-11 [low] Skill names a vault path despite forbidding it ('never invent a vault path').
+pubmed-research-note-12 [low] Heavy repetition inflates the always-loaded body: opt-out rule 4x, depth contract 2x in SKILL plus 2 refs, dri
+pubmed-research-note-13 [low] Evals are prose-only: 17 evals, 0 assertions, 0 fixtures; several (e.g. 11 omega-3 effect shrinkage) depend on
+pubmed-research-note-14 [low] No slash command, unlike both sibling literature plugins (/comprehensive-review, /digest).
+comprehensive-review-1 [medium] 'No section without a number' rule conflicts with the skill's own instructions to write thin domains and empty
+comprehensive-review-2 [medium] No engine-failure policy: unlike both siblings there is no 'PubMed unreachable = fatal' rule, no E-utilities/C
+comprehensive-review-3 [medium] 'Source floors' wording contradicts 'capped by relevance, never by count' and the review-arc column actually l
+comprehensive-review-4 [medium] Mandatory dependency on intent-lock and vault-keeper with no absent-plugin fallback.
+comprehensive-review-5 [low] Citation contract cites nonexistent 'house rules'.
+comprehensive-review-6 [low] Output file location and name are unspecified, yet the file is 'the deliverable'.
+comprehensive-review-7 [low] Intent-lock locks 'length', but nothing downstream uses a length target and the depth rules forbid cutting con
+comprehensive-review-8 [low] Registry recipe uses a non-existent status filter; the CT.gov MCP status enum has no 'completed-no-results' va
+comprehensive-review-9 [low] Description consumes the full 1024-char budget (1020 chars), including a non-routing NOT-for item.
+comprehensive-review-10 [low] History narration in operational text and in the reference.
+comprehensive-review-11 [low] Evals: only 5, prose-only, no assertions or fixtures, no Thai-trigger eval, no no-filesystem eval, no opt-out-
+comprehensive-review-12 [low] CHANGELOG has no history before 0.3.0.
+psych-paper-digest-1 [high] MCP sweep path windows on the default publication date (pdat) while the stated rationale and the web fallback 
+psych-paper-digest-2 [high] Silent truncation: each domain query is capped at max_results 50 with no pagination, so anything beyond 50 is 
+psych-paper-digest-3 [medium] ClinicalTrials.gov recipe misstates the MCP tool: search_trials DOES date-filter via advanced_query AREA[...]R
+psych-paper-digest-4 [medium] Watchlist-health rule is unexecutable: '0 kept items across 3 consecutive sweeps' needs per-sweep history, but
+psych-paper-digest-5 [medium] Dedup against only the newest digest breaks after scoped runs: a later full sweep dedups against a single-doma
+psych-paper-digest-6 [medium] Name collision with a different installed skill (anthropic-skills:psych-paper-digest, a daily 8-12 paper 10-do
+psych-paper-digest-7 [medium] Init vault discovery is tied to the marketplace repo layout and fails silently elsewhere.
+psych-paper-digest-8 [low] Stale statement about Claude Code scheduling (Routines/cron triggers now exist).
+psych-paper-digest-9 [low] CHANGELOG missing the 0.1.1 entry that plugin.json/marketplace/MEMORY record.
+psych-paper-digest-10 [low] Ambiguous collision filename rule (leading space) and undefined 'newest' ordering for the dedup glob.
+psych-paper-digest-11 [low] Triage-rubric is the core judgment but is never explicitly required reading.
+psych-paper-digest-12 [low] Deterministic mechanics (window math, 90-day cap, JSON config read/write, last_swept advance, filename collisi
+psych-paper-digest-13 [low] Evals 6, 7, 9 cannot be run as written because they require controlled literature/engine states; no assertions
+pubmed-research-note (learn-hub fork)-1 [high] Evals were not forked: evals 7 and 16 require handing off to vault-keeper, which does not exist in learn-hub a
+pubmed-research-note (learn-hub fork)-2 [medium] Output pipeline now writes the report twice / to two places with no stated relationship: step 1 writes to the 
+pubmed-research-note (learn-hub fork)-3 [medium] Dangling cross-references introduced by the fork: a 'step 4' that is not listed and an 'Atomic notes' section 
+pubmed-research-note (learn-hub fork)-4 [medium] Stale upstream wording left in place contradicts the fork's wiring: report is still 'filed to the vault' 'as a
+pubmed-research-note (learn-hub fork)-5 [medium] Fork diverges in behaviour from the sibling comprehensive-review fork: here digest is gated on 'atomize', ther
+pubmed-research-note (learn-hub fork)-6 [medium] Version and CHANGELOG not forked: two behaviourally different artifacts share name 'pubmed-research-note' and 
+pubmed-research-note (learn-hub fork)-7 [low] firecrawl plugin is referenced as an engine but is not in the learn-hub marketplace.
+pubmed-research-note (learn-hub fork)-8 [low] atomic-note-template.md is kept but its own banner tells Claude to ignore its frontmatter, paths and MOC wirin
+pubmed-research-note (learn-hub fork)-9 [low] All upstream defects carry over unchanged (Reframed drift vs intent-lock 0.4.2, decision-brief 4+3 slot arithm
+comprehensive-review (learn-hub fork)-1 [high] Digest + Supabase sync is made a default step, contradicting digest-report's own trigger contract, the sibling
+comprehensive-review (learn-hub fork)-2 [medium] Self-contradiction about what the deliverable is.
+comprehensive-review (learn-hub fork)-3 [medium] Evals not forked: eval 1 requires vault-keeper filing under a MOC, impossible in learn-hub.
+comprehensive-review (learn-hub fork)-4 [low] Inconsistent handling of psych-paper-digest: removed from the description's NOT-for but kept in Handoffs and R
+comprehensive-review (learn-hub fork)-5 [low] Failure condition and README use stale/garbled filing language after the rewire.
+comprehensive-review (learn-hub fork)-6 [low] Version/CHANGELOG not forked; firecrawl dependency absent in learn-hub; all upstream defects (number rule vs t

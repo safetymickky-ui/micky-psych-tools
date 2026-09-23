@@ -1,0 +1,229 @@
+{
+ "rubricSummary": "The rubric is written: 92 rules (R1\u2013R92), 83 MUST and 8 SHOULD; R5 is MUST with a SHOULD soft target. It also includes 18 source conflicts with the rule adopted for each, a 28-row table of where the repos diverge, and the machine-checkable subset.\n\n**Rules per group**\n\n| Group | Rules | IDs |\n|---|---|---|\n| A Discovery | 10 | R1\u2013R10 |\n| B Body & progressive disclosure | 18 | R11\u2013R28 |\n| C Packaging | 17 | R29\u2013R45 |\n| D State, paths & portability | 10 | R46\u2013R55 |\n| E Cross-plugin contracts | 7 | R56\u2013R62 |\n| F Determinism | 7 | R63\u2013R69 |\n| G Evals & verification | 13 | R70\u2013R82 |\n| H Versioning & release | 6 | R83\u2013R88 |\n| I Context budget | 4 | R89\u2013R92 |\n\n**The 5 rules the current repos break most.** Counts come from a keyword tally over the 313 inventory defects, so they are approximate.\n1. **R71/R72, evals with real graders.** All 118 existing eval cases have `assertions: []`, so none has ever been graded. About a third of micky skills, all learn-hub project skills and 4 of 5 learn-hub-only plugins have no evals at all.\n2. **R19/R59, no contradictions and one owner per shared interface.** About 56 defects across 28 units, 10 of them high. Examples: the intent-lock hand-back fields that callers still expect, the Sources format versus digest-report's input, and the command/skill mismatches.\n3. **R18, no time-sensitive content.** About 38 defects across 23 units: version-history narration and out-of-date corpus counts stated as current.\n4. **R63, deterministic steps as scripts rather than prose.** About 28 defects across 18 units. No micky plugin ships a single script.\n5. **R56/R58, declared dependencies and a stated fallback when one is missing.** No plugin declares `dependencies`. The \"mandatory Step 0 intent-lock\" appears in 5+ skills, and vault-keeper and digest-report handoffs dead-end when the partner is absent (about 17 defects across 14 units).\n- The next most-broken rule is R8, reciprocal \"Not for\" boundaries between overlapping skills (about 25 defects across 18 units).\n\n**Rulings that change current repo conventions**\n- **Version:** semver goes in `plugin.json` only; marketplace entries carry none (R83). Commit-SHA versioning was rejected because `claude plugin validate --strict` fails any plugin with no version.\n- **Commands:** `commands/` is retired and argument handling moves into skill frontmatter (R34).\n- **Evals:** `claude plugin eval` case directories become the only format, and `evals.json` is dropped from the repo (R70).\n- **Routing:** `ROUTING.md` and the \"route first\" instruction are removed or demoted; descriptions do the routing (R91).\n- **Validation:** strict CLI validation runs on every plugin directory, and the house validator keeps only what the CLI can't check (R29). The machine-checkable table lists the gaps, for example strict-YAML parsing and the 1,024-character description cap.\n\nThe 600-character soft description target, the 2,000-token budget for gate skills and the `CLAUDE.md`/`MEMORY.md` token budgets are thresholds I chose; they are marked *(house)* in the file.\n\nFiles are in `/tmp/claude-0/-home-user/e0334b8c-c13d-54bc-92c1-3bbd59be2ae6/scratchpad/wf2`:\n- `rubric.md`\n- `claims-digest.txt` \u2014 merged claims with verdicts\n- `defects-digest.txt` \u2014 merged inventory defects",
+ "judges": [
+  {
+   "scores": [
+    {
+     "angle": "purist (best-practice purist: 4 family plugins + vendored gridgeist, learn-hub marketplace dissolved into project skills, commands/ROUTING deleted)",
+     "evidence_fidelity": 7,
+     "defect_coverage": 8,
+     "feasibility_in_owner_environments": 7,
+     "migration_risk_control": 7,
+     "context_budget": 9,
+     "simplicity": 6,
+     "total": 44,
+     "fatal_flaws": [
+      "The cloud delivery value it prescribes, CLAUDE_CODE_PLUGIN_DIRS=~/micky-psych-tools/plugins (section 2.5), points at the wrong place. HOME is /root in this cloud environment, so `~` expands to /root/micky-psych-tools/plugins. I reproduced this on CLI 2.1.280: `\u00d7 Path not found: /root/micky-psych-tools/plugins`. As written, every micky plugin would be missing from cloud sessions with no error. The value must be /home/user/micky-psych-tools/plugins. Wave 0(a) would probably catch it, but the proposal states the value as settled.",
+      "The restructure is big-bang even though it is split into waves. Twelve micky plugins collapse into four families, all 12 commands are deleted, and the learn-hub marketplace is dissolved. learn-hub CLAUDE.md is cut from 3,126 lines to 200 or fewer, and atomize-book's Python (354 tests, the most-churned skill, LOC-46) is moved to tools/source. The blast radius is high, and the value of the gotcha corpus depends entirely on the mapping-table exit artefact.",
+      "The 10 learn-hub project skills keep committed skill-creator evals.json files, contrary to R70. They get no plugin-eval route, although a documented one exists: wrapping each skill in a throwaway plugin.",
+      "The trigger-competition sets leave out anthropic-skills:daily-random-review. That skill chains into comprehensive-review by name and has the opposite citation contract."
+     ],
+     "best_ideas": [
+      "Move the duplication and repetition gates into the preflight of apply-sync.mjs / sync-vault.mjs. They then run the same way on Windows, in single-repo cloud and in multi-repo cloud, with no dependence on project hooks, which multi-repo sessions never load.",
+      "A per-plugin resolver, tested as a script: userConfig, then env var, then marker file (vault/.vault-id), then stop and ask. It replaces both the cwd walk-up and ${CLAUDE_PLUGIN_ROOT}/../.. (fixes H08 and H09 for any install type).",
+      "Family plugins as the unit of sharing. One .mcp.json, one copy of each contract, and no cross-plugin paths. A folder load satisfies same-folder dependencies; I probed this: a plugin whose dependency is missing is disabled when loaded alone and loads when both come from one folder.",
+      "lock-record.md as the callee contract that replaces the drifted Assumed/Reframed/Skipped preface.",
+      "A learn-hub CLAUDE.md split: pipeline gotchas go to the owning skills, app gotchas go to path-scoped .claude/rules/, and a per-heading mapping table is required as the exit artefact.",
+      "A readiness probe injected with `!` and `|| true` at the start of learn-hub pipeline skills, instead of silently depending on the SessionStart hook.",
+      "empty-vault becomes plan \u2192 validate \u2192 execute (drain_plan.py) with disable-model-invocation, and assets are routed to the ingest receivers rather than deleted.",
+      "The Wave 0 list of mechanisms still to verify (a\u2013g). Two of them I probed OK: multi-to-one renames pass the validator, and dependencies resolve under a folder load."
+     ]
+    },
+    {
+     "angle": "risk-first incremental (keep all names and plugin shells, close every HIGH seam defect first, grow cloud delivery per wave)",
+     "evidence_fidelity": 9,
+     "defect_coverage": 9,
+     "feasibility_in_owner_environments": 8,
+     "migration_risk_control": 9,
+     "context_budget": 6,
+     "simplicity": 5,
+     "total": 46,
+     "fatal_flaws": [
+      "The end state deliberately leaves several rubric MUSTs unmet. The 12 commands stay (R34). Versions are still written to both files (R83). There are three .mcp.json files (R41). The ledger and vault are resolved inside the plugin tree through ${CLAUDE_PLUGIN_ROOT}/../.. (R46, R47), which is safe only under the stated in-place precondition plus a cache guard. The destructive empty-vault drain stays model-invocable (R35).",
+      "Context barely moves where the cost is largest. learn-hub CLAUDE.md (~67k tokens, loaded in multi-repo sessions) shrinks only to 30k tokens or fewer, and only in the optional W5. atomize-book's interim cap of 7k tokens is above the 5k body limit, and ROUTING.md is kept (demoted).",
+      "Multi-repo sync safety depends on the model following a prose precondition step in sync-vault: run the hook by hand, run the gates by hand. Nothing mechanical enforces it, although the failure class (diagrams wiped) is silent.",
+      "Because it refuses merges, the proposal copies byte-identical files within one repo: report-format into five consumers, the alignment contract into three or more callers, the HTML contract into four. It also adds sync_shared.py, a ratchet and a trigger-lock. That is more moving surfaces than the family-plugin design needs."
+     ],
+     "best_ideas": [
+      "A complete H01\u2013H49 HIGH-defect coverage map, one row per defect, each with the wave that closes it. I verified all 49 against the inventories.",
+      "A ratchet file: existing violations warn, new ones fail, and the file may only shrink. Strict checks can then land in W0 without blocking on known HIGH defects.",
+      "A trigger lock that records every quoted and Thai trigger phrase. Dropping one becomes a validator failure unless the lock records why.",
+      "Cloud delivery grows wave by wave, one absolute per-plugin path at a time, with gridgeist as the W0 canary and an explicit stop if the canary fails. The forks and the learn-hub concept-animation copy are swapped out atomically, only after a new session confirms the upstream plugin loads. A delivery log records each change for rollback.",
+      "Consumers change first. digest-report learns to accept both the old and new report formats (a tolerant reader) before any producer changes.",
+      "A throwaway-plugin wrapper, assembled at run time, so the documented `claude plugin eval` can test learn-hub project skills without giving the skill tree a manifest.",
+      "A runtime MCP tool-resolution rule: connector prefix or plugin prefix, then ToolSearch, then the E-utilities / CT.gov API. It fixes the hard-coded prefix without rewiring the plugins (endpoint dedup, MP-PLG-2).",
+      "Every probe in Appendix A reproduced exactly as reported. This includes the `\u00d7 Path not found` report with exit 0, folder loads that run in place, a missing dependency disabling its dependent plugin, and dmi on a command passing --strict.",
+      "The W1 exit requires one live, owner-approved sync that confirms the diagrams count did not drop."
+     ]
+    },
+    {
+     "angle": "workflow-first (delivery as a property of the checkout: both repos' plugins/ via CLAUDE_CODE_PLUGIN_DIRS on every surface, file-drop inbox handoff, vault-keeper retired)",
+     "evidence_fidelity": 7,
+     "defect_coverage": 7,
+     "feasibility_in_owner_environments": 8,
+     "migration_risk_control": 6,
+     "context_budget": 9,
+     "simplicity": 8,
+     "total": 45,
+     "fatal_flaws": [
+      "Cloud delivery of all 14 micky plugins starts in W0/W1, yet the learn-hub fixes for active harm wait until W6. That covers ingest-article's bare-invocation inbox deletion (H25), pdf-pipeline's routing and apply rules (H32, H33), atomize-book's contradictions and missing rules (H21\u2013H23) and ingest-slides (H27, H28).",
+      "The OD2 default retires vault-keeper, empty-vault and the micky vault. In sessions without learn-hub, reports then land in cwd, which in an ephemeral cloud VM is lost unless someone commits it. The one final drain in W2 runs through the broken empty-vault skill.",
+      "It misses a HIGH defect. Nothing in the proposal fixes pubmed-research-note-2, the decision-brief slot arithmetic in decision-brief.md:11-12 (4+3\u22606).",
+      "The skills in the learn-hub plugin (sync-vault, digest-report, ingest-visual) reach repo scripts outside their plugin directory (R44). That works only because the plugin loads in place."
+     ],
+     "best_ideas": [
+      "learn-hub's hooks move into a plugin hooks/hooks.json loaded through CLAUDE_CODE_PLUGIN_DIRS, with the repo root taken from ${CLAUDE_PLUGIN_ROOT}, so the hooks fire in multi-repo sessions. I probed this: a plugin's SessionStart hook fired in `claude -p` started from /home/user, with CLAUDE_PROJECT_DIR=/home/user, which confirms V9's premise.",
+      "A cloud setup script for VM tooling (PyMuPDF, pypdf, poppler-utils, firecrawl-cli), plus the environment variables LEARN_HUB_DIR, MICKY_TOOLS_DIR and PUPPETEER_EXECUTABLE_PATH.",
+      "The V2 finding, which I reproduced: same-named plugins in two folders both load. The forks must therefore be deleted before learn-hub/plugins joins the path.",
+      "The cross-repo handoff is a file drop into learn-hub research-notes/ under an inbox contract that the consumer owns. Publishing to live Supabase is opt-in.",
+      "One executable owner for the HTML layout audit: learn-hub's `npm run audit:visual`, called through $LEARN_HUB_DIR, instead of a ported copy of the checker.",
+      "A collision table against the claude.ai-synced skills. It covers daily-random-review, which chains into comprehensive-review with the opposite citation contract (I verified this in the synced SKILL.md), plus obsidian-knowledge-vault, bullet-reconstruct and pdf.",
+      "A git-tracked micky state/ directory for compounding state: the misread ledger and lit-watch's last_swept.",
+      "A quantified budget for always-loaded context: about 115k tokens down to about 15k."
+     ]
+    }
+   ],
+   "winner": "risk-first",
+   "graft_list": [
+    "Make multi-repo sync safety mechanical, not prose. Put the duplication and repetition gates and the readiness check inside the apply-sync.mjs preflight (purist). Or move learn-hub's SessionStart and PreToolUse hooks into a plugin hooks/hooks.json loaded through CLAUDE_CODE_PLUGIN_DIRS (workflow-first); a plugin SessionStart hook was probed to fire from /home/user. Either replaces sync-vault's 'run the hook and gates by hand' step.",
+    "Add a cloud setup script (PyMuPDF, pypdf, poppler-utils, firecrawl-cli) and the environment variables LEARN_HUB_DIR, MICKY_TOOLS_DIR and PUPPETEER_EXECUTABLE_PATH (workflow-first), in place of preflight-install steps inside each skill.",
+    "Write only absolute paths in CLAUDE_CODE_PLUGIN_DIRS and in the delivery log. HOME is /root in the cloud, so `~/micky-psych-tools/plugins` fails with Path not found.",
+    "Move compounding state out of the plugin tree. The misread ledger and psych-paper-digest's last_swept go to a git-tracked micky state/ directory (workflow-first, purist). The vault and ledger roots then resolve as userConfig, then env var, then marker file (vault/.vault-id), then stop and ask (purist), instead of through ${CLAUDE_PLUGIN_ROOT}/../.. plus a cache guard.",
+    "Bring the learn-hub CLAUDE.md diet forward from the optional W5. Move pipeline gotchas into the owning skills' references and app gotchas into path-scoped .claude/rules/, with a per-heading mapping table as the exit artefact (purist). Aim for workflow-first's target of 32 KB or less, not 30k tokens.",
+    "Remove `version` from marketplace entries and make bump.py edit plugin.json only (R83). In-place loads ignore versions, and LOC-03 means the CLI would catch drift anyway.",
+    "empty-vault gets disable-model-invocation: true and a drain-plan file \u2192 validate \u2192 execute flow (purist's drain_plan.py). The typed /empty-vault name stays and the destructive drain can no longer fire on its own.",
+    "Add the synced-skill collision fixes (workflow-first). comprehensive-review gets a Not-for naming anthropic-skills:daily-random-review, and the owner edits the synced skill. Reciprocal Not-for clauses are added against obsidian-knowledge-vault, bullet-reconstruct and pdf.",
+    "Make learn-hub's audit the single executable owner of the HTML layout contract (`npm run audit:visual` via $LEARN_HUB_DIR, from workflow-first). Keep the ported check_html_artifact.mjs only as the fallback when learn-hub is absent.",
+    "Use purist's lock-record.md callee contract as the content of alignment-interview \u00a7Handoff, so the slots intent-lock returns are defined in one place.",
+    "After W3, and only if evals support it, merge the three research writers into one evidence plugin with a single .mcp.json (purist, workflow-first). The report-format copies and the duplicate MCP declarations then go away with no dependencies entry. Both prerequisites were probed OK: multi-to-one renames pass the validator, and dependencies are satisfied under a folder load."
+   ],
+   "factual_errors_found": [
+    "purist \u00a72.5: CLAUDE_CODE_PLUGIN_DIRS=~/micky-psych-tools/plugins. HOME is /root in this cloud environment, so `~` expands to /root/micky-psych-tools/plugins. Reproduced on CLI 2.1.280: `\u00d7 Path not found: /root/micky-psych-tools/plugins`. The correct value is /home/user/micky-psych-tools/plugins.",
+    "workflow-first \u00a72.1 cites MEMORY.md:11 for the claim that micky is installed 'as a cached copy'. MEMORY.md:11 says only 'Installed to Claude Code as marketplace `micky-psych-tools` (user scope)'. The same cell then calls the source type unknown.",
+    "workflow-first V3 says a nonexistent path 'is skipped with no error'. `claude plugin list` does report it (`inline[0]: \u00d7 Path not found: \u2026`, exit 0). It does not block the other paths, so only the 'silent' part is wrong.",
+    "workflow-first \u00a77 says learn-hub CLAUDE.md 'loads on first read of a learn-hub file'. In this multi-repo session both repos' CLAUDE.md files are in context from the start, as risk-first observed.",
+    "workflow-first has no disposition that fixes HIGH defect pubmed-research-note-2, the decision-brief slot arithmetic (decision-brief.md:11-12). Its S1 row covers the Reframed preface, the MCP prefix and the absent-dependency path, but not this defect.",
+    "risk-first \u00a78 and R2 count 21 claude.ai-synced skills. ~/.claude/skills/synced holds 22.",
+    "risk-first \u00a71 says project skills are 'the one surface that demonstrably loads in every session type'. That overstates it: learn-hub project skills do not load in a local session whose cwd is outside learn-hub, as its own \u00a72.3 table records ('none').",
+    "risk-first \u00a71 says 'Moving the servers into one plugin would force a dependencies entry'. That holds only because it refuses the family merge. Purist and workflow-first put all three MCP consumers in one evidence plugin, which needs no dependency.",
+    "Inherited by purist and risk-first from the inventory: the code-explainer HIGH defect is cited at SKILL.md:67-68 and :136. The explainer-template.html references are actually at SKILL.md:30 and :99. The defect is real (references/ holds only explanation-contract.md and vscode-shell.md), but the line numbers are off."
+   ]
+  },
+  {
+   "scores": [
+    {
+     "angle": "workflow-first (owner workflow and delivery first)",
+     "evidence_fidelity": 7,
+     "defect_coverage": 8,
+     "feasibility_in_owner_environments": 8,
+     "migration_risk_control": 5,
+     "context_budget": 9,
+     "simplicity": 9,
+     "total": 46,
+     "fatal_flaws": [
+      "The waves put delivery and structural moves ahead of fixing harm. W0 already switches all 14 unfixed micky plugins on in cloud. Several fixes wait until W4-W6: ingest-article's bare call that ingests and then deletes inbox PDFs (H25), the infographic dark block and strip cramp (H36/H37), the psych-paper-digest edat and truncation bugs (H46/H47), the intent-lock contradictions and picker fallback (H01-H04), and the validate.py crash (H13).",
+      "learn-hub's SessionStart setup (npm install, .env.local, core.hooksPath) and its sync gates now depend on plugin hooks firing in multi-repo cloud sessions. The proposal itself marks this unverified (U1). If they don't fire, the precondition for the diagrams-wipe bug stays.",
+      "By default (OD2) it retires vault-keeper, empty-vault and the micky vault. That is a change to the owner's values and workflow, packed into the pipeline repair.",
+      "The HIGH defect H45 (pubmed decision-brief slot arithmetic, decision-brief.md:11-12) is not named anywhere in the disposition.",
+      "The Windows switch (user env var + uninstalling the marketplace copies) and the renames happen in the same early window as fork deletion, so a broken step takes out tools on both surfaces at once."
+     ],
+     "best_ideas": [
+      "Make delivery a property of the checkout. One CLAUDE_CODE_PLUGIN_DIRS on cloud and Windows loads both repos' plugins/ in place (verified to load all 22 as @inline), and a branch session tests a rewrite for free.",
+      "A single learn-hub plugin holds only what other repos' sessions must reach (digest-report, ingest-visual, sync-vault) plus the hooks. Hook scripts resolve the root from ${CLAUDE_PLUGIN_ROOT}, not $CLAUDE_PROJECT_DIR, which is /home/user in multi-repo sessions.",
+      "Cross-repo handoff is a file drop into $LEARN_HUB_DIR/research-notes/, with no cross-repo skill call and no copied contract. Publishing to live Supabase is opt-in.",
+      "The visual layout contract is owned by learn-hub's executable audits, exposed as `npm run audit:visual`. Producers run it when learn-hub is present.",
+      "Probe V2 found that same-named plugins in two folders both load, so the forks must be deleted before learn-hub/plugins joins the path.",
+      "`dependencies` only between plugins in the same folder. The validator forbids cross-repo dependencies, because an unsatisfied one disables the plugin (V4).",
+      "Resolves collisions with the claude.ai-synced skills, including daily-random-review, which 'chains into comprehensive-review' (verified in the synced SKILL.md), and obsidian-knowledge-vault on 'atomize'.",
+      "Maintenance skills become user-only to cut the listing budget. Compounding state (ledger, lit-watch last_swept) moves into a git-tracked state/ dir."
+     ]
+    },
+    {
+     "angle": "best-practice purist",
+     "evidence_fidelity": 8,
+     "defect_coverage": 9,
+     "feasibility_in_owner_environments": 7,
+     "migration_risk_control": 6,
+     "context_budget": 9,
+     "simplicity": 6,
+     "total": 45,
+     "fatal_flaws": [
+      "The migration is too large for one busy owner. Wave 2 is big-bang: it merges or retires 12 of 14 plugins, deletes all 12 commands, replaces every repo tool (validate/route/bump) and converts all 118 eval skeletons. Wave 4a restructures the most-churned learn-hub skills in parallel: tools/source relocation, ingest-slides\u2192ingest-article, three audits\u2192vault-audit, split-note rename, learn-hub CLAUDE.md cut to 200 lines plus .claude/rules. The recommended OD8 also drops the short slash verbs the owner types.",
+      "Every plugin skill is declared Claude-Code-only (when_to_use, argument-hint etc.), which closes off the claude.ai surface without a portable profile.",
+      "Each learn-hub pipeline skill starts with a `!`node ${CLAUDE_SKILL_DIR}/../../../scripts/ready.mjs --json || true`` readiness injection. Injected commands are permission-checked, and outside auto mode anything short of allow aborts the whole invocation (SKL-35 corrected). No allowed-tools rule is given, and `|| true` does not cover a permission denial.",
+      "Cross-repo contracts are pinned copies with sha parity checks in both directions (report format, HTML audits, vault handoff), plus a per-plugin userConfig\u2192env\u2192marker resolver. That is more moving parts than a single owner plus a file handoff."
+     ],
+     "best_ideas": [
+      "Move learn-hub's duplication and repetition gates inside apply-sync.mjs / sync-vault.mjs so they run in every session layout, not only where project hooks load.",
+      "A cloud setup script for PyMuPDF/pypdf/poppler, plus a readiness probe telling the agent to run session-start.sh, because multi-repo sessions never run project hooks.",
+      "Family plugins drawn around shared contracts (alignment, evidence, visual-explainers), with plugin-root references linked one level deep.",
+      "A Wave 0 list of unverified mechanisms (a)-(g), each answered yes or no with a named fallback. Then Wave 1 'stop the bleeding' on the current layout before any restructure.",
+      "An exit artefact mapping each of the 136 learn-hub gotcha headings to its destination, with the old text kept in docs/gotchas-archive.md.",
+      "Repo-bound tooling becomes a micky project skill (plugin-workbench) rather than a plugin that breaks once cached.",
+      "vault/.vault-id marker, and a userConfig\u2192env\u2192marker\u2192stop-and-ask root resolution. No walk-ups.",
+      "release.py writes plugin.json only, prepends the CHANGELOG entry, validates first, then runs `claude plugin tag --dry-run`."
+     ]
+    },
+    {
+     "angle": "risk-first incremental",
+     "evidence_fidelity": 8,
+     "defect_coverage": 9,
+     "feasibility_in_owner_environments": 6,
+     "migration_risk_control": 9,
+     "context_budget": 5,
+     "simplicity": 4,
+     "total": 41,
+     "fatal_flaws": [
+      "The result is not simpler than today. It keeps 14 plugins, 12 commands, ROUTING.md/route.py, dual-file versions and three duplicate .mcp.json files. It then adds shared/ generated-copy machinery (sync_shared.py, check_cross_repo.py, health.sh, eval.sh, ratchet.json, triggers.lock.json, .output-sink.json).",
+      "The output sink is resolved from the git toplevel of cwd. That fails in the owner's primary environment, because multi-repo cloud sessions start at /home/user, which is not a repo. The fallback is asking every session (D3).",
+      "learn-hub's hooks stay absent in multi-repo sessions. Safety relies on sync-vault prose telling the model to run session-start.sh and the gates by hand.",
+      "The ~67k-token learn-hub CLAUDE.md is relocated only in an optional W5 (target \u226430k), so the largest always-paid cost stays through the whole migration.",
+      "It deliberately breaks several rubric MUSTs: commands kept (R34), one MCP owner (R41), version only in plugin.json (R83), and dmi on the empty-vault drain (R35). The cloud env-var list is also hand-extended per wave in every environment."
+     ],
+     "best_ideas": [
+      "An explicit coverage map of all 49 HIGH defects (H01-H49), each with its fix and wave. It is complete when checked against the inventories.",
+      "A ratchet file where existing violations warn and new ones fail, and the file may only shrink. Strict checks can then land on day one without blocking on known defects.",
+      "A trigger lock: every quoted trigger phrase, Thai and slash phrases included, goes into triggers.lock.json, and dropping one fails validation.",
+      "Switch each plugin on in cloud only after it is fixed. Retire the forks by atomic swap, only after the upstream is confirmed loading in a new cloud session. Keep a delivery log for env-var rollback.",
+      "Consumers before producers, with a tolerant reader: digest-report accepts `## Sources` and legacy inline citations before any producer changes.",
+      "Run `claude plugin eval` on learn-hub project skills by wrapping each in a throwaway plugin.",
+      "A live routing smoke test: 20 near-miss prompts under CLAUDE_CODE_PLUGIN_DIRS in a real multi-repo session. Also an owner-approved live sync that checks the diagrams count did not drop.",
+      "An empty-vault stopgap in W1 that holds assets instead of deleting them.",
+      "One runtime MCP tool-resolution rule: connector or plugin prefix, then one ToolSearch, then the E-utilities / CT.gov v2 fallback."
+     ]
+    }
+   ],
+   "winner": "workflow-first (owner workflow and delivery first)",
+   "graft_list": [
+    "From risk-first: reorder the waves harm-first. A new W1 fixes the HIGH defects in units that already load, before any consolidation: ingest-article H25/H26 (survey-and-ask before any delete, env inbox path, gitignore), sync-vault H34/H35, pdf-pipeline H32/H33, ingest-slides H27/H28, atomize-book H21-H23, clinical-infographic H36/H37, psych-paper-digest H46/H47, validate.py H13, and an empty-vault stopgap that holds assets (H11).",
+    "From risk-first: don't point CLAUDE_CODE_PLUGIN_DIRS at the whole micky plugins/ folder in W0. Enable plugins one path at a time as each is fixed, retire forks by atomic swap after a new-session check, and keep docs/rewrite/delivery-log.md for rollback.",
+    "From risk-first: land the W0 safety net: ratchet.json (only shrinks), triggers.lock.json protecting Thai and slash phrases, old-version snapshots, and 3-case smoke suites for the W1 units.",
+    "From risk-first: add the explicit H01-H49 coverage map as an exit artefact, and add the missing H45 (decision-brief slot arithmetic) to the evidence:pubmed-research-note rewrite.",
+    "From purist: move the duplication and repetition gates inside apply-sync.mjs (the proposed `npm run sync:safe`) so they run whether or not plugin hooks fire in multi-repo sessions. Keep a readiness check as the fallback if U1 fails, and give any `!` injection a matching allowed-tools rule so it cannot abort the skill.",
+    "From purist: expand W0 into a mechanism checklist with a named fallback per 'no': CLAUDE_CODE_PLUGIN_DIRS set on the live cloud environment, plugin hooks firing (U1), many-to-one renames validating, dependencies under folder loads, `claude plugin eval` availability, nested .claude/skills and .claude/rules loading, and a /doctor listing-budget baseline.",
+    "From purist: add a per-heading mapping table for all 136 learn-hub CLAUDE.md gotchas (none dropped) plus docs/gotchas-archive.md as the G1 exit artefact.",
+    "From risk-first: apply consumers-before-producers with a tolerant reader. digest-report accepts `## Sources` and legacy inline PMIDs before any producer switches to the inbox.",
+    "From risk-first: evaluate learn-hub project skills by wrapping each in a throwaway plugin for `claude plugin eval`, instead of leaving them to layers 2 and 3b only.",
+    "From risk-first: add a live routing smoke (20 near-miss prompts in a real multi-repo session with all delivered plugins) and one owner-approved live sync that verifies the diagrams count did not drop.",
+    "From risk-first: keep the short slash names (/digest, /animate, /infographic, /critique-plan\u2026) as default dmi alias stubs rather than optional ones, to protect habits at zero listing cost.",
+    "From purist and risk-first: keep OD2 open. Retire vault-keeper, empty-vault and the micky vault only after a rehearsal drain and the W2 end-to-end pass, and only if the owner picks 'staging'.",
+    "From purist: validate $LEARN_HUB_DIR and $MICKY_TOOLS_DIR against a marker file (e.g. vault/.vault-id, package.json name) before writing, and stop and ask when it is missing.",
+    "From risk-first: adopt the runtime MCP tool-resolution rule text (connector or plugin prefix, then one ToolSearch, then E-utilities / CT.gov v2 via WebFetch) and the standard handoff sentence with the `Assumed:` fallback.",
+    "Fix workflow-first's factual slips. MEMORY.md:11 does not say 'cached copy'. A missing CLAUDE_CODE_PLUGIN_DIRS path prints '\u00d7 Path not found'; it is not skipped silently. learn-hub CLAUDE.md is observed loaded at the start of multi-repo sessions."
+   ],
+   "factual_errors_found": [
+    "purist: says the PubMed/CT.gov .mcp.json ships as 'byte-identical \u00d75'. There are 6 identical copies (md5 1b35ee7c\u2026): micky pubmed-research-note, comprehensive-review, psych-paper-digest, and learn-hub pubmed-research-note, comprehensive-review, pk-plasma-animation.",
+    "purist: calls pk-plasma-animation's .mcp.json the '4th copy of the MCP servers'. It is one of 6, and the 3rd in learn-hub.",
+    "purist: the readiness line `!`node ${CLAUDE_SKILL_DIR}/../../../scripts/ready.mjs --json || true`` is said to be safe because of `|| true`. Injected commands are permission-checked and abort the whole invocation outside auto mode unless allowed (SKL-35 corrected). No allowed-tools rule is provided.",
+    "risk-first: says '21 synced claude.ai skills'. The session lists 22 anthropic-skills entries.",
+    "risk-first: says 'Moving the servers into one plugin would force a dependencies entry'. That only holds under its own no-merge constraint. A family plugin co-locating pubmed-research-note, comprehensive-review and psych-paper-digest needs no dependency for MCP.",
+    "workflow-first: cites MEMORY.md:11 for micky being installed 'as a cached copy'. The line only reads 'Installed to Claude Code as marketplace `micky-psych-tools` (user scope)'.",
+    "workflow-first (V3, \u00a72.1): says a nonexistent CLAUDE_CODE_PLUGIN_DIRS path is 'skipped with no error' / 'silently'. Re-probed on 2.1.280, `claude plugin list` prints 'inline[0]: \u00d7 Path not found: /nonexistent/x'. The other paths still load, exit 0.",
+    "workflow-first (\u00a77, G1): says learn-hub CLAUDE.md 'loads on first read of a learn-hub file'. In this multi-repo session both repos' CLAUDE.md are in context at start, which is what risk-first reports as observed. The docs describe subdirectory CLAUDE.md as on-demand.",
+    "workflow-first: the HIGH defect pubmed-research-note-2 (decision-brief slot arithmetic, H45) is missing from the disposition table.",
+    "all three (inherited from the inventory): the code-explainer missing-template pointer is cited at SKILL.md:67-68,:136. In the current file the dangling `references/explainer-template.html` references are at SKILL.md:30 and :99. The defect itself is real: references/ holds only explanation-contract.md and vscode-shell.md."
+   ]
+  }
+ ],
+ "synthesis": "Wrote `/tmp/claude-0/-home-user/e0334b8c-c13d-54bc-92c1-3bbd59be2ae6/scratchpad/wf2/architecture.md` (~128 KB). It has sections 1\u201313 plus three appendices: A maps all 49 HIGH defects to a wave, B lists the corrected proposal errors, C is the probe log and open items.\n\n**Winner.** The judges split: J1 picked risk-first (46), J2 picked workflow-first (46). Combined scores were workflow-first 91, purist 89, risk-first 87. The architecture takes **workflow-first's target topology** and reaches it through **risk-first's waves and safety net**. Both graft lists pull that way: J1's move risk-first toward that end state, J2's bring risk-first's migration discipline into workflow-first.\n\n**Main grafts**\n- **Sync safety is mechanical.** The duplication and repetition gates plus a readiness refusal run inside `apply-sync.mjs` (`npm run sync:preflight`). The PreToolUse hooks are retired. A hooks-only `learn-hub-session` plugin covers session setup in multi-repo sessions. I probed this in this VM: plugin SessionStart and PreToolUse hooks fired from `/home/user` in a `claude -p` run.\n- **Delivery.** `CLAUDE_CODE_PLUGIN_DIRS` with absolute paths only. Plugins are enabled one path at a time, logged in `delivery-log.md` for rollback, and collapse to one folder path per repo at W3 entry. There is also a cloud setup script and `LEARN_HUB_DIR`, `MICKY_TOOLS_DIR` and `PUPPETEER_EXECUTABLE_PATH`, each checked against a marker file before any write.\n- **Structure.** micky becomes the families `alignment`, `evidence` and `visuals`, with one `.mcp.json` and no `dependencies` entries anywhere. Cross-plugin handoffs are optional, with a stated fallback.\n- **Handoff.** Reports and visuals are dropped into learn-hub's git-tracked `research-notes/` inbox. The consumer reads old and new formats, an intake log records each handoff, and publishing to Supabase only happens on an explicit \"digest\".\n- **vault-keeper stays** as the single owner of where outputs land. `empty-vault` becomes a user-only transfer: plan, validate, copy, verify, then delete.\n- **State and versions.** Compounding state moves to a git-tracked `state/` directory. Versions live in plugin.json only.\n- **Commands.** All `commands/` are removed. Short slash names survive as user-only alias skills.\n- **Safety net.** A ratchet file (existing violations warn, new ones fail, the file only shrinks), a trigger lock covering Thai and slash phrases, the H01\u2013H49 coverage map, consumers-before-producers ordering and atomic swaps for forks.\n- **Evals.** Old-version baselines, a throwaway-plugin wrapper so learn-hub project skills can use `claude plugin eval`, and a 20-prompt live routing smoke test.\n- **learn-hub CLAUDE.md diet** is now mandatory in W4, with a mapping table covering all 136 gotcha headings.\n- **Fixes to the proposals.** The `~` path fails because `HOME=/root`. MEMORY.md:11 does not say \"cached copy\". A missing path prints `\u00d7 Path not found` rather than being skipped silently. learn-hub CLAUDE.md is loaded from session start. There are 22 synced skills. There are 6 identical `.mcp.json` copies. The code-explainer pointers are at SKILL.md:30 and :99. H45 is now included. The `!`-injection readiness probe is dropped. The git-toplevel sink and the `dependencies` entries are replaced.\n\n**Owner decisions**\n| # | Question | Assumed |\n|---|---|---|\n| OD1 | Cloud delivery | (a) env var |\n| OD2 | Windows delivery | (a) user env var from W3 |\n| OD3 | Family merges | (a) merge |\n| OD4 | Role of the micky vault | (a) keep as fallback sink, revisit at W5 |\n| OD5 | Publish default | (a) opt-in |\n| OD6 | Where compounding state lives | (a) git `state/` |\n| OD7 | psych-paper-digest name collision | (a) rename micky skill to `lit-watch` |\n| OD8 | daily-random-review chaining into comprehensive-review | (a) owner edits the synced skill, plus a Not-for |\n| OD9 | Slash names | (a) alias skills |\n| OD10 | Maintenance skills | (a) user-only |\n| OD11 | learn-hub CLAUDE.md depth | (b) staged, target \u226432 KB |\n| OD12 | firecrawl | (a) slim keep |\n| OD13 | claude.ai portable build | (a) none |\n| OD14 | Eval spend | (a) smoke per wave, release runs at W3/W5 |\n\n**Waves** (W0 \u2192 W1 \u2192 W2 \u2192 {W3, W4} \u2192 W5; W4 may start after W2)\n- **W0 \u2013 Ground truth and safety net:** tooling fixes (H13), ratchet, trigger lock, baselines, env vars and setup script, gridgeist canary, an eight-item mechanism checklist with a fallback for each \"no\".\n- **W1 \u2013 Stop active harm in units that load today:** 26 HIGH defects. Ends with one owner-approved live sync that checks the diagrams count did not drop.\n- **W2 \u2013 Reconnect the pipeline:** inbox contract, digest-report, ingest-visual, the hooks plugin, research writers and renderers fixed and enabled, forks and the concept-animation copy retired by atomic swap. 16 HIGH defects; ends with a rehearsal transfer.\n- **W3 \u2013 micky consolidation:** folder-path switch, families, commands to aliases, alignment/evidence/visuals rewrites (5 HIGH, including H45), ROUTING/MEMORY diet, release evals, routing smoke \u226517/20 with no destructive misroutes.\n- **W4 \u2013 learn-hub consolidation:** CLAUDE.md diet with the heading map, atomize-book split (H24) under a freeze window, one chapter and one article re-run end to end.\n- **W5 \u2013 Hardening and telemetry:** full evals, `/skill-doctor` retire and user-only decisions, the OD4 revisit, ratchet emptied."
+}
