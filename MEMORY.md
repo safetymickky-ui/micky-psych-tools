@@ -30,6 +30,7 @@ a milestone.
 | ml-concept-lab        | 0.1.0   |
 | decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
+| clinical-minimal      | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -154,8 +155,22 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   ship as marked decision points. Skill + `/critique-plan [plan-or-path]`; lens catalog in
   references; vault opt-in only.
 
+- **clinical-minimal** — the user's personal Office design system ("Clinical Minimal") for every
+  .docx/.pptx/.xlsx: white page, one clinical-teal accent, Leelawadee UI (Thai + English), no personal
+  branding. Decides how a file looks while the calling plugin decides what it says. Ships `cm.py` build
+  helpers, `slidecheck.py` + `slideprobe.ps1` (per-slide verification: PowerPoint lays the deck out,
+  automatic FAIL/WARN rules, then a recorded full-size visual review per slide — exit 0 required before
+  delivery) and `imgpick.py` (picture selection: brief → Google Images candidates → filter → score incl.
+  subject fill → contact sheet as placed → visual judgement → choose, credits recorded). Brand book is the
+  Clinical Minimal Design System artifact. Windows + Microsoft Office required. One skill, no commands.
+
 ## Recent milestones
 
+- **2026-09-24** — Added **clinical-minimal 0.1.0**, moved from the standalone
+  `~/.claude/skills/clinical-minimal` skill (branch `claude/clinical-minimal-plugin`). Adds the per-slide
+  verification layer (`slidecheck.py`) and picture selection algorithm (`imgpick.py`) built after the lithium
+  journal-club deck feedback ("some render isn't good and some picture isn't relevant"). Fixed its SKILL.md
+  frontmatter (description is now a YAML block scalar; it failed to parse before).
 - **2026-08-09** — Filed **Psychotherapy for Social Anxiety Disorder — a Comprehensive Clinical
   Manual** to the vault via comprehensive-review → vault-keeper (branch
   `claude/psychotherapy-social-anxiety-0l8pgd`). First **Social Anxiety Disorder MOC**. Intent-lock

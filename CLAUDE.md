@@ -186,6 +186,15 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   sibling of intent-lock (which owns pre-build alignment; misread-capture owns
   post-delivery). One skill + `/resolve-decisions [task or scope]` command.
 
+- **clinical-minimal** — the user's personal Office design system ("Clinical Minimal") for every
+  .docx/.pptx/.xlsx: white page, one clinical-teal accent, Leelawadee UI (Thai + English), no personal
+  branding. Decides how a file looks while the calling plugin decides what it says. Ships `cm.py` build
+  helpers, `slidecheck.py` + `slideprobe.ps1` (per-slide verification: PowerPoint lays the deck out,
+  automatic FAIL/WARN rules, then a recorded full-size visual review per slide — exit 0 required before
+  delivery) and `imgpick.py` (picture selection: brief → Google Images candidates → filter → score incl.
+  subject fill → contact sheet as placed → visual judgement → choose, credits recorded). Brand book is the
+  Clinical Minimal Design System artifact. Windows + Microsoft Office required. One skill, no commands.
+
 ## Style
 
 Follow the user's global CLAUDE.md. Keep plugins simple — solve the real task, no premature

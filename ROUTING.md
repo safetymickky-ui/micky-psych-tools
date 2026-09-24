@@ -37,6 +37,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
 | when the user presents a plan and says "critique this plan", "review my plan", "improve this plan", "วิจารณ์แผน", "ช่วยปรับแผนให้ดีขึ้น", "find weaknesses in my plan", "poke holes in my plan"… | plan-critique | skill `plan-critique` |
 | Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan | plan-critique | `/critique-plan` |
+| whenever the user asks for a .docx, .pptx or .xlsx, or for a document, report, handout, summary, letter, memo, slide deck, presentation, lecture, journal club, spreadsheet, tracker, budget or model… | clinical-minimal | skill `clinical-minimal` |
 
 ## Plugins
 
@@ -166,3 +167,11 @@ Keywords: plan, critique, plan-review, trade-offs, interview, improvement
 
 - **skill `plan-critique`** (skill) — Critiques an existing plan and rebuilds it stronger — runs nine adversarial lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) over a plan the user already has,…
 - **`/critique-plan`** (command) — Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan
+
+### clinical-minimal — productivity
+
+Personal Office design system (Clinical Minimal) for every .docx, .pptx and .xlsx: white page, one clinical-teal accent, Leelawadee UI for Thai + English. Build helpers (cm.py), a per-slide render check driven by PowerPoint (slidecheck.py) and a picture selection algorithm (imgpick.py) that judges Google Images candidates as placed. Decks: English by default, visual on every slide, fade + click builds.
+
+Keywords: design-system, docx, pptx, xlsx, slides, journal-club, thai
+
+- **skill `clinical-minimal`** (skill) — The user's personal design system ("Clinical Minimal") for every Word, PowerPoint and Excel file Claude makes for them.

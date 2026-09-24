@@ -193,6 +193,21 @@
         "interview",
         "improvement"
       ]
+    },
+    {
+      "name": "clinical-minimal",
+      "source": "./plugins/clinical-minimal",
+      "description": "Personal Office design system (Clinical Minimal) for every .docx, .pptx and .xlsx: white page, one clinical-teal accent, Leelawadee UI for Thai + English. Build helpers (cm.py), a per-slide render check driven by PowerPoint (slidecheck.py) and a picture selection algorithm (imgpick.py) that judges Google Images candidates as placed. Decks: English by default, visual on every slide, fade + click builds.",
+      "category": "productivity",
+      "keywords": [
+        "design-system",
+        "docx",
+        "pptx",
+        "xlsx",
+        "slides",
+        "journal-club",
+        "thai"
+      ]
     }
   ]
 }

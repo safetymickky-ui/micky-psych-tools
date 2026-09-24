@@ -1,0 +1,18 @@
+{
+  "name": "clinical-minimal",
+  "version": "0.1.0",
+  "description": "Clinical Minimal design system for Word, PowerPoint and Excel, with a per-slide render check and a picture selection algorithm.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "design-system",
+    "docx",
+    "pptx",
+    "xlsx",
+    "slides",
+    "journal-club",
+    "thai"
+  ]
+}
