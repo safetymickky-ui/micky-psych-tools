@@ -193,11 +193,13 @@ Measured: 990 chars / 992 UTF-8 bytes / ~248 tokens. `use_when_at`: 160. No `<`/
 
 | Name | CLI | Input | JSON stdout shape | Exit codes | Tests |
 |---|---|---|---|---|---|
-| `scripts/audit-visual.mjs` | `npm run audit:visual -- <file> [--kind infographic\|animation\|explorable] [--static-only] [--json]`; `--help` | path to a self-contained HTML document | `{"file":"…","kind":"infographic\|animation\|explorable","verdict":"pass\|fail","issues":[{"code":"…","tier":"static\|render\|drive","message":"…","fix":"…"}],"frames":[{"viewport":"360x780","frame":"344x608","stageOk":true,"clipped":[],"overflowPx":0}],"skipped":["render","drive"]}` (`frames`/`skipped` only when relevant) | `0` pass (`issues` empty); `1` fail (≥1 issue); `2` usage error (bad path, `--kind` omitted and ambiguous) | `audit-visual.test.mjs` (static tier, pure); a smoke script exercises the render tier against S05's parity fixture — not vitest, needs a browser |
+| `scripts/audit-visual.mjs` | `npm run audit:visual -- <file> [--kind infographic\|animation\|explorable] [--static-only] [--shots <dir>] [--json]`; `--help` | path to a self-contained HTML document | `{"file":"…","kind":"infographic\|animation\|explorable","verdict":"pass\|fail","issues":[{"code":"…","tier":"static\|render\|drive","message":"…","fix":"…"}],"frames":[{"viewport":"360x780","frame":"344x608","stageOk":true,"clipped":[],"overflowPx":0}],"skipped":["render","drive"]}` (`frames`/`skipped` only when relevant) | `0` pass (`issues` empty); `1` fail (≥1 issue); `2` usage error (bad path, `--kind` omitted and ambiguous) | `audit-visual.test.mjs` (static tier, pure); the render tier is exercised by S16-W2-8's real-Chromium run — not vitest (OQ13-a dropped S05's parity fixture) |
 
 **`--kind` inference** (omitted, per I07-E hooks): `.stage`+`#play`/`#step`/`#stepCount` → `explorable`; `.stage-wrap`+`#playBtn`/`#nextBtn`/`#restartBtn`/`#indicator` → `animation`; neither, `:root{color-scheme:light}` → `infographic`. Ambiguous → exit `2`.
 
 **Degrade rule.** If Chromium is unresolvable (same check `ready.mjs`, I13, performs), only the static tier runs, a stderr warning fires, `"skipped":["render","drive"]`, and the exit code reflects the static verdict only — never a false overall pass. `--static-only` requests this (a sandboxed eval run with no browser grant).
+
+**`--shots <dir>`** (OQ13-a): writes one PNG per rendered frame (and, for an animation, per scene hold) into `<dir>`. `check-html.mjs` passes it through, since it no longer renders itself.
 
 **Rule ids — I07-H (owner S05), reproduced verbatim, not redefined:**
 
@@ -207,14 +209,14 @@ Measured: 990 chars / 992 UTF-8 bytes / ~248 tokens. `use_when_at`: 160. No `<`/
 
 | Code(s) | Backed by |
 |---|---|
-| `external-reference`, `no-reduced-motion` | `auditAnimationSelfContained` — anim/explorable only through this CLI; code-explainer never passes `--kind code-explainer` here (CX-10) — its own copy of the same rule runs through S06's `check-html.mjs`, its own port |
+| `external-reference`, `no-reduced-motion` | `auditAnimationSelfContained` — anim/explorable only through this CLI; code-explainer never passes `--kind code-explainer` here (CX-10) — its own copy of the same rule runs through `check-html.mjs`'s code-explainer static check (OQ13-a) |
 | `children-can-shrink`, `stage-can-collapse` | `auditAnimationLayout` — anim/explorable only |
 | `strip-cramps` | `auditInfographicResponsive` — infographic only |
 | `no-doctype`, `no-lang`, `no-color-scheme`, `no-painted-ground`, `color-scheme-not-light`, `prefers-color-scheme-dark` | **new** static regex checks (no existing pure module covers these); the last two are infographic-only |
 | Render tier | **new** — puppeteer at the 5 I07-G viewports, `.wrap`/`.stage`/`.deck` box per kind, I07-G's frame formula and limit table unaltered |
 | Drive tier | **new** — puppeteer clicks `#playBtn`/`#nextBtn`/`#restartBtn` (animation) or `#play`/`#step`/`#reset`+reads `#stepCount`/`[data-check][data-pass]` (explorable), per I07-E |
 
-**Pure vs impure split** (R63/R68): `scripts/lib/audit-visual.mjs` holds the static tier — pure, string-in/JSON-out. `scripts/audit-visual-render.mjs` holds puppeteer render+drive — impure, exercised by the parity smoke run (§4.4), not vitest.
+**Pure vs impure split** (R63/R68): `scripts/lib/audit-visual.mjs` holds the static tier — pure, string-in/JSON-out. `scripts/audit-visual-render.mjs` holds puppeteer render+drive — impure, exercised by S16-W2-8's real-Chromium run (§4.4), not vitest.
 
 **pk-plasma-animation's own scripts (unchanged):** `scripts/animations/pk-plasma/{build,fit,new-drug,verify}.mjs`; its step 6 calls `ingest-visual` instead of a nonexistent targeted-upsert script (§2.3).
 
@@ -229,7 +231,7 @@ Measured: 990 chars / 992 UTF-8 bytes / ~248 tokens. `use_when_at`: 160. No `<`/
 
 #### Owned: I08 — `npm run audit:visual`
 
-Full definition in §2.5: CLI shape, `--kind` inference, degrade rule, JSON schema, exit codes, the 21 rule ids (verbatim from I07-H), the implementation mapping, and the pure/impure script split. Consumers: S05's `visuals:concept-animation`/`ml-concept-lab`/`clinical-infographic` call it through `$LEARN_HUB_DIR` before filing (S05 §2.7 I07-K); S05's `check-html.mjs` is the fallback port used only when learn-hub is absent, verified against the parity fixture (I07-J).
+Full definition in §2.5: CLI shape, `--kind` inference, degrade rule, JSON schema, exit codes, the 21 rule ids (verbatim from I07-H), the implementation mapping, and the pure/impure script split. Consumers: S05's `visuals:concept-animation`/`ml-concept-lab`/`clinical-infographic` call it through `$LEARN_HUB_DIR` before filing (S05 §2.7 I07-K); S05's `check-html.mjs` runs a static subset and delegates the rest here; without learn-hub it returns `incomplete` (OQ13-a).
 
 #### Consumed
 
@@ -272,14 +274,14 @@ Full definition in §2.5: CLI shape, `--kind` inference, degrade rule, JSON sche
 - **Files**: create `scripts/lib/audit-visual.mjs`, `scripts/lib/audit-visual.test.mjs`
 - **Change**: import the three existing audits, normalise each into `{code, tier: "static", message, fix}`; add the six new static checks per §2.5's mapping table. Test fixtures are **inline HTML strings in this test file** (CX-31 — not a read of S05's fixture file, which `npm test` here must never depend on the micky checkout to reach): one clean shape, and the two I07-J bad shapes (`bad-animation`: doctype-less, no `color-scheme`/painted ground, `.wrap{height:100dvh}` with no `min-height` floor; `bad-infographic`: `prefers-color-scheme:dark` block present) reproduced as literal strings matching I07-J's own description.
 - **Commands**: `npx vitest run scripts/lib/audit-visual.test.mjs`
-- **Done when**: passes against the inline fixtures' static codes only (clean → `[]`; `bad-animation` → the 6 named codes; `bad-infographic` → the 3 named codes, I07-J). Cross-tool agreement against S05's own parity fixture is checked separately, at W2 exit and in S08's `validate.py --cross-repo` (§4.4), never inside this vitest run.
+- **Done when**: passes against the inline fixtures' static codes only (clean → `[]`; `bad-animation` → the 6 named codes; `bad-infographic` → the 3 named codes, I07-J). No cross-tool parity check exists (OQ13-a).
 - **Rollback**: `git rm scripts/lib/audit-visual.mjs scripts/lib/audit-visual.test.mjs`.
 
 ### S16-W2-2 — Write the CLI and the render/drive pass
 
 - **Repo · depends on**: learn-hub · S16-W2-1, S19-W1-4 (CX-39 — same-file `package.json` edit order)
 - **Files**: create `scripts/audit-visual.mjs`, `scripts/audit-visual-render.mjs`; edit `package.json` (CX-25); edit `README.md` (one script-table row for `audit:visual`; critique F12)
-- **Change**: implement the CLI per §2.5 (`--kind`, `--static-only`, `--json`, `--help`, degrade rule, exit codes); the render/drive pass drives puppeteer at the 5 I07-G viewports and the I07-E DOM hooks. Add `"audit:visual": "node scripts/audit-visual.mjs"` to `package.json` (I22, CX-25) — this is the entry S05's `check-html.mjs` delegates through via `npm run -s audit:visual`.
+- **Change**: implement the CLI per §2.5 (`--kind`, `--static-only`, `--shots`, `--json`, `--help`, degrade rule, exit codes); the render/drive pass drives puppeteer at the 5 I07-G viewports and the I07-E DOM hooks. Add `"audit:visual": "node scripts/audit-visual.mjs"` to `package.json` (I22, CX-25) — this is the entry S05's `check-html.mjs` delegates through via `npm run -s audit:visual`.
 - **Commands**:
   ```
   node scripts/audit-visual.mjs --help
@@ -370,7 +372,7 @@ context:
   add_dirs: [fixtures]
 ```
 
-`fixtures/bad-animation.html` (mirrors S05's `bad-animation` parity fixture: doctype-less, `.wrap{height:100dvh}`, no color-scheme/painted ground):
+`fixtures/bad-animation.html` (the I07-J `bad-animation` shape: doctype-less, `.wrap{height:100dvh}`, no color-scheme/painted ground):
 ```html
 <div class="wrap"><style>
 .wrap{height:100dvh;display:flex;flex-direction:column}
@@ -525,7 +527,7 @@ Family (architecture §6.3): `{clinical-infographic, concept-animation, ml-conce
 | `bash scripts/eval-project-skill.sh pk-plasma-animation --smoke` | smoke run (CX-46) |
 | `npx vitest run scripts/lib/audit-visual.test.mjs` | static-tier unit tests |
 | `node scripts/audit-visual.mjs <file> --json` | manual single-file audit |
-| Parity smoke: run `audit:visual` and S05's `check-html.mjs --own` over the 6-row fixture (I07-J), assert equal verdicts and equal `codes ∩ shared_codes` — at W2 exit, in S08's `validate.py --cross-repo`, and in any step touching `audit:visual` (per S05 §2.7) | cross-tool agreement |
+| `npm run audit:visual -- vault/tms-principles/tms-electromagnetic-induction.html --json` with `PUPPETEER_EXECUTABLE_PATH` set (S16-W2-8) | render tier against a real Chromium (OQ13-a: no parity smoke) |
 
 ## 5. Acceptance criteria
 
@@ -533,7 +535,7 @@ Family (architecture §6.3): `{clinical-infographic, concept-animation, ml-conce
 2. `.claude/skills/ingest-infographic`, `.claude/skills/ingest-animation`, `plugins/pk-plasma-animation` do not exist.
 3. `node scripts/audit-visual.mjs --help` exits 0 with no file writes.
 4. `npx vitest run scripts/lib/audit-visual.test.mjs` passes, against the inline `clean`/`bad-animation`/`bad-infographic` fixtures defined in the test file itself (§3, S16-W2-1, CX-31 — not a read of S05's fixture file).
-5. Running `audit:visual` against a `bad-animation`-shaped fixture returns exactly the 6 codes I07-J names; against a `bad-infographic`-shaped fixture, exactly the 3 codes. Cross-tool agreement against S05's own parity fixture is the §4.4 command, run separately (not inside `npm test`).
+5. Running `audit:visual` against a `bad-animation`-shaped fixture returns exactly the 6 codes I07-J names; against a `bad-infographic`-shaped fixture, exactly the 3 codes.
 6. `ingest-visual`'s eval case `refuse-bad-animation` shows no `sync:apply`/`npm run sync` Bash call when the fixture fails audit (§4.1).
 7. `grep -c "empty-vault.*waits for" .claude/skills/ingest-visual/SKILL.md` → 0.
 8. `grep -c "★ · <title>" .claude/skills/pk-plasma-animation/references/pubmed-research-plan.md` → 0; the file's Sources line matches I04's grammar instead.

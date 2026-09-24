@@ -290,7 +290,7 @@ Path shorthand: `C` = `plugins/comprehensive-review` (W2 location); `Q` = `plugi
 - Commands / done when: `grep -c "no built-in cron" $Q/README.md` = 0.
 - Rollback: `git checkout -- $Q/README.md`.
 
-**S04-W1-3** · depends on: S04-W1-1, S04-W1-2
+**S04-W1-3** · DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. · depends on: S04-W1-1, S04-W1-2
 - Change: release the W1 fixes — `python3 scripts/bump.py psych-paper-digest patch --write`.
 - Files: `$Q/.claude-plugin/plugin.json`, `$Q/CHANGELOG.md` (entry: "H46/H47 fixes: `datetype`, pagination, runtime MCP resolution."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for this entry.
@@ -312,7 +312,7 @@ W1 exit: `claude plugin validate --strict $Q` exits 0; H46/H47 closed (psych-pap
 - Commands / done when: `grep -c "house rules" $C/skills/comprehensive-review/SKILL.md` = 0; `grep -c "contract: report/1" $C/skills/comprehensive-review/SKILL.md` = 1.
 - Rollback: `git checkout -- $C/skills/comprehensive-review/SKILL.md`.
 
-**S04-W2-3** · depends on: S04-W2-1, S04-W2-2
+**S04-W2-3** · DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. · depends on: S04-W2-1, S04-W2-2
 - Change: release the W2 fixes — `python3 scripts/bump.py comprehensive-review minor --write`.
 - Files: `$C/.claude-plugin/plugin.json`, `$C/CHANGELOG.md` (entry: "OPTIONAL fallbacks, sink filing, interim report-contract copy, runtime MCP resolution."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for this entry.

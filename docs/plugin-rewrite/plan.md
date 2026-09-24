@@ -1,7 +1,7 @@
 # Plugin rewrite: execution plan
 
 Date: 2026-09-24. Repos: micky-psych-tools (MK) and learn-hub (LH).
-Source of truth for design: [architecture.md](architecture.md). This plan orders the 285 change steps of the 21 specs into waves W0–W5. The critique pass of 2026-09-24 is recorded in `critique-log.md`.
+Source of truth for design: [architecture.md](architecture.md). This plan orders the 296 change steps of the 21 specs into waves W0–W5: 280 active and 16 dropped by the owner answers of 2026-09-24 (§1). The critique pass of 2026-09-24 is recorded in `critique-log.md`.
 
 Specs: [S01](specs/S01-alignment-core.md) · [S02](specs/S02-alignment-siblings.md) · [S03](specs/S03-evidence-core.md) · [S04](specs/S04-evidence-siblings.md) · [S05](specs/S05-visuals-core.md) · [S06](specs/S06-visuals-siblings.md) · [S07](specs/S07-vault-keeper.md) · [S08](specs/S08-plugin-creator.md) · [S09](specs/S09-firecrawl-gridgeist.md) · [S10](specs/S10-micky-repo.md) · [S11](specs/S11-delivery-environment.md) · [S12](specs/S12-eval-program.md) · [S13](specs/S13-sync-tail.md) · [S14](specs/S14-learn-hub-retirements.md) · [S15](specs/S15-digest-report-inbox.md) · [S16](specs/S16-ingest-visual-pk-plasma.md) · [S17](specs/S17-ingest-article-slides.md) · [S18](specs/S18-pdf-pipeline-verify.md) · [S19](specs/S19-atomize-book.md) · [S20](specs/S20-maintenance-skills.md) · [S21](specs/S21-learn-hub-claude-md-infra.md).
 Also: [coverage.md](coverage.md), [phase3/interfaces.md](phase3/interfaces.md) (I01–I27), [phase3/eval-format.md](phase3/eval-format.md), [phase3/measure.py](phase3/measure.py). The package was committed to micky `docs/plugin-rewrite/` on 2026-09-24 (the §3 W0-entry package commit), so these paths resolve.
@@ -15,8 +15,8 @@ Also: [coverage.md](coverage.md), [phase3/interfaces.md](phase3/interfaces.md) (
 **Repo codes.** MK = micky-psych-tools. LH = learn-hub. env = the claude.ai/code cloud environment. Win = the owner's Windows machine. cloud = a multi-repo cloud session. both = one commit in each repo.
 
 **How to execute one step.**
-1. Check the wave entry conditions (§3) and the step's "Depends on" cell. Every dependency must be merged (on the wave branch, or on master under OQ7-a). `+ X (plan)` marks an order the plan adds where the spec omits it. Never start a wave before its entry conditions hold.
-2. Work on one branch per wave per repo: `rewrite/w<n>`. Branch from the default branch after `git fetch` (learn-hub CLAUDE.md: other sessions push to the same remote). Keep the default checkout on master (K9): whatever is checked out there is what every session loads. The branch model is pending OQ7; under OQ7-a, use one short branch per spec block instead. Until S08's W3 plugin hook sets it, a cloud session runs `git -C /home/user/micky-psych-tools config core.hooksPath .githooks` before its first micky commit: a new cloud clone does not keep S10-W0-11's setting (critique C2-20; §8 Q29).
+1. Check the wave entry conditions (§3) and the step's "Depends on" cell. Every dependency must be merged to master (OQ7-a). `+ X (plan)` marks an order the plan adds where the spec omits it. Never start a wave before its entry conditions hold.
+2. Branch model (OQ7-a): one short branch per spec block — the rows up to a release or a V-step dependency. Branch from the default branch after `git fetch` (learn-hub CLAUDE.md: other sessions push to the same remote), and merge the block to master when its checks are green. A V step or a Windows step runs only after `git merge-base --is-ancestor <dep-sha> origin/master` holds for each of its dependencies. At W1 and W2, learn-hub blocks merge before the micky blocks that write into them. The wave tag marks the wave's last merge; a rollback reverts the listed PR merges, newest first. Keep the default checkout on master (K9): whatever is checked out there is what every session loads. On Windows, from the W1-entry switch (S11-W3-2, OQ12-a), the checkouts stay on master and rewrite work runs in a separate worktree. Until S08's W3 plugin hook sets it, a cloud session runs `git -C /home/user/micky-psych-tools config core.hooksPath .githooks` before its first micky commit: a new cloud clone does not keep S10-W0-11's setting (critique C2-20; §8 Q29).
 3. Open the spec at the step. Run its read-only commands first. Specs call `measure.py` as `$MICKY_TOOLS_DIR/docs/plugin-rewrite/phase3/measure.py` (committed at W0 entry). If a quoted line or line number no longer matches the file, locate the quoted text: if `grep -Fc '<text>' <file>` prints 1, use its new line and record the new line number in the commit message; stop and ask only when the text is gone or occurs more than once (critique F15, C2-09).
 4. Make exactly the change the step names. Run step 5's checks before you commit; if they fail, apply the spec's rollback to the working tree. After a commit, the rollback is `git revert <sha>` (critique C2-28). One step = one commit. Two exceptions: S10-W3-1 + S10-W3-2 land as one PR of three commits, one per family (S10 commit shape, C2-14); S08-W3-1 lands as one PR of four commits (S08 commit shape, C2-13). Commit message: `<type>(<spec>): <step id> <summary>`, conventional commits, English.
 5. Run the step's done-when commands, then the repo checks:
@@ -24,7 +24,7 @@ Also: [coverage.md](coverage.md), [phase3/interfaces.md](phase3/interfaces.md) (
    - LH: `npm test`; from S21-W0-2 on also `npm run test:py && npm run check:skills`. From S21-W0-3 on, the learn-hub pre-commit hook runs skill-lint, `ratchet verify` and `triggers verify` on commits that touch `.claude/skills/` or `CLAUDE.md`; micky's `health.sh --fast` runs both verifies from S10-W0-9 on (critique F8).
 6. Ratchet rule: `docs/rewrite/ratchet.json` may only shrink. A new violation fails the step. The only additions are first-time seeds by S10-W0-1b, S21-W0-2 and S08-W3-1 (`ratchet seed --new`). When a step fixes a ratcheted entry, remove the entry in the same commit (`rewrite_gate.py ratchet close`; LH `node scripts/rewrite-gate.mjs ratchet close`).
 7. Trigger lock rule: never drop or reword a phrase in `docs/rewrite/triggers.lock.json` silently. A phrase goes only through `triggers remove --phrase "<p>" --skill <s> --reason "<r>" --write` (a deleted or merged skill: `triggers remove --skill <s> --reason "<r>" --write`), in the same commit as the description edit, followed by `triggers verify`. MK runs `python3 scripts/rewrite_gate.py`, LH runs `node scripts/rewrite-gate.mjs`. §5's lock table names the step and command for every phrase a spec's §6 marks removed, narrowed or moved to another skill (critique F7).
-8. CHANGELOG: LH — an entry under `## [Unreleased]` for every step that changes behaviour or tooling, plus tests for new logic (learn-hub CLAUDE.md rule). MK — the touched plugin's `CHANGELOG.md` (release steps write it through `bump.py --write` or `release.py --write`). MK repo-level tooling: `docs/rewrite/CHANGELOG.md`, created by S10-W0-8 (OQ16, assumed option (a)). LH also updates `README.md` (script table) and `CLAUDE.md` in the same commit when a step changes what they describe (learn-hub CLAUDE.md, Documentation upkeep; critique F12).
+8. CHANGELOG: LH — an entry under `## [Unreleased]` for every step that changes behaviour or tooling, plus tests for new logic (learn-hub CLAUDE.md rule). MK — the touched plugin's `CHANGELOG.md`: until W3, a step that changes a plugin adds its entry under `## Unreleased` (OQ12-a: there are no W1/W2 release steps); the W3 release steps turn that section into the version with `release.py --write`. MK repo-level tooling: `docs/rewrite/CHANGELOG.md`, created by S10-W0-8 (OQ16-a). LH also updates `README.md` (script table) and `CLAUDE.md` in the same commit when a step changes what they describe (learn-hub CLAUDE.md, Documentation upkeep; critique F12).
 9. h-coverage: micky's `docs/rewrite/h-coverage.md` is canonical. A step that verifies a closure records its evidence in `docs/rewrite/baseline.md` under `## Owner records`. The wave's tag step (S12-W<n>-T) closes that wave's rows with `rewrite_gate.py h-coverage close --id Hnn --wave Wn --write` in one commit, then copies the file byte for byte to learn-hub (S12 §2.3; critique P33, C2-26).
 10. Never run: `claude plugin eval` beyond the smoke and release commands the plan names, `npm run sync` or `sync:apply` outside an OWNER step (`apply-sync.mjs --preflight-only` is allowed: it exits before any Supabase client exists), anything that writes to Supabase, any edit to a claude.ai-synced skill. Eval runs happen only in the cloud environment (setup step 4 installs bubblewrap and socat) or under WSL2: native Windows has no sandbox backend for Bash-granted cases (critique C2-02).
 
@@ -32,71 +32,73 @@ Also: [coverage.md](coverage.md), [phase3/interfaces.md](phase3/interfaces.md) (
 - the row is marked OWNER;
 - a done-when fails and the spec's rollback does not restore a green state;
 - a step would write to the live database or edit a synced skill;
-- a §1 question or a §8 item listed for this wave is still open;
+- a §8 item listed for this wave is still open (every §1 decision is answered);
 - the change would reach outside the step's named files (K16).
 
 ## 1. Owner decisions
 
-Every OD takes the architecture's recommended option. The executor does not start a wave until the owner has confirmed the ODs it needs.
+The owner confirmed every OD and answered every OQ on 2026-09-24. The plan below already reflects the answers. Every OD takes the architecture's recommended option.
 
-| OD | Assumed option | Needed by |
-|---|---|---|
-| OD1 | (a) `CLAUDE_CODE_PLUGIN_DIRS` on the cloud environment, absolute paths | W0 entry; re-ask if check a = no |
-| OD2 | (a) Windows user env var; marketplace copies uninstalled | W0 entry (provisional), W3 entry (S11-W3-2) |
-| OD3 | (a) merge into families alignment, evidence, visuals | W3 entry (S10-W3-2) |
-| OD4 | (a) keep micky `vault/` as fallback sink; revisit at W5 | W2 entry; W5 |
-| OD5 | (a) inbox only; publish on "digest" | W2 entry |
-| OD6 | (a) git-tracked `micky/state/` | W3 entry (S01-W3-4, S04-W3-1) |
-| OD7 | (a) rename micky skill to `lit-watch`, keep `/digest` | W3 entry (S04-W3-3) |
-| OD8 | (a) owner edits synced `daily-random-review`; CR gets a Not-for | W2 (before S04-W2-4) |
-| OD9 | (a) short verbs as dmi alias skills | W3 entry (S10-W3-2); W2 for `/pk-animation`, `/vectors` |
-| OD10 | (a) mixed user-only list | W2 (S20), W3 entry |
-| OD11 | (b) staged CLAUDE.md restructure | W4 entry |
-| OD12 | (a) slim firecrawl router, `defaultEnabled: false` | W3 entry (S09-W3-1) |
-| OD13 | (a) no claude.ai builds | W5 |
-| OD14 | (a) smoke per wave; two-arm release at W3 and W5 exits | W0 entry |
-
-**Owner questions** (answer by the wave shown). OQ1–OQ6 come from the specs' §8; OQ7–OQ16 come from the critique pass (`critique-log.md`) and list their options, recommended first.
-
-| # | Question | Source | Answer by |
+| OD | Option | Needed by | Answer (2026-09-24) |
 |---|---|---|---|
-| OQ1 | LICENSE text for the backfill: MIT, owner "Thanawat Suharit (Micky)", 2026? Default MIT. | S10 §8.5 | W0, before S10-W0-8 |
-| OQ2 | Extra eval tools (`--allow-tools`) pass through `eval.sh -- …` per case, not as a fixed always-on set? | S12 §8.6 | W0, before S12-W0-3 |
-| OQ3 | Eval budget: the `EVAL_BUDGET` / `--max-cost-usd` value (OD14) and the ≤ USD 0.50 check-d run | S11-W0-9, OD14 | W0, before S11-W0-9 |
-| OQ4 | Enablement reading: "HIGH defects due by that wave", with named exceptions logged (vault-keeper at V2 with H10/H11 split; pubmed at V3 with H45 open; four alignment/PPD plugins at V6) | S11 §8.4 | W1 exit (S11-W1-1); re-confirm at S11-W2-2, S11-W3-1 |
-| OQ5 | Per orphan row found by the source-to-vault audit: restore (`restore-vault-from-db.mjs --verify`) or leave. No delete in W1 (critique F17). | S14-W1-1 | W1 |
-| OQ6 | firecrawl: keep `defaultEnabled: false` plus a setup-script enable block, or drop the flag | S09 §8.6, S11 §8.1 | W3 entry, before S09-W3-1 |
-| OQ7 | Branch model (the wave branch conflicts with mid-wave cloud enablement). **(a) Recommended:** one short branch per spec block (the rows up to a release or a V-step dependency), merged to master when green; a V step or Windows refresh runs only after `git merge-base --is-ancestor <dep-sha> origin/master` holds for each dependency; the wave tag marks the last merge; rollback reverts the listed PR merges, newest first; at W1 and W2, learn-hub blocks merge before the micky blocks that write into them. **(b)** Keep one branch per wave; merge before the exit gates; move every V step, Windows step and S13-W1-10 after that merge. **(c)** Point cloud sessions at `rewrite/w<n>` (conflicts with K9). | critique F1, C2-03 | W0 entry |
-| OQ8 | Eval baseline cadence. **(a) Recommended:** smoke baselines whenever cases change (S12-W0-8 records W0; a step that adds cases runs its smoke command with `--against pre-rewrite` for them), release baselines only at W3 and W5 (`--against pre-rewrite`). The specs implement (a). **(b)** Absolute pass thresholds per case instead of "≥ baseline". **(c)** Full baselines every wave. | critique F2 | W0, before S12-W0-8 |
-| OQ9 | Other sessions edit learn-hub CLAUDE.md during W4. **(a) Recommended:** freeze its `## Gotchas` and `## Pages` from S21-W4a-1 to S21-W4b-1; new gotchas go to `docs/gotchas-inbox.md` and merge after. **(b)** No freeze: S21-W4a-1 builds the map from the W4-entry file and `move-blocks --check` compares against that commit (the specs do this under both options). **(c)** Accept the risk. | critique F13, C2-09 | W4 entry |
-| OQ10 | Unfixed alignment plugins load in the cloud for all of W3. **(a) Recommended:** at W3 entry set V5' = V5 plus `/home/user/micky-psych-tools/plugins/{alignment,evidence,visuals}` (under OQ7-a, add each family once its rewrite is on master); switch to V6 with the last merge; drop S10-W3-1's dependency on S11-W3-1 and the OQ4 exception for the four plugins. **(b)** Keep V6 at W3 entry with the OQ4 exception. | critique C2-12 | W3 entry, before S11-W3-1 |
-| OQ11 | Eval run counts (about 1,140 live-trigger runs, 480 + 900 release runs, plus the `--against` arm). **(a) Recommended:** run each trigger query once and re-run 3 times only the queries whose outcome flips; release `--runs 3` for gate skills and report writers, `--runs 1` for the rest; OQ3 sets one budget per cost point (smoke run, release run, live pass). **(b)** Keep the architecture's counts and budget them all in OQ3. | critique C2-17 | W0, with OQ3 |
-| OQ12 | When Windows loads plugins in place. **(a) Recommended:** at W1 entry, after check g = yes: set the Windows variable, uninstall the marketplace copies, drop the 12 W1/W2 release steps, S11-W1-2 and S11-W2-5; each step still writes its CHANGELOG entry under `## Unreleased`; `release.py` sets versions once at W3; Windows checkouts stay on master and rewrite work runs in a worktree (K9). **(b)** Keep OD2-a timing: switch at W3 (S11-W3-2). | critique C2-18 | W1 entry |
-| OQ13 | The visual audit is built twice (micky `check-html.mjs` port and learn-hub `audit:visual`). **(a) Recommended:** `check-html.mjs` delegates to `audit:visual` and keeps a static subset of at most 60 lines (doctype, `lang`, color-scheme, `min-height:100dvh`, no `prefers-color-scheme:dark`, no external URL), returning `incomplete` without learn-hub; drop the render port, the parity fixture, the VAL parity check and S05-W2-2's copies; code-explainer keeps its own static check. **(b)** Keep the architecture's port and parity fixture. | critique C2-19 | W2 entry, before S05-W2-1 |
-| OQ14 | When the learn-hub CLAUDE.md stage (b) diet runs. **(a) Recommended:** right after W0 check e = yes, before W1 (S21-W4a-1, S21-W4a-4 and S21-W4b-1 with OQ9's answer); stage (a) stays in W4; saves about 35k tokens per session and brings the W3 trigger runs closer to the final context. **(b)** Keep both stages in W4. | critique C2-23 | W0 exit |
-| OQ15 | vault-keeper scripts for a vault of 16 files. **(a) Recommended:** cut `vault_index.py` (state the dangling-versus-broken link rule in prose); defer `drain_plan.py` to W5 and build it only if S07-W5-1 keeps the vault; in W2, copy the 7 artifacts to `research-notes/` once with the owner watching and keep the W1 no-delete stopgap; H10b and H11b close on the stopgap plus the copy. **(b)** Keep S07-W2-3 and S07-W2-4 as specified. | critique C2-25 | W2 entry, before S07-W2-3 |
-| OQ16 | Home of micky repo-level tooling CHANGELOG entries (was §8 Q11). **(a) Recommended:** `docs/rewrite/CHANGELOG.md`, created by S10-W0-8 (S10 assumes (a)). **(b)** A repo-root `CHANGELOG.md`. **(c)** Commit messages only. | planner P-32 | W0, before S10-W0-8 |
+| OD1 | (a) `CLAUDE_CODE_PLUGIN_DIRS` on the cloud environment, absolute paths | W0 entry; re-ask if check a = no | a |
+| OD2 | (a) Windows user env var; marketplace copies uninstalled | W1 entry (S11-W3-2, OQ12-a) | a |
+| OD3 | (a) merge into families alignment, evidence, visuals | W3 entry (S10-W3-2) | a |
+| OD4 | (a) keep micky `vault/` as fallback sink; revisit at W5 | W2 entry; W5 | a |
+| OD5 | (a) inbox only; publish on "digest" | W2 entry | a |
+| OD6 | (a) git-tracked `micky/state/` | W3 entry (S01-W3-4, S04-W3-1) | a |
+| OD7 | (a) rename micky skill to `lit-watch`, keep `/digest` | W3 entry (S04-W3-3) | a |
+| OD8 | (a) owner edits synced `daily-random-review`; CR gets a Not-for | W2 (before S04-W2-4) | a |
+| OD9 | (a) short verbs as dmi alias skills | W3 entry (S10-W3-2); W2 for `/pk-animation`, `/vectors` | a |
+| OD10 | (a) mixed user-only list | W2 (S20), W3 entry | a |
+| OD11 | (b) staged CLAUDE.md restructure | W0 (stage b, OQ14-a), W4 (stage a) | b (staged: a then b) |
+| OD12 | (a) slim firecrawl router, `defaultEnabled: false` | W3 entry (S09-W3-1) | a |
+| OD13 | (a) no claude.ai builds | W5 | a |
+| OD14 | (a) smoke per wave; two-arm release at W3 and W5 exits | W0 entry | a |
+
+**Owner questions.** OQ1–OQ6 come from the specs' §8; OQ7–OQ16 come from the critique pass (`critique-log.md`) and list their options, recommended first. The owner chose (a) for each.
+
+| # | Question | Source | Answer by | Answer (2026-09-24) |
+|---|---|---|---|---|
+| OQ1 | LICENSE text for the backfill: MIT, owner "Thanawat Suharit (Micky)", 2026? Default MIT. | S10 §8.5 | W0, before S10-W0-8 | a |
+| OQ2 | Extra eval tools (`--allow-tools`) pass through `eval.sh -- …` per case, not as a fixed always-on set? | S12 §8.6 | W0, before S12-W0-3 | a |
+| OQ3 | Eval budget: the `EVAL_BUDGET` / `--max-cost-usd` value (OD14) and the ≤ USD 0.50 check-d run | S11-W0-9, OD14 | W0, before S11-W0-9 | probe approved; caps pending (W0 owner action, S12-W0-9) |
+| OQ4 | Enablement reading: "HIGH defects due by that wave", with named exceptions logged (vault-keeper at V2 with H10/H11 split; pubmed at V3 with H45 open; four alignment/PPD plugins at V6) | S11 §8.4 | W1 exit (S11-W1-1); re-confirm at S11-W2-2, S11-W3-1 | a |
+| OQ5 | Per orphan row found by the source-to-vault audit: restore (`restore-vault-from-db.mjs --verify`) or leave. No delete in W1 (critique F17). | S14-W1-1 | W1 | a |
+| OQ6 | firecrawl: keep `defaultEnabled: false` plus a setup-script enable block, or drop the flag | S09 §8.6, S11 §8.1 | W3 entry, before S09-W3-1 | a — chosen by Claude on the owner's instruction: OD12-a and rubric R30 require `defaultEnabled: false` for an external-service plugin |
+| OQ7 | Branch model (the wave branch conflicts with mid-wave cloud enablement). **(a) Recommended:** one short branch per spec block (the rows up to a release or a V-step dependency), merged to master when green; a V step or Windows refresh runs only after `git merge-base --is-ancestor <dep-sha> origin/master` holds for each dependency; the wave tag marks the last merge; rollback reverts the listed PR merges, newest first; at W1 and W2, learn-hub blocks merge before the micky blocks that write into them. **(b)** Keep one branch per wave; merge before the exit gates; move every V step, Windows step and S13-W1-10 after that merge. **(c)** Point cloud sessions at `rewrite/w<n>` (conflicts with K9). | critique F1, C2-03 | W0 entry | a |
+| OQ8 | Eval baseline cadence. **(a) Recommended:** smoke baselines whenever cases change (S12-W0-8 records W0; a step that adds cases runs its smoke command with `--against pre-rewrite` for them), release baselines only at W3 and W5 (`--against pre-rewrite`). The specs implement (a). **(b)** Absolute pass thresholds per case instead of "≥ baseline". **(c)** Full baselines every wave. | critique F2 | W0, before S12-W0-8 | a |
+| OQ9 | Other sessions edit learn-hub CLAUDE.md during W4. **(a) Recommended:** freeze its `## Gotchas` and `## Pages` from S21-W4a-1 to S21-W4b-1; new gotchas go to `docs/gotchas-inbox.md` and merge after. **(b)** No freeze: S21-W4a-1 builds the map from the W4-entry file and `move-blocks --check` compares against that commit (the specs do this under both options). **(c)** Accept the risk. | critique F13, C2-09 | W4 entry | a |
+| OQ10 | Unfixed alignment plugins load in the cloud for all of W3. **(a) Recommended:** at W3 entry set V5' = V5 plus `/home/user/micky-psych-tools/plugins/{alignment,evidence,visuals}` (under OQ7-a, add each family once its rewrite is on master); switch to V6 with the last merge; drop S10-W3-1's dependency on S11-W3-1 and the OQ4 exception for the four plugins. **(b)** Keep V6 at W3 entry with the OQ4 exception. | critique C2-12 | W3 entry, before S11-W3-1 | a |
+| OQ11 | Eval run counts (about 1,140 live-trigger runs, 480 + 900 release runs, plus the `--against` arm). **(a) Recommended:** run each trigger query once and re-run 3 times only the queries whose outcome flips; release `--runs 3` for gate skills and report writers, `--runs 1` for the rest; OQ3 sets one budget per cost point (smoke run, release run, live pass). **(b)** Keep the architecture's counts and budget them all in OQ3. | critique C2-17 | W0, with OQ3 | a |
+| OQ12 | When Windows loads plugins in place. **(a) Recommended:** at W1 entry, after check g = yes: set the Windows variable, uninstall the marketplace copies, drop the 12 W1/W2 release steps, S11-W1-2 and S11-W2-5; each step still writes its CHANGELOG entry under `## Unreleased`; `release.py` sets versions once at W3; Windows checkouts stay on master and rewrite work runs in a worktree (K9). **(b)** Keep OD2-a timing: switch at W3 (S11-W3-2). | critique C2-18 | W1 entry | a |
+| OQ13 | The visual audit is built twice (micky `check-html.mjs` port and learn-hub `audit:visual`). **(a) Recommended:** `check-html.mjs` delegates to `audit:visual` and keeps a static subset of at most 60 lines (doctype, `lang`, color-scheme, `min-height:100dvh`, no `prefers-color-scheme:dark`, no external URL), returning `incomplete` without learn-hub; drop the render port, the parity fixture, the VAL parity check and S05-W2-2's copies; code-explainer keeps its own static check. **(b)** Keep the architecture's port and parity fixture. | critique C2-19 | W2 entry, before S05-W2-1 | a |
+| OQ14 | When the learn-hub CLAUDE.md stage (b) diet runs. **(a) Recommended:** right after W0 check e = yes, before W1 (S21-W4a-1, S21-W4a-4 and S21-W4b-1 with OQ9's answer); stage (a) stays in W4; saves about 35k tokens per session and brings the W3 trigger runs closer to the final context. **(b)** Keep both stages in W4. | critique C2-23 | W0 exit | a |
+| OQ15 | vault-keeper scripts for a vault of 16 files. **(a) Recommended:** cut `vault_index.py` (state the dangling-versus-broken link rule in prose); defer `drain_plan.py` to W5 and build it only if S07-W5-1 keeps the vault; in W2, copy the 7 artifacts to `research-notes/` once with the owner watching and keep the W1 no-delete stopgap; H10b and H11b close on the stopgap plus the copy. **(b)** Keep S07-W2-3 and S07-W2-4 as specified. | critique C2-25 | W2 entry, before S07-W2-3 | a |
+| OQ16 | Home of micky repo-level tooling CHANGELOG entries (was §8 Q11). **(a) Recommended:** `docs/rewrite/CHANGELOG.md`, created by S10-W0-8 (S10 assumes (a)). **(b)** A repo-root `CHANGELOG.md`. **(c)** Commit messages only. | planner P-32 | W0, before S10-W0-8 | a |
 
 ## 2. Critical path and effort
 
 Critical path: W0 → W1 → W2 → W3 → W5. W4 is off the critical path when it runs in parallel with W3.
 
-- **W3 ∥ W4.** W4 may start at W2 exit (architecture §10). No W4 step depends on a W3 step (checked). W3 touches only MK plus the env; W4 touches only LH. Shared: S12 live-trigger runs (separate families), the cloud session, owner time. Default is sequential; run in parallel only if the owner wants to. In parallel: hold W4 merges to learn-hub master from S12-W3-2 until S12-W3-4 ends, because the W3 trigger runs read learn-hub CLAUDE.md and the project-skill descriptions (critique F16); run S12-W4-2 and S12-W4-3 with micky checked out at tag `wave-2`, or both before the W3 merge (C2-31).
+- **W3 ∥ W4.** W4 may start at W2 exit (architecture §10). No W4 step depends on a W3 step (checked). W3 touches only MK plus the env; W4 touches only LH. Shared: S12 live-trigger runs (separate families), the cloud session, owner time. Default is sequential; run in parallel only if the owner wants to. In parallel: hold W4 merges to learn-hub master from S12-W3-2 until S12-W3-4 ends, because the W3 trigger runs read learn-hub CLAUDE.md and the project-skill descriptions (critique F16); run S12-W4-2 and S12-W4-3 with micky checked out at tag `wave-2`, or both before the first W3 merge to master (C2-31).
 - W4 needs an atomize-book import freeze (S19-W4-1) from the start of S19-W4-2 until S19-W4-9 passes. The W4 table lists S19-W4-2 … S19-W4-9 back to back (critique C2-27); only S19-W4-9 needs Windows.
 - Session type (critique C2-24): a row whose Repo is MK, with no V step and no cross-repo check, can run in a micky-only session (with `LEARN_HUB_DIR` unset, the cross-repo checks warn). Rows marked LH, both, env or cloud, and every V step, need a multi-repo session. Win rows run on the owner's Windows machine.
 - W5 waits 2–4 weeks of use after W3 (S09-W5-1).
 
-| Wave | Steps | OWNER steps | Executor sessions (estimate) |
+| Wave | Steps (active + dropped) | OWNER steps | Executor sessions (estimate) |
 |---|---|---|---|
-| W0 | 46 | 8 | 3: MK tooling; LH tooling + seeds; checklist + smoke baseline |
-| W1 | 68 | 6 | 4: sync tail; ingest/pdf/atomize text; micky fixes; exit |
-| W2 | 63 | 9 | 5: LH consumers; producers; renderers; vault-keeper + forks; cloud |
-| W3 | 67 | 4 | 6: skeleton; alignment; evidence; visuals; plugin-creator + firecrawl; diet + exit |
-| W4 | 33 | 6 | 4: gotcha moves; atomize split; ingest/pdf/verify; Windows baselines and re-runs |
-| W5 | 8 | 3 | 1 |
-| Total | 285 | 36 | about 23 |
+| W0 | 52 (52 + 0) | 9 | 4: MK tooling; LH tooling + seeds; checklist + smoke baseline; stage (b) diet (OQ14-a) |
+| W1 | 70 (64 + 6) | 7 | 4: sync tail; ingest/pdf/atomize text; micky fixes; exit |
+| W2 | 65 (55 + 10) | 10 | 5: LH consumers; producers; renderers; vault-keeper + forks; cloud |
+| W3 | 69 (69 + 0) | 7 | 6: skeleton; alignment; evidence; visuals; plugin-creator + firecrawl; diet + exit |
+| W4 | 31 (31 + 0) | 6 | 4: gotcha moves; atomize split; ingest/pdf/verify; Windows baselines and re-runs |
+| W5 | 9 (9 + 0) | 3 | 1 |
+| Total | 296 (280 + 16) | 42 | about 24 |
 
-**Eval cost points (OD14).** Smoke runs every wave: free graders, 1 run, `--ablation none`, budget capped by OQ3. The two paid points are the two-arm release runs: **S12-W3-5** (W3 exit, 6 plugins) and **S12-W5-1** (W5, all plugins and project skills). A full two-arm pass is about 700 agent runs (EVL-27). Live trigger runs (S12-W3-2/-3, S12-W4-2/-3) and routing smokes (S12-W3-4, S12-W5-2) add session runs but no two-arm cost. The `--against pre-rewrite` baseline arm (critique C2-07) doubles each release pass, and S12-W0-8 adds one smoke pass at W0. Run counts are pending OQ11.
+Dropped rows keep their place in §3 with What = `DROPPED (OQnn-a)`: OQ12-a drops the eleven W1/W2 release steps and the two Windows refresh steps (S11-W1-2, S11-W2-5); S05-W2-6 keeps its README and CHANGELOG work and loses only its bump. OQ13-a drops S05-W2-2; OQ15-a drops S07-W2-3 and S07-W2-4. The answers add eleven steps: S12-W0-9 (OQ3), S21-W0-4, S21-W0-5 (OQ9), S21-W4a-5 (OQ14), S11-W1-3, S11-W2-6 (OQ12), S11-W3-6, S11-W3-7, S11-W3-8 (OQ10), S07-W2-8, S07-W5-2 (OQ15).
+
+**Eval cost points (OD14, OQ11-a).** Smoke runs every wave: free graders, 1 run, `--ablation none`, each run capped by the smoke-run cap. The two paid points are the two-arm release runs: **S12-W3-5** (W3 exit, 6 plugins) and **S12-W5-1** (W5, all plugins and project skills), with `--runs 3` for the gate skills and report writers (`alignment`, `evidence`) and `--runs 1` for the rest, each run capped by the release-run cap. At the architecture's counts a full two-arm pass is about 700 agent runs (EVL-27); OQ11-a cuts it. Live trigger runs (S12-W3-2/-3, S12-W4-2/-3) run each query once and re-run 3 times only a query whose outcome flips, each pass capped by the live-pass cap; routing smokes (S12-W3-4, S12-W5-2) add session runs but no two-arm cost. The `--against pre-rewrite` baseline arm (critique C2-07) doubles each release pass, and S12-W0-8 adds one smoke pass at W0. The owner sets the three caps at S12-W0-9 from the cost per run the W0-d probe measures (OQ3; the probe run, ≤ USD 0.50, is approved).
 
 ## 3. Waves
 
@@ -118,7 +120,7 @@ Critical path: W0 → W1 → W2 → W3 → W5. W4 is off the critical path when 
 
 ### W0 — Ground truth and safety net
 
-**Entry.** Both repos clean on the default branch. OD1, OD2 (provisional), OD14, OQ1, OQ2, OQ3, OQ7, OQ8, OQ11, OQ16 answered. **Done 2026-09-24:** the plan package is committed to micky `docs/plugin-rewrite/`: `plan.md`, `critique-log.md`, `coverage.md`, `specs/S01…S21`, `phase3/{interfaces.md, eval-format.md, spec-template.md, measure.py}` (critique F19). `coverage.md` was regenerated from the reconciled specs by `phase3/gen_coverage.py` (313 of 313 defects mapped, 312 with a step id; the one without, comprehensive-review-12, states its reason in S04 §1.3) (F20, P-34). Re-run it after any spec edit: `python3 phase3/gen_coverage.py evidence/defect-index.txt coverage.md` from `docs/plugin-rewrite/`. S12-W0-0 is the first step (tag `pre-rewrite`).
+**Entry.** Both repos clean on the default branch. The owner decisions are answered (§1, 2026-09-24); S12-W0-9 still needs the eval caps, set from the W0-d probe. **Done 2026-09-24:** the plan package is committed to micky `docs/plugin-rewrite/`: `plan.md`, `critique-log.md`, `coverage.md`, `specs/S01…S21`, `phase3/{interfaces.md, eval-format.md, spec-template.md, measure.py}` (critique F19). `coverage.md` was regenerated from the reconciled specs by `phase3/gen_coverage.py` (313 of 313 defects mapped, 312 with a step id; the one without, comprehensive-review-12, states its reason in S04 §1.3) (F20, P-34). Re-run it after any spec edit: `python3 phase3/gen_coverage.py evidence/defect-index.txt coverage.md` from `docs/plugin-rewrite/`. S12-W0-0 is the first step (tag `pre-rewrite`).
 
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|
@@ -150,26 +152,34 @@ Critical path: W0 → W1 → W2 → W3 → W5. W4 is off the critical path when 
 | 26 | S11-W0-6 | S11 | LH | Rules probe branch `w0/rules-probe` (never merged) | — |  |
 | 27 | S11-W0-5 | S11 | env+MK | Configure cloud env vars, setup script (installs bubblewrap, socat), V0 | S11-W0-2 | yes |
 | 28 | S11-W0-7 | S11 | env+MK | Checks a, b, e, f, h (+ U7) | S11-W0-5, S11-W0-6 | yes |
-| 29 | S11-W0-8 | S11 | MK | Check c (many-to-one `renames`) | S11-W0-2 |  |
-| 30 | S11-W0-9 | S11 | MK | Check d (`claude plugin eval` enabled) + Bash-and-scaffold canary | S11-W0-2 | approve cost |
-| 31 | S12-W0-6 | S12 | both | Record eval availability; check i (`claude -p` load set) | S11-W0-9 | yes |
-| 32 | S11-W0-10 | S11 | Win+MK | Windows check g; Windows variables; MEMORY:11 | S11-W0-2 | yes |
-| 33 | S03-W0-1 | S03 | MK | Smoke seeds: pubmed-research-note | S12-W0-3 |  |
-| 34 | S04-W0-1 | S04 | MK | Smoke seeds: psych-paper-digest | S12-W0-3 |  |
-| 35 | S04-W0-2 | S04 | MK | Smoke seeds: comprehensive-review | S12-W0-3 |  |
-| 36 | S06-W0-1 | S06 | MK | Smoke seeds: clinical-infographic | S12-W0-3 |  |
-| 37 | S07-W0-1 | S07 | MK | Smoke seeds: vault-keeper, empty-vault | S12-W0-3 |  |
-| 38 | S08-W0-1 | S08 | MK | Smoke seeds: plugin-creator, refine-plugin | S12-W0-3 |  |
-| 39 | S09-W0-1 | S09 | MK | Smoke seeds: firecrawl | S12-W0-3 |  |
-| 40 | S13-W0-1 | S13 | LH | Smoke seeds: sync-vault | S12-W0-4 |  |
-| 41 | S17-W0-1 | S17 | LH | Smoke seeds: ingest-article | S12-W0-4 |  |
-| 42 | S18-W0-1 | S18 | LH | Smoke seeds: pdf-pipeline | S12-W0-4 |  |
-| 43 | S12-W0-5 | S12 | both | Seed checklist: ≥3 smoke cases per unit | S03-W0-1, S04-W0-1, S04-W0-2, S06-W0-1, S07-W0-1, S08-W0-1, S09-W0-1, S13-W0-1, S17-W0-1, S18-W0-1 |  |
-| 44 | S12-W0-8 | S12 | both | Record the W0 smoke baseline (`## W0 smoke`, 10 units) | S12-W0-5, S12-W0-6, S11-W0-9 |  |
-| 45 | S11-W0-11 | S11 | env+MK | W0 exit: probe removed, V0→V1, setup v2 | S11-W0-7…10 | yes |
-| 46 | S12-W0-T | S12 | both | Tag `wave-0` | all W0 | yes |
+| 29 | S21-W0-4 | S21 | LH | Freeze start (OQ9-a): `docs/gotchas-inbox.md`; freeze lines under CLAUDE.md `## Gotchas` and `## Pages` | S11-W0-7 (check e = yes), S21-W0-3 |  |
+| 30 | S21-W4a-1 | S21 | LH | `gotcha-map.md`, keyed by heading text, from the frozen CLAUDE.md (stage b, OQ14-a) | S21-W0-1, S21-W0-4 |  |
+| 31 | S21-W4a-4 | S21 | LH | `move-blocks.mjs`: cut, archive, byte check, per-row base (OQ14-a) | S21-W4a-1 |  |
+| 32 | S21-W4b-1 | S21 | LH | App gotchas + Pages → 13 `.claude/rules` files; interim upkeep line (stage b, OQ14-a) | S21-W4a-1, S21-W4a-4, S21-W0-4 |  |
+| 33 | S21-W0-5 | S21 | LH | Freeze end (OQ9-a): inbox entries to their destinations; freeze lines removed | S21-W4b-1 |  |
+| 34 | S11-W0-8 | S11 | MK | Check c (many-to-one `renames`) | S11-W0-2 |  |
+| 35 | S11-W0-9 | S11 | MK | Check d (`claude plugin eval` enabled) + Bash-and-scaffold canary | S11-W0-2 | approved (OQ3) |
+| 36 | S12-W0-6 | S12 | both | Record eval availability; check i (`claude -p` load set) | S11-W0-9 | yes |
+| 37 | S12-W0-9 | S12 | MK | Set the eval caps (smoke run, release run, live-trigger pass) from the probe's cost per run (OQ3) | S11-W0-9, S12-W0-7 | yes |
+| 38 | S11-W0-10 | S11 | Win+MK | Windows check g; Windows variables; MEMORY:11 | S11-W0-2 | yes |
+| 39 | S03-W0-1 | S03 | MK | Smoke seeds: pubmed-research-note | S12-W0-3 |  |
+| 40 | S04-W0-1 | S04 | MK | Smoke seeds: psych-paper-digest | S12-W0-3 |  |
+| 41 | S04-W0-2 | S04 | MK | Smoke seeds: comprehensive-review | S12-W0-3 |  |
+| 42 | S06-W0-1 | S06 | MK | Smoke seeds: clinical-infographic | S12-W0-3 |  |
+| 43 | S07-W0-1 | S07 | MK | Smoke seeds: vault-keeper, empty-vault | S12-W0-3 |  |
+| 44 | S08-W0-1 | S08 | MK | Smoke seeds: plugin-creator, refine-plugin | S12-W0-3 |  |
+| 45 | S09-W0-1 | S09 | MK | Smoke seeds: firecrawl | S12-W0-3 |  |
+| 46 | S13-W0-1 | S13 | LH | Smoke seeds: sync-vault | S12-W0-4 |  |
+| 47 | S17-W0-1 | S17 | LH | Smoke seeds: ingest-article | S12-W0-4 |  |
+| 48 | S18-W0-1 | S18 | LH | Smoke seeds: pdf-pipeline | S12-W0-4 |  |
+| 49 | S12-W0-5 | S12 | both | Seed checklist: ≥3 smoke cases per unit | S03-W0-1, S04-W0-1, S04-W0-2, S06-W0-1, S07-W0-1, S08-W0-1, S09-W0-1, S13-W0-1, S17-W0-1, S18-W0-1 |  |
+| 50 | S12-W0-8 | S12 | both | Record the W0 smoke baseline (`## W0 smoke`, 10 units) | S12-W0-5, S12-W0-6, S11-W0-9, S12-W0-9 |  |
+| 51 | S11-W0-11 | S11 | env+MK | W0 exit: probe removed, V0→V1, setup v2 | S11-W0-7…10 | yes |
+| 52 | S12-W0-T | S12 | both | Tag `wave-0` | all W0 | yes |
 
 Notes: S10-W0-1's done-when is exit 1 with exactly one `yaml-error` FAIL (intent-lock); S10-W0-1b seeds the ratchet entry and turns it into one WARN. S21-W0-1's done-when is exit 1 listing today's learn-hub YAML and length failures; S21-W0-2 seeds them. S09-W0-1 seeds firecrawl. The S07 owner check "is `userConfig.learn_hub_root` prompted" runs inside S11-W0-7.
+
+Stage (b) and the freeze (OQ9-a, OQ14-a): rows S21-W0-4 … S21-W0-5 run right after W0 check e = yes (S11-W0-7). From S21-W0-4 until S21-W0-5, nobody edits learn-hub CLAUDE.md `## Gotchas` or `## Pages`; a new gotcha goes to `docs/gotchas-inbox.md`. The ids S21-W4a-1, S21-W4a-4 and S21-W4b-1 keep their names. If check e = no, these three rows wait for W4 (S21-W4b-1 then runs after stage a and targets `docs/gotchas/`), and S21-W0-4/-5 are skipped.
 
 **Exit gates** (plus the standard gates; cross-repo not yet):
 
@@ -185,89 +195,93 @@ Notes: S10-W0-1's done-when is exit 1 with exactly one `yaml-error` FAIL (intent
 | LH pre-commit | `test -x .githooks/pre-commit && node scripts/pre-commit.mjs` (LH) | exit 0 |
 | Seeds | S12-W0-5 command per unit | ≥3 smoke cases for each of 10 units |
 | Baseline | `grep -c '^## W0' docs/rewrite/baseline.md` (both repos) | 1 |
+| Stage (b) | `node scripts/move-blocks.mjs --check`; `ls .claude/rules/*.md \| wc -l`; `test ! -e docs/gotchas-inbox.md` (LH) | exit 0; 13; true (skipped if check e = no) |
+| Eval caps | `grep -c 'EVAL_BUDGET' docs/rewrite/baseline.md` (MK, `## Owner records`) | ≥ 2 (S12-W0-9) |
 | Cloud (new session) | `echo "$CLAUDE_CODE_PLUGIN_DIRS"`; `head -n1 /var/log/cloud-setup.log`; `python3 -c "import fitz, pypdf, pdfplumber"`; `firecrawl --version` | `/home/user/micky-psych-tools/plugins/gridgeist`; `setup_version=2`; exit 0; `1.24.4` |
 | H13 | h-coverage row H13 | closed |
 
 If check a = no: skip every later cloud step, stay at V1, re-ask OD1 before W1 exit.
 
-**Rollback.** Revert the W0 merges; set the cloud variables back per the delivery log. Only tooling and data files changed.
+**Rollback.** Revert the W0 PR merges, newest first (OQ7-a); set the cloud variables back per the delivery log. Only tooling, data files and the learn-hub CLAUDE.md stage (b) moves changed; `git show <map sha>:CLAUDE.md` holds the moved text.
 
-**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: unset → V0 (gridgeist + probe) at S11-W0-5 → V1 (`/home/user/micky-psych-tools/plugins/gridgeist`) at S11-W0-11. Windows: unchanged (marketplace install).
+**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: unset → V0 (gridgeist + probe) at S11-W0-5 → V1 (`/home/user/micky-psych-tools/plugins/gridgeist`) at S11-W0-11. Windows: unchanged (marketplace install) until the W1-entry switch.
 
 ### W1 — Stop active harm (learn-hub first)
 
-**Entry.** W0 exit gates green; tag `wave-0` pushed.
+**Entry.** W0 exit gates green; tag `wave-0` pushed; W0 check g = yes. The first row is the Windows switch to in-place loading (S11-W3-2, OQ12-a). If check g = no, stop and ask: OQ12-a assumed g = yes, and without the switch the dropped W1/W2 release steps are needed again.
 
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|
-| 1 | S13-W1-1 | S13 | LH | `readiness.mjs` + tests (bundled-browser and `python` fallbacks) | — |  |
-| 2 | S13-W1-2 | S13 | LH | `scripts/ready.mjs` | S13-W1-1 |  |
-| 3 | S13-W1-3 | S13 | LH | `sync-preflight.mjs` + tests | S13-W1-1 |  |
-| 4 | S13-W1-4 | S13 | LH | apply-sync runs the preflight (exit 2 on refusal; `--preflight-only`) | S13-W1-3 |  |
-| 5 | S13-W1-5 | S13 | LH | package.json `sync:preflight` | S13-W1-3, S21-W0-2 |  |
-| 6 | S13-W1-6 | S13 | LH | sync-vault SKILL.md rewrite (H34, H35) | S13-W1-2, S13-W1-3, S13-W1-5 |  |
-| 7 | S13-W1-7 | S13 | LH | Remove PreToolUse gates + gate scripts; README, CLAUDE.md sentences | S13-W1-4 |  |
-| 8 | S13-W1-8 | S13 | LH | session-start.sh root, done-marker, ready line; .gitignore | — |  |
-| 9 | S13-W1-9 | S13 | LH | sync-vault eval cases (extend seeds) | S13-W0-1, S13-W1-6 |  |
-| 10 | S13-W1-11 | S13 | LH | cloud-env-setup.md: `npm run sync:preflight` | S13-W1-5 |  |
-| 11 | S17-W1-1 | S17 | LH | .gitignore `/Raw Article PDF/` | S13-W1-8 |  |
-| 12 | S17-W1-2 | S17 | LH | ingest-article description (YAML) | — |  |
-| 13 | S17-W1-3 | S17 | LH | ingest-article preflight + survey-and-ask inbox (H25) | S13-W1-2, S17-W1-1 |  |
-| 14 | S17-W1-4 | S17 | LH | Seed-count text | — |  |
-| 15 | S17-W1-5 | S17 | LH | Mermaid check → `check-mermaid.mjs` | — |  |
-| 16 | S17-W1-6 | S17 | LH | Sync section → sync-vault sentence | S13-W1-6, S17-W1-5 |  |
-| 17 | S17-W1-7 | S17 | LH | figures-and-loss.md flags; drop §5b (H26) | — |  |
-| 18 | S17-W1-8 | S17 | LH | ingest-slides description (H28) | — |  |
-| 19 | S17-W1-9 | S17 | LH | ingest-slides script paths + preflight (H27) | S13-W1-2 |  |
-| 20 | S17-W1-10 | S17 | LH | extract_pdf / render_slides text | — |  |
-| 21 | S17-W1-11 | S17 | LH | ingest-slides figure + loss gates; sync sentence | S13-W1-6 |  |
-| 22 | S17-W1-12 | S17 | LH | ingest-article / ingest-slides eval cases | S17-W0-1, S17-W1-2, S17-W1-8 |  |
-| 23 | S18-W1-1 | S18 | LH | routing.md: decks → ingest-slides (H32) | — |  |
-| 24 | S18-W1-2 | S18 | LH | pdf-pipeline slides branch (H32) | S17-W1-8 |  |
-| 25 | S18-W1-3 | S18 | LH | Preflight = `ready.mjs` | S13-W1-2 |  |
-| 26 | S18-W1-4 | S18 | LH | Sync section → sync-vault (H33) | S13-W1-6 |  |
-| 27 | S18-W1-5 | S18 | LH | preflight-and-apply.md: no manual SQL path | S13-W1-6 |  |
-| 28 | S18-W1-6 | S18 | LH | surface-checklist.md fixes | S13-W1-6 |  |
-| 29 | S18-W1-7 | S18 | LH | routing.md find-based glob | — |  |
-| 30 | S18-W1-8 | S18 | LH | pdf-pipeline description | — |  |
-| 31 | S18-W1-9 | S18 | LH | pdf-pipeline eval cases | S18-W1-1…8, S18-W0-1 |  |
-| 32 | S19-W1-1 | S19 | LH | One chapter-reference rule (H21) | — |  |
-| 33 | S19-W1-2 | S19 | LH | §9 → sync-vault sentence (H22) | S13-W1-6 |  |
-| 34 | S19-W1-3 | S19 | LH | Four drafting rules (H23) | — |  |
-| 35 | S19-W1-4 | S19 | LH | Id resolution, glob, check-mermaid; package.json | S13-W1-5 |  |
-| 36 | S19-W1-5 | S19 | LH | Scale-guidance text | — |  |
-| 37 | S19-W1-6 | S19 | LH | Point at `check-manifest.py --notes` | — |  |
-| 38 | S19-W1-7 | S19 | LH | `ready.mjs` preflight | S13-W1-2 |  |
-| 39 | S19-W1-8 | S19 | LH | Description + stale counts | — |  |
-| 40 | S16-W1-1 | S16 | LH | ingest-infographic YAML, H30, `/visualization` | — |  |
-| 41 | S16-W1-2 | S16 | LH | ingest-animation YAML | — |  |
-| 42 | S05-W1-1 | S05 | LH | learn-hub concept-animation copy YAML (H43) | — |  |
-| 43 | S20-W1-1 | S20 | LH | vault-coverage `BOOK_ROOT`, source map, stale text | — |  |
-| 44 | S20-W1-1b | S20 | LH | Backfill `coverage-sources.json` (Windows, BOOK_ROOT) | S20-W1-1 | yes |
-| 45 | S14-W1-1 | S14 | LH | Audit source-to-vault orphan rows (read-only); restore or leave | — | yes |
-| 46 | S14-W1-2 | S14 | LH | Delete `plugins/source-to-vault` (H17–H20) | S14-W1-1 |  |
-| 47 | S21-W1-1 | S21 | LH | CLAUDE.md figure disposition list | — |  |
-| 48 | S21-W1-4 | S21 | LH | CLAUDE.md: sync-vault owner + delivery sentences | — |  |
-| 49 | S07-W1-1 | S07 | MK | `sink.py` + `vault/.vault-id`; manifest fields | S10-W0-8 |  |
-| 50 | S07-W1-2 | S07 | MK | empty-vault stopgap: dmi, marker→ask, hold assets | S07-W1-1 |  |
-| 51 | S07-W1-3 | S07 | MK | vault-keeper Step 0 → `sink.py resolve` (H08, H09) | S07-W1-1 |  |
-| 52 | S07-W1-4 | S07 | MK | Release vault-keeper | S07-W1-1…3 |  |
-| 53 | S08-W1-1 | S08 | MK | plugin-creator root guard, no walk-up (H07) | — |  |
-| 54 | S08-W1-2 | S08 | MK | Release plugin-creator | S08-W1-1 |  |
-| 55 | S04-W1-1 | S04 | MK | PPD: edat, retstart, CT.gov RANGE, MCP resolution (H46, H47) | — |  |
-| 56 | S04-W1-2 | S04 | MK | PPD README cron claim | — |  |
-| 57 | S04-W1-3 | S04 | MK | Release psych-paper-digest | S04-W1-1, S04-W1-2 |  |
-| 58 | S06-W1-1 | S06 | MK | CI light-lock, strip, contrast, 12 px (H36, H37) | — |  |
-| 59 | S06-W1-2 | S06 | MK | code-explainer dead pointers (H42) | — |  |
-| 60 | S06-W1-3 | S06 | MK | CI / CE eval cases | — |  |
-| 61 | S06-W1-4 | S06 | MK | Validate | S06-W1-1, S06-W1-2 |  |
-| 62 | S06-W1-5 | S06 | MK | Release CI, CE | S06-W1-1…3 |  |
-| 63 | S09-W1-1 | S09 | MK | firecrawl vendor refresh (H12) | — |  |
-| 64 | S09-W1-2 | S09 | MK | Release firecrawl | S09-W1-1 |  |
-| 65 | S13-W1-10 | S13 | LH | Live sync of a trivial edit; diagrams count kept | S13-W1-1…9, S11-W0-11 | yes |
-| 66 | S11-W1-1 | S11 | env+MK | Cloud V1→V2: vault-keeper, firecrawl, plugin-creator | S07-W0-1, S07-W1-3, S07-W1-4, S08-W0-1, S08-W1-2, S09-W0-1, S09-W1-2, S11-W0-11 | yes |
-| 67 | S11-W1-2 | S11 | Win+MK | Windows: refresh installs; `ready.mjs` Chromium check | S04-W1-3, S06-W1-5, S07-W1-4, S08-W1-2, S09-W1-2, S13-W1-1, S13-W1-2 | yes |
-| 68 | S12-W1-T | S12 | both | Tag `wave-1` | all W1 | yes |
+| 1 | S11-W3-2 | S11 | Win+MK | W1 entry: Windows loads in place — user variable (micky folder), verify, uninstall the marketplace copies (OD2-a, OQ12-a) | S11-W0-10 (check g = yes), S11-W0-11 | yes |
+| 2 | S13-W1-1 | S13 | LH | `readiness.mjs` + tests (bundled-browser and `python` fallbacks) | — |  |
+| 3 | S13-W1-2 | S13 | LH | `scripts/ready.mjs` | S13-W1-1 |  |
+| 4 | S13-W1-3 | S13 | LH | `sync-preflight.mjs` + tests | S13-W1-1 |  |
+| 5 | S13-W1-4 | S13 | LH | apply-sync runs the preflight (exit 2 on refusal; `--preflight-only`) | S13-W1-3 |  |
+| 6 | S13-W1-5 | S13 | LH | package.json `sync:preflight` | S13-W1-3, S21-W0-2 |  |
+| 7 | S13-W1-6 | S13 | LH | sync-vault SKILL.md rewrite (H34, H35) | S13-W1-2, S13-W1-3, S13-W1-5 |  |
+| 8 | S13-W1-7 | S13 | LH | Remove PreToolUse gates + gate scripts; README, CLAUDE.md sentences | S13-W1-4 |  |
+| 9 | S13-W1-8 | S13 | LH | session-start.sh root, done-marker, ready line; .gitignore | — |  |
+| 10 | S13-W1-9 | S13 | LH | sync-vault eval cases (extend seeds) | S13-W0-1, S13-W1-6 |  |
+| 11 | S13-W1-11 | S13 | LH | cloud-env-setup.md: `npm run sync:preflight` | S13-W1-5 |  |
+| 12 | S17-W1-1 | S17 | LH | .gitignore `/Raw Article PDF/` | S13-W1-8 |  |
+| 13 | S17-W1-2 | S17 | LH | ingest-article description (YAML) | — |  |
+| 14 | S17-W1-3 | S17 | LH | ingest-article preflight + survey-and-ask inbox (H25) | S13-W1-2, S17-W1-1 |  |
+| 15 | S17-W1-4 | S17 | LH | Seed-count text | — |  |
+| 16 | S17-W1-5 | S17 | LH | Mermaid check → `check-mermaid.mjs` | — |  |
+| 17 | S17-W1-6 | S17 | LH | Sync section → sync-vault sentence | S13-W1-6, S17-W1-5 |  |
+| 18 | S17-W1-7 | S17 | LH | figures-and-loss.md flags; drop §5b (H26) | — |  |
+| 19 | S17-W1-8 | S17 | LH | ingest-slides description (H28) | — |  |
+| 20 | S17-W1-9 | S17 | LH | ingest-slides script paths + preflight (H27) | S13-W1-2 |  |
+| 21 | S17-W1-10 | S17 | LH | extract_pdf / render_slides text | — |  |
+| 22 | S17-W1-11 | S17 | LH | ingest-slides figure + loss gates; sync sentence | S13-W1-6 |  |
+| 23 | S17-W1-12 | S17 | LH | ingest-article / ingest-slides eval cases | S17-W0-1, S17-W1-2, S17-W1-8 |  |
+| 24 | S18-W1-1 | S18 | LH | routing.md: decks → ingest-slides (H32) | — |  |
+| 25 | S18-W1-2 | S18 | LH | pdf-pipeline slides branch (H32) | S17-W1-8 |  |
+| 26 | S18-W1-3 | S18 | LH | Preflight = `ready.mjs` | S13-W1-2 |  |
+| 27 | S18-W1-4 | S18 | LH | Sync section → sync-vault (H33) | S13-W1-6 |  |
+| 28 | S18-W1-5 | S18 | LH | preflight-and-apply.md: no manual SQL path | S13-W1-6 |  |
+| 29 | S18-W1-6 | S18 | LH | surface-checklist.md fixes | S13-W1-6 |  |
+| 30 | S18-W1-7 | S18 | LH | routing.md find-based glob | — |  |
+| 31 | S18-W1-8 | S18 | LH | pdf-pipeline description | — |  |
+| 32 | S18-W1-9 | S18 | LH | pdf-pipeline eval cases | S18-W1-1…8, S18-W0-1 |  |
+| 33 | S19-W1-1 | S19 | LH | One chapter-reference rule (H21) | — |  |
+| 34 | S19-W1-2 | S19 | LH | §9 → sync-vault sentence (H22) | S13-W1-6 |  |
+| 35 | S19-W1-3 | S19 | LH | Four drafting rules (H23) | — |  |
+| 36 | S19-W1-4 | S19 | LH | Id resolution, glob, check-mermaid; package.json | S13-W1-5 |  |
+| 37 | S19-W1-5 | S19 | LH | Scale-guidance text | — |  |
+| 38 | S19-W1-6 | S19 | LH | Point at `check-manifest.py --notes` | — |  |
+| 39 | S19-W1-7 | S19 | LH | `ready.mjs` preflight | S13-W1-2 |  |
+| 40 | S19-W1-8 | S19 | LH | Description + stale counts | — |  |
+| 41 | S16-W1-1 | S16 | LH | ingest-infographic YAML, H30, `/visualization` | — |  |
+| 42 | S16-W1-2 | S16 | LH | ingest-animation YAML | — |  |
+| 43 | S05-W1-1 | S05 | LH | learn-hub concept-animation copy YAML (H43) | — |  |
+| 44 | S20-W1-1 | S20 | LH | vault-coverage `BOOK_ROOT`, source map, stale text | — |  |
+| 45 | S20-W1-1b | S20 | LH | Backfill `coverage-sources.json` (Windows, BOOK_ROOT) | S20-W1-1 | yes |
+| 46 | S14-W1-1 | S14 | LH | Audit source-to-vault orphan rows (read-only); restore or leave | — | yes |
+| 47 | S14-W1-2 | S14 | LH | Delete `plugins/source-to-vault` (H17–H20) | S14-W1-1 |  |
+| 48 | S21-W1-1 | S21 | LH | CLAUDE.md figure disposition list | — |  |
+| 49 | S21-W1-4 | S21 | LH | CLAUDE.md: sync-vault owner + delivery sentences | — |  |
+| 50 | S07-W1-1 | S07 | MK | `sink.py` + `vault/.vault-id`; manifest fields | S10-W0-8 |  |
+| 51 | S07-W1-2 | S07 | MK | empty-vault stopgap: dmi, marker→ask, hold assets | S07-W1-1 |  |
+| 52 | S07-W1-3 | S07 | MK | vault-keeper Step 0 → `sink.py resolve` (H08, H09) | S07-W1-1 |  |
+| 53 | S07-W1-4 | S07 | MK | DROPPED (OQ12-a) | — |  |
+| 54 | S08-W1-1 | S08 | MK | plugin-creator root guard, no walk-up (H07) | — |  |
+| 55 | S08-W1-2 | S08 | MK | DROPPED (OQ12-a) | — |  |
+| 56 | S04-W1-1 | S04 | MK | PPD: edat, retstart, CT.gov RANGE, MCP resolution (H46, H47) | — |  |
+| 57 | S04-W1-2 | S04 | MK | PPD README cron claim | — |  |
+| 58 | S04-W1-3 | S04 | MK | DROPPED (OQ12-a) | — |  |
+| 59 | S06-W1-1 | S06 | MK | CI light-lock, strip, contrast, 12 px (H36, H37) | — |  |
+| 60 | S06-W1-2 | S06 | MK | code-explainer dead pointers (H42) | — |  |
+| 61 | S06-W1-3 | S06 | MK | CI / CE eval cases | — |  |
+| 62 | S06-W1-4 | S06 | MK | Validate | S06-W1-1, S06-W1-2 |  |
+| 63 | S06-W1-5 | S06 | MK | DROPPED (OQ12-a) | — |  |
+| 64 | S09-W1-1 | S09 | MK | firecrawl vendor refresh (H12) | — |  |
+| 65 | S09-W1-2 | S09 | MK | DROPPED (OQ12-a) | — |  |
+| 66 | S13-W1-10 | S13 | LH | Live sync of a trivial edit; diagrams count kept | S13-W1-1…9, S11-W0-11 | yes |
+| 67 | S11-W1-1 | S11 | env+MK | Cloud V1→V2: vault-keeper, firecrawl, plugin-creator | S07-W0-1, S07-W1-2, S07-W1-3, S08-W0-1, S08-W1-1, S09-W0-1, S09-W1-1, S11-W0-11 | yes |
+| 68 | S11-W1-2 | S11 | Win+MK | DROPPED (OQ12-a) | — |  |
+| 69 | S11-W1-3 | S11 | Win+MK | Windows: `ready.mjs` Chromium check (critique F5; the kept half of S11-W1-2) | S11-W3-2, S13-W1-1, S13-W1-2 | yes |
+| 70 | S12-W1-T | S12 | both | Tag `wave-1` | all W1 | yes |
 
 **Exit gates:**
 
@@ -284,15 +298,16 @@ If check a = no: skip every later cloud step, stay at V1, re-ask OD1 before W1 e
 | source-to-vault gone | `test ! -d plugins/source-to-vault` (LH) | true |
 | Live sync | S13-W1-10 record in LH `baseline.md` `## Owner records` | `EXIT=0`, `Upserted …`, diagrams count not lower |
 | Cloud V2 | `delivery_log.py live --env cloud:<id> --expect gridgeist,vault-keeper,firecrawl,plugin-creator` | `"ok": true` |
+| Windows in place | `claude plugin marketplace list --json` (Windows, S11-W3-2); S11-W1-3 record | no `micky-psych-tools`; `chromium` ok |
 | HIGH rows | h-coverage W1 rows (26) + H07a, H10a, H11a | closed |
 
-**Rollback.** Revert the per-repo W1 merge (or the W1 PR merges, OQ7-a). This restores the settings.json gates and the old skills. Set the cloud value back to V1. A revert does not undo Supabase writes: S13-W1-10's vault-note commit stays on learn-hub master because its row is live; revert only the tooling (critique C2-21).
+**Rollback.** Revert the W1 PR merges, newest first (OQ7-a). This restores the settings.json gates and the old skills. Set the cloud value back to V1. A revert does not undo Supabase writes: S13-W1-10's vault-note commit stays on learn-hub master because its row is live; revert only the tooling (critique C2-21).
 
-**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: V1 → V2 (adds vault-keeper, firecrawl, plugin-creator) at S11-W1-1. Windows: installs refreshed (S11-W1-2), variable unchanged.
+**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: V1 → V2 (adds vault-keeper, firecrawl, plugin-creator) at S11-W1-1. Windows: at W1 entry the user variable is set to the micky plugins folder and the marketplace copies are uninstalled (S11-W3-2, OQ12-a); fixes arrive with `git pull`, so no install is refreshed.
 
 ### W2 — Reconnect the pipeline (consumers, then producers)
 
-**Entry.** W1 exit gates green; OD4, OD5, OD8, OQ4, OQ13, OQ15 answered; tag `wave-1` pushed. Order inside the wave: learn-hub consumers → micky producers → renderers → vault-keeper → forks → cloud.
+**Entry.** W1 exit gates green; tag `wave-1` pushed. Order inside the wave: learn-hub consumers → micky producers → renderers → vault-keeper → forks → cloud.
 
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|
@@ -320,138 +335,143 @@ If check a = no: skip every later cloud step, stay at V1, re-ask OD1 before W1 e
 | 22 | S20-W2-5 | S20 | LH | vault-atomizer, vault-vectors, vault-coverage, check-repetition eval cases | S12-W0-4, S20-W2-1…4 |  |
 | 23 | S14-W2-1 | S14 | LH | `plugins/learn-hub-session` (skip if check b = no) | S11-W0-7, S13-W1-8 |  |
 | 24 | S01-W2-1 | S01 | MK | Interim `lock-record.md` (I01) | — |  |
-| 25 | S01-W2-2 | S01 | MK | Release intent-lock | S01-W2-1 |  |
+| 25 | S01-W2-2 | S01 | MK | DROPPED (OQ12-a) | — |  |
 | 26 | S02-W2-1 | S02 | MK | DI / PC OPTIONAL intent-lock handoff | — |  |
-| 27 | S02-W2-2 | S02 | MK | Release DI, PC | S02-W2-1 |  |
+| 27 | S02-W2-2 | S02 | MK | DROPPED (OQ12-a) | — |  |
 | 28 | S03-W2-1 | S03 | MK | pubmed: `Assumed:` line, fallback, sink, report/1 (H44) | S15-W2-2 |  |
 | 29 | S03-W2-2 | S03 | MK | tool-catalog: runtime MCP resolution | S03-W2-1 |  |
 | 30 | S03-W2-3 | S03 | MK | intent-lock-pairing: no Reframed | S03-W2-1 |  |
 | 31 | S03-W2-4 | S03 | MK | Interim `report-contract.md` + 3 fixtures | S03-W2-1 |  |
-| 32 | S03-W2-5 | S03 | MK | Release pubmed-research-note | S03-W2-1…4 |  |
+| 32 | S03-W2-5 | S03 | MK | DROPPED (OQ12-a) | — |  |
 | 33 | S04-W2-1 | S04 | MK | CR: fallback, sink, Not-for, MCP resolution | S15-W2-2 |  |
 | 34 | S04-W2-2 | S04 | MK | CR interim contract copy | S03-W2-4, S04-W2-1 |  |
-| 35 | S04-W2-3 | S04 | MK | Release comprehensive-review | S04-W2-1, S04-W2-2 |  |
-| 36 | S05-W2-1 | S05 | MK | `check-html.mjs` + tests + parity fixture (CA) | — |  |
-| 37 | S05-W2-2 | S05 | MK | Copy `check-html.mjs` into ML, CI | S05-W2-1 |  |
+| 35 | S04-W2-3 | S04 | MK | DROPPED (OQ12-a) | — |  |
+| 36 | S05-W2-1 | S05 | MK | `check-html.mjs` (static subset, delegates to `audit:visual`) + tests (CA; OQ13-a) | — |  |
+| 37 | S05-W2-2 | S05 | MK | DROPPED (OQ13-a) | — |  |
 | 38 | S05-W2-3 | S05 | MK | CA grammar port, 5-frame verify, filing (H38, H39) | S05-W2-1, S16-W2-3 |  |
-| 39 | S05-W2-4 | S05 | MK | ML port, verify, gradient check (H40, H41) | S05-W2-2, S16-W2-3 |  |
+| 39 | S05-W2-4 | S05 | MK | ML port, verify, gradient check (H40, H41) | S05-W2-1, S16-W2-3 |  |
 | 40 | S05-W2-5 | S05 | MK | CA / ML eval cases | S05-W2-3, S05-W2-4 |  |
-| 41 | S05-W2-6 | S05 | MK | CA / ML README, CHANGELOG; release | S05-W2-3, S05-W2-4, S10-W0-8 |  |
-| 42 | S06-W2-1 | S06 | MK | CI render/verify via `check-html.mjs`; filing | S05-W2-2, S16-W2-3 |  |
-| 43 | S06-W2-2 | S06 | MK | Release clinical-infographic | S06-W2-1 |  |
+| 41 | S05-W2-6 | S05 | MK | CA / ML README; CHANGELOG entries under `## Unreleased` (no bump, OQ12-a) | S05-W2-3, S05-W2-4, S10-W0-8 |  |
+| 42 | S06-W2-1 | S06 | MK | CI render/verify via `check-html.mjs`; filing | S05-W2-1, S16-W2-3 |  |
+| 43 | S06-W2-2 | S06 | MK | DROPPED (OQ12-a) | — |  |
 | 44 | S07-W2-1 | S07 | MK | Filing sentences; asset `.meta.json`; `aliases:` | S07-W1-3, S15-W2-1 |  |
-| 45 | S07-W2-2 | S07 | MK | Job count, README target type, layout pointer | — |  |
-| 46 | S07-W2-3 | S07 | MK | `vault_index.py` | S07-W2-1 |  |
-| 47 | S07-W2-4 | S07 | MK | `drain_plan.py`; empty-vault = transfer (H10, H11) | S07-W2-1, S07-W2-3, S15-W2-1 |  |
-| 48 | S07-W2-5 | S07 | MK | vault-keeper / empty-vault eval cases | S07-W2-1, S07-W2-4, S12-W0-3 |  |
-| 49 | S07-W2-6 | S07 | MK | Release vault-keeper | S07-W2-1…5 |  |
-| 50 | S14-W2-2 | S14 | MK | Confirm/merge fork ledger into micky (H06) | — |  |
-| 51 | S14-W2-3 | S14 | LH | Delete learn-hub intent-lock fork | S14-W2-2 |  |
-| 52 | S14-W2-4 | S14 | LH | Delete pubmed and CR forks (H48, H49) | S03-W2-1, S04-W2-1, S07-W2-1 |  |
-| 53 | S11-W2-1 | S11 | Win+MK | Windows: remove `learn-hub-local` (if found) | — | yes |
-| 54 | S14-W2-5 | S14 | LH | Delete `learn-hub-local` catalog (H14) | S11-W2-1, S14-W1-2, S14-W2-3, S14-W2-4, S15-W2-3, S16-W2-6, S20-W2-1, S20-W2-2 |  |
-| 55 | S11-W2-2 | S11 | env+MK | Cloud V2→V3: pubmed, CR, CI, ML, CE | S03-W0-1, S03-W2-5, S04-W0-2, S04-W2-1, S04-W2-3, S05-W2-5, S05-W2-6, S06-W1-3, S06-W2-2 | yes |
-| 56 | S05-W2-8 | S05 | LH | Push learn-hub branch deleting the CA copy | S05-W2-6, S16-W2-5 |  |
-| 57 | S11-W2-3 | S11 | env+MK | Cloud V3→V4: CA atomic swap; merge that branch | S05-W2-5, S05-W2-8, S11-W2-2 | yes |
-| 58 | S11-W2-4 | S11 | env+MK | Cloud V4→V5: `learn-hub/plugins`; `/doctor` | S11-W2-3, S14-W1-2, S14-W2-1, S14-W2-3…5, S15-W2-3, S16-W2-6, S20-W2-1, S20-W2-2 | yes |
-| 59 | S07-W2-7 | S07 | both | Rehearsal + no-digest-without-the-word check | S07-W2-4, S11-W2-4 (or its skip record, check b = no), S14-W2-4, S15-W2-2 | yes |
-| 60 | S04-W2-5 | S04 | claude.ai | OD8: owner edits the synced `daily-random-review` skill; record in MK `baseline.md` | S04-W2-1 | yes |
-| 61 | S04-W2-4 | S04 | cloud | One unattended daily-random-review run | S11-W2-2, S04-W2-5 | yes |
-| 62 | S11-W2-5 | S11 | Win+MK | Windows: refresh installs | S01-W2-2, S02-W2-2, S03-W2-5, S04-W2-3, S05-W2-6, S06-W2-2, S07-W2-6 | yes |
-| 63 | S12-W2-T | S12 | both | Tag `wave-2` | all W2 | yes |
+| 45 | S07-W2-2 | S07 | MK | Job count, README target type, layout pointer; link and MOC-title rules in prose (OQ15-a) | — |  |
+| 46 | S07-W2-3 | S07 | MK | DROPPED (OQ15-a) | — |  |
+| 47 | S07-W2-4 | S07 | MK | DROPPED (OQ15-a) | — |  |
+| 48 | S07-W2-5 | S07 | MK | vault-keeper / empty-vault eval cases | S07-W2-1, S07-W2-2, S12-W0-3 |  |
+| 49 | S07-W2-6 | S07 | MK | DROPPED (OQ12-a) | — |  |
+| 50 | S07-W2-8 | S07 | both | One-time copy of the 7 vault artifacts to `research-notes/`, owner watching; the W1 no-delete stopgap stays (H10b, H11b; OQ15-a) | S07-W2-1, S07-W2-2, S15-W2-1 | yes |
+| 51 | S14-W2-2 | S14 | MK | Confirm/merge fork ledger into micky (H06) | — |  |
+| 52 | S14-W2-3 | S14 | LH | Delete learn-hub intent-lock fork | S14-W2-2 |  |
+| 53 | S14-W2-4 | S14 | LH | Delete pubmed and CR forks (H48, H49) | S03-W2-1, S04-W2-1, S07-W2-1 |  |
+| 54 | S11-W2-1 | S11 | Win+MK | Windows: remove `learn-hub-local` (if found) | — | yes |
+| 55 | S14-W2-5 | S14 | LH | Delete `learn-hub-local` catalog (H14) | S11-W2-1, S14-W1-2, S14-W2-3, S14-W2-4, S15-W2-3, S16-W2-6, S20-W2-1, S20-W2-2 |  |
+| 56 | S11-W2-2 | S11 | env+MK | Cloud V2→V3: pubmed, CR, CI, ML, CE | S03-W0-1, S03-W2-1…4, S04-W0-2, S04-W2-1, S04-W2-2, S05-W2-5, S05-W2-6, S06-W1-3, S06-W2-1 | yes |
+| 57 | S05-W2-8 | S05 | LH | Push learn-hub branch deleting the CA copy | S05-W2-6, S16-W2-5 |  |
+| 58 | S11-W2-3 | S11 | env+MK | Cloud V3→V4: CA atomic swap; merge that branch | S05-W2-5, S05-W2-8, S11-W2-2 | yes |
+| 59 | S11-W2-4 | S11 | env+MK | Cloud V4→V5: `learn-hub/plugins`; `/doctor` | S11-W2-3, S14-W1-2, S14-W2-1, S14-W2-3…5, S15-W2-3, S16-W2-6, S20-W2-1, S20-W2-2 | yes |
+| 60 | S07-W2-7 | S07 | both | Rehearsal + no-digest-without-the-word check | S07-W2-8, S11-W2-4 (or its skip record, check b = no), S14-W2-4, S15-W2-2 | yes |
+| 61 | S04-W2-5 | S04 | claude.ai | OD8: owner edits the synced `daily-random-review` skill; record in MK `baseline.md` | S04-W2-1 | yes |
+| 62 | S04-W2-4 | S04 | cloud | One unattended daily-random-review run | S11-W2-2, S04-W2-5 | yes |
+| 63 | S11-W2-5 | S11 | Win+MK | DROPPED (OQ12-a) | — |  |
+| 64 | S11-W2-6 | S11 | Win+MK | Windows: add the learn-hub plugins folder (skip if check b = no; OQ12-a) | S11-W2-1, S11-W2-4 | yes |
+| 65 | S12-W2-T | S12 | both | Tag `wave-2` | all W2 | yes |
 
 **Exit gates** (`validate.py --cross-repo` exists only from S08-W3-1; the two contract checks below are the W2 cross-repo gate, §8 Q12):
 
 | Check | Command | Expected |
 |---|---|---|
 | Report contract | `node scripts/check-contract.mjs --json` (LH, default dir) | exit 0; `report/1` for 3 fixtures |
-| Visual parity | `node plugins/concept-animation/scripts/check-html.mjs --parity --root . --own` (MK) | bad fixtures fail with the exact codes; examples pass or `incomplete` |
+| Visual check | `node --test 'plugins/concept-animation/scripts/*.test.mjs'`; `node plugins/concept-animation/scripts/check-html.mjs plugins/concept-animation/examples/tms-electromagnetic-induction.html --kind animation --json` with `$LEARN_HUB_DIR` set (MK, OQ13-a) | pass; `"tool":"audit:visual"`, `"verdict":"pass"` |
 | Audit CLI | `npx vitest run scripts/lib/audit-visual.test.mjs`; `npm run -s audit:visual -- --help` (LH) | exit 0; exit 0 |
 | Retirements | `test ! -d plugins/intent-lock -a ! -d plugins/pubmed-research-note -a ! -d plugins/comprehensive-review -a ! -e .claude-plugin/marketplace.json` (LH) | true |
 | CA copy gone | `test ! -d /home/user/learn-hub/.claude/skills/concept-animation` | true |
 | LH plugins folder | `ls /home/user/learn-hub/plugins` | `learn-hub-session` (absent or empty if check b = no, critique C2-30) |
 | Rehearsal | S07-W2-7 record | provenance count matches; no digest without the word |
+| One-time copy | S07-W2-8 record; `git status --short vault/` (MK) | 7 copies, sha256 equal; nothing deleted |
 | Unattended run | S04-W2-4 record | completes |
 | Load once | `delivery_log.py live --env cloud:<id> --expect auto`; `/doctor` | `"ok": true`, 11 entries (10 if check b = no); no overflow |
 | HIGH rows | h-coverage W2 rows (16), H10b, H11b | closed |
 
-**Rollback.** Revert the W2 merges; the forks come back from the tag. Set the cloud value back to V2. The inbox is git-tracked, so no report is lost. S07-W2-7's learn-hub vault files stay on master because their rows are live; a revert does not undo Supabase writes (critique C2-21).
+**Rollback.** Revert the W2 PR merges, newest first (OQ7-a); the forks come back from the tag. Set the cloud value back to V2. The inbox is git-tracked, so no report is lost. S07-W2-7's learn-hub vault files stay on master because their rows are live, and S07-W2-8's inbox copies are reverted with their own commit; a revert does not undo Supabase writes (critique C2-21).
 
-**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: V2 → V3 (adds pubmed, CR, CI, ML, CE) at S11-W2-2 → V4 (adds concept-animation) at S11-W2-3 → V5 (adds `/home/user/learn-hub/plugins`) at S11-W2-4, only if check b = yes. Windows: `learn-hub-local` removed (S11-W2-1), installs refreshed (S11-W2-5).
+**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: V2 → V3 (adds pubmed, CR, CI, ML, CE) at S11-W2-2 → V4 (adds concept-animation) at S11-W2-3 → V5 (adds `/home/user/learn-hub/plugins`) at S11-W2-4, only if check b = yes. Windows: `learn-hub-local` removed (S11-W2-1); the learn-hub plugins folder added at W2 exit (S11-W2-6), only if check b = yes.
 
 ### W3 — micky consolidation (skeleton, then alignment, evidence, visuals)
 
-**Entry.** W2 exit gates green; OD3, OD6, OD7, OD9, OD10, OD12, OQ6 and OQ10 answered; tag `wave-2` pushed. S08-W3-1 is placed right after the skeleton because every later W3 check uses its validator.
+**Entry.** W2 exit gates green; tag `wave-2` pushed. S08-W3-1 is placed right after the skeleton because every later W3 check uses its validator. Under OQ10-a the cloud value changes family by family: S11-W3-5 drops the six per-plugin segments the skeleton removes, S11-W3-6, S11-W3-7 and S11-W3-8 add each family once its release step is on master, and S11-W3-1 switches to V6 with the last of them. The W3 live-trigger runs set the variable for their `claude -p` child only (S12-W3-2). §8 Q31 must be settled before the skeleton merges.
 
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|
-| 1 | S11-W3-1 | S11 | env+MK | Cloud V5→V6 (folder paths); MEMORY:11 | W2 exit | yes |
-| 2 | S11-W3-2 | S11 | Win+MK | Windows switch to the env var (OD2-a) | S11-W3-1 | yes |
-| 3 | S11-W3-3 | S11 | MK | README install section | S11-W3-2 |  |
-| 4 | S10-W3-1 | S10 | MK | marketplace.json W3 shape + `renames` (one PR with the next row) | S10-W0-3, S11-W3-1 |  |
-| 5 | S10-W3-2 | S10 | MK | Skeleton PR, one commit per family: moves, root dirs, family manifests, 7 aliases | S10-W3-1 |  |
-| 6 | S11-W3-5 | S11 | MK | Log: families load (8 entries) | S10-W3-2 |  |
-| 7 | S08-W3-1 | S08 | MK | validate.py / release.py into plugin-creator; health.sh; lists (one PR, four commits) | S08-W1-2, S10-W0-1…3, S10-W0-8, S10-W3-2, S11-W0-3 |  |
-| 8 | S12-W3-2 | S12 | MK | Live trigger evals BEFORE (5 families) | S10-W3-2, S12-W0-6 |  |
-| 9 | S01-W3-1 | S01 | MK | `interview-protocol.md`; lock-record names | S10-W3-2 |  |
-| 10 | S01-W3-2 | S01 | MK | intent-lock by subtraction (H01, H02) | S01-W3-1, S12-W3-2 |  |
-| 11 | S01-W3-3 | S01 | MK | misread-capture + `ledger.py` (H04) | S01-W3-1 |  |
-| 12 | S01-W3-4 | S01 | MK | Reformat `state/misreads.md` (H03) | S01-W2-1, S14-W2-2, S10-W3-2, S01-W3-3 |  |
-| 13 | S02-W3-1 | S02 | MK | DI / PC eval cases | S10-W3-2 |  |
-| 14 | S02-W3-2 | S02 | MK | decision-interview rewrite | S10-W3-2, S01-W3-1, S12-W3-2 |  |
-| 15 | S02-W3-3 | S02 | MK | plan-critique rewrite | S10-W3-2, S01-W3-1, S12-W3-2 |  |
-| 16 | S01-W3-5 | S01 | MK | alignment plugin.json, README, CHANGELOG | S01-W3-2, S01-W3-3, S02-W3-2, S02-W3-3 |  |
-| 17 | S02-W3-4 | S02 | MK | README sections DI / PC | S02-W3-2, S02-W3-3, S01-W3-5 |  |
-| 18 | S01-W3-6 | S01 | MK | intent-lock / misread-capture eval cases | S01-W3-2, S01-W3-3 |  |
-| 19 | S01-W3-7 | S01 | MK | Release alignment (`release.py alignment minor`) | S08-W3-1, S01-W3-5, S01-W3-6, S02-W3-1, S02-W3-4 |  |
-| 20 | S03-W3-1 | S03 | MK | `engines.md`; edit moved `report-contract.md` | S01-W3-2, S10-W3-2 |  |
-| 21 | S03-W3-2 | S03 | MK | Decision brief: 6 slots (H45); drop "Klaeng" (K13) | S01-W3-2, S03-W3-1 |  |
-| 22 | S03-W3-3 | S03 | MK | Dedupe the depth contract | S03-W3-1 |  |
-| 23 | S03-W3-4 | S03 | MK | pubmed description | S03-W3-1, S12-W3-2 |  |
-| 24 | S03-W3-5 | S03 | MK | `sources_lint.py`, mocks | S03-W3-1 |  |
-| 25 | S03-W3-6 | S03 | MK | pubmed eval cases | S03-W3-1, S03-W3-5 |  |
-| 26 | S04-W3-1 | S04 | MK | `sweep.py`; `state/lit-watch/` | S10-W3-2 |  |
-| 27 | S04-W3-2 | S04 | MK | CR remaining fixes | S01-W3-2, S10-W3-2 |  |
-| 28 | S04-W3-3 | S04 | MK | CR + lit-watch descriptions; rename; lock re-key | S10-W3-2, S12-W3-2 |  |
-| 29 | S04-W3-4 | S04 | MK | triage-rubric pointer | S10-W3-2 |  |
-| 30 | S04-W3-5 | S04 | MK | CR eval cases | S04-W3-3 |  |
-| 31 | S04-W3-6 | S04 | MK | lit-watch eval cases | S04-W3-1, S04-W3-3 |  |
-| 32 | S03-W3-7 | S03 | MK | evidence README / CHANGELOG / LICENSE | S03-W3-6, S04-W3-6 |  |
-| 33 | S03-W3-8 | S03 | MK | Release evidence (`release.py evidence minor`) | S08-W3-1, S03-W3-2…4, S03-W3-7, S04-W3-2, S04-W3-4, S04-W3-5 |  |
-| 34 | S05-W3-1 | S05 | MK | `html-artifact-contract.md`, `render-verify.md` | S01-W3-2, S10-W3-2 |  |
-| 35 | S05-W3-2 | S05 | MK | CA / ML descriptions + handoffs | S05-W3-1, S12-W3-2 |  |
-| 36 | S05-W3-3 | S05 | MK | ML size trim | S05-W3-1 |  |
-| 37 | S05-W3-4 | S05 | MK | visuals plugin.json | S05-W3-1, S08-W3-1 |  |
-| 38 | S05-W3-5 | S05 | MK | visuals README / CHANGELOG / LICENSE | S05-W3-4 |  |
-| 39 | S06-W3-1 | S06 | MK | lessons-learned → CHANGELOG; example README rename | S05-W3-1, S05-W3-5, S10-W3-2 |  |
-| 40 | S06-W3-2 | S06 | MK | CI / CE descriptions + handoffs | S01-W3-2, S06-W3-1, S12-W3-2 |  |
-| 41 | S06-W3-3 | S06 | MK | CE fidelity; `--kind code-explainer --source` | S05-W3-1, S06-W3-2 |  |
-| 42 | S06-W3-4 | S06 | MK | Verify the two visuals alias skills | S06-W3-1, S10-W3-2 |  |
-| 43 | S05-W3-6 | S05 | MK | Release visuals (`release.py visuals minor`) | S08-W3-1, S05-W3-2, S05-W3-3, S05-W3-5, S06-W3-1…4 |  |
-| 44 | S08-W3-2 | S08 | MK | plugin-creator SKILL.md rewrite | S08-W3-1, S12-W3-2 |  |
-| 45 | S08-W3-3 | S08 | MK | refine-plugin rewrite + `new-plugin` alias | S08-W3-1, S12-W3-2 |  |
-| 46 | S08-W3-4 | S08 | MK | Scaffold writes README/CHANGELOG/LICENSE/evals | S08-W3-2 |  |
-| 47 | S08-W3-5 | S08 | MK | Templates: quoted placeholders, alias template | S08-W3-1 |  |
-| 48 | S08-W3-6 | S08 | MK | MCP wiring in the scaffold | S08-W3-5 |  |
-| 49 | S08-W3-7 | S08 | MK | Delete plugin-creator `commands/` only | S08-W3-2, S08-W3-3, S10-W0-4 |  |
-| 50 | S08-W3-8 | S08 | MK | plugin-creator eval cases | S08-W3-2, S08-W3-3 |  |
-| 51 | S08-W3-9 | S08 | MK | Release plugin-creator | S08-W3-1…8 |  |
-| 52 | S09-W3-1 | S09 | MK | firecrawl router + dated vendor reference | S08-W3-1, S09-W1-2, S10-W0-8, S10-W3-2, S12-W3-2, OQ6 answer |  |
-| 53 | S09-W3-2 | S09 | MK | gridgeist `UPSTREAM.md`; drop Codex file, assets | S10-W0-8 |  |
-| 54 | S09-W3-3 | S09 | MK | firecrawl / gridgeist eval cases | S09-W3-1, S09-W3-2 |  |
-| 55 | S09-W3-4 | S09 | MK | Release firecrawl, gridgeist | S09-W3-1…3 |  |
-| 56 | S11-W3-4 | S11 | env+MK | firecrawl enablement per the owner answer | S09-W3-1 | yes |
-| 57 | S07-W3-1 | S07 | MK | Delete the empty-vault command file | S07-W1-2, S10-W3-2 |  |
-| 58 | S07-W3-2 | S07 | MK | Release vault-keeper | S07-W3-1, S08-W3-1 |  |
-| 59 | S12-W3-3 | S12 | MK | Live trigger evals AFTER | S01-W3-2, S02-W3-2, S02-W3-3, S03-W3-4, S04-W3-3, S05-W3-2, S06-W3-2, S08-W3-2, S08-W3-3, S09-W3-1, S12-W3-2 |  |
-| 60 | S10-W3-8 | S10 | MK | micky CLAUDE.md ≤5 KB | S01-W3-6, S02-W3-4, S03-W3-7, S04-W3-6, S05-W3-5, S06-W3-4, S07-W3-1, S08-W3-9, S09-W3-4, S10-W3-2 |  |
-| 61 | S10-W3-9 | S10 | MK | Delete ROUTING.md, route.py | S08-W3-7, S10-W3-8 |  |
-| 62 | S10-W3-10 | S10 | MK | MEMORY split → `docs/history.md` | S10-W3-8, S11-W3-1 |  |
-| 63 | S10-W3-11 | S10 | MK | Archive the superseded plan | — |  |
-| 64 | S12-W3-1 | S12 | MK | Check: no `evals.json` left in micky | S01-W3-6, S02-W3-1, S03-W3-6, S04-W3-5, S04-W3-6, S05-W2-5, S06-W1-3, S07-W2-5, S08-W3-8, S09-W3-3 |  |
-| 65 | S12-W3-4 | S12 | both | Routing smoke (≥17/20, 0 destructive) | S11-W3-5, S12-W3-3 |  |
-| 66 | S12-W3-5 | S12 | MK | Two-arm release eval per plugin | S12-W3-1…4 |  |
-| 67 | S12-W3-T | S12 | both | Tag `wave-3` | all W3 | yes |
+| 1 | S10-W3-1 | S10 | MK | marketplace.json W3 shape + `renames` (one PR with the next row) | S10-W0-3 |  |
+| 2 | S10-W3-2 | S10 | MK | Skeleton PR, one commit per family: moves, root dirs, family manifests, 7 aliases | S10-W3-1 |  |
+| 3 | S11-W3-5 | S11 | env+MK | Cloud V5 → V5': drop the six moved per-plugin segments; Windows: the folder loads the families (OQ10-a) | S10-W3-2 | yes |
+| 4 | S08-W3-1 | S08 | MK | validate.py / release.py into plugin-creator; health.sh; lists (one PR, four commits) | S08-W1-1, S10-W0-1…3, S10-W0-8, S10-W3-2, S11-W0-3 |  |
+| 5 | S12-W3-2 | S12 | MK | Live trigger evals BEFORE (5 families) | S10-W3-2, S12-W0-6 |  |
+| 6 | S01-W3-1 | S01 | MK | `interview-protocol.md`; lock-record names | S10-W3-2 |  |
+| 7 | S01-W3-2 | S01 | MK | intent-lock by subtraction (H01, H02) | S01-W3-1, S12-W3-2 |  |
+| 8 | S01-W3-3 | S01 | MK | misread-capture + `ledger.py` (H04) | S01-W3-1 |  |
+| 9 | S01-W3-4 | S01 | MK | Reformat `state/misreads.md` (H03) | S01-W2-1, S14-W2-2, S10-W3-2, S01-W3-3 |  |
+| 10 | S02-W3-1 | S02 | MK | DI / PC eval cases | S10-W3-2 |  |
+| 11 | S02-W3-2 | S02 | MK | decision-interview rewrite | S10-W3-2, S01-W3-1, S12-W3-2 |  |
+| 12 | S02-W3-3 | S02 | MK | plan-critique rewrite | S10-W3-2, S01-W3-1, S12-W3-2 |  |
+| 13 | S01-W3-5 | S01 | MK | alignment plugin.json, README, CHANGELOG | S01-W3-2, S01-W3-3, S02-W3-2, S02-W3-3 |  |
+| 14 | S02-W3-4 | S02 | MK | README sections DI / PC | S02-W3-2, S02-W3-3, S01-W3-5 |  |
+| 15 | S01-W3-6 | S01 | MK | intent-lock / misread-capture eval cases | S01-W3-2, S01-W3-3 |  |
+| 16 | S01-W3-7 | S01 | MK | Release alignment (`release.py alignment minor`) | S08-W3-1, S01-W3-5, S01-W3-6, S02-W3-1, S02-W3-4 |  |
+| 17 | S11-W3-6 | S11 | env+MK | Cloud: alignment joins (V5' + `plugins/alignment`; OQ10-a) | S11-W3-5, S01-W3-7 | yes |
+| 18 | S03-W3-1 | S03 | MK | `engines.md`; edit moved `report-contract.md` | S01-W3-2, S10-W3-2 |  |
+| 19 | S03-W3-2 | S03 | MK | Decision brief: 6 slots (H45); drop "Klaeng" (K13) | S01-W3-2, S03-W3-1 |  |
+| 20 | S03-W3-3 | S03 | MK | Dedupe the depth contract | S03-W3-1 |  |
+| 21 | S03-W3-4 | S03 | MK | pubmed description | S03-W3-1, S12-W3-2 |  |
+| 22 | S03-W3-5 | S03 | MK | `sources_lint.py`, mocks | S03-W3-1 |  |
+| 23 | S03-W3-6 | S03 | MK | pubmed eval cases | S03-W3-1, S03-W3-5 |  |
+| 24 | S04-W3-1 | S04 | MK | `sweep.py`; `state/lit-watch/` | S10-W3-2 |  |
+| 25 | S04-W3-2 | S04 | MK | CR remaining fixes | S01-W3-2, S10-W3-2 |  |
+| 26 | S04-W3-3 | S04 | MK | CR + lit-watch descriptions; rename; lock re-key | S10-W3-2, S12-W3-2 |  |
+| 27 | S04-W3-4 | S04 | MK | triage-rubric pointer | S10-W3-2 |  |
+| 28 | S04-W3-5 | S04 | MK | CR eval cases | S04-W3-3 |  |
+| 29 | S04-W3-6 | S04 | MK | lit-watch eval cases | S04-W3-1, S04-W3-3 |  |
+| 30 | S03-W3-7 | S03 | MK | evidence README / CHANGELOG / LICENSE | S03-W3-6, S04-W3-6 |  |
+| 31 | S03-W3-8 | S03 | MK | Release evidence (`release.py evidence minor`) | S08-W3-1, S03-W3-2…4, S03-W3-7, S04-W3-2, S04-W3-4, S04-W3-5 |  |
+| 32 | S11-W3-7 | S11 | env+MK | Cloud: evidence joins (V5' + `plugins/evidence`; OQ10-a) | S11-W3-5, S03-W3-8 | yes |
+| 33 | S05-W3-1 | S05 | MK | `html-artifact-contract.md`, `render-verify.md` | S01-W3-2, S10-W3-2 |  |
+| 34 | S05-W3-2 | S05 | MK | CA / ML descriptions + handoffs | S05-W3-1, S12-W3-2 |  |
+| 35 | S05-W3-3 | S05 | MK | ML size trim | S05-W3-1 |  |
+| 36 | S05-W3-4 | S05 | MK | visuals plugin.json | S05-W3-1, S08-W3-1 |  |
+| 37 | S05-W3-5 | S05 | MK | visuals README / CHANGELOG / LICENSE | S05-W3-4 |  |
+| 38 | S06-W3-1 | S06 | MK | lessons-learned → CHANGELOG; example README rename | S05-W3-1, S05-W3-5, S10-W3-2 |  |
+| 39 | S06-W3-2 | S06 | MK | CI / CE descriptions + handoffs | S01-W3-2, S06-W3-1, S12-W3-2 |  |
+| 40 | S06-W3-3 | S06 | MK | CE fidelity; `--kind code-explainer --source` | S05-W3-1, S06-W3-2 |  |
+| 41 | S06-W3-4 | S06 | MK | Verify the two visuals alias skills | S06-W3-1, S10-W3-2 |  |
+| 42 | S05-W3-6 | S05 | MK | Release visuals (`release.py visuals minor`) | S08-W3-1, S05-W3-2, S05-W3-3, S05-W3-5, S06-W3-1…4 |  |
+| 43 | S11-W3-8 | S11 | env+MK | Cloud: visuals joins (V5' + `plugins/visuals`; OQ10-a) | S11-W3-5, S05-W3-6 | yes |
+| 44 | S11-W3-1 | S11 | env+MK | Cloud V5' → V6 with the last family merge; no OQ4 exception (OQ10-a) | S11-W3-6, S11-W3-7, S11-W3-8 | yes |
+| 45 | S11-W3-3 | S11 | MK | README install section | S11-W3-2, S11-W3-1 |  |
+| 46 | S08-W3-2 | S08 | MK | plugin-creator SKILL.md rewrite | S08-W3-1, S12-W3-2 |  |
+| 47 | S08-W3-3 | S08 | MK | refine-plugin rewrite + `new-plugin` alias | S08-W3-1, S12-W3-2 |  |
+| 48 | S08-W3-4 | S08 | MK | Scaffold writes README/CHANGELOG/LICENSE/evals | S08-W3-2 |  |
+| 49 | S08-W3-5 | S08 | MK | Templates: quoted placeholders, alias template | S08-W3-1 |  |
+| 50 | S08-W3-6 | S08 | MK | MCP wiring in the scaffold | S08-W3-5 |  |
+| 51 | S08-W3-7 | S08 | MK | Delete plugin-creator `commands/` only | S08-W3-2, S08-W3-3, S10-W0-4 |  |
+| 52 | S08-W3-8 | S08 | MK | plugin-creator eval cases | S08-W3-2, S08-W3-3 |  |
+| 53 | S08-W3-9 | S08 | MK | Release plugin-creator | S08-W3-1…8 |  |
+| 54 | S09-W3-1 | S09 | MK | firecrawl router + dated vendor reference | S08-W3-1, S09-W1-1, S10-W0-8, S10-W3-2, S12-W3-2 |  |
+| 55 | S09-W3-2 | S09 | MK | gridgeist `UPSTREAM.md`; drop Codex file, assets | S10-W0-8 |  |
+| 56 | S09-W3-3 | S09 | MK | firecrawl / gridgeist eval cases | S09-W3-1, S09-W3-2 |  |
+| 57 | S09-W3-4 | S09 | MK | Release firecrawl, gridgeist | S09-W3-1…3 |  |
+| 58 | S11-W3-4 | S11 | env+MK | firecrawl enablement: setup-script block, Windows `plugin enable` (OQ6-a) | S09-W3-1 | yes |
+| 59 | S07-W3-1 | S07 | MK | Delete the empty-vault command file | S07-W1-2, S10-W3-2 |  |
+| 60 | S07-W3-2 | S07 | MK | Release vault-keeper | S07-W3-1, S08-W3-1 |  |
+| 61 | S12-W3-3 | S12 | MK | Live trigger evals AFTER | S01-W3-2, S02-W3-2, S02-W3-3, S03-W3-4, S04-W3-3, S05-W3-2, S06-W3-2, S08-W3-2, S08-W3-3, S09-W3-1, S12-W3-2 |  |
+| 62 | S10-W3-8 | S10 | MK | micky CLAUDE.md ≤5 KB | S01-W3-6, S02-W3-4, S03-W3-7, S04-W3-6, S05-W3-5, S06-W3-4, S07-W3-1, S08-W3-9, S09-W3-4, S10-W3-2 |  |
+| 63 | S10-W3-9 | S10 | MK | Delete ROUTING.md, route.py | S08-W3-7, S10-W3-8 |  |
+| 64 | S10-W3-10 | S10 | MK | MEMORY split → `docs/history.md` | S10-W3-8, S11-W3-2 |  |
+| 65 | S10-W3-11 | S10 | MK | Archive the superseded plan | — |  |
+| 66 | S12-W3-1 | S12 | MK | Check: no `evals.json` left in micky | S01-W3-6, S02-W3-1, S03-W3-6, S04-W3-5, S04-W3-6, S05-W2-5, S06-W1-3, S07-W2-5, S08-W3-8, S09-W3-3 |  |
+| 67 | S12-W3-4 | S12 | both | Routing smoke (≥17/20, 0 destructive) | S11-W3-1, S12-W3-3 |  |
+| 68 | S12-W3-5 | S12 | MK | Two-arm release eval per plugin | S12-W3-1…4 |  |
+| 69 | S12-W3-T | S12 | both | Tag `wave-3` | all W3 | yes |
 
 Note: S01-W3-7, S03-W3-8, S05-W3-6 and S07-W3-2 release alignment, evidence, visuals and vault-keeper with `release.py` after S08-W3-1 (critique P-05).
 
@@ -470,49 +490,47 @@ Note: S01-W3-7, S03-W3-8, S05-W3-6 and S07-W3-2 release alignment, evidence, vis
 | Delivery | `live --expect auto` (cloud); Windows `claude plugin marketplace list --json` | 8 entries; no `micky-psych-tools` |
 | HIGH rows | every row assigned to W0–W3 (H07b included) | closed |
 
-**Rollback.** Revert the W3 merges, newest first. To undo one family, revert that family's commits (the skeleton's per-family commit and the family's later commits, listed in the W3 exit record), then run `bash scripts/health.sh`. `ratchet.json`, the lock, CLAUDE.md and README are shared by all families: revert their edits with the last family (critique C2-21). The folder path absorbs layout reverts with no env edit. Windows under OD2-a: the same.
+**Rollback.** Revert the W3 PR merges, newest first (OQ7-a). To undo one family, revert that family's commits (the skeleton's per-family commit and the family's later commits, listed in the W3 exit record), then run `bash scripts/health.sh`. `ratchet.json`, the lock, CLAUDE.md and README are shared by all families: revert their edits with the last family (critique C2-21). In cloud, the per-family values of OQ10-a do not absorb a layout revert: set the value back per the delivery log. Windows: the folder path absorbs layout reverts with no edit.
 
-**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud: V5 → V6 (`/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins`) at S11-W3-1; 15 entries before the skeleton, 8 after (S11-W3-5). Windows: the user variable is set, then the marketplace copies are uninstalled (S11-W3-2). firecrawl enablement per OQ6 (S11-W3-4).
+**`CLAUDE_CODE_PLUGIN_DIRS`.** Cloud (OQ10-a): V5 → V5' at the skeleton merge (S11-W3-5 drops the six moved per-plugin segments) → + `plugins/alignment` (S11-W3-6), + `plugins/evidence` (S11-W3-7), + `plugins/visuals` (S11-W3-8), each once that family's release is on master → V6 (`/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins`) with the last of them (S11-W3-1); 8 entries at the end. Windows: the folder path set at W1 entry (S11-W3-2) loads the families from the skeleton merge on. firecrawl: `defaultEnabled: false` plus the setup-script enable block (OQ6-a, S11-W3-4).
 
 ### W4 — learn-hub consolidation and context diet
 
-**Entry.** W2 exit (W3 not required); OD11 and OQ9 answered; W0 check e answered (`.claude/rules` or `docs/gotchas/`); the owner agrees a freeze window for atomize-book imports (S19-W4-1).
+**Entry.** W2 exit (W3 not required); stage (b) done before W1 (S21-W4b-1, OQ14-a; or, if W0 check e = no, it runs here after stage a, into `docs/gotchas/`); the owner agrees a freeze window for atomize-book imports (S19-W4-1).
 
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|
 | 1 | S12-W4-2 | S12 | cloud | Live trigger evals BEFORE (PDF, atomize families) | S12-W0-6 |  |
 | 2 | S19-W4-0 | S19 | Win+LH | Pre-split chapter baseline (`BOOK_ROOT`) | W2 exit | yes |
 | 3 | S17-W4-0 | S17 | Win+LH | Pre-W4 article baseline | W2 exit | yes |
-| 4 | S21-W4a-1 | S21 | LH | `gotcha-map.md`, keyed by heading text, built from the W4-entry CLAUDE.md | S21-W0-1 |  |
-| 5 | S21-W4a-4 | S21 | LH | `move-blocks.mjs`: cut, archive, byte check | S21-W4a-1 |  |
-| 6 | S21-W4a-3 | S21 | LH | `gotchas-archive.md` by script; pk-plasma line | S21-W4a-4, S21-W4a-1, S16-W2-6 |  |
-| 7 | S21-W4a-2 | S21 | LH | `docs/vault-format.md`; 6 skills' gotchas (by script) | S21-W4a-3 |  |
-| 8 | S13-W4-1 | S13 | LH | sync-vault gotchas: move + delete | S13-W1-6, S21-W4a-2 + S21-W4a-4 (plan) |  |
-| 9 | S19-W4-1 | S19 | LH | Freeze atomize-book imports from S19-W4-2 until S19-W4-9 passes; save the pre-split SKILL.md | W2 exit, S19-W4-0 | yes |
-| 10 | S19-W4-2 | S19 | LH | `references/extract.md` | S19-W1-1…8, S19-W4-1 |  |
-| 11 | S19-W4-3 | S19 | LH | `references/figures.md` (verbatim move) | S19-W4-2 |  |
-| 12 | S19-W4-3b | S19 | LH | Renumber `references/figures.md`; Contents | S19-W4-3 |  |
-| 13 | S19-W4-4 | S19 | LH | `references/measure.md` | S19-W4-3 |  |
-| 14 | S19-W4-5 | S19 | LH | `references/qc.md` | S19-W4-4 |  |
-| 15 | S19-W4-6 | S19 | LH | `references/traps.md` | S19-W4-5 |  |
-| 16 | S19-W4-8 | S19 | LH | atomize-book gotchas: move + delete | S21-W4a-2 + S21-W4a-4 (plan) |  |
-| 17 | S19-W4-7 | S19 | LH | Final SKILL.md pass (H24) | S19-W4-2…6 |  |
-| 18 | S19-W4-9 | S19 | Win+LH | Exit test: 354 tests; chapter re-run vs the S19-W4-0 baseline | S19-W4-7, S19-W4-0 | yes |
-| 19 | S19-W4-10 | S19 | LH | atomize-book eval cases (3 smoke) | S12-W0-4, S19-W4-7 |  |
-| 20 | S21-W4b-1 | S21 | LH | App gotchas + Pages → 13 `.claude/rules` files; upkeep line; size check | S13-W4-1, S19-W4-8, S21-W4a-2 |  |
-| 21 | S17-W4-1 | S17 | LH | ingest-article conditional references | S17-W1-2, S21-W4a-2, S17-W4-0 |  |
-| 22 | S17-W4-2 | S17 | LH | Measure ingest-article / -slides size | S17-W4-1 |  |
-| 23 | S17-W4-3 | S17 | LH | 4 more eval cases | S12-W0-4, S17-W1-12 |  |
-| 24 | S17-W4-5 | S17 | Win+LH | One article re-run end to end; compare gate verdicts | S17-W4-0…3 | yes |
-| 25 | S18-W4-2 | S18 | LH | verify SKILL.md | S21-W4a-2 |  |
-| 26 | S18-W4-3 | S18 | LH | verify scripts (lib + tests in `scripts/lib`) | S18-W4-2 |  |
-| 27 | S18-W4-1 | S18 | LH | `classify_pdf.py` + tests (I26) | S18-W1-1 |  |
-| 28 | S18-W4-4 | S18 | LH | verify + pdf-pipeline eval cases | S12-W0-4, S18-W1-9 |  |
-| 29 | S17-W4-4 | S17 | LH | Hand trigger queries to S12 | S17-W1-2, S17-W1-8, S18-W4-1 |  |
-| 30 | S18-W4-5 | S18 | LH | Hand trigger queries to S12 | S17-W4-4, S18-W1-8 |  |
-| 31 | S12-W4-3 | S12 | cloud | Live trigger evals AFTER | S17-W4-4, S18-W4-5 |  |
-| 32 | S12-W4-1 | S12 | LH | Project-skill smoke | S13-W1-9, S17-W4-3, S18-W4-4, S19-W4-9, S19-W4-10, S20-W2-5 |  |
-| 33 | S12-W4-T | S12 | LH | Tag `wave-4` | all W4 | yes |
+| 4 | S21-W4a-3 | S21 | LH | `gotchas-archive.md` by script; pk-plasma line | S21-W4a-4, S21-W4a-1, S16-W2-6 |  |
+| 5 | S21-W4a-2 | S21 | LH | `docs/vault-format.md`; 6 skills' gotchas (by script) | S21-W4a-3 |  |
+| 6 | S13-W4-1 | S13 | LH | sync-vault gotchas: move + delete | S13-W1-6, S21-W4a-2 + S21-W4a-4 (plan) |  |
+| 7 | S19-W4-1 | S19 | LH | Freeze atomize-book imports from S19-W4-2 until S19-W4-9 passes; save the pre-split SKILL.md | W2 exit, S19-W4-0 | yes |
+| 8 | S19-W4-2 | S19 | LH | `references/extract.md` | S19-W1-1…8, S19-W4-1 |  |
+| 9 | S19-W4-3 | S19 | LH | `references/figures.md` (verbatim move) | S19-W4-2 |  |
+| 10 | S19-W4-3b | S19 | LH | Renumber `references/figures.md`; Contents | S19-W4-3 |  |
+| 11 | S19-W4-4 | S19 | LH | `references/measure.md` | S19-W4-3 |  |
+| 12 | S19-W4-5 | S19 | LH | `references/qc.md` | S19-W4-4 |  |
+| 13 | S19-W4-6 | S19 | LH | `references/traps.md` | S19-W4-5 |  |
+| 14 | S19-W4-8 | S19 | LH | atomize-book gotchas: move + delete | S21-W4a-2 + S21-W4a-4 (plan) |  |
+| 15 | S21-W4a-5 | S21 | LH | Size guard: skill-lint check 10 (CLAUDE.md ≤ 32,768 bytes); final upkeep line (OQ14-a) | S21-W4a-2, S13-W4-1, S19-W4-8 |  |
+| 16 | S19-W4-7 | S19 | LH | Final SKILL.md pass (H24) | S19-W4-2…6 |  |
+| 17 | S19-W4-9 | S19 | Win+LH | Exit test: 354 tests; chapter re-run vs the S19-W4-0 baseline | S19-W4-7, S19-W4-0 | yes |
+| 18 | S19-W4-10 | S19 | LH | atomize-book eval cases (3 smoke) | S12-W0-4, S19-W4-7 |  |
+| 19 | S17-W4-1 | S17 | LH | ingest-article conditional references | S17-W1-2, S21-W4a-2, S17-W4-0 |  |
+| 20 | S17-W4-2 | S17 | LH | Measure ingest-article / -slides size | S17-W4-1 |  |
+| 21 | S17-W4-3 | S17 | LH | 4 more eval cases | S12-W0-4, S17-W1-12 |  |
+| 22 | S17-W4-5 | S17 | Win+LH | One article re-run end to end; compare gate verdicts | S17-W4-0…3 | yes |
+| 23 | S18-W4-2 | S18 | LH | verify SKILL.md | S21-W4a-2 |  |
+| 24 | S18-W4-3 | S18 | LH | verify scripts (lib + tests in `scripts/lib`) | S18-W4-2 |  |
+| 25 | S18-W4-1 | S18 | LH | `classify_pdf.py` + tests (I26) | S18-W1-1 |  |
+| 26 | S18-W4-4 | S18 | LH | verify + pdf-pipeline eval cases | S12-W0-4, S18-W1-9 |  |
+| 27 | S17-W4-4 | S17 | LH | Hand trigger queries to S12 | S17-W1-2, S17-W1-8, S18-W4-1 |  |
+| 28 | S18-W4-5 | S18 | LH | Hand trigger queries to S12 | S17-W4-4, S18-W1-8 |  |
+| 29 | S12-W4-3 | S12 | cloud | Live trigger evals AFTER | S17-W4-4, S18-W4-5 |  |
+| 30 | S12-W4-1 | S12 | LH | Project-skill smoke | S13-W1-9, S17-W4-3, S18-W4-4, S19-W4-9, S19-W4-10, S20-W2-5 |  |
+| 31 | S12-W4-T | S12 | LH | Tag `wave-4` | all W4 | yes |
 
 Note: S19-W4-0 and S17-W4-0 record the pre-W4 gate verdicts on Windows before any atomize-book or ingest-article change; S19-W4-9 and S17-W4-5 compare gate verdicts (pass/fail), not scores, because fresh drafting varies between runs (critique F14, P-14). S19-W4-10 and S20-W2-5 write the eval cases S12-W4-1 needs (P-06). Gotcha blocks move by script (`move-blocks.mjs`, S21-W4a-4), never by hand (C2-08).
 
@@ -521,8 +539,8 @@ Note: S19-W4-0 and S17-W4-0 record the pre-W4 gate verdicts on Windows before an
 | Check | Command | Expected |
 |---|---|---|
 | CLAUDE.md size | `wc -c CLAUDE.md` (LH) | ≤ 32,768 |
-| Exactly once | `node scripts/move-blocks.mjs --check` (LH) | exit 0: every mapped block from the W4-entry CLAUDE.md exists once across the destinations, byte-identical |
-| Size guard | skill-lint check 10 (`CLAUDE.md` ≤ 32,768 bytes) inside `npm run check:skills` | exit 0 |
+| Exactly once | `node scripts/move-blocks.mjs --check` (LH) | exit 0: every mapped block from its row's base CLAUDE.md (the frozen pre-W1 file for the stage (b) rows, the W4-entry file for the stage (a) rows) exists once across the destinations, byte-identical |
+| Size guard | skill-lint check 10 (`CLAUDE.md` ≤ 32,768 bytes, added by S21-W4a-5) inside `npm run check:skills` | exit 0 |
 | Rules files | `ls .claude/rules/*.md \| wc -l` | 13 (or `docs/gotchas/` if check e = no) |
 | atomize-book tests | `python3 -m unittest discover -s .claude/skills/atomize-book/scripts -p 'test_*.py'` | `Ran 354 tests … OK` |
 | atomize-book size | `python3 $MICKY_TOOLS_DIR/docs/plugin-rewrite/phase3/measure.py skill .claude/skills/atomize-book/SKILL.md` | body ≤ 500 lines, ≤ 5,000 tok |
@@ -532,7 +550,7 @@ Note: S19-W4-0 and S17-W4-0 record the pre-W4 gate verdicts on Windows before an
 | Triggers | S12-W4-3 | no family below its before-score beyond noise |
 | HIGH rows | H24 | closed |
 
-**Rollback.** Revert. `docs/gotchas-archive.md` still holds every moved heading verbatim.
+**Rollback.** Revert the W4 PR merges, newest first (OQ7-a). `docs/gotchas-archive.md` still holds every moved heading verbatim.
 
 **`CLAUDE_CODE_PLUGIN_DIRS`.** No change.
 
@@ -547,11 +565,12 @@ Note: S19-W4-0 and S17-W4-0 record the pre-W4 gate verdicts on Windows before an
 | 3 | S09-W5-1 | S09 | MK | gridgeist usage decision | 2-4 weeks after W3 | yes |
 | 4 | S04-W5-1 | S04 | MK | lit-watch usage decision (OD10) | 2-4 weeks after W3 | yes |
 | 5 | S07-W5-1 | S07 | MK | Revisit OD4 with usage data | W3, W4 exits; 2-4 weeks after W3 | yes |
-| 6 | S12-W5-3 | S12 | both | Empty the ratchet; checks fail hard; `## W5 decisions` | S12-W5-1, S04-W5-1, S07-W5-1, S09-W5-1 |  |
-| 7 | S10-W5-1 | S10 | MK | MEMORY: final numbers | W3, W4 exits |  |
-| 8 | S11-W5-1 | S11 | MK | Close the delivery record | W3, W4 exits, S09-W5-1 |  |
+| 6 | S07-W5-2 | S07 | MK | `drain_plan.py` and the transfer, only if S07-W5-1 keeps the vault (OQ15-a) | S07-W5-1, S15-W2-1 |  |
+| 7 | S12-W5-3 | S12 | both | Empty the ratchet; checks fail hard; `## W5 decisions` | S12-W5-1, S04-W5-1, S07-W5-1, S09-W5-1 |  |
+| 8 | S10-W5-1 | S10 | MK | MEMORY: final numbers | W3, W4 exits |  |
+| 9 | S11-W5-1 | S11 | MK | Close the delivery record | W3, W4 exits, S09-W5-1 |  |
 
-S04-W5-1 (lit-watch usage), S07-W5-1 (OD4 revisit) and S12-W5-3 (ratchet emptied, checks fail hard, `## W5 decisions` as the decision log) close the W5 items (critique P-13).
+S04-W5-1 (lit-watch usage), S07-W5-1 (OD4 revisit) and S12-W5-3 (ratchet emptied, checks fail hard, `## W5 decisions` as the decision log) close the W5 items (critique P-13). S07-W5-2 builds `drain_plan.py` and the transfer only if S07-W5-1 keeps the vault (OQ15-a).
 
 **Exit gates:**
 
@@ -569,55 +588,52 @@ S04-W5-1 (lit-watch usage), S07-W5-1 (OD4 revisit) and S12-W5-3 (ratchet emptied
 
 ## 4. Owner action checklist
 
-In order. "Plan" rows are not spec steps; they come from §1 and §8.
+In §3 order. Every row is an OWNER step of §3; the §1 decisions are answered (2026-09-24).
 
 | # | Wave | Step | Action |
 |---|---|---|---|
-| 1 | before W0 | Plan | Confirm OD1, OD2 (provisional), OD14; answer OQ1, OQ2, OQ3, OQ7, OQ8, OQ11, OQ16 |
-| 2 | W0 | S12-W0-0 | Tag `pre-rewrite` in both repos |
-| 3 | W0 | S10-W0-11 | `git config core.hooksPath .githooks` in each micky clone |
-| 4 | W0 | S11-W0-5 | Cloud env: add the 5 variables (V0) and paste setup script v1 |
-| 5 | W0 | S11-W0-7 | Run checks a, b, e, f, h (+ the userConfig check for S07) |
-| 6 | W0 | S11-W0-9 | Approve the check-d eval run (≤ USD 0.50) |
-| 7 | W0 | S12-W0-6 | Confirm `claude plugin eval` availability |
-| 8 | W0 | S11-W0-10 | Windows: check g; set Windows variables |
-| 9 | W0 | S11-W0-11 | Cloud env: V0 → V1; paste setup script v2 |
-| 10 | W0 | Plan | Answer OQ14 once check e is recorded |
-| 11 | W0 | S12-W0-T | Tag `wave-0` |
-| 12 | before W1 | Plan | Answer OQ12 |
-| 13 | W1 | S20-W1-1b | Windows: backfill `coverage-sources.json` from `BOOK_ROOT` |
-| 14 | W1 | S14-W1-1 | Run `npm run vectors:check`; decide restore or leave per orphan (OQ5; no delete in W1) |
-| 15 | W1 | S13-W1-10 | Approve and watch one live sync; compare the diagrams count |
-| 16 | W1 | Plan | Answer OQ4 before S11-W1-1 |
-| 17 | W1 | S11-W1-1 | Cloud env: V1 → V2 |
-| 18 | W1 | S11-W1-2 | Windows: refresh installs |
-| 19 | W1 | S12-W1-T | Tag `wave-1` |
-| 20 | before W2 | Plan | Confirm OD4, OD5, OD8; answer OQ13, OQ15 |
-| 21 | W2 | S11-W2-1 | Windows: remove `learn-hub-local` if check g found it (before S14-W2-5) |
-| 22 | W2 | S11-W2-2 | Cloud env: V2 → V3; confirm the OQ4 exception for pubmed |
-| 23 | W2 | S11-W2-3 | Cloud env: V3 → V4; branch session; merge the CA-copy deletion |
-| 24 | W2 | S11-W2-4 | Cloud env: V4 → V5; record `/doctor` |
-| 25 | W2 | S07-W2-7 | Rehearsal: fixture report → transfer → "digest" → sync; no-digest check |
-| 26 | W2 | S04-W2-5 | OD8: edit the claude.ai-synced `daily-random-review` skill; record it in MK `baseline.md` |
-| 27 | W2 | S04-W2-4 | One unattended daily-random-review run |
-| 28 | W2 | S11-W2-5 | Windows: refresh installs |
-| 29 | W2 | S12-W2-T | Tag `wave-2` |
-| 30 | before W3 | Plan | Confirm OD3, OD6, OD7, OD9, OD10, OD12; answer OQ6, OQ10 |
-| 31 | W3 | S11-W3-1 | Cloud env: V5 → V6; confirm the OQ4 exception for the four W3 plugins |
-| 32 | W3 | S11-W3-2 | Windows: set the user variable, verify, uninstall marketplace copies |
-| 33 | W3 | S11-W3-4 | firecrawl enablement per OQ6 |
-| 34 | W3 | S12-W3-T | Tag `wave-3` |
-| 35 | before W4 | Plan | Confirm OD11; answer OQ9 |
-| 36 | W4 | S19-W4-0 | Windows: record the pre-split chapter baseline (`BOOK_ROOT`) |
-| 37 | W4 | S17-W4-0 | Windows: record the pre-W4 article baseline |
-| 38 | W4 | S19-W4-1 | Freeze atomize-book imports from S19-W4-2 until S19-W4-9 passes |
-| 39 | W4 | S19-W4-9 | Windows: chapter re-run; compare gate verdicts; end the freeze |
-| 40 | W4 | S17-W4-5 | Windows: one article re-run; compare gate verdicts |
-| 41 | W4 | S12-W4-T | Tag `wave-4` |
-| 42 | W5 | S09-W5-1 | gridgeist usage decision from `/skill-doctor` |
-| 43 | W5 | S04-W5-1 | lit-watch usage decision (OD10) |
-| 44 | W5 | S07-W5-1 | Revisit OD4 with usage data |
-| 45 | W5 | Plan | Confirm OD13 (S12-W5-3 records it under `## W5 decisions`) |
+| 1 | W0 | S12-W0-0 | Tag `pre-rewrite` in both repos |
+| 2 | W0 | S10-W0-11 | `git config core.hooksPath .githooks` in each micky clone |
+| 3 | W0 | S11-W0-5 | Cloud env: add the 5 variables (V0) and paste setup script v1 |
+| 4 | W0 | S11-W0-7 | Run checks a, b, e, f, h (+ the userConfig check for S07) |
+| 5 | W0 | S12-W0-6 | Confirm `claude plugin eval` availability |
+| 6 | W0 | S12-W0-9 | Set the three eval caps (smoke run, release run, live-trigger pass) from the cost per run the W0-d probe measured (OQ3) |
+| 7 | W0 | S11-W0-10 | Windows: check g; set Windows variables |
+| 8 | W0 | S11-W0-11 | Cloud env: V0 → V1; paste setup script v2 |
+| 9 | W0 | S12-W0-T | Tag `wave-0` |
+| 10 | W1 entry | S11-W3-2 | Windows: set the user variable (micky plugins folder), verify, uninstall the marketplace copies (OQ12-a) |
+| 11 | W1 | S20-W1-1b | Windows: backfill `coverage-sources.json` from `BOOK_ROOT` |
+| 12 | W1 | S14-W1-1 | Run `npm run vectors:check`; decide restore or leave per orphan (OQ5-a; no delete in W1) |
+| 13 | W1 | S13-W1-10 | Approve and watch one live sync; compare the diagrams count |
+| 14 | W1 | S11-W1-1 | Cloud env: V1 → V2 |
+| 15 | W1 | S11-W1-3 | Windows: `node scripts/ready.mjs --json`; record the `chromium` check |
+| 16 | W1 | S12-W1-T | Tag `wave-1` |
+| 17 | W2 | S07-W2-8 | Watch the one-time copy of the 7 vault artifacts into `research-notes/` (OQ15-a) |
+| 18 | W2 | S11-W2-1 | Windows: remove `learn-hub-local` if check g found it (before S14-W2-5) |
+| 19 | W2 | S11-W2-2 | Cloud env: V2 → V3 (pubmed joins with H45 open: the OQ4-a exception, logged) |
+| 20 | W2 | S11-W2-3 | Cloud env: V3 → V4; branch session; merge the CA-copy deletion |
+| 21 | W2 | S11-W2-4 | Cloud env: V4 → V5; record `/doctor` |
+| 22 | W2 | S07-W2-7 | Rehearsal: fixture report → inbox → "digest" → sync; no-digest check |
+| 23 | W2 | S04-W2-5 | OD8-a: edit the claude.ai-synced `daily-random-review` skill; record it in MK `baseline.md` |
+| 24 | W2 | S04-W2-4 | One unattended daily-random-review run |
+| 25 | W2 | S11-W2-6 | Windows: add the learn-hub plugins folder (skip if check b = no) |
+| 26 | W2 | S12-W2-T | Tag `wave-2` |
+| 27 | W3 | S11-W3-5 | Cloud env: V5 → V5' after the skeleton merge; Windows `live` check (OQ10-a) |
+| 28 | W3 | S11-W3-6 | Cloud env: add `plugins/alignment` once S01-W3-7 is on master |
+| 29 | W3 | S11-W3-7 | Cloud env: add `plugins/evidence` once S03-W3-8 is on master |
+| 30 | W3 | S11-W3-8 | Cloud env: add `plugins/visuals` once S05-W3-6 is on master |
+| 31 | W3 | S11-W3-1 | Cloud env: V5' → V6 with the last family merge |
+| 32 | W3 | S11-W3-4 | firecrawl: paste the setup-script enable block; Windows `claude plugin enable firecrawl@inline` (OQ6-a) |
+| 33 | W3 | S12-W3-T | Tag `wave-3` |
+| 34 | W4 | S19-W4-0 | Windows: record the pre-split chapter baseline (`BOOK_ROOT`) |
+| 35 | W4 | S17-W4-0 | Windows: record the pre-W4 article baseline |
+| 36 | W4 | S19-W4-1 | Freeze atomize-book imports from S19-W4-2 until S19-W4-9 passes |
+| 37 | W4 | S19-W4-9 | Windows: chapter re-run; compare gate verdicts; end the freeze |
+| 38 | W4 | S17-W4-5 | Windows: one article re-run; compare gate verdicts |
+| 39 | W4 | S12-W4-T | Tag `wave-4` |
+| 40 | W5 | S09-W5-1 | gridgeist usage decision from `/skill-doctor` |
+| 41 | W5 | S04-W5-1 | lit-watch usage decision (OD10) |
+| 42 | W5 | S07-W5-1 | Revisit OD4 with usage data |
 
 ## 5. Shared files
 
@@ -627,21 +643,21 @@ Files edited by more than one spec, in merge order. Merge each step only after t
 |---|---|
 | MK `scripts/validate.py` → `plugins/plugin-creator/scripts/validate.py` | S10-W0-1 → S08-W3-1 (move + rewrite) |
 | MK `scripts/health.sh` | S10-W0-9 → S11-W0-3 → S08-W3-1 |
-| MK `.claude-plugin/marketplace.json` | S10-W0-3 → S10-W3-1 (W1/W2 release steps do not touch it) |
+| MK `.claude-plugin/marketplace.json` | S10-W0-3 → S10-W3-1 |
 | MK `CLAUDE.md` | S10-W0-5 → S10-W3-8 |
 | MK `README.md` | S10-W0-6 → S11-W3-3 |
-| MK `MEMORY.md` | S11-W0-10 (line 11) → S11-W3-1 (line 11) → S10-W3-10 (keeps line 11) → S10-W5-1 |
+| MK `MEMORY.md` | S11-W0-10 (line 11) → S11-W3-2 (line 11, W1 entry) → S10-W3-10 (keeps line 11) → S10-W5-1 |
 | MK `docs/rewrite/ratchet.json` | S12-W0-1 (create, empty) → S10-W0-1b (seed `yaml-parse`) → S08-W3-1 (seed its new check ids) → every fixing step (close) → S12-W5-3 (empty; checks fail hard) |
 | MK `docs/rewrite/CHANGELOG.md` | S10-W0-8 (create, OQ16) → every MK tooling step in S10, S11, S12 |
-| MK `docs/rewrite/baseline.md` | S12-W0-7 → S12-W0-8 (`## W0 smoke`) → `## Owner records` (S04-W2-5, S04-W2-4, S07-W2-7) → wave-exit sections → S12-W5-3 (`## W5 decisions`) |
+| MK `docs/rewrite/baseline.md` | S12-W0-7 → S12-W0-8 (`## W0 smoke`) → `## Owner records` (S12-W0-9, S11-W1-3, S07-W2-8, S04-W2-5, S04-W2-4, S07-W2-7) → wave-exit sections → S12-W5-3 (`## W5 decisions`) |
 | MK `docs/rewrite/h-coverage.md` (canonical) | S12-W0-1 → each wave's tag step (S12-W0-T … S12-W4-T closes that wave's rows) |
 | MK `docs/rewrite/triggers.lock.json` | S12-W0-1 → the MK rows of the lock table below, in wave order |
 | MK `docs/rewrite/delivery-log.md`, `cloud-setup.sh` | S11 steps only, in S11 order (S11-W0-2 → … → S11-W5-1) |
-| MK per-plugin `plugin.json` + `CHANGELOG.md` | S10-W0-8 (backfill) → each plugin's W1 and W2 release step → S10-W3-2 (move) → W3 release steps (S01-W3-7, S03-W3-8, S05-W3-6, S07-W3-2, S08-W3-9, S09-W3-4) |
+| MK per-plugin `plugin.json` + `CHANGELOG.md` | S10-W0-8 (backfill) → W1/W2 change steps (entries under `## Unreleased`, no bump; OQ12-a) → S10-W3-2 (move) → W3 release steps (S01-W3-7, S03-W3-8, S05-W3-6, S07-W3-2, S08-W3-9, S09-W3-4) |
 | MK `…/intent-lock/references/misreads.md` → `state/misreads.md` | S14-W2-2 → S10-W3-2 (move) → S01-W3-4 |
 | MK `plugins/intent-lock/references/lock-record.md` | S01-W2-1 → S10-W3-2 (move) → S01-W3-1 |
 | MK `report-contract.md` + `evals/fixtures/` | S03-W2-4 → S10-W3-2 (move) → S03-W3-1 |
-| MK `check-html.mjs` | S05-W2-1 → S05-W2-2 (copies) → S10-W3-2 (one copy kept) → S05-W3-1 → S06-W3-3 |
+| MK `check-html.mjs` | S05-W2-1 (the only copy, OQ13-a) → S10-W3-2 (moved to `visuals/scripts/`) → S05-W3-1 → S06-W3-3 |
 | MK family `plugin.json` | S10-W3-2 (create, 1.0.0) → S01-W3-5 (alignment) / S05-W3-4 (visuals) |
 | MK family `README.md`, `CHANGELOG.md` | S10-W3-2 (per-member files) → alignment: S01-W3-5 → S02-W3-4 → S01-W3-7; evidence: S03-W3-7 → S03-W3-8; visuals: S05-W3-5 → S06-W3-1 → S05-W3-6 |
 | LH `package.json` | S21-W0-2 → S13-W1-5 → S19-W1-4 → S16-W2-2 |
@@ -650,7 +666,7 @@ Files edited by more than one spec, in merge order. Merge each step only after t
 | LH `docs/rewrite/triggers.lock.json` | S12-W0-2 → the LH rows of the lock table below, in wave order |
 | LH `docs/rewrite/baseline.md` | S12-W0-7 → S12-W0-8 → `## Owner records` (S13-W1-10, S15-W2-8, S16-W2-8) → wave-exit sections |
 | LH `.gitignore` | S13-W1-8 → S17-W1-1 |
-| LH `CLAUDE.md` | S13-W1-7 → S21-W1-1 → S21-W1-4 → S21-W4a-3 → S21-W4a-2 → S13-W4-1 → S19-W4-8 → S21-W4b-1 (W4 blocks move by `move-blocks.mjs`, S21-W4a-4) |
+| LH `CLAUDE.md` | S21-W0-4 (freeze lines) → S21-W4b-1 (stage b, before W1; OQ14-a) → S21-W0-5 (freeze lines out) → S13-W1-7 → S21-W1-1 → S21-W1-4 → S21-W4a-3 → S21-W4a-2 → S13-W4-1 → S19-W4-8 → S21-W4a-5 (blocks move by `move-blocks.mjs`, S21-W4a-4) |
 | LH `docs/cloud-env-setup.md` | S11-W0-4 → S13-W1-11 |
 | LH `docs/rewrite/h-coverage.md` | S12-W0-2 → a byte copy of micky's canonical file at each wave's tag step |
 | LH `atomize-book/SKILL.md` | S19-W1-1 … S19-W1-8 → S19-W2-1 → S19-W4-2 … S19-W4-8 |
@@ -692,10 +708,10 @@ Files edited by more than one spec, in merge order. Merge each step only after t
 | K5 | same-named unit loads twice | S14-W2-3, S14-W2-4, S14-W2-5, S05-W2-8 + S11-W2-3, S11-W3-2, `live` L6 at S11-W2-4 and S11-W3-5 |
 | K6 | unattended daily-random-review stalls | S04-W2-1 (Not-for, fallback), OD8 owner edit, S04-W2-4 |
 | K7 | a description edit drops a trigger | S12-W0-1, S12-W0-2 (lock, both repos), §5 lock table, S10-W0-9 and S21-W0-3 (verify on every commit), S12-W3-2/-3, S12-W4-2/-3, S12-W3-4, S12-W5-2, S04-W3-3 (re-key) |
-| K8 | contract drift | S03-W2-4, S15-W2-5, S15-W2-6, S05-W2-1 (parity), S08-W3-1 (cross-repo check) |
-| K9 | in-place loading runs uncommitted edits | S10-W0-10, S10-W0-11, S11-W3-3 (worktree advice), §0 rule 2 |
-| K10 | `claude plugin eval` unavailable or noisy | S11-W0-9 (+ Bash-and-scaffold canary), S12-W0-6 (fallback), S12-W0-3 (pinned models, `--scaffold`), S12-W0-8 (W0 smoke baseline) |
-| K11 | knowledge loss in the CLAUDE.md and atomize-book moves | S21-W4a-1, S21-W4a-4 (`move-blocks.mjs`, byte check), S21-W4a-3 (archive by script), S21-W4b-1, S19-W4-2…6 (move-proof `diff`), S19-W4-3b (renumber split from the move), S19-W4-9, S10-W3-10 (verbatim diff) |
+| K8 | contract drift | S03-W2-4, S15-W2-5, S15-W2-6, S05-W2-1 (one render audit: `check-html.mjs` delegates to `audit:visual`, OQ13-a), S08-W3-1 (cross-repo check) |
+| K9 | in-place loading runs uncommitted edits | S10-W0-10, S10-W0-11, S11-W3-2 (Windows worktree from W1 entry), S11-W3-3 (worktree advice), §0 rule 2 |
+| K10 | `claude plugin eval` unavailable or noisy | S11-W0-9 (+ Bash-and-scaffold canary), S12-W0-6 (fallback), S12-W0-3 (pinned models, `--scaffold`), S12-W0-8 (W0 smoke baseline), S12-W0-9 (eval caps, OQ3) |
+| K11 | knowledge loss in the CLAUDE.md and atomize-book moves | S21-W0-4, S21-W0-5 (freeze, OQ9-a), S21-W4a-1, S21-W4a-4 (`move-blocks.mjs`, byte check), S21-W4a-3 (archive by script), S21-W4b-1, S21-W4a-5 (size guard), S19-W4-2…6 (move-proof `diff`), S19-W4-3b (renumber split from the move), S19-W4-9, S10-W3-10 (verbatim diff) |
 | K12 | atomize-book churn during W4 | S19-W4-1 (freeze from S19-W4-2 until S19-W4-9), per-file steps S19-W4-2…8 back to back, S19-W4-9 |
 | K13 | personal data in git or skills | S01-W3-4, S04-W3-1 (`state/` in a private repo); S03-W3-2, S03-W3-6 ("Klaeng" removed) |
 | K14 | Windows CRLF, paths, PowerShell | S10-W0-1 (CRLF-safe), S15-W2-2 (drops PowerShell), S17-W1-3, S20-W1-1, S11-W3-2 |
@@ -727,8 +743,8 @@ HIGH defects (Appendix A), closing steps and wave. All close in their Appendix A
 | H07 | S08-W1-1; root cause S08-W3-1 | W1/W3 | H32 | S18-W1-1, S18-W1-2 | W1 |
 | H08 | S07-W1-1, S07-W1-3 | W1 | H33 | S18-W1-4, S18-W1-5, S18-W1-6 | W1 |
 | H09 | S07-W1-1, S07-W1-3 | W1 | H34 | S13-W1-6 | W1 |
-| H10 | S07-W1-2; S07-W2-4 | W1/W2 | H35 | S13-W1-1 … S13-W1-6 | W1 |
-| H11 | S07-W1-2; S07-W2-4 | W1/W2 | H36 | S06-W1-1 | W1 |
+| H10 | S07-W1-2; S07-W2-8 | W1/W2 | H35 | S13-W1-1 … S13-W1-6 | W1 |
+| H11 | S07-W1-2; S07-W2-8 | W1/W2 | H36 | S06-W1-1 | W1 |
 | H12 | S09-W1-1 | W1 | H37 | S06-W1-1 | W1 |
 | H13 | S10-W0-1 | W0 | H38 | S05-W2-3 | W2 |
 | H14 | S14-W2-5 | W2 | H39 | S05-W2-1, S05-W2-3 | W2 |
@@ -744,11 +760,11 @@ HIGH defects (Appendix A), closing steps and wave. All close in their Appendix A
 | H24 | S19-W4-2 … S19-W4-7 | W4 | H49 | S14-W2-4 | W2 |
 | H25 | S17-W1-1, S17-W1-3 | W1 | | | |
 
-Per wave: W0 1, W1 26 (+ H07a, H10a, H11a), W2 16 (+ H10b, H11b), W3 5 (+ H07b, the root cause), W4 1. Total 49, matching Appendix A; `h-coverage.md` holds 52 lines because H07, H10 and H11 are split (critique C2-16).
+Per wave: W0 1, W1 26 (+ H07a, H10a, H11a), W2 16 (+ H10b, H11b, which close on the W1 stopgap plus the one-time copy, OQ15-a), W3 5 (+ H07b, the root cause), W4 1. Total 49, matching Appendix A; `h-coverage.md` holds 52 lines because H07, H10 and H11 are split (critique C2-16).
 
 ## 8. Open questions
 
-Each item names the check that settles it and the wave by which it must be settled. Q9–Q22 were spec fixes found while planning; the critique pass applied them (`critique-log.md`), and Q11 is now OQ16. Q23 lists spec-to-spec checks. Q24–Q29 are facts that critique repairs rely on and that no one could check from this session.
+Each item names the check that settles it and the wave by which it must be settled. Q9–Q22 were spec fixes found while planning; the critique pass applied them (`critique-log.md`), and Q11 is now OQ16. Q23 lists spec-to-spec checks. Q24–Q29 are facts that critique repairs rely on and that no one could check from this session. Q30–Q32 come from applying the owner answers of 2026-09-24.
 
 | # | Question | Check that settles it | Wave |
 |---|---|---|---|
@@ -758,14 +774,14 @@ Each item names the check that settles it and the wave by which it must be settl
 | Q4 | Do single-repo sessions clone to `/home/user/<repo>`? `/doctor` in web sessions? (S11 §8.12, §8.13) | S11-W0-7 rows a2, f | W0 |
 | Q5 | `$schema` literal for plugin.json and marketplace.json (S10 §8.2, S14 §8) | `claude plugin init` / `marketplace init` in a scratch dir | W2 (S14-W2-1) |
 | Q6 | Does the smoke runner accept a zero-case plugin (`learn-hub-session`)? LICENSE for a hooks-only plugin? (S14 §8) | run `eval.sh --smoke` on a scratch zero-case plugin; S08 VAL rules | W2 (S11-W2-4) |
-| Q7 | Do `audit:visual` code names equal the I07-H strings? Can the CA swap be verified headless? (S05 §8) | S05-W2-1 parity vs S16-W2-2 output; S11-W2-3 `live` | W2 |
+| Q7 | Do `audit:visual` code names equal the I07-H strings? Can the CA swap be verified headless? (S05 §8) | S05-W2-1's static-subset codes vs S16-W2-1's on the same inline shapes (OQ13-a: no parity fixture); S11-W2-3 `live` | W2 |
 | Q8 | firecrawl vendor rename `ask` → `doctor`; gridgeist upstream commit (S09 §8.1, §8.5) | `firecrawl --help` or the CLI README; diff against upstream HEAD | W3 (S09-W3-1, -2) |
 | Q9 | Closed: S10-W0-1 now expects exit 1 with one `yaml-error` FAIL; S10-W0-1b is the only seeder and expects exit 0 with one WARN (planner P-04). Original: S10-W0-1's done-when needs the ratchet entry that S10-W0-1b seeds later; S12-W0-1 and S10-W0-1b both seed it | — | W0 |
 | Q10 | Closed: S09-W0-1 added; every seed step writes I17 `evals/<skill>/<case>/` with `tags: [smoke]` and §4.1 case names (planner P-01, P-02). Original: W0 seeds: S09-W0-1 is missing; S03/S04/S06/S07/S08 seed under `evals/smoke/<case>` (S04-W0-2 inside the skill dir), not I17 `evals/<skill>/<case>` — S12-W0-5's `*/evals/<unit>/*` finds none, and S10-W3-2 would merge same-named seed cases of several plugins into one family `evals/smoke/` | — | W0 |
 | Q11 | Moved to OQ16. Original: micky has no repo-level CHANGELOG for tooling steps (S10, S11, S12) | — | W0 |
 | Q12 | Closed: the two W2 contract checks are the W2 cross-repo gate; `validate.py --cross-repo` starts at S08-W3-1 (planner P-11). Original: The standard gate `validate.py --cross-repo` "from W2" has no implementation until S08-W3-1 | — | W2 |
 | Q13 | Closed: S01-W3-7, S03-W3-8, S05-W3-6, S07-W3-2 added (planner P-05). Original: No release step for alignment, evidence, visuals after W3, nor for vault-keeper after S07-W3-1 (cx.md planned S01-W3-7, S03-W3-8, S05-W3-6) | — | W3 |
-| Q14 | Closed: the nine release steps touch only `plugin.json` + CHANGELOG and check that `marketplace.json` has no version (planner P-16). Original: Nine W1/W2 release steps list `marketplace.json` in Files and keep "or S10's form if its W0 landed first" | — | W1 |
+| Q14 | Moot under OQ12-a (the W1/W2 release steps are dropped). Closed before that: the nine release steps touch only `plugin.json` + CHANGELOG and check that `marketplace.json` has no version (planner P-16). Original: Nine W1/W2 release steps list `marketplace.json` in Files and keep "or S10's form if its W0 landed first" | — | W1 |
 | Q15 | Closed: S19-W4-10 and S20-W2-5 added (planner P-06). Original: No step writes eval cases for atomize-book (S19) or vault-atomizer, vault-vectors, vectors, vault-coverage, check-repetition (S20); S12-W4-1 needs them | — | W2 (S20), W4 (S19) |
 | Q16 | Closed: S17-W4-0 and S17-W4-5 added, OWNER on Windows (planner P-14, critique F14). Original: Architecture W4 exit "one article re-run end to end" has no step | — | W4 |
 | Q17 | Closed: S04-W5-1, S07-W5-1, S12-W5-3 added (planner P-13). Original: W5 has no step for lit-watch usage, the OD4 revisit, emptying the ratchet with hard-fail checks, or the decision log | — | W5 |
@@ -779,5 +795,8 @@ Each item names the check that settles it and the wave by which it must be settl
 | Q25 | On Windows: which of `python3`, `python`, `py -3` runs; is npm's script shell cmd.exe; does `bash` exist for the plugin hooks? | S11-W0-10 check g toolchain lines | W0 |
 | Q26 | Does a `claude -p` child started from `/home/user` load the same skills and CLAUDE.md files as a platform-started session? | S12-W0-6 check i | W0 |
 | Q27 | Which learn-hub descriptions exceed 1,024 chars once their YAML parses (architecture §9 lists ingest-article at 1,137)? S21-W0-1's expected failure list depends on it. | the S21-W0-1 run | W0 |
-| Q28 | On the owner's Windows machine, does `puppeteer.executablePath()` point to an existing browser (S13 `checkChromium` fallback)? | S11-W1-2 `node scripts/ready.mjs --json` | W1 |
+| Q28 | On the owner's Windows machine, does `puppeteer.executablePath()` point to an existing browser (S13 `checkChromium` fallback)? | S11-W1-3 `node scripts/ready.mjs --json` | W1 |
 | Q29 | Does a new micky cloud clone keep `core.hooksPath` from an earlier session (§0 rule 2 assumes it does not)? | `git -C /home/user/micky-psych-tools config core.hooksPath` in a new cloud session | W0 |
+| Q30 | Do `claude plugin eval --json` and `claude -p --output-format stream-json` report the cost of a run? S12-W0-9 sets the caps from the probe's cost per run, and a live pass stops at its cap (OQ3). | read `$E/w0d.json` and the run summary at S11-W0-9; read the last event of one `claude -p` stream at S12-W0-6 check i | W0 |
+| Q31 | Under OQ10-a with OQ7-a, the skeleton merge (S10-W3-2) removes the six per-plugin paths of V5 (pubmed-research-note, comprehensive-review, clinical-infographic, ml-concept-lab, code-explainer, concept-animation), and evidence and visuals join the cloud value again only after their releases (S11-W3-7, S11-W3-8). In between, those six plugins do not load in cloud sessions. Does the owner accept the gap, or add `plugins/visuals` at S11-W3-5 (its four members were enabled at V3/V4, and the skeleton moves them unchanged)? Evidence cannot join early without loading psych-paper-digest. | the owner's answer, recorded in MK `baseline.md` `## Owner records` | W3, before S10-W3-2 merges |
+| Q32 | In W2, ml-concept-lab and clinical-infographic call `${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs` (OQ13-a keeps one copy). Does that path resolve in place and inside a `claude plugin eval` run? | the S05-W2-4 and S06-W2-1 done-when commands through the skill; the W2 smoke of both plugins (the `tool_used` grader on `check-html.mjs`) | W2 |

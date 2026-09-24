@@ -1,8 +1,8 @@
 # Plugin rewrite — research, target architecture and execution plan
 
-**Status (2026-09-24):** phases 1–3 done. The plan is ready to execute, and nothing in
-either repo has been changed yet. Execution starts at wave W0, after the owner answers
-the owner decisions and owner questions that W0 needs (`plan.md` §1).
+**Status (2026-09-24):** phases 1–3 done. The owner confirmed the owner decisions and
+answered the owner questions on 2026-09-24 (`plan.md` §1); the plan and the specs already
+reflect the answers. W0 has started on this branch (see `git log`). The W0 owner actions still ahead, in `plan.md` §4 order: push the `pre-rewrite` tag from your own machine (S12-W0-0; the cloud session's git proxy refused the tag push with HTTP 403, so the tag exists only in that container), set up and check the cloud environment (S11-W0-5, S11-W0-7), confirm `claude plugin eval` (S12-W0-6), set the eval caps from the W0-d probe (S12-W0-9), run Windows check g (S11-W0-10), move the cloud to V1 (S11-W0-11) and tag `wave-0` (S12-W0-T).
 
 **Scope:** every plugin and skill in both repos:
 - micky-psych-tools: 14 plugins, 18 skills, 12 commands, `scripts/`, `ROUTING.md`,
@@ -15,7 +15,7 @@ the owner decisions and owner questions that W0 needs (`plan.md` §1).
 
 | File | What it is |
 | --- | --- |
-| `plan.md` | **Start here to execute.** The execution plan: 285 change steps from the 21 specs, in waves W0–W5, each with its dependencies, entry and exit gates, and rollback. §1 lists the owner decisions (OD1–OD14) and owner questions (OQ1–OQ16); §4 lists the 36 owner-only steps. |
+| `plan.md` | **Start here to execute.** The execution plan: 296 change steps from the 21 specs (280 active, 16 dropped by the owner answers), in waves W0–W5, each with its dependencies, entry and exit gates, and rollback. §1 lists the owner decisions (OD1–OD14) and owner questions (OQ1–OQ16) with their answers; §4 lists the 42 owner-only steps. |
 | `specs/S01…S21` | One rewrite spec per unit group: current state with measured descriptions, defects with `path:line` evidence, target frontmatter and body outline, scripts, handoffs, change steps (one commit each), eval cases with graders, acceptance criteria, trigger lock, risks, open questions. |
 | `coverage.md` | Every one of the 313 defects → spec → fix step → wave. Generated; rebuild with `python3 phase3/gen_coverage.py evidence/defect-index.txt coverage.md`. |
 | `critique-log.md` | The 89 findings of the plan critique and what happened to each (applied to a spec or the plan, or turned into an owner question). |
@@ -122,7 +122,7 @@ Known limits:
 
 ## How to execute
 
-1. Answer the ODs and OQs that `plan.md` §3 names in the W0 entry.
+1. Do the W0 owner actions as their rows come up (`plan.md` §4); the ODs and OQs are answered.
 2. Run the steps of W0 in table order. For each step, open its spec at the step id and
    follow its files, commands, done-when and rollback. One step is one commit in one
    repo.

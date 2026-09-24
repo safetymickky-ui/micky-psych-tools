@@ -247,7 +247,7 @@ No interfaces owned by this spec.
   "never write it to a file" prose, no `>> .env` write instruction.
 - Rollback: `revert`.
 
-**S09-W1-2 · micky · release the W1 refresh**
+**S09-W1-2 · DROPPED (OQ12-a): micky · release the W1 refresh.** Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3.
 - Depends on: S09-W1-1.
 - Commands: `python3 scripts/bump.py firecrawl patch --write` (CX-12).
 - Files: `$FC/.claude-plugin/plugin.json`, `$FC/CHANGELOG.md` (entry: "Vendor refresh: build-skills install step, headless browser fallback, .env write removed, keyless scope corrected (H12 interim)."). `.claude-plugin/marketplace.json` is NOT touched — S10-W0-3 has already stripped entry versions.
@@ -257,8 +257,8 @@ No interfaces owned by this spec.
 ### W3
 
 **S09-W3-1 · micky · firecrawl split into router + dated reference**
-- Depends on: S09-W1-2, S08-W3-1 (house shape + validator, for the description/body checks this step must pass, CX-34), S10-W3-2 (skeleton move — CX-36), S10-W0-8 (LICENSE backfill), S12-W3-2 (CX-37), and the owner's recorded answer to plan OQ6 (keep `defaultEnabled: false` or drop it; CX-51, critique P9).
-- Files: create `$FC/skills/firecrawl/references/vendor-onboarding-2026-09-24.md` (the W1-corrected `:19-338` content, moved verbatim); rewrite `$FC/skills/firecrawl/SKILL.md` per §2.2/§2.3 in full (the `alignment:intent-lock` handoff name is only valid once S10-W3-2 has landed — CX-16); edit `$FC/.claude-plugin/plugin.json` (add `$schema`; add `defaultEnabled: false` only if OQ6's answer keeps the flag); edit (not create — S10-W0-8 already backfills it, CX-45) `$FC/LICENSE`; edit `$FC/README.md` (install unchanged, note the split + `defaultEnabled: false`).
+- Depends on: S09-W1-1, S08-W3-1 (house shape + validator, for the description/body checks this step must pass, CX-34), S10-W3-2 (skeleton move — CX-36), S10-W0-8 (LICENSE backfill), S12-W3-2 (CX-37). OQ6-a (2026-09-24): keep `defaultEnabled: false` (CX-51, critique P9); S11-W3-4 enables firecrawl through the cloud setup script.
+- Files: create `$FC/skills/firecrawl/references/vendor-onboarding-2026-09-24.md` (the W1-corrected `:19-338` content, moved verbatim); rewrite `$FC/skills/firecrawl/SKILL.md` per §2.2/§2.3 in full (the `alignment:intent-lock` handoff name is only valid once S10-W3-2 has landed — CX-16); edit `$FC/.claude-plugin/plugin.json` (add `$schema`; add `defaultEnabled: false`, OQ6-a); edit (not create — S10-W0-8 already backfills it, CX-45) `$FC/LICENSE`; edit `$FC/README.md` (install unchanged, note the split + `defaultEnabled: false`).
 - Commands: `python3 -c "import yaml,re; t=open('plugins/firecrawl/skills/firecrawl/SKILL.md',encoding='utf-8').read(); m=re.match(r'^---\n(.*?)\n---\n',t,re.S); yaml.safe_load(m.group(1)); print('OK')"` ; `wc -c plugins/firecrawl/skills/firecrawl/SKILL.md`
 - Done when: YAML check prints `OK`; body est. tokens (bytes/4 on the post-frontmatter text) ≤1,500.
 - Rollback: `revert`.
@@ -488,7 +488,7 @@ near-misses:
 ### 4.4 Commands
 
 - Smoke: `bash scripts/eval.sh --smoke firecrawl` and `bash scripts/eval.sh --smoke gridgeist` (S12, I17) — smoke-tagged cases, free graders, `--ablation none --runs 1`.
-- Release: `bash scripts/eval.sh --release firecrawl` / `--release gridgeist` — two arms, `--runs 3 --threshold 0.8`.
+- Release: `bash scripts/eval.sh --release firecrawl` / `--release gridgeist` — two arms, `--runs 1 --threshold 0.8` (OQ11-a).
 
 ## 5. Acceptance criteria
 
@@ -544,18 +544,14 @@ Net: 1 phrase narrowed, 0 removed, 0 added. No phrase moves skills.
 3. **NEW, not in the assigned defect list:** gridgeist-4 (marketplace entry description is
    thinner than the skill's) is I24's territory (owner S10) — recorded here for S10 to pick up
    rather than fixed in this spec, since S09 does not own marketplace.json entry content.
-4. **CLOSED (CX-12).** S09-W1-2 runs after S10's W0 tooling and uses `bump.py --write`. Original question: whether S09-W1-2 should wait for S10's W0 `bump.py` rewrite (dry-run-by-default) or use
+4. **CLOSED (CX-12; moot under OQ12-a, which drops S09-W1-2).** S09-W1-2 runs after S10's W0 tooling and uses `bump.py --write`. Original question: whether S09-W1-2 should wait for S10's W0 `bump.py` rewrite (dry-run-by-default) or use
    today's `bump.py` as-is. Assumed: today's tool at W1 (same reasoning as S08-W1-2's
    equivalent open question).
 5. **ARCH-CONFLICT:** none found. The upstream gridgeist commit SHA recorded in `UPSTREAM.md`
    (§3, S09-W3-2) is a timestamp best-match, not diff-verified — this is weaker evidence than
    "the sha," and is flagged as an owner action inside the file itself rather than asserted as
    fact.
-6. **OWNER-QUESTION — asked as plan OQ6 at W3 entry, answered before S09-W3-1** (CX-51, critique P9): `defaultEnabled: false` on firecrawl (S09-W3-1, OD12-a) disables
-   it in cloud from W3, because a multi-repo session keeps no user settings (S11
-   ARCH-CONFLICT 1) — a plugin `defaultEnabled: false` in the marketplace stays off unless the
-   session's own setup script re-enables it. S11-W3-4 is being asked to make this an explicit
-   owner choice rather than a silent conditional; this spec's S09-W3-1 follows whichever the
-   owner picks: (a) keep `defaultEnabled: false` and add a cloud setup-script enable block
-   (owner S11), or (b) drop the flag so firecrawl loads by default everywhere. Only the owner
-   can decide which trade — fewer surprise tool loads (a) vs. firecrawl always available (b).
+6. **CLOSED (OQ6-a, 2026-09-24)** (CX-51, critique P9): firecrawl keeps `defaultEnabled: false`
+   (S09-W3-1, OD12-a, rubric R30 for an external-service plugin), and S11-W3-4 adds a cloud
+   setup-script enable block plus `claude plugin enable firecrawl@inline` on Windows, because a
+   multi-repo session keeps no user settings (S11 ARCH-CONFLICT 1).

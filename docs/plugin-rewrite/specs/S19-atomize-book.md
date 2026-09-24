@@ -478,7 +478,7 @@ Near-miss queries (feed S12's family sets): (1) "Can you bullet-reconstruct this
 ### 4.4 Commands
 
 - Smoke: `bash scripts/eval-project-skill.sh atomize-book -- --tag trigger --tag negative --ablation none --runs 1`
-- Release: `bash scripts/eval-project-skill.sh atomize-book -- --tag output --runs 3 --threshold 0.8`
+- Release: `bash scripts/eval-project-skill.sh atomize-book -- --tag output --runs 1 --threshold 0.8` (OQ11-a)
 
 ## 5. Acceptance criteria
 

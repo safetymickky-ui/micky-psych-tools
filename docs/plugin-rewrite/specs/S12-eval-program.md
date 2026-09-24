@@ -5,7 +5,7 @@
 | Repos | both |
 | Units (today → target) | 16 `evals.json` files (118 real cases + 1 template, 2 cases; §1.1) → `plugins/<p>/evals/<skill>/<case>/` (micky), `learn-hub/evals/<skill>/<case>/` (learn-hub) case dirs per I17. `scripts/eval.sh` (micky, new). `scripts/eval-project-skill.sh` (learn-hub, new). `docs/rewrite/{ratchet.json,triggers.lock.json,baseline.md,h-coverage.md}` + generators (both, new). The 5 contested-family live trigger sets. The 20-prompt routing smoke set. |
 | Waves | W0 (safety nets, runners, W1-unit smoke seeds); W3 (family conversion + live triggers before/after the description pass, release run at exit); W4 (learn-hub project-skill cases via the wrapper); W3/W5 exits (routing smoke); W5 (full release pass) |
-| Owner decisions assumed | OD14-a (smoke/wave, free graders, 1 run, `--ablation none`; two-arm release at W3/W5 exits only) |
+| Owner decisions assumed | OD14-a (smoke/wave, free graders, 1 run, `--ablation none`; two-arm release at W3/W5 exits only); owner answers OQ2-a, OQ3, OQ8-a, OQ11-a (all confirmed 2026-09-24) |
 | Defects closed | 0 of 0 assigned — no inventory defects of its own; serves the other specs (§1.4 has the OBS lines) |
 | Interfaces owned | I17 |
 | Interfaces consumed | I16 (S11), I18 (S10), I19 (S08), I20 (S08) |
@@ -124,8 +124,8 @@ None — S12 ships no `references/` (it is not a skill).
 
 | Script | Repo | CLI | Input | Exit codes | Tests |
 |---|---|---|---|---|---|
-| `scripts/eval.sh` | micky | `--smoke <plugin> [--against <ref>] [-- <extra args>]` / `--release <plugin> [--against <ref>] [-- <extra args>]`; `--against <ref>` runs today's `evals/<skill>/` case dirs against the plugin dir that held `<skill>` at `<ref>` (a `git worktree` of `<ref>`; the old dir is found by skill name, so it works across the W3 family move) and prints its with-arm score (critique C2-07); reads `EVAL_MODEL`, `EVAL_JUDGE_MODEL`, `EVAL_BUDGET` (unset→usage error); `--help` | `<plugin>` is the bare directory name under `plugins/` (never a path — the script prefixes `plugins/` itself, CX-46); everything after `--` is appended verbatim to the `claude plugin eval` call (e.g. `--allow-tools Write`, F3) | passthrough of `claude plugin eval`'s code; 2 on usage error | manual: 1 smoke run, W0 exit |
-| `scripts/eval-project-skill.sh` | learn-hub | `eval-project-skill.sh <skill> --smoke\|--release [--against <ref>] [-- <args>]`; `--help`. `--against <ref>` copies `.claude/skills/<skill>/` from a `git worktree` of `<ref>` instead of the checkout (exit 3 "no baseline at <ref>" when the skill did not exist there). `--smoke`/`--release` set the same pinned `EVAL_MODEL`/`EVAL_JUDGE_MODEL`/`EVAL_BUDGET` flags `eval.sh` uses (CX-46); other args pass through after `--`, or bare (kept for backward compatibility with a plain `<skill> [-- <args>]` call). | a name under `.claude/skills/` | 2 if skill absent; else passthrough | manual: 1 run vs `sync-vault`, W0 exit |
+| `scripts/eval.sh` | micky | `--smoke <plugin> [--against <ref>] [-- <extra args>]` / `--release <plugin> [--against <ref>] [-- <extra args>]`; `--against <ref>` runs today's `evals/<skill>/` case dirs against the plugin dir that held `<skill>` at `<ref>` (a `git worktree` of `<ref>`; the old dir is found by skill name, so it works across the W3 family move) and prints its with-arm score (critique C2-07); reads `EVAL_MODEL`, `EVAL_JUDGE_MODEL`, `EVAL_BUDGET` (unset→usage error; the value is the cap S12-W0-9 recorded for that mode, OQ3); `--release` passes `--runs 3` for `alignment` and `evidence` (the gate skills and the report writers) and `--runs 1` for every other plugin (OQ11-a); `--help` | `<plugin>` is the bare directory name under `plugins/` (never a path — the script prefixes `plugins/` itself, CX-46); everything after `--` is appended verbatim to the `claude plugin eval` call (e.g. `--allow-tools Write`, F3) | passthrough of `claude plugin eval`'s code; 2 on usage error | manual: 1 smoke run, W0 exit |
+| `scripts/eval-project-skill.sh` | learn-hub | `eval-project-skill.sh <skill> --smoke\|--release [--against <ref>] [-- <args>]`; `--help`. `--against <ref>` copies `.claude/skills/<skill>/` from a `git worktree` of `<ref>` instead of the checkout (exit 3 "no baseline at <ref>" when the skill did not exist there). `--smoke`/`--release` set the same pinned `EVAL_MODEL`/`EVAL_JUDGE_MODEL`/`EVAL_BUDGET` flags `eval.sh` uses (CX-46); `--release` passes `--runs 1`, since no learn-hub project skill is a gate skill or a report writer (OQ11-a); other args pass through after `--`, or bare (kept for backward compatibility with a plain `<skill> [-- <args>]` call). | a name under `.claude/skills/` | 2 if skill absent; else passthrough | manual: 1 run vs `sync-vault`, W0 exit |
 | `scripts/rewrite_gate.py` | micky | `rewrite_gate.py {ratchet,triggers,h-coverage,baseline} {seed,verify,close,remove,measure} [--repo .] [--write]`; `--help` per subcommand | `ratchet seed --check <id> --from <violations.json>`; `close --check --path`; `triggers extract [--skill <s>]`; `triggers remove --reason <r>` with `--skill <s>` (all phrases of a skill) or `--phrase <p> --skill <s>` (one phrase); `h-coverage seed --from <architecture.md>`; `close --id --wave`; `baseline measure --plugin-dir <p>` (repeatable) | 0 ok; 1 `verify` found a violation; 2 usage | `test_rewrite_gate.py` (unittest): shrink-only invariant, quoted+slash extraction, h-coverage round-trip, baseline degrade-to-MANUAL |
 | `scripts/rewrite-gate.mjs` + `lib/rewrite-gate.mjs` | learn-hub | same 4 subcommands/flags, mirrored 1:1 so both repos share one schema | same | same | `rewrite-gate.test.mjs` (vitest), same 4 cases, run by `npm test` |
 
@@ -158,10 +158,10 @@ The 7 units with a convertible `evals.json` (vault-keeper, empty-vault, psych-pa
 - **Case layout:** `plugins/<p>/evals/<skill>/<case>/{prompt.md|case.yaml, graders/*.md}` (micky); `learn-hub/evals/<skill>/<case>/{…}`, run through `eval-project-skill.sh`. One directory per case, tagged from `smoke|trigger|negative|output|release` (multiple tags allowed; `--tag` unions).
 - **Trigger grader regex:** `input_match: '"skill"\s*:\s*"(?:[\w-]+:)?<skill>"'` on `tool_used`/`tool:Skill`; a negative uses the same regex with `min:0, max:0, arm:both`.
 - **`disable-model-invocation: true` (dmi) skills (CX-53):** a dmi skill removes its description from context, so a natural-language trigger case cannot fire it by design. Its positive case uses an explicit `/<name>` prompt instead (the slash-command form still invokes the skill); its negative cases stay natural-language near-misses, asserting the skill does NOT fire on prose alone. S20 follows this for `vault-coverage` and `check-repetition`.
-- **`scripts/eval.sh` CLI:** `--smoke <plugin> [-- <args>]` → `claude plugin eval plugins/<p> --scaffold --tag smoke --ablation none --runs 1 --model "$EVAL_MODEL" --judge-model "$EVAL_JUDGE_MODEL" --max-cost-usd "$EVAL_BUDGET" --no-publish --json evals/results/<p>-smoke-<ts>.json <args>`. `--release <plugin> [-- <args>]` → `--scaffold --runs 3 --threshold 0.8`, same models, `--trust-plugin --no-publish --json evals/results/<p>-release-<ts>.json <args>` (base invocation quoted verbatim from architecture §6.6, arch lines 581–582; the `<args>` passthrough after `--` is added by CX-46/F3, so a caller needing `--allow-tools Write` or similar for a case's `allowed_tools` can pass it explicitly). `<p>` is always the bare plugin directory name; the script itself prepends `plugins/`.
+- **`scripts/eval.sh` CLI:** `--smoke <plugin> [-- <args>]` → `claude plugin eval plugins/<p> --scaffold --tag smoke --ablation none --runs 1 --model "$EVAL_MODEL" --judge-model "$EVAL_JUDGE_MODEL" --max-cost-usd "$EVAL_BUDGET" --no-publish --json evals/results/<p>-smoke-<ts>.json <args>`. `--release <plugin> [-- <args>]` → `--scaffold --runs <n> --threshold 0.8` (n = 3 for `alignment` and `evidence`, 1 otherwise — OQ11-a), same models, `--trust-plugin --no-publish --json evals/results/<p>-release-<ts>.json <args>` (base invocation quoted verbatim from architecture §6.6, arch lines 581–582; the `<args>` passthrough after `--` is added by CX-46/F3, so a caller needing `--allow-tools Write` or similar for a case's `allowed_tools` can pass it explicitly). `<p>` is always the bare plugin directory name; the script itself prepends `plugins/`.
 - **`scripts/eval-project-skill.sh` CLI:** builds a throwaway plugin under `$(mktemp -d)` — `.claude-plugin/plugin.json` (`{"name":"<skill>-eval-shim","version":"0.0.0"}`), `skills/<skill>/` copied from `.claude/skills/<skill>/`, `evals/<skill>/` copied if present. `--smoke`/`--release` set the same pinned model/budget flags as `eval.sh`'s two modes; runs `claude plugin eval <tmpdir> --scaffold <resolved flags> "$@"`, `trap 'rm -rf "$tmp"' EXIT` (CX-46). Both runners always pass `--scaffold`: the suites are owner-written, the documented condition, and without it every `scaffold_script` case starts in an empty workspace, so its "must not" graders pass with nothing to test (critique C2-01). Eval runs happen only in the cloud environment (setup step 4 installs bubblewrap and socat) or under WSL2: native Windows has no sandbox backend for Bash-granted cases (critique C2-02).
 - **`docs/rewrite/{ratchet.json,triggers.lock.json,baseline.md,h-coverage.md}` formats + generators:** §2.3/§2.5.
-- **Live trigger families + query sets:** §4.3 (the 5 families, 20 queries each), run with the routing-smoke method (critique F4): for each query, `claude -p "<query>" --output-format stream-json --verbose` from the multi-repo root (plus the `--add-dir` flags S12-W0-6 recorded, if any); read the first `Skill` tool_use `input.skill` and compare it with the expected name (no Skill call = "none"); 3 runs per query; a query passes when at least 2 of 3 runs match (0.5 threshold). Never skill-creator `run_eval`/`run_loop`: they measure a temporary command clone that competes with the real skill.
+- **Live trigger families + query sets:** §4.3 (the 5 families, 20 queries each), run with the routing-smoke method (critique F4): for each query, `claude -p "<query>" --output-format stream-json --verbose` from the multi-repo root (plus the `--add-dir` flags S12-W0-6 recorded, if any); read the first `Skill` tool_use `input.skill` and compare it with the expected name (no Skill call = "none"); one run per query (OQ11-a); a query whose outcome differs from the previous pass of the same set (it flips) runs 3 more times and passes when at least 2 of those 3 match. Each pass stops at the live-pass cap S12-W0-9 recorded (OQ3). Never skill-creator `run_eval`/`run_loop`: they measure a temporary command clone that competes with the real skill.
 - **Routing smoke set:** §4.3 (20 prompts, expected skill, destructive-misroute flag).
 
 **Consumed:**
@@ -224,13 +224,19 @@ The 7 units with a convertible `evals.json` (vault-keeper, empty-vault, psych-pa
 - Done when: `docs/rewrite/baseline.md` has one dated `## W0` section in each repo.
 - Rollback: `git revert <this commit>`.
 
-**S12-W0-8 (new, critique C2-07)** · both · depends on: S12-W0-5, S12-W0-6, S11-W0-9
+**S12-W0-8 (new, critique C2-07)** · both · depends on: S12-W0-5, S12-W0-6, S11-W0-9, S12-W0-9
 - Files: edit `docs/rewrite/baseline.md` in each repo (`## W0 smoke` section, §2.3).
 - Change: record the smoke baseline while every skill's text is still unchanged. micky: `bash scripts/eval.sh --smoke <p> -- <the spec's §4.4 extra args>` for pubmed-research-note, psych-paper-digest, comprehensive-review, clinical-infographic, vault-keeper, plugin-creator, firecrawl. learn-hub: `scripts/eval-project-skill.sh <s> --smoke -- <extra args>` for sync-vault, ingest-article, pdf-pipeline. Write each case's pass rate and the case-set hash (`sha256sum` of the sorted `prompt.md` and `graders/*.md` of that skill).
-- Done when: `## W0 smoke` lists all 10 units in the repo that owns them, each with ≥3 case rows; spend stays within OQ3's budget.
+- Done when: `## W0 smoke` lists all 10 units in the repo that owns them, each with ≥3 case rows; each run stays within the smoke-run cap S12-W0-9 recorded.
 - Rollback: `git revert <this commit>`.
 
-**S12-W0-T (new, CX-40)** · both · OWNER · depends on: every other W0 step in both repos (S10-W0-1…11, S11-W0-1…11, S12-W0-0…8, S21-W0-1…3, and the 10 smoke-seed steps of §2.6)
+**S12-W0-9 (new, OQ3)** · micky · OWNER · depends on: S11-W0-9, S12-W0-7
+- Files: edit micky `docs/rewrite/baseline.md` (`## Owner records`).
+- Change: the owner sets the three eval caps from the cost per run that the check-d probe reported (S11-W0-9, `$E/w0d.json` and `$E/w0d2.json`; plan §8 Q30): `EVAL_BUDGET` for one smoke run, `EVAL_BUDGET` for one release run, and a USD cap for one live-trigger pass (OQ11-a: one number per cost point). Record the three values and the measured cost per run. Every later `eval.sh`/`eval-project-skill.sh` call exports the matching `EVAL_BUDGET`; a live pass stops when its cap is reached.
+- Done when: the three caps and the probe's measured cost are in `## Owner records`. No cap is set before the probe runs.
+- Rollback: not applicable (a record; a later record replaces it).
+
+**S12-W0-T (new, CX-40)** · both · OWNER · depends on: every other W0 step in both repos (S10-W0-1…11, S11-W0-1…11, S12-W0-0…9, S21-W0-1…5, S21-W4a-1, S21-W4a-4, S21-W4b-1 (stage b before W1, OQ14-a), and the 10 smoke-seed steps of §2.6)
 - Actions: close this wave's h-coverage rows in micky (`python3 scripts/rewrite_gate.py h-coverage close --id <H> --wave W0 --write`, one commit), copy `docs/rewrite/h-coverage.md` to learn-hub (one commit), then `git tag wave-0 && git push origin wave-0` in each repo, once its W0 steps are merged (critique P33).
 - Done when: `git ls-remote origin wave-0` prints one line in each repo; `cmp` of the two `h-coverage.md` files exits 0.
 - Rollback: `git push origin --delete wave-0` in each repo (only before a later wave tag depends on it).
@@ -258,22 +264,22 @@ The 7 units with a convertible `evals.json` (vault-keeper, empty-vault, psych-pa
 - Rollback: not applicable.
 
 **S12-W3-2 (live triggers, BEFORE)** · micky · depends on: S10-W3-2, S12-W0-6 (or the fallback) [CX-37]
-- Commands: each family's set (§4.3) with the routing-smoke method (critique F4): for each query, `claude -p "<query>" --output-format stream-json --verbose` from the multi-repo root (plus the `--add-dir` flags S12-W0-6 recorded, if any); read the first `Skill` tool_use `input.skill` and compare it with the expected name (no Skill call = "none"); 3 runs per query; a query passes when at least 2 of 3 runs match (0.5 threshold). Never skill-creator `run_eval`/`run_loop`: they measure a temporary command clone that competes with the real skill; in a multi-repo cloud session, against the CURRENT descriptions.
+- Commands: each family's set (§4.3) with the routing-smoke method (critique F4): for each query, `CLAUDE_CODE_PLUGIN_DIRS=/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins claude -p "<query>" --output-format stream-json --verbose` from the multi-repo root (plus the `--add-dir` flags S12-W0-6 recorded, if any) — the variable is set for the child only, because under OQ10-a the families join the cloud value one at a time; read the first `Skill` tool_use `input.skill` and compare it with the expected name (no Skill call = "none"); one run per query (OQ11-a). Never skill-creator `run_eval`/`run_loop`: they measure a temporary command clone that competes with the real skill; in a multi-repo cloud session, against the CURRENT descriptions.
 - Done when: a before-score is on record for every skill, all 5 families.
 - Rollback: not applicable (measurement).
 
 **S12-W3-3 (live triggers, AFTER)** · micky · depends on: S12-W3-2, and every family's description-pass step (CX-37): S01-W3-2, S02-W3-2, S02-W3-3, S03-W3-4, S04-W3-3, S05-W3-2, S06-W3-2, S08-W3-2, S08-W3-3, S09-W3-1
-- Commands: re-run §4.3's sets, same method.
+- Commands: re-run §4.3's sets, same method and the same child-only `CLAUDE_CODE_PLUGIN_DIRS`; a query whose outcome differs from its BEFORE outcome runs 3 more times, and at least 2 of those 3 must match (OQ11-a).
 - Done when: no family's after-score falls below before by more than the 0.5-threshold noise band; a regression is reported to the owning family spec.
 - Rollback: revert the description edit in the owning family's repo.
 
-**S12-W3-4 (routing smoke, W3 exit)** · both · depends on: S12-W3-3, S11-W3-5
+**S12-W3-4 (routing smoke, W3 exit)** · both · depends on: S12-W3-3, S11-W3-1 (V6: everything delivered, OQ10-a)
 - Commands: run the 20-prompt routing smoke set (§4.3) with `claude -p`, multi-repo, everything delivered; read which skill fired per transcript.
 - Done when: ≥17/20 correct AND 0 of the 3 destructive-flagged prompts misroute.
 - Rollback: not applicable (gate); a fail blocks W3 exit until the owning family spec fixes phrasing and this step re-runs.
 
 **S12-W3-5 (release run, W3 exit)** · micky · depends on: S12-W3-1, S12-W3-2, S12-W3-3, S12-W3-4
-- Commands: `bash scripts/eval.sh --release <plugin> -- <the spec's §4.4 extra args>` per `alignment`, `evidence`, `visuals`, `firecrawl`, `plugin-creator`, `vault-keeper`; then the same with `--against pre-rewrite` for the baseline arm (critique C2-07).
+- Commands: `bash scripts/eval.sh --release <plugin> -- <the spec's §4.4 extra args>` per `alignment`, `evidence`, `visuals`, `firecrawl`, `plugin-creator`, `vault-keeper` (runs per OQ11-a: 3 for alignment and evidence, 1 for the rest); then the same with `--against pre-rewrite` for the baseline arm (critique C2-07).
 - Done when: every with-arm score ≥ its `--against pre-rewrite` score (R77); a skill with no plugin at `pre-rewrite` needs every grader to pass.
 - Rollback: a plugin below baseline is not released; its family spec reverts the change.
 
@@ -447,7 +453,7 @@ All 16 files (ordered by owning spec):
 | `comprehensive-review/…` | 5 | S04 → `plugins/evidence/evals/comprehensive-review/` | Mined 1:1 |
 | `psych-paper-digest/…` | 12 | S04 → `plugins/evidence/evals/lit-watch/` | Mined to 3–5, renamed with the skill; window-math cases become regex over `sweep.py` state |
 | `clinical-infographic/…` | 4 | S06 → `plugins/visuals/evals/clinical-infographic/` | 3 mined; id 1 (depends on the gone PPGL artifact) **dropped**, replaced with a synthetic fixture |
-| `code-explainer/…` | 6 | S06 → `plugins/visuals/evals/code-explainer/` | Mined to 3–5; byte-fidelity assertion via `check-html.mjs`'s fallback port |
+| `code-explainer/…` | 6 | S06 → `plugins/visuals/evals/code-explainer/` | Mined to 3–5; byte-fidelity assertion via `check-html.mjs --kind code-explainer --source` (S06-W3-3; OQ13-a) |
 | `vault-keeper/skills/vault-keeper` | 6 | S07 → `plugins/vault-keeper/evals/vault-keeper/` | Mined; 3 re-tagged `smoke` |
 | `vault-keeper/skills/empty-vault` | 6 | S07 → `.../empty-vault/` | Mined 1:1 (process cases, `tool_order` fits, EVL-10); 3 re-tagged `smoke` |
 | `firecrawl/…` | 8 | S09 → `plugins/firecrawl/evals/firecrawl/` | Mined down to 3–5 |
@@ -461,7 +467,7 @@ All 16 files (ordered by owning spec):
 
 ### 4.3 Live triggers
 
-Two runners: isolated (§4.1/§4.2) and live (skill-creator `run_eval`, below). Shape `{query, should_trigger}` per skill — `should_trigger` is `true` only on that skill's own rows, `false` on every other row. Thai queries marked `[TH]`; `AS:`=`anthropic-skills:` (synced).
+Two runners: isolated (§4.1/§4.2) and live (the routing-smoke method of §2.7, below). Shape `{query, should_trigger}` per skill — `should_trigger` is `true` only on that skill's own rows, `false` on every other row. Thai queries marked `[TH]`; `AS:`=`anthropic-skills:` (synced).
 
 **Family 1 — {intent-lock, decision-interview, plan-critique, misread-capture}**
 
@@ -609,12 +615,12 @@ Acceptance (§6.3 point 3, J2 graft #10): ≥17/20 correct AND 0 of the 3 destru
 | Command | What | When |
 |---|---|---|
 | `bash scripts/eval.sh --smoke <plugin>` | free-grader run, `--ablation none --runs 1`, pinned models, `--max-cost-usd $EVAL_BUDGET` | every wave, per touched plugin (OD14-a) |
-| `bash scripts/eval.sh --release <plugin>` | two arms, `--runs 3 --threshold 0.8`, `--trust-plugin` | W3 and W5 exits only |
+| `bash scripts/eval.sh --release <plugin>` | two arms, `--runs 3` for alignment and evidence (gate skills, report writers) and `--runs 1` for the rest (OQ11-a), `--threshold 0.8`, `--trust-plugin`, capped by the release-run cap (S12-W0-9) | W3 and W5 exits only |
 | `scripts/eval-project-skill.sh <skill> --tag smoke` | throwaway-plugin smoke run | every wave touching that learn-hub skill |
-| `scripts/eval-project-skill.sh <skill>` (`--runs 3`) | throwaway-plugin release run | W4, W5 exits |
+| `scripts/eval-project-skill.sh <skill> --release` (`--runs 1`, OQ11-a) | throwaway-plugin release run | W4, W5 exits |
 | `rewrite_gate.py ratchet verify` / Node twin | shrink-only check | every commit (micky: `health.sh --fast` in the S10-W0-10 pre-commit; learn-hub: the S21-W0-3 pre-commit) |
 | `rewrite_gate.py triggers verify` / Node twin | no silent phrase removal | every commit |
-| `claude -p "<query>" --output-format stream-json --verbose` × 3 per query, first `Skill` tool_use (critique F4) | live trigger accuracy | before/after each family's description pass; once more at W5 |
+| `claude -p "<query>" --output-format stream-json --verbose` × 1 per query, a flipped query × 3 more (OQ11-a), first `Skill` tool_use (critique F4), capped per pass (S12-W0-9) | live trigger accuracy | before/after each family's description pass; once more at W5 |
 | `claude -p "<prompt>"` × 20, multi-repo | routing smoke | W3, W5 exits |
 
 ## 5. Acceptance criteria
@@ -657,4 +663,4 @@ Not applicable per-skill — S12 owns no `SKILL.md`. The lock **mechanism** is o
 3. **ASSUMES:** the architecture's 5 contested families (§6.3) are exhaustive (not re-derived here). A later 6th pairing (e.g. `atomize-book` vs `vault-coverage`'s "check coverage of X") is a candidate for the W3/W5 routing-smoke results to surface.
 4. **Settled, not a conflict:** "118 cases" (architecture line 317) vs. this spec's raw sum of 16 files (120) is resolved in §1.1 — the gap is the `plugin-creator` scaffold template's 2 cases, not one of the "118 real" ones. OBS sub-totals (digest lines 11, 17) corroborate.
 5. **Check that settles S12-W0-6 (OWNER):** whether `claude plugin eval` is enabled (I16-d) is unknown here — settled by S11's W0 run, recorded in `delivery-log.md`; §3's dependent steps (S12-W3-2..S12-W5-2) name the fallback rather than assume yes.
-6. **OWNER-QUESTION — F3 (factcheck.md).** `eval-format.md` strips `Bash`/`Write`/`Edit`/`WebFetch`/`WebSearch` from a case's session unless `--allow-tools` is passed to `claude plugin eval`; several specs' cases need those tools (S01, S02, S05, S06, S07, S08). This spec resolves it by giving `eval.sh`/`eval-project-skill.sh` an args passthrough after `--` (CX-46, §2.5/§2.7), so an affected spec's §4.4 states the extra flag explicitly (as S03 already did by hand) rather than needing a second runner. Owner confirms this is the intended fix rather than, e.g., a fixed always-on `--allow-tools` set on every run.
+6. **CLOSED (OQ2-a, 2026-09-24) — F3 (factcheck.md).** `eval-format.md` strips `Bash`/`Write`/`Edit`/`WebFetch`/`WebSearch` from a case's session unless `--allow-tools` is passed to `claude plugin eval`; several specs' cases need those tools (S01, S02, S05, S06, S07, S08). This spec resolves it by giving `eval.sh`/`eval-project-skill.sh` an args passthrough after `--` (CX-46, §2.5/§2.7), so an affected spec's §4.4 states the extra flag explicitly (as S03 already did by hand) rather than needing a second runner. Owner confirms this is the intended fix rather than, e.g., a fixed always-on `--allow-tools` set on every run.

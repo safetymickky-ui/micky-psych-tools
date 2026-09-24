@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | Repos | micky-psych-tools |
-| Units (today → target) | `plugins/vault-keeper` (skills `vault-keeper`, `empty-vault`; command `/empty-vault`) → same dir, two skills (`vault-keeper` model-invocable, `empty-vault` dmi), no `commands/`; new `scripts/{sink,vault_index,drain_plan}.py` (+ `test_*.py`); `references/vault-layout.md` (kept, trimmed); `vault/.vault-id` (new) |
-| Waves | W0 (smoke seeds, CX-4); W1 (`sink.py` resolver + `.vault-id`; empty-vault stopgap: dmi, marker→ask, never delete assets); W2 (sink routes to the inbox; `vault_index.py`; empty-vault becomes a transfer with `drain_plan.py`); W3 (command file deleted; skill keeps its name) |
-| Owner decisions assumed | OD4-a (micky `vault/` stays the fallback sink), OD5-a (inbox only; publish needs "digest"), OD9-a (habit verbs as dmi/`argument-hint`, no new alias skill here), OD10-a (empty-vault is user-only) |
+| Units (today → target) | `plugins/vault-keeper` (skills `vault-keeper`, `empty-vault`; command `/empty-vault`) → same dir, two skills (`vault-keeper` model-invocable, `empty-vault` dmi), no `commands/`; new `scripts/sink.py` (+ `test_sink.py`; `drain_plan.py` only at W5 if the vault is kept, `vault_index.py` cut — OQ15-a); `references/vault-layout.md` (kept, trimmed); `vault/.vault-id` (new) |
+| Waves | W0 (smoke seeds, CX-4); W1 (`sink.py` resolver + `.vault-id`; empty-vault stopgap: dmi, marker→ask, never delete assets); W2 (sink routes to the inbox; the link rule in prose; one owner-watched copy of the 7 artifacts to the inbox, the W1 no-delete stopgap stays — OQ15-a); W3 (command file deleted; skill keeps its name); W5 (`drain_plan.py` and the transfer, only if S07-W5-1 keeps the vault) |
+| Owner decisions assumed | OD4-a (micky `vault/` stays the fallback sink), OD5-a (inbox only; publish needs "digest"), OD9-a (habit verbs as dmi/`argument-hint`, no new alias skill here), OD10-a (empty-vault is user-only); owner answers OQ12-a, OQ15-a (all confirmed 2026-09-24) |
 | Defects closed | 13 of 15 assigned (HIGH: H08, H09, H10, H11) |
 | Interfaces owned | I11 (sink), I12 (transfer) |
 | Interfaces consumed | I09 (owner S15), I10 (owner S15), I16 (owner S11), I17 (owner S12), I20 (owner S08) |
@@ -43,19 +43,19 @@ Both under the 1,024 hard cap; `empty-vault` is 3 chars from it, no longer a lis
 |---|---|---|---|---|---|
 | vault-keeper-1 | H | H08 | SKILL.md:29, vault-layout.md:7 — `${CLAUDE_PLUGIN_ROOT}/../../vault` claimed equivalent to the walk-up root; wrong in a cached install | S07-W1-1 resolver + `.vault-id`; S07-W1-3 wires it into Step 0 (CX-5) | W1 |
 | vault-keeper-2 | H | H09 | SKILL.md:28, vault-layout.md:6 — walk-up to `.claude-plugin/marketplace.json` matches `learn-hub`'s own dir; no name check | S07-W1-1 resolver (marker `name: micky-psych-tools`); S07-W1-3 wires it into Step 0 (CX-5) | W1 |
-| vault-keeper-3 | H | H10 | empty-vault SKILL.md:36-37 — root = "dir containing `.claude/skills/digest-report/`"; confirmed absent (moved) | S07-W1-2 stopgap closes detection; S07-W2-4 validate reuses the marker, closes it fully | W1/W2 |
-| vault-keeper-4 | H | H11 | empty-vault SKILL.md:55-57 — assets "removed with their topic", vs `ingest-infographic\|ingest-animation/SKILL.md:1-9` naming empty-vault as the handoff | S07-W1-2 (never delete, hold); S07-W2-4 (transfer + verified delete) closes fully | W1/W2 |
+| vault-keeper-3 | H | H10 | empty-vault SKILL.md:36-37 — root = "dir containing `.claude/skills/digest-report/`"; confirmed absent (moved) | S07-W1-2 stopgap closes detection; S07-W2-8 closes the W2 part: the one-time copy, with the stopgap kept (OQ15-a) | W1/W2 |
+| vault-keeper-4 | H | H11 | empty-vault SKILL.md:55-57 — assets "removed with their topic", vs `ingest-infographic\|ingest-animation/SKILL.md:1-9` naming empty-vault as the handoff | S07-W1-2 (never delete, hold); S07-W2-8 closes the W2 part: the one-time copy, nothing deleted (OQ15-a) | W1/W2 |
 | vault-keeper-5 | M | — | empty-vault SKILL.md:63-64 "invoke the Learn repo's `digest-report` skill" — no mechanism | S07-W2-1: stops at the inbox; digest-report/ingest-visual act on their own trigger, per I09/I12 | W2 |
 | vault-keeper-6 | M | — | SKILL.md:10 "Four jobs" vs plugin.json:4 "Five jobs" vs README.md:22 "the five jobs" | S07-W2-2: job count stated once, in README.md only | W2 |
 | vault-keeper-7 | M | — | SKILL.md:66 "Obsidian `[[wikilinks]]` by title" vs vault-layout.md:17-18 kebab/`<Topic> MOC.md` filenames, no `aliases:` | S07-W2-2: `save` writes `aliases: [<title>]` | W2 |
-| vault-keeper-8 | M | — | SKILL.md:66-67 "a dangling link... is fine" vs SKILL.md:101 "fix stale/broken links", no rule separating the two | S07-W2-3: `vault_index.py` codifies the distinction (§2.5) | W2 |
+| vault-keeper-8 | M | — | SKILL.md:66-67 "a dangling link... is fine" vs SKILL.md:101 "fix stale/broken links", no rule separating the two | S07-W2-2(d): the `index` section states the dangling-versus-broken rule in prose (OQ15-a cut `vault_index.py`) | W2 |
 | vault-keeper-9 | M | — | CHANGELOG.md newest `## 0.2.0 — 2026-07-10`; plugin.json:3 `"version": "0.4.0"` | deferred — see below | S10-W0-2 |
 | vault-keeper-10 | L | — | README.md:49 target type incl. `MOC` vs SKILL.md:79 "Decide `note` vs `artifact`" | S07-W2-2(b): drop `MOC` from the README list | W2 |
-| vault-keeper-11 | L | — | empty-vault SKILL.md:52-54 "notes... supplementary source material"; `digest-report/SKILL.md:18-29` has no such input shape | S07-W2-4: transfer copies every artifact/note as its own `<slug>.md`; no "supplementary" concept | W2 |
+| vault-keeper-11 | L | — | empty-vault SKILL.md:52-54 "notes... supplementary source material"; `digest-report/SKILL.md:18-29` has no such input shape | S07-W2-2(e): the "supplementary" sentence is dropped; S07-W2-8: the one-time copy moves every artifact as its own `<slug>.md` (OQ15-a) | W2 |
 | vault-keeper-12 | L | — | empty-vault SKILL.md:39 hardcoded `` `C:\Users\User\Desktop\Learn` `` fallback | S07-W1-2: dropped, no hardcode (R47) | W1 |
 | vault-keeper-13 | L | — | SKILL.md:41-50 restates vault-layout.md:10-32 | S07-W2-2(c): cut to a 4-line pointer | W2 |
 | vault-keeper-14 | L | — | plugin.json no `license`; author `"Thanawat Suharit"` vs siblings' `"... (Micky)"`; em dash; `bump.py` escapes non-ASCII | manifest half S07-W1-1; tool half deferred — see below | W1/S10-W0-2 |
-| vault-keeper-15 | L | — | both `evals.json`: `"assertions": []` all 12 cases; empty-vault eval 3 needs an undefined kebab→MOC mapping | S07-W2-5: real graders (§4); `moc_title_from_kebab()` (§2.5) | W2 |
+| vault-keeper-15 | L | — | both `evals.json`: `"assertions": []` all 12 cases; empty-vault eval 3 needs an undefined kebab→MOC mapping | S07-W2-5: real graders (§4); S07-W2-2(e): the kebab→MOC title rule in prose (OQ15-a; `moc_title_from_kebab()` arrives with S07-W5-2 if the vault is kept) | W2 |
 
 **Deferred**
 
@@ -73,7 +73,7 @@ Both under the 1,024 hard cap; `empty-vault` is 3 chars from it, no longer a lis
 - OBS (cross-repo handoff drift, ×2): confirms the -3/-4/-5/-11/-12 cluster from both sides — closed by removing the direct-invocation design (§2.6), not repairing the call.
 - OBS (filing pipeline incoherence): the assets-deleted vs assets-expected contradiction, same evidence as -4/H11.
 - NEW: `vault/assets/` is empty today (only `.gitkeep`) — the `.kind` sidecar has no live data to migrate.
-- NEW: `research-notes/.intake-log.jsonl` doesn't exist yet (confirmed `ls`) — `drain_plan.py` treats a missing file as "nothing landed yet".
+- NEW: `research-notes/.intake-log.jsonl` doesn't exist yet (confirmed `ls`) — `drain_plan.py` (W5, if built) treats a missing file as "nothing landed yet".
 
 ## 2. Target state
 
@@ -84,9 +84,8 @@ plugins/vault-keeper/
   .claude-plugin/plugin.json · README.md · CHANGELOG.md
   scripts/
     sink.py           # I11 — root/sink resolution, inbox writes
-    vault_index.py    # index rebuild + orphan report (R63)
-    drain_plan.py     # I12 — transfer plan/validate/execute/delete
-    test_sink.py · test_vault_index.py · test_drain_plan.py
+    drain_plan.py     # I12 — transfer plan/validate/execute/delete (W5, only if S07-W5-1 keeps the vault; OQ15-a)
+    test_sink.py · test_drain_plan.py   # vault_index.py is cut (OQ15-a)
   skills/
     vault-keeper/SKILL.md, references/vault-layout.md
     empty-vault/SKILL.md (argument-hint "[topic]", dmi: true)
@@ -157,14 +156,14 @@ Measured: 862 chars. All 8 phrases kept. Dropped the old "hands each report to t
 | The vault (tree/naming/etc) | 34-50 | cut to 4 lines pointing at `references/vault-layout.md` (fixes -13) |
 | Frontmatter block | 52-68 | keep; add `aliases: [<title>]` (fixes -7) |
 | save (jobs 1-5) | 78-94 | keep steps 1-4; step 5 unchanged; add: for `kind: asset`, also write `assets/<slug>.meta.json` next to `assets/<slug>.html` (CX-9 — no separate `.kind` sidecar; `kind` is one field inside the `.meta.json` the producer already writes, per I09) — needed by `drain_plan.py` |
-| index | 96-104 | state only the rule `vault_index.py` enforces (§2.5): dangling (target absent anywhere) left as-is; broken (target existed, no longer does, or points outside `vault/`) reported and rewritten to plain text — resolves -8 |
+| index | 96-104 | state the rule in prose (OQ15-a: no `vault_index.py`): dangling (target absent anywhere) left as-is; broken (target existed, no longer does, or points outside `vault/`) reported and rewritten to plain text — resolves -8 |
 | query | 105-108 | keep |
 | Rules / Failure conditions | 109-129 | keep; add "never write outside the resolved root" |
 | Handoff (new) | — | the OPTIONAL/fallback sentence from §2.6 for callers OF vault-keeper |
 
 Target body: ~95 lines / ~1,750 tokens (flat vs today's 1,657).
 
-**`empty-vault/SKILL.md`** (becomes the transfer procedure over `drain_plan.py`):
+**`empty-vault/SKILL.md`** (becomes the transfer procedure over `drain_plan.py` at S07-W5-2, only if S07-W5-1 keeps the vault; until then the W1 stopgap stays — OQ15-a):
 
 | Target section | Src → | Change |
 |---|---|---|
@@ -173,7 +172,7 @@ Target body: ~95 lines / ~1,750 tokens (flat vs today's 1,657).
 | Step 2 — hand off | 61-69 | **deleted** (fixes -5, -11) — replaced by `drain_plan.py validate` then `execute` |
 | Step 3 — verify | 71-76 | "landed" = sha present in a **git-committed** `research-notes/` tree, not a Supabase count (fixes -5) |
 | Step 4 — deletion gate | 78-86 | keep both gates; source is now `drain_plan.py delete` (dry-run default, `--yes` — R65) |
-| Step 5 — reindex | 88-94 | `vault_index.py rebuild` after deletion |
+| Step 5 — reindex | 88-94 | rebuild `index.md` by vault-keeper's index rule after deletion (OQ15-a: no `vault_index.py`) |
 | Step 6 — report | 96-100 | keep |
 | Rules | 102-127 | keep; drop digest-report mentions; add "no-receiver kinds are held forever" (H11 permanence) |
 
@@ -192,8 +191,8 @@ No new reference files. `empty-vault` needs none — its procedure is now the tw
 | Name | CLI | Input | JSON stdout shape | Exit codes | Tests |
 |---|---|---|---|---|---|
 | `sink.py` | `resolve --kind report\|visual [--explicit PATH] [--headless] [--json]`; `file --kind report\|visual --payload FILE.json [--explicit PATH] [--headless] [--json]`; `--help` | env vars, optional `userConfig.learn_hub_root` (§8 Q1), cwd, payload JSON for `file` | see I11 (§2.7) | see I11 | `test_sink.py`: 4 resolution steps in order; marker mismatch both roots; collision suffix to `-3`; headless-cwd fallback; malformed payload → exit 2 |
-| `vault_index.py` | `rebuild [--vault-root PATH] [--json]`; `check [--vault-root PATH] [--json]` (report-only); `--help` | resolved vault root | `{"mocs": int, "notes_reachable": int, "orphans": [path], "dangling_links": [{"from","target"}], "broken_links_fixed": [{"from","old_target"}]}` | 0 clean/fixed; 1 orphans/dangling links remain (report-only, not a failure); 2 usage error | `test_vault_index.py`: dangling-vs-broken distinction (-8 fix) on 4 fixture vaults; `primary-moc` tie-break; rebuild is idempotent |
-| `drain_plan.py` | `plan [--topic KEBAB] [--vault-root PATH] [--json] > manifest.json`; `validate --manifest FILE [--learn-hub-dir PATH] [--json]`; `execute --manifest FILE [--learn-hub-dir PATH] [--commit] [--json]`; `delete --manifest FILE [--yes] [--json]`; `--help` | vault root (optionally one topic); learn-hub root; a manifest file from `plan` | see I12 (§2.7) | `plan`/`validate`: 0 ok, 1 nothing in scope, 2 usage, 3 root unresolved. `execute`: 0 all copied+verified, 1 partial fail (reported, not fatal), 2 usage, 3 marker invalid. `delete`: 0 deleted verified set (dry-run report without `--yes`), 2 usage, 4 git-gate failed | `test_drain_plan.py`: `moc_title_from_kebab()` against the vault's real 6 MOC titles incl. the two "and" ones (small-word list never capitalized except first word); kind→receiver mapping incl. no-receiver→held; delete refuses missing committed sha; delete refuses dirty git |
+| `vault_index.py` — CUT (OQ15-a: the rule is prose in vault-keeper's `index` section) | `rebuild [--vault-root PATH] [--json]`; `check [--vault-root PATH] [--json]` (report-only); `--help` | resolved vault root | `{"mocs": int, "notes_reachable": int, "orphans": [path], "dangling_links": [{"from","target"}], "broken_links_fixed": [{"from","old_target"}]}` | 0 clean/fixed; 1 orphans/dangling links remain (report-only, not a failure); 2 usage error | `test_vault_index.py`: dangling-vs-broken distinction (-8 fix) on 4 fixture vaults; `primary-moc` tie-break; rebuild is idempotent |
+| `drain_plan.py` — W5 only, if S07-W5-1 keeps the vault (S07-W5-2, OQ15-a) | `plan [--topic KEBAB] [--vault-root PATH] [--json] > manifest.json`; `validate --manifest FILE [--learn-hub-dir PATH] [--json]`; `execute --manifest FILE [--learn-hub-dir PATH] [--commit] [--json]`; `delete --manifest FILE [--yes] [--json]`; `--help` | vault root (optionally one topic); learn-hub root; a manifest file from `plan` | see I12 (§2.7) | `plan`/`validate`: 0 ok, 1 nothing in scope, 2 usage, 3 root unresolved. `execute`: 0 all copied+verified, 1 partial fail (reported, not fatal), 2 usage, 3 marker invalid. `delete`: 0 deleted verified set (dry-run report without `--yes`), 2 usage, 4 git-gate failed | `test_drain_plan.py`: `moc_title_from_kebab()` against the vault's real 6 MOC titles incl. the two "and" ones (small-word list never capitalized except first word); kind→receiver mapping incl. no-receiver→held; delete refuses missing committed sha; delete refuses dirty git |
 
 All three: `--help` has no side effects; JSON on stdout, diagnostics on stderr; UTF-8 + trailing newline; invoked as `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/<name>.py`, with a matching narrow `allowed-tools: Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/*.py:*)` (R36, R49).
 
@@ -223,7 +222,7 @@ vault-keeper/empty-vault → learn-hub (a file-drop, not a skill handoff, per I0
 - **The filing sentence**: exact text §2.6, block 1. Every OPTIONAL caller carries it verbatim (§4.2).
 - **ASSUMES**: report fields (`title/kind/topic/source_skill/created/contract: report/1`) and visual `.meta.json` fields (`kind, title, description, topic_hint, source_report, producer, created, audit`) are I04's/I09's (S03, S15) — `sink.py` restates only the two path names.
 
-**I12 — Transfer (OWNED).**
+**I12 — Transfer (OWNED).** Deferred by OQ15-a: built at S07-W5-2 only if S07-W5-1 keeps the vault. In W2 the one-time copy S07-W2-8 moves the 7 artifacts, and the W1 stopgap holds everything else.
 
 - **Manifest JSON** (`drain_plan.py plan` — top-level `scope`, `generated_at`, `vault_root`, `learn_hub_root`, `items: []`; each item):
 
@@ -267,7 +266,7 @@ All paths below are relative to the repo root; `plugins/vault-keeper/` is abbrev
 **S07-W1-2 — empty-vault stopgap (dmi, marker→ask, never delete)**
 - Repo: micky-psych-tools · depends on: S07-W1-1
 - Files: edit `pvk/skills/empty-vault/SKILL.md`
-- Change: add `disable-model-invocation: true` and `argument-hint: "[topic]"` (coexists with `commands/empty-vault.md` until W3). Step 0: `LEARN_HUB_DIR` → `userConfig.learn_hub_root` → marker (`package.json` name `learn-hub` + `scripts/apply-sync.mjs`) → **stop and ask**; delete the stale `.claude/skills/digest-report/` check and the hardcoded Windows path (H10 detection, -12). Step 1: assets **never deleted** in this stopgap — held, `hold_reason: "transfer not yet built (W1 stopgap)"` (H11's destructive half). Delete Step 2 (digest-report call) and replace Steps 3–5 with one line: "Stop after the manifest. Nothing is transferred or deleted until the W2 transfer lands." (critique C2-11 — Steps 4–5 delete "verified" files, and with Step 3 gone "verified" has no procedure).
+- Change: add `disable-model-invocation: true` and `argument-hint: "[topic]"` (coexists with `commands/empty-vault.md` until W3). Step 0: `LEARN_HUB_DIR` → `userConfig.learn_hub_root` → marker (`package.json` name `learn-hub` + `scripts/apply-sync.mjs`) → **stop and ask**; delete the stale `.claude/skills/digest-report/` check and the hardcoded Windows path (H10 detection, -12). Step 1: assets **never deleted** in this stopgap — held, `hold_reason: "transfer not yet built (W1 stopgap)"` (H11's destructive half). Delete Step 2 (digest-report call) and replace Steps 3–5 with one line: "Stop after the manifest. Nothing is transferred or deleted until a transfer exists (W5 at the earliest, only if the vault is kept)." (OQ15-a) (critique C2-11 — Steps 4–5 delete "verified" files, and with Step 3 gone "verified" has no procedure).
 - Commands: `claude plugin validate --strict plugins/vault-keeper` (or plugin-creator's `validate.py` once it exists)
 - Done when: `grep -c "digest-report" pvk/skills/empty-vault/SKILL.md` returns 0; `grep -c "Desktop.Learn" pvk/skills/empty-vault/SKILL.md` returns 0; `grep -c 'Delete the verified files' pvk/skills/empty-vault/SKILL.md` returns 0.
 - Rollback: `git checkout -- pvk/skills/empty-vault/SKILL.md`.
@@ -280,7 +279,7 @@ All paths below are relative to the repo root; `plugins/vault-keeper/` is abbrev
 - Done when: both counts are 0 in both files.
 - Rollback: `git checkout -- skills/vault-keeper/SKILL.md skills/vault-keeper/references/vault-layout.md`.
 
-**S07-W1-4 — release the W1 fixes**
+**S07-W1-4 — DROPPED (OQ12-a): release the W1 fixes.** Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3.
 - Repo: micky-psych-tools · depends on: S07-W1-1, S07-W1-2, S07-W1-3
 - Commands: `python3 scripts/bump.py vault-keeper minor --write`.
 - Files: `pvk/.claude-plugin/plugin.json`, `pvk/CHANGELOG.md` (entry: "H08/H09/H10/H11 fixes: `sink.py` resolver, `.vault-id`, empty-vault stopgap."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
@@ -297,15 +296,15 @@ All paths below are relative to the repo root; `plugins/vault-keeper/` is abbrev
 - Done when: the digest-report grep returns 0; the `.kind` grep returns 0 (CX-9); `grep -c -- '--vault-only' pvk/skills/vault-keeper/SKILL.md` returns 0; the `save-routes-type-and-wires-moc` eval (§4.1) passes.
 - Rollback: `git checkout -- pvk/skills/vault-keeper/SKILL.md`.
 
-**S07-W2-2 — three small text fixes: job count, README target type, duplicated layout**
+**S07-W2-2 — small text fixes: job count, README target type, duplicated layout, and the link and MOC-title rules in prose (OQ15-a)**
 - Repo: micky-psych-tools · depends on: none
 - Files: edit both SKILL.md, `plugin.json`, `README.md`
-- Change: (a) delete "Four/Five jobs" from both descriptions (§2.2 already omits it); README's job table becomes the sole count (-6). (b) README's target-type list drops `` `MOC` `` — never a save target (-10). (c) vault-keeper's "The vault" section cut to a 4-line pointer (-13).
-- Commands: `grep -rn "jobs:" pvk/.claude-plugin/plugin.json pvk/skills/*/SKILL.md`; `grep -n "target type" pvk/README.md`
-- Done when: no `jobs:` match outside README.md; the target-type line no longer contains `` `MOC` ``; vault-keeper's body line count drops by roughly the removed lines.
+- Change: (a) delete "Four/Five jobs" from both descriptions (§2.2 already omits it); README's job table becomes the sole count (-6). (b) README's target-type list drops `` `MOC` `` — never a save target (-10). (c) vault-keeper's "The vault" section cut to a 4-line pointer (-13). (d) vault-keeper's `index` section states the dangling-versus-broken rule of §2.3 in prose (-8; OQ15-a cut `vault_index.py`). (e) empty-vault Step 1 drops the "supplementary source material" sentence (-11) and states the kebab→MOC title rule of §2.7 (`moc_title_from_kebab`) in prose (-15).
+- Commands: `grep -rn "jobs:" pvk/.claude-plugin/plugin.json pvk/skills/*/SKILL.md`; `grep -n "target type" pvk/README.md`; `grep -c "dangling" pvk/skills/vault-keeper/SKILL.md`; `grep -c "supplementary" pvk/skills/empty-vault/SKILL.md`
+- Done when: no `jobs:` match outside README.md; the target-type line no longer contains `` `MOC` ``; vault-keeper's body line count drops by roughly the removed lines; the `dangling` grep ≥1; the `supplementary` grep = 0.
 - Rollback: `git checkout -- pvk/.claude-plugin/plugin.json pvk/skills/vault-keeper/SKILL.md pvk/README.md`.
 
-**S07-W2-3 — `vault_index.py`**
+**S07-W2-3 — DROPPED (OQ15-a): `vault_index.py`.** A vault of 16 files needs one prose rule, not a script; S07-W2-2(d) states it.
 - Repo: micky-psych-tools · depends on: S07-W2-1
 - Files: create `scripts/vault_index.py`, `scripts/test_vault_index.py`; edit `skills/vault-keeper/SKILL.md` (index section)
 - Change: implement `rebuild`/`check` per §2.5 (dangling-vs-broken distinction, -8 fix). Rewrite the `index` section to state only that rule and invoke the script.
@@ -313,7 +312,7 @@ All paths below are relative to the repo root; `plugins/vault-keeper/` is abbrev
 - Done when: tests green; `check` against the real `vault/` reports `"orphans": []` (all 7 artifacts are already MOC-linked per the current `index.md`).
 - Rollback: `git rm pvk/scripts/vault_index.py pvk/scripts/test_vault_index.py`; `git checkout -- pvk/skills/vault-keeper/SKILL.md`.
 
-**S07-W2-4 — `drain_plan.py`; empty-vault becomes the transfer**
+**S07-W2-4 — DROPPED (OQ15-a): `drain_plan.py`; empty-vault becomes the transfer.** Deferred to S07-W5-2, built only if S07-W5-1 keeps the vault; in W2, S07-W2-8 copies the 7 artifacts once and the W1 stopgap stays.
 - Repo: micky-psych-tools · depends on: S07-W2-1, S07-W2-3, S15-W2-1 (I09/I10 published — CX-34)
 - Files: create `scripts/drain_plan.py`, `scripts/test_drain_plan.py`; rewrite `skills/empty-vault/SKILL.md` per §2.3
 - Change: implement `plan`/`validate`/`execute`/`delete` and `moc_title_from_kebab` per §2.5/§2.7 (I12). Rewrite empty-vault's Steps 1-5 to call the script at each beat, dropping digest-report mentions (closes -5, -11) and W1 stopgap language; add "held forever" for no-receiver kinds (H11).
@@ -322,23 +321,31 @@ All paths below are relative to the repo root; `plugins/vault-keeper/` is abbrev
 - Rollback: `git rm pvk/scripts/drain_plan.py pvk/scripts/test_drain_plan.py`; `git checkout -- pvk/skills/empty-vault/SKILL.md`.
 
 **S07-W2-5 — real eval cases**
-- Repo: micky-psych-tools · depends on: S07-W2-1, S07-W2-4, S12-W0-3 (eval layout — CX-34)
+- Repo: micky-psych-tools · depends on: S07-W2-1, S07-W2-2, S12-W0-3 (eval layout — CX-34)
 - Files: create `pvk/evals/{vault-keeper,empty-vault}/<case>/{prompt.md, graders/*.md}` (6+6 cases, CX-23 — the I17 layout is `plugins/<p>/evals/<skill>/<case>/`, not `skills/<skill>/evals/<case>/`); delete both `evals.json`
-- Change: convert the mined skeletons (§4.2) into `claude plugin eval` cases with real graders (§4.1), incl. `verify-before-delete-fixture-inbox` and `sink-resolution-from-learn-hub-cwd-asks`.
+- Change: convert the mined skeletons (§4.2) into `claude plugin eval` cases with real graders (§4.1), incl. `verify-before-delete-fixture-inbox` and `sink-resolution-from-learn-hub-cwd-asks`. OQ15-a: the empty-vault cases test the W1 stopgap — `verify-before-delete-fixture-inbox` keeps only `no-premature-delete.md`, and the two transfer cases (`partial-failure-holds-unverified`, `dirty-git-blocks-deletion`) and the two `drain_plan.py` `tool_order` graders wait for S07-W5-2.
 - Commands: `claude plugin eval plugins/vault-keeper --tag smoke --runs 1 --json /tmp/vk-smoke.json` (once enabled — S12/W0 check d)
-- Done when: 12 case directories exist under `pvk/evals/{vault-keeper,empty-vault}/`, each with `prompt.md` and ≥1 `graders/` file; no `evals.json` remains under `pvk/`.
+- Done when: 10 case directories exist under `pvk/evals/{vault-keeper,empty-vault}/` (the 12 of §4 minus the 2 transfer cases, OQ15-a), each with `prompt.md` and ≥1 `graders/` file; no `evals.json` remains under `pvk/`.
 - Rollback: `git checkout -- pvk/evals`.
 
-**S07-W2-6 — release the W2 fixes**
+**S07-W2-6 — DROPPED (OQ12-a): release the W2 fixes.** Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3.
 - Repo: micky-psych-tools · depends on: S07-W2-1, S07-W2-2, S07-W2-3, S07-W2-4, S07-W2-5
 - Commands: `python3 scripts/bump.py vault-keeper minor --write`.
 - Files: `pvk/.claude-plugin/plugin.json`, `pvk/CHANGELOG.md` (entry: "Sink routes to the inbox; `vault_index.py`/`drain_plan.py`; real eval cases."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for this entry.
 - Rollback: `git checkout -- pvk/.claude-plugin/plugin.json pvk/CHANGELOG.md`.
 
-**S07-W2-7** [OWNER] · depends on: S07-W2-4, S15-W2-2, S14-W2-4, S11-W2-4 or its skip record (when check b = no, S11-W2-4 is skipped and the rehearsal runs under V4: it needs vault-keeper and the learn-hub project skill digest-report, not `learn-hub/plugins`; critique C2-30)
+**S07-W2-8 (new, OQ15-a)** [OWNER] — copy the 7 vault artifacts into the learn-hub inbox once
+- Repo: both · depends on: S07-W2-1, S07-W2-2, S15-W2-1 (I09 inbox contract)
+- Files: learn-hub: create `research-notes/<slug>.md` for each of the 7 files in micky `vault/artifacts/` (byte copies; slug and collision suffix per I09). micky: `docs/rewrite/baseline.md` `## Owner records` (one bullet: the 7 source paths, their sha256, the inbox paths, the learn-hub commit).
+- Change: with the owner watching, copy each artifact once and commit the copies to learn-hub. Delete nothing in `vault/`: the W1 no-delete stopgap (S07-W1-2) stays in force. Run no digest (OD5-a: publishing needs the word "digest").
+- Commands: `ls vault/artifacts/*.md | wc -l`; `sha256sum vault/artifacts/*.md`; `sha256sum "$LEARN_HUB_DIR"/research-notes/<each slug>.md`; `git -C "$LEARN_HUB_DIR" log -1 --stat`
+- Done when: the first command prints 7; each inbox file's sha256 equals its source's; `git status --short vault/` in micky prints nothing; the owner record is committed.
+- Rollback: `git revert` the learn-hub copy commit (the vault originals were never touched).
+
+**S07-W2-7** [OWNER] · depends on: S07-W2-8, S15-W2-2, S14-W2-4, S11-W2-4 or its skip record (when check b = no, S11-W2-4 is skipped and the rehearsal runs under V4: it needs vault-keeper and the learn-hub project skill digest-report, not `learn-hub/plugins`; critique C2-30)
 - Files: none (verification step).
-- Change: run the rehearsal — a fixture report placed in the micky vault, `/empty-vault` transfer, learn-hub inbox, "digest" it, sync, verify the Supabase provenance count — and separately confirm that a multi-repo report landing in `research-notes/` is NOT digested without the word "digest" (CX-43).
+- Change: run the rehearsal — a fixture report copied from the micky vault into the learn-hub inbox the way S07-W2-8 copies (OQ15-a: no `/empty-vault` transfer in W2), "digest" it, sync, verify the Supabase provenance count — and separately confirm that a multi-repo report landing in `research-notes/` is NOT digested without the word "digest" (CX-43).
 - Commands: none scriptable.
 - Done when: OWNER confirms both checks and records the result in micky `docs/rewrite/baseline.md` under `## Owner records` (the delivery log accepts only variable rows, I16.4). The learn-hub vault files the rehearsal creates are committed to learn-hub master directly, never to a wave branch, because their rows are already live (critique C2-21).
 - Rollback: n/a.
@@ -368,6 +375,14 @@ All paths below are relative to the repo root; `plugins/vault-keeper/` is abbrev
 - Files: `pvk/CHANGELOG.md` (the decision, its evidence and date).
 - Done when: the decision is recorded in `pvk/CHANGELOG.md` and in micky `docs/rewrite/baseline.md` `## W5 decisions` (S12-W5-3).
 - Rollback: not applicable (decision record).
+
+**S07-W5-2 (new, OQ15-a) — `drain_plan.py`; empty-vault becomes the transfer (only if S07-W5-1 keeps the vault)**
+- Repo: micky-psych-tools · depends on: S07-W5-1 (its decision is OD4-a, keep the vault; under OD4-b this step does not run, and S12-W5-3 records it as skipped under `## W5 decisions`), S15-W2-1 (I09/I10)
+- Files: create `pvk/scripts/drain_plan.py`, `pvk/scripts/test_drain_plan.py`; rewrite `pvk/skills/empty-vault/SKILL.md` per §2.3; create `pvk/evals/empty-vault/{partial-failure-holds-unverified,dirty-git-blocks-deletion}/` and add the two `drain_plan.py` `tool_order` graders to `verify-before-delete-fixture-inbox` (§4.1, §4.2); `pvk/CHANGELOG.md` (entry under `## Unreleased`).
+- Change: what S07-W2-4 specified — implement `plan`/`validate`/`execute`/`delete` and `moc_title_from_kebab` per §2.5/§2.7 (I12); rewrite empty-vault's Steps 1-5 to call the script at each beat, dropping the W1 stopgap language; add "held forever" for no-receiver kinds (H11).
+- Commands: `python3 -m unittest pvk/scripts/test_drain_plan.py -v`; `python3 pvk/scripts/drain_plan.py plan --help`
+- Done when: tests green, incl. the `moc_title_from_kebab` fixtures and the dirty-git / missing-committed-sha delete refusals; `--help` exits 0 with no side effects; the two new case directories exist.
+- Rollback: `git revert <this commit>`.
 
 ### Owner actions
 
@@ -589,7 +604,7 @@ The learn-hub checkout for this run is at ./fixture-learn-hub (relative to cwd).
 /empty-vault panic-disorder
 ```
 
-`ev/verify-before-delete-fixture-inbox/graders/tool-order.md`
+`ev/verify-before-delete-fixture-inbox/graders/tool-order.md` (this grader and `tool-order-2.md` are added by S07-W5-2; in W2 the case keeps only `no-premature-delete.md`, OQ15-a)
 ```markdown
 ---
 type: tool_order
@@ -635,11 +650,11 @@ deletion.
 | vault-keeper#5 | merged into `sink-resolution-from-learn-hub-cwd-asks` (§4.1) | superseded — harder version |
 | vault-keeper#6 | `slug-collision-disambiguates/` | `file_exists: .../rtms-service-analysis -2.md`; original unchanged |
 | empty-vault#1 | merged into `verify-before-delete-fixture-inbox` (§4.1) | superseded by the fixture-backed version |
-| empty-vault#2 | `partial-failure-holds-unverified/` | `tool_order` (plan→validate→execute) + regex "surviving report named, with reason" |
+| empty-vault#2 | `partial-failure-holds-unverified/` (written by S07-W5-2, OQ15-a) | `tool_order` (plan→validate→execute) + regex "surviving report named, with reason" |
 | empty-vault#3 | `scoped-empty-leaves-rest-untouched/` | regex + `file_exists`: sibling MOC's files byte-unchanged |
 | empty-vault#4 | `pressure-hurry-authority-sunk-cost/` (gate pressure case, §6.2) | urgency framing, read-only tools; `Write max:0` + `Bash 'rm ' max:0` |
 | empty-vault#5 | `fallback-picker-absent/` (recast, no AskUserQuestion) | refuses to author AND asks or states `Assumed:`, stops short of deletion |
-| empty-vault#6 | `dirty-git-blocks-deletion/` | commit offered (`min:1`), no `rm`/`git rm` before it |
+| empty-vault#6 | `dirty-git-blocks-deletion/` (written by S07-W5-2, OQ15-a) | commit offered (`min:1`), no `rm`/`git rm` before it |
 
 ### 4.3 Live triggers
 
@@ -665,7 +680,7 @@ Family: neither skill names an architecture §6.3 contested family — a sink/tr
 5. `grep -c 'digest-report' pvk/skills/vault-keeper/SKILL.md pvk/skills/empty-vault/SKILL.md` — both 0.
 6. `cat vault/.vault-id` prints exactly `micky-psych-vault`.
 7. `grep -rn 'jobs:' pvk/.claude-plugin/plugin.json pvk/skills/*/SKILL.md` returns nothing (README.md is the only surface with a job count).
-8. `python3 pvk/scripts/drain_plan.py plan --help` and `sink.py resolve --help` both exit 0 with no side effects (no files created by `--help`).
+8. `sink.py resolve --help` (and, after S07-W5-2, `python3 pvk/scripts/drain_plan.py plan --help`) exits 0 with no side effects (no files created by `--help`).
 9. `ls pvk/commands` fails (W3 only).
 10. `find pvk -name evals.json` returns nothing after S07-W2-5.
 11. Every case directory under `pvk/evals/{vault-keeper,empty-vault}/` has both a `prompt.md` (or `case.yaml`+`prompt.md`) and at least one file under `graders/`.
@@ -687,7 +702,7 @@ All 24 phrases (§1.2) kept verbatim. None removed, none move between skills.
 - **K3-adjacent**: `sink.py file` writes only markdown/HTML, no readiness precondition of its own; risk is scoped to the producer's own steps (out of scope here).
 - **K5-adjacent**: `vault/.vault-id` closes same-name-loads-twice as it applies to vault resolution (H09).
 - **K8 (cross-repo drift)**: I11/I12 restate only path names, not field shapes (§2.7 ASSUMES); a differing S15 shape needs a follow-up patch — flagged §8.
-- **OD4**: assumes OD4-a. Under OD4-b (W5), vault-keeper shrinks to a ~10-line inbox-or-cwd step; `sink.py`'s vault branch and all of `drain_plan.py`/`vault_index.py` delete; empty-vault runs once and retires. Not anticipated in W1-W3.
+- **OD4**: assumes OD4-a. Under OD4-b (W5), vault-keeper shrinks to a ~10-line inbox-or-cwd step; `sink.py`'s vault branch and `drain_plan.py` (if S07-W5-2 built it) delete; empty-vault runs once and retires. Not anticipated in W1-W3.
 - **OD5**: under OD5-b, the commit-offer step becomes REQUIRED-with-stop into digest-report+sync-vault — out of scope unless re-decided.
 - **OD9/OD10**: under OD10-b, drop `disable-model-invocation` from W1-2 and add empty-vault's phrases to a live-trigger family (§4.3).
 
@@ -695,6 +710,6 @@ All 24 phrases (§1.2) kept verbatim. None removed, none move between skills.
 
 - Q1 (ASSUMES): whether `userConfig.learn_hub_root` is readable at runtime (R47, MP-PLG-3). `sink.py` reads it after `LEARN_HUB_DIR`; absent support, degrades to "env var only", no code change — settled by W0 checklist item 5, owned by S11/owner.
 - Q2 (ASSUMES, I09): `.meta.json` fields and the visuals slug rule are drafted to match architecture §5.4; S15 owns I09 in full — a differing rule needs a follow-up patch to `sink.py file`'s visual branch. Flagged for the cross-spec pass.
-- Q3 (ASSUMES, I10): `drain_plan.py`'s `.intake-log.jsonl` read assumes JSON-Lines with at least `file`/`sha256` per line (§5.6 grammar); the file doesn't exist yet (§1.4 NEW), unverified — settled by S15's first write or fixture.
+- Q3 (ASSUMES, I10; only if S07-W5-2 runs, OQ15-a): `drain_plan.py`'s `.intake-log.jsonl` read assumes JSON-Lines with at least `file`/`sha256` per line (§5.6 grammar); the file doesn't exist yet (§1.4 NEW), unverified — settled by S15's first write or fixture.
 - Q4 — CLOSED (CX-9): the `.kind` sidecar was dropped; `kind` lives inside `<slug>.meta.json` (I09). Original question: the `.kind` asset sidecar is new, not named in the architecture — small, additive; cross-spec pass should confirm no other spec (S05/S06) assumes a different provenance mechanism.
 - ARCH-CONFLICT (flagged by S11, not re-argued): architecture §2.7 condition 1 nominally conflicts with vault-keeper loading at W1 exit while H10/H11 close fully only at W2. Follows S11's resolution (I16.3: defects due by that wave); no action needed here.

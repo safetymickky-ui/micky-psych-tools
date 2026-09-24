@@ -247,10 +247,10 @@ shape). Ratchet/trigger-lock reading and writing goes through S12's own library 
 | VAL-08 | R32,44,46,47,49: no PLUGIN_ROOT `..`/writes, no OS-specific paths (exc. `learn-hub-session/hooks/run.sh`), interpreter-prefixed scripts; R41: no `mcp__plugin_` prefix | body grep | `"<path>: <match>"` | fail | none |
 | VAL-09 | R56-58: no `dependencies`; every cross-plugin mention carries `OPTIONAL` + the §4.2 fallback within 2 lines | plugin.json + body | `"<path>: <p:s> no fallback"` | fail | ↑ |
 | VAL-10 | R34: no `commands/`; R35: alias/listed skills carry dmi (`dmi-skills.md`), alias body ≤10 lines; R37: `fork-denylist.md` skills never `context: fork` | dir+frontmatter+body | `"<plugin>: has commands/"` / `"…: alias no dmi"` | fail | ↑ |
-| VAL-11 | R30: plugin.json shape, `defaultEnabled` list; R33: marketplace entry shape, no version, description parity; R83/87: version/renames; R45: README+LICENSE+CHANGELOG present; R85: CHANGELOG top == version | plugin.json+marketplace.json+dir listing | `"<path>: <field> <reason>"` | fail | ↑ |
+| VAL-11 | R30: plugin.json shape, `defaultEnabled` list; R33: marketplace entry shape, no version, description parity; R83/87: version/renames; R45: README+LICENSE+CHANGELOG present; R85: CHANGELOG top == version (a leading `## Unreleased` section is skipped, OQ12-a) | plugin.json+marketplace.json+dir listing | `"<path>: <field> <reason>"` | fail | ↑ |
 | VAL-12 | R70-72,76: ≥3 cases/skill, ≥1 outcome+process grader/case, no `evals.json`, `evals/results/` gitignored, runner present | `evals/` tree | `"<skill>: N case(s)"` / `"…: no process grader"` | fail | ↑, ratchet to W3/W4 |
 | VAL-13 | R88,90,92: no mandated-read grep, no hand-maintained version table, micky CLAUDE.md/MEMORY-living ≤2,000 tok each | file text | `"<path>: <reason>"` | fail | ↑ |
-| VAL-14 | (`--cross-repo`, both clones) sink.py names the two inbox paths exactly; fixtures parse under `check-contract.mjs`: `node "$LEARN_HUB_DIR/scripts/check-contract.mjs" --dir "$MICKY_TOOLS_DIR/plugins/evidence/evals/fixtures" --json`, fail on exit 1 (I25, CX-20); `check-html.mjs` verdict == `audit:visual --json`'s on the 4+2 parity set | run + diff | `"<file>: <v1> vs <v2>"` | fail (both present); warn (else) | none |
+| VAL-14 | (`--cross-repo`, both clones) sink.py names the two inbox paths exactly; fixtures parse under `check-contract.mjs`: `node "$LEARN_HUB_DIR/scripts/check-contract.mjs" --dir "$MICKY_TOOLS_DIR/plugins/evidence/evals/fixtures" --json`, fail on exit 1 (I25, CX-20); no `check-html.mjs` parity check (OQ13-a) | run + diff | `"<file>: <v1> vs <v2>"` | fail (both present); warn (else) | none |
 | VAL-15 | R68: every `plugins/*/scripts/*` has an adjacent passing test file | run suites | `"<script>: no test"` / `"<n> failure(s)"` | fail | ↑ |
 | VAL-16 | R54: `metadata.profile` set; `portable` uses only the 6 spec keys, no `` !`cmd` ``, no `<>` | frontmatter+body | `"<path>: <reason>"` | fail | ↑ |
 
@@ -267,8 +267,9 @@ release.py --help
 ```
 - Dry run by default: prints new version, plugin.json diff, CHANGELOG entry; exits 0, no write.
 - `--write`: runs `validate.py --repo <root>` first (failure → print+exit 1, no write). On
-  success edits plugin.json `version` (UTF-8, trailing newline), prepends `## x.y.z — <date>` +
-  the operator's summary to CHANGELOG.md, re-validates, prints `claude plugin tag <plugin>
+  success edits plugin.json `version` (UTF-8, trailing newline), turns a leading `## Unreleased`
+  section of CHANGELOG.md into `## x.y.z — <date>` (keeping its entries; OQ12-a), or, when there
+  is none, prepends `## x.y.z — <date>` + the operator's summary, re-validates, prints `claude plugin tag <plugin>
   --dry-run`. Never edits marketplace.json (R83).
 - Exit: `0` success; `1` pre-write validation failed or post-write CHANGELOG mismatch (rolled
   back); `2` usage error; `3` plugin not in the marketplace.
@@ -388,7 +389,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 - Done when: both greps print `1`; `python3 scripts/validate.py` still prints `all checks passed`.
 - Rollback: `revert`.
 
-**S08-W1-2 · micky · release the W1 fix**
+**S08-W1-2 · DROPPED (OQ12-a): micky · release the W1 fix.** Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3.
 - Depends on: S08-W1-1.
 - Commands: `python3 scripts/bump.py plugin-creator patch --write` (CX-12).
 - Files: `plugin.json`, `CHANGELOG.md` (entry: "Root guard: stop instead of writing into the wrong repo (H07 interim fix)."). `.claude-plugin/marketplace.json` is NOT touched — S10-W0-3 has already stripped entry versions from it (CX-12).
@@ -398,7 +399,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 ### W3
 
 **S08-W3-1 · micky · self-contained scripts + manifest + health.sh**
-- Depends on: S08-W1-2; S10-W0-1, S10-W0-2, S10-W0-3 (S10's W0-fixed `validate.py`/`bump.py` and entry-version strip, CX-34); S10-W3-2 (the skeleton move — CX-36); S11-W0-3 (both this step and S11-W0-3 edit `scripts/health.sh` — CX-39); S10-W0-8.
+- Depends on: S08-W1-1; S10-W0-1, S10-W0-2, S10-W0-3 (S10's W0-fixed `validate.py`/`bump.py` and entry-version strip, CX-34); S10-W3-2 (the skeleton move — CX-36); S11-W0-3 (both this step and S11-W0-3 edit `scripts/health.sh` — CX-39); S10-W0-8.
 - Files: create `plugins/plugin-creator/scripts/{validate.py,release.py,test_validate.py,test_release.py}`; create `plugins/plugin-creator/references/lists/{synced-names,sibling-pairs,dmi-skills,fork-denylist,gate-skills}.md` (CX-21 — this spec owns these committed lists; derived from architecture §2.8 for synced names, §6.3's families for sibling pairs, OD9/OD10 for dmi skills, §8 for the fork denylist and gate skills); edit (not create — S10-W0-8 already backfills a LICENSE for every plugin that lacks one, CX-45) `plugins/plugin-creator/LICENSE` if S10-W0-8's text needs a plugin-creator-specific tweak, otherwise leave it untouched; edit `plugin.json` (`$schema`, keywords trimmed to 5, `hooks: "./hooks/hooks.json"`); delete repo-root `scripts/validate.py`, `scripts/bump.py`; edit `scripts/health.sh` (CX-11) to call `python3 plugins/plugin-creator/scripts/validate.py --repo .` (+ `--cross-repo "$LEARN_HUB_DIR"` when set), a per-directory unittest loop — `for d in plugins/*/scripts; do ls "$d"/test_*.py >/dev/null 2>&1 || continue; out=$(python3 -m unittest discover -s "$d" -p 'test_*.py' 2>&1) || { echo "$out"; exit 1; }; case "$out" in *'Ran 0 tests'*) echo "health: no tests ran in $d"; exit 1;; esac; done` (critique P3: `discover -s plugins` finds no test under `plugins/*/scripts/`, which have no `__init__.py`, and prints `Ran 0 tests … OK`), `node --test 'plugins/*/scripts/*.test.mjs'` — keeping S11-W0-3's two existing lines, not replacing them.
 - Commands: `python3 plugins/plugin-creator/scripts/validate.py --help` ; `python3 -m unittest discover -s plugins/plugin-creator/scripts -p 'test_*.py' -v` ; `$VALIDATE --repo .` ; `bash scripts/health.sh --fast` ; `ls plugins/plugin-creator/references/lists`
 - Done when: `--help` exits 0, no writes; unittest ends `OK`; `--repo .` reports pre-existing violations as ratchet entries, not hard failures; `health.sh --fast` exits 0; `bash scripts/health.sh` runs the loop and prints the test count of every `plugins/*/scripts` directory that holds `test_*.py`; all 5 list files exist.
@@ -682,7 +683,7 @@ query-set run. Routing-smoke near-misses:
 ### 4.4 Commands
 
 - Smoke: `bash scripts/eval.sh --smoke plugin-creator` (S12, I17) — smoke-tagged cases, free graders, `--ablation none --runs 1`; none of the smoke-tagged cases need more than the default read-only tool grant.
-- Release: `bash scripts/eval.sh --release plugin-creator -- --allow-tools "Write,Edit,Bash(python3 *)"` — two arms, `--runs 3 --threshold 0.8`, all cases; `scaffold-output` and `fix-then-release` need Write/Edit/Bash (factcheck F3).
+- Release: `bash scripts/eval.sh --release plugin-creator -- --allow-tools "Write,Edit,Bash(python3 *)"` — two arms, `--runs 1 --threshold 0.8` (OQ11-a: not a gate skill or report writer), all cases; `scaffold-output` and `fix-then-release` need Write/Edit/Bash (factcheck F3).
 
 ## 5. Acceptance criteria
 

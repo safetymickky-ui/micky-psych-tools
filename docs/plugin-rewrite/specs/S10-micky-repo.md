@@ -5,7 +5,7 @@
 | Repos | micky-psych-tools |
 | Units (today → target) | `scripts/{validate,bump,route}.py` (W0 fixes); `scripts/health.sh`, `.githooks/pre-commit` (new); `marketplace.json`; `.gitignore`; `README.md`; `CLAUDE.md`; `MEMORY.md` (+ `docs/history.md`); `ROUTING.md` (retired W3); per-plugin README/CHANGELOG/LICENSE backfill; the W3 skeleton PR (`alignment`/`evidence`/`visuals` moves) |
 | Waves | W0, W3, W5 |
-| Owner decisions assumed | OD1(a, ref only), OD2(a), OD3(a), OD6(a), OD7(a), OD9(a), OD10(a), OD12(a) |
+| Owner decisions assumed | OD1(a, ref only), OD2(a), OD3(a), OD6(a), OD7(a), OD9(a), OD10(a), OD12(a); owner answers OQ1-a, OQ10-a, OQ12-a, OQ16-a (all confirmed 2026-09-24) |
 | Defects closed | 27 of 27 assigned (HIGH: H13) |
 | Interfaces owned | I18, I23, I24 |
 | Interfaces consumed | I16 (owner S11), I17 (owner S12), I19 (owner S08), I20 (owner S08) |
@@ -158,7 +158,7 @@ Not applicable — this spec's units are not skills and issue no OPTIONAL cross-
 
 **I24 — `marketplace.json` shape (owned).** W0 (S10-W0-3): every entry's and the top-level `version` key deleted; trailing newline. W3 (S10-W3-1): top-level `$schema` added (**ASSUMES** the literal value Claude Code's own `plugin marketplace init` writes — not verified here, §8); top-level `description` kept; each entry reduced to `{name, source, category, keywords}` (no `description`, R88); `renames` added, append-only, no cycles. Consumer: S08's `validate.py --repo` (I19) checks this shape, does not redefine it.
 
-**Consumed.** I16 (S11) — ASSUMES `CLAUDE_CODE_PLUGIN_DIRS` switches to the single folder `/home/user/micky-psych-tools/plugins` at W3 entry, a precondition for S10-W3-2 but performed by S11; this spec never touches `delivery-log.md`. I17 (S12) — `docs/rewrite/ratchet.json` is `{generated_at, repo, entries:[{check_id,path,message}]}`, read/written via S12's `rewrite_gate.py` library (CX-19; no longer an ASSUMES). I19 (S08) — CLOSED (was an ASSUMES): S08-W3-1 now explicitly edits `scripts/health.sh` to call the new plugin-creator `validate.py` location, keeping S11-W0-3's own two lines (CX-11/CX-39). I20 (S08) — the frontmatter key whitelist and description-order rule are enforced by S08's W3 validator, not this spec's W0 fix.
+**Consumed.** I16 (S11) — under OQ10-a the cloud value switches to the folder paths only with the last W3 family merge (S11-W3-1), and S11-W3-5 drops the per-plugin segments the skeleton removes; S10-W3-2 needs no environment change first. This spec never touches `delivery-log.md`. I17 (S12) — `docs/rewrite/ratchet.json` is `{generated_at, repo, entries:[{check_id,path,message}]}`, read/written via S12's `rewrite_gate.py` library (CX-19; no longer an ASSUMES). I19 (S08) — CLOSED (was an ASSUMES): S08-W3-1 now explicitly edits `scripts/health.sh` to call the new plugin-creator `validate.py` location, keeping S11-W0-3's own two lines (CX-11/CX-39). I20 (S08) — the frontmatter key whitelist and description-order rule are enforced by S08's W3 validator, not this spec's W0 fix.
 
 ## 3. Change steps
 
@@ -244,8 +244,8 @@ Backfill-note body for every inserted gap entry: "no contemporaneous entry; see 
 | gridgeist | create, `## 0.1.0 — vendored` | already has one (untouched) | create (notes it is vendored) |
 | plugin-creator, comprehensive-review, firecrawl, plan-critique | none (top already == version) | add | keep |
 
-- LICENSE text: identical MIT, owner "Thanawat Suharit (Micky)", 2026. **ASSUMES** MIT is intended (matches gridgeist's own; §8).
-- Repo-level tooling CHANGELOG (plan OQ16, assumed option (a)): create `docs/rewrite/CHANGELOG.md` with a `# Changelog` header and one `## Unreleased` entry for the W0 tooling. Every repo tooling step in S10, S11 and S12 (scripts/, docs/rewrite/, CLAUDE.md, README.md) adds its entry there.
+- LICENSE text: identical MIT, owner "Thanawat Suharit (Micky)", 2026 (OQ1-a, confirmed 2026-09-24; matches gridgeist's own).
+- Repo-level tooling CHANGELOG (plan OQ16-a, confirmed 2026-09-24): create `docs/rewrite/CHANGELOG.md` with a `# Changelog` header and one `## Unreleased` entry for the W0 tooling. Every repo tooling step in S10, S11 and S12 (scripts/, docs/rewrite/, CLAUDE.md, README.md) adds its entry there.
 - Commands: presence check per file; `grep -c '^## ' plugins/<p>/CHANGELOG.md`.
 - Done when: §1.1's table shows `yes` everywhere except gridgeist's already-`yes` LICENSE, and every CHANGELOG top matches `plugin.json`.
 - Rollback: `git revert`.
@@ -288,7 +288,7 @@ echo "health: OK"
 ### W3
 
 **S10-W3-1 — `marketplace.json` W3 shape.**
-- Repo · depends on: S10-W0-3; S11-W3-1 (I16, read-only — the `renames` this step adds is what lets that switch survive a later `claude plugin marketplace update`, architecture §7; CX-34).
+- Repo · depends on: S10-W0-3. OQ10-a dropped the dependency on S11-W3-1: commits on the skeleton branch do not need the new environment value; the `renames` this step adds still let a later `claude plugin marketplace update` follow the rename (architecture §7; CX-34).
 - Files: edit `.claude-plugin/marketplace.json`.
 - Change: add top-level `"$schema": "<ASSUMES — §8>"`; reduce every entry to `{name, source, category, keywords}` (drop `description`); add `renames` (table below).
 
@@ -346,9 +346,9 @@ Then, for all 10: for each member plugin, move every plugin-root directory EXCEP
 - Rollback: `git revert`.
 
 **S10-W3-10 — MEMORY.md split.**
-- Repo · depends on: S10-W3-8, S11-W3-1 (CX-39 — S11-W3-1 also edits `MEMORY.md`, so this step must not overwrite S11's delivery line; both land in the same wave with this step keeping S11's line at `MEMORY.md:11` untouched).
+- Repo · depends on: S10-W3-8, S11-W3-2 (CX-39 — S11-W3-2 writes the delivery line at `MEMORY.md:11` at W1 entry, OQ12-a; this step must not overwrite it and keeps S11's line at `MEMORY.md:11` untouched).
 - Files: rewrite `MEMORY.md`; create `docs/history.md`.
-- Change: move `MEMORY.md:157-1137` ("Recent milestones", ~980 lines) verbatim into `docs/history.md` under a one-line header. Rewrite `MEMORY.md` to ≤6 KB: keep "Identity" (7-12) INCLUDING S11-W3-1's delivery line at `:11` verbatim; keep "Machine toolchain" (1137-1145), "Open threads" (1146-1148); delete "Current versions" (14-36, replaced by `validate.py --versions`, I19/S08 — not implemented here, only the table removed + a pointer line added); delete "Plugins at a glance" (38-157, R88); rewrite "Health check" to `bash scripts/health.sh`; add a "Current wave" line.
+- Change: move `MEMORY.md:157-1137` ("Recent milestones", ~980 lines) verbatim into `docs/history.md` under a one-line header. Rewrite `MEMORY.md` to ≤6 KB: keep "Identity" (7-12) INCLUDING S11-W3-2's delivery line at `:11` verbatim; keep "Machine toolchain" (1137-1145), "Open threads" (1146-1148); delete "Current versions" (14-36, replaced by `validate.py --versions`, I19/S08 — not implemented here, only the table removed + a pointer line added); delete "Plugins at a glance" (38-157, R88); rewrite "Health check" to `bash scripts/health.sh`; add a "Current wave" line.
 - Commands: `wc -c MEMORY.md`; `wc -l docs/history.md`; `diff <(sed -n '157,1137p' <saved-copy>) <(sed -n '2,$p' docs/history.md)` (save a pre-edit copy under the scratch dir, not `/tmp`) — byte-for-byte check.
 - Done when: `wc -c MEMORY.md` ≤ 6,144; the diff is empty (R89/K11 "verbatim moves only").
 - Rollback: `git revert`.
@@ -431,7 +431,7 @@ Not applicable — no skill description or trigger phrase changes. (`/route`'s d
 2. `ASSUMES` (I24, §2.7): the `$schema` value. Not verified (no network access this session). Check: run `claude plugin marketplace init` in a scratch dir and read the value it emits, before S10-W3-1.
 3. **CLOSED** (I19, §2.7; was an ASSUMES): S08-W3-1 confirmed to edit `scripts/health.sh`'s invocation path directly (CX-11).
 4. ARCH-CONFLICT: none. The apparent tension (architecture §10 W0 lists only "strip entry versions"; this spec's task instructions add "and the top-level version") is not a conflict — §2.2's target tree and §7 both confirm the top-level version is eventually deleted; this spec performs it earlier (W0), which does not contradict the target state.
-5. Owner decision with no OD: the LICENSE text backfilled in S10-W0-8 is assumed MIT (matches gridgeist's). Check: ask the owner; default MIT if unanswered by W0 exit (low-risk, reversible).
+5. **CLOSED (OQ1-a, 2026-09-24).** The LICENSE text backfilled in S10-W0-8 is MIT, owner "Thanawat Suharit (Micky)", 2026 (matches gridgeist's).
 6. Depends on S11: the exact wording of the "delivery pointer" line in S10-W3-8's rewritten `CLAUDE.md` (§3) should match whatever short phrase S11's own spec settles on for referring to `docs/rewrite/delivery-log.md` — not verified against S11's final text here beyond what its §2.7 (already read) shows; a final wording pass against S11's committed language is a cheap follow-up at execution time, not before.
 
 (also wrote: none — this is the only spec S10 authored)

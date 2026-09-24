@@ -49,7 +49,7 @@ Every id with prefixes `decision-interview-`/`plan-critique-` confirmed this ses
 
 | id | sev | evidence (path:line) | problem | fix step | wave |
 |---|---|---|---|---|---|
-| decision-interview-1 | M | `find plugins/decision-interview -type f` → 3 files only | no evals/README/CHANGELOG; 0.1.0→0.1.1 recorded only in MEMORY.md | S10-W0-8 (CHANGELOG backfill); S02-W2-2 (0.1.2 release entry); S02-W3-1 (evals); S02-W3-4 (README) | W0/W2/W3 |
+| decision-interview-1 | M | `find plugins/decision-interview -type f` → 3 files only | no evals/README/CHANGELOG; 0.1.0→0.1.1 recorded only in MEMORY.md | S10-W0-8 (CHANGELOG backfill); S02-W2-1 (its CHANGELOG entry under `## Unreleased`; no W2 release, OQ12-a); S02-W3-1 (evals); S02-W3-4 (README) | W0/W2/W3 |
 | decision-interview-2 | M | SKILL.md:3 vs :15,43 | description's unprompted trigger drops the materiality threshold | S02-W3-2: description says "once two decisions that would change the work pile up or one blocks it"; body names the threshold | W3 |
 | decision-interview-3 | M | SKILL.md:81; picker failures at MEMORY.md:582,647,1011 | fallback triggers undetectable; no absent/errored-picker path | S02-W3-2: fallback fires on protocol's stop/silence rules (I02); every eval case has no picker | W3 |
 | decision-interview-4 | L | DI:81 "silence is a stop" vs PC:50 "…not a stop verdict" vs intent-lock:190 | same behavior, contradictory words | S02-W3-2: DI drops its own wording, points to protocol's silence rule | W3 |
@@ -274,7 +274,7 @@ Consumed:
 - Done when: `grep -c "intent-lock:intent-lock" plugins/plan-critique/skills/plan-critique/SKILL.md` → ≥1; same grep on the DI file → ≥1.
 - Rollback: `git checkout -- plugins/decision-interview/skills/decision-interview/SKILL.md plugins/plan-critique/skills/plan-critique/SKILL.md`.
 
-**S02-W2-2** — micky-psych-tools · depends on: S02-W2-1
+**S02-W2-2** — DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. micky-psych-tools · depends on: S02-W2-1
 - Change: release the W2-1 fix for both plugins — `python3 scripts/bump.py decision-interview patch --write`; `python3 scripts/bump.py plan-critique patch --write`.
 - Files: both plugins' `.claude-plugin/plugin.json` and `CHANGELOG.md` (entry: "Interim intent-lock handoff sentence (plan-critique-2 interim fix)."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for either entry.

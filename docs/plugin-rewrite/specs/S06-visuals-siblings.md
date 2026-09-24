@@ -5,7 +5,7 @@
 | Repos | micky-psych-tools (`/home/user/micky-psych-tools`) |
 | Units (today → target) | `plugins/clinical-infographic`(+`/infographic`) → `plugins/visuals/skills/clinical-infographic`+dmi alias `visuals:infographic`. `plugins/code-explainer`(+`/explain-code`) → `plugins/visuals/skills/code-explainer`+dmi alias `visuals:explain-code`. |
 | Waves | W0 (smoke seeds, CX-4); W1 (CI: light-lock+strip+contrast+≥12px text in template AND example, H36/H37; CE: remove dead template pointers, H42); W2 (CI render/verify via `check-html.mjs`, filing via the sink); W3 (move into `visuals`; CI `lessons-learned.md`→CHANGELOG history + SKILL links the example; CE byte-fidelity flag on `check-html.mjs`, "Dark Modern" naming, ML boundary) |
-| Owner decisions assumed | OD1-a, OD2-a, OD3-a, OD4-a, OD5-a, OD9-a, OD10-a, OD13-a |
+| Owner decisions assumed | OD1-a, OD2-a, OD3-a, OD4-a, OD5-a, OD9-a, OD10-a, OD13-a; owner answers OQ12-a, OQ13-a (all confirmed 2026-09-24) |
 | Defects closed | 16 of 16 assigned (HIGH: H36, H37, H42) |
 | Interfaces owned | none |
 | Interfaces consumed | I01(S01), I07(S05), I08(S16), I09(S15), I11(S07), I17(S12), I20(S08), I23(S10) |
@@ -76,7 +76,7 @@ No deferrals; no ratchet entry past W3.
 
 **After W1** (plugins stay at today's names): `clinical-infographic/skills/clinical-infographic/references/infographic-template.html` and `examples/ppgl-perioperative-management.html` both edited in place (no new files); `code-explainer/skills/code-explainer/SKILL.md`, `README.md` edited (pointer removal only).
 
-**After W2**: `clinical-infographic/scripts/check-html.mjs` (byte-identical copy, created by S05-W2-2, this spec's steps only call it); SKILL.md Step 2.5/Step 3 rewritten.
+**After W2**: no `check-html.mjs` copy in clinical-infographic — Step 2.5 calls concept-animation's copy (OQ13-a); SKILL.md Step 2.5/Step 3 rewritten.
 
 **After W3** (S10's skeleton moves both plugins unchanged into `plugins/visuals/`; S05's skeleton already created `references/html-artifact-contract.md`+`render-verify.md`+the canonical `scripts/check-html.mjs`): `V=plugins/visuals` gains `skills/clinical-infographic/{SKILL.md,references/{design-system,source-contract}.md}` (CI's `lessons-learned.md` deleted, its content folded into CHANGELOG), `skills/code-explainer/{SKILL.md,references/{explanation-contract,vscode-shell}.md}`, `skills/infographic/`+`skills/explain-code/` (dmi aliases), both examples moved unchanged, CHANGELOG/README entries merged into the family's. Removed in W3 (S10's skeleton): `plugins/clinical-infographic/`, `plugins/code-explainer/`, both `commands/` files.
 
@@ -111,7 +111,7 @@ Actions: keep|cut(reason)|move→file|script→name|new. Targets: CI SKILL.md �
 
 **CI SKILL.md, W1**: title/prime-directive/Step0/Step1 keep verbatim. Step2's "load-bearing rules" list gains "column header contrast ≥4.5:1(WCAG AA for <18.66px bold)" and "no text below 12px" (ci-3, ci-4). Step2.5: rewrite per H-CI1 (ci-5). Step3: keep, add the example link (ci-10). Failure conditions gain "a column header or badge fails WCAG AA" and "any text renders below 12px".
 
-**CI SKILL.md, W2**: no further body change — Step2.5's H-CI1 text (written at W1) already names `check-html.mjs`; W2 only makes the script exist (S05-W2-2) and adds filing per H-CI2 (ci-6) to Step3.
+**CI SKILL.md, W2**: Step 2.5 → H-CI1, with the W2 path to concept-animation's `check-html.mjs` (OQ13-a: S05-W2-2's copies are dropped); filing per H-CI2 (ci-6) added to Step3.
 
 **CI SKILL.md, W3**: reference-load line drops `lessons-learned.md` entirely (file deleted); Failure conditions and Handoffs get namespaced (`vault-keeper:vault-keeper`, `comprehensive-review`→`evidence:comprehensive-review`, `pubmed-research-note`→`evidence:pubmed-research-note`).
 
@@ -138,28 +138,28 @@ No new reference files this spec creates — I07's family files (`html-artifact-
 
 ### 2.5 Scripts
 
-This spec owns no scripts. It consumes `check-html.mjs`(I07, owner S05): a byte-identical copy is created inside `clinical-infographic/scripts/` by S05-W2-2 (not by any step in this spec); this spec's own CI-W2 step only calls it and updates SKILL.md text to name it. Code-explainer gets no `scripts/` directory in W1/W2 — its byte-fidelity check is written into the FAMILY `check-html.mjs` at W3 via a new `--source <file>` flag (S05 implements; this spec's W3 step states the ASSUMES and updates `explanation-contract.md`'s wording, §2.3).
+This spec owns no scripts. It consumes `check-html.mjs` (I07, owner S05): in W2, CI calls concept-animation's copy (`${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs`; OQ13-a dropped S05-W2-2's copies); from W3, the family copy at `visuals/scripts/`. This spec's own CI-W2 step only calls it and updates SKILL.md text to name it. Code-explainer gets no `scripts/` directory in W1/W2 — its byte-fidelity check is written into the FAMILY `check-html.mjs` at W3 via a new `--source <file>` flag (S05 implements; this spec's W3 step states the ASSUMES and updates `explanation-contract.md`'s wording, §2.3).
 
-`check-html.mjs --kind infographic <file> --own` (I07-A) runs static-only checks (no render/drive needed for this kind): I07-B document rules, I07-D sheet rules (no dark-mode block, `.mech`-shaped strip stacking). Exit 0 pass / 1 fail / 2 usage / 3 incomplete, per I07-G.
+`check-html.mjs --kind infographic <file>` (I07-A) runs its static subset and delegates the I07-B document rules and the I07-D sheet rules (no dark-mode block, `.mech`-shaped strip stacking) to `audit:visual`; without learn-hub the verdict is `incomplete` (OQ13-a). Exit 0 pass / 1 fail / 2 usage / 3 incomplete, per I07-G.
 
 ### 2.6 Handoffs
 
 Exact sentences. W2 names given (unprefixed siblings); W3 substitutes `vault-keeper:vault-keeper`→unchanged, `comprehensive-review:comprehensive-review`→`evidence:comprehensive-review`, `pubmed-research-note:pubmed-research-note`→`evidence:pubmed-research-note`, `concept-animation:concept-animation`→`visuals:concept-animation`, `ml-concept-lab:ml-concept-lab`→`visuals:ml-concept-lab`.
 
 **H-CI1 Step 2.5 render/verify** (replaces SKILL.md:124-135, ci-5):
-> Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs <file> --kind infographic`. It uses `npm run audit:visual` when `$LEARN_HUB_DIR` is valid, its own static-only port otherwise; the JSON `tool` field says which ran. Proceed to Step 3 only on `verdict:"pass"`. On `fail`, fix each issue's `fix` text (no dark-mode block, ≥12px text, the `.mech` strip stacks on mobile, self-contained) and re-run. This step never changes what a fact says, only whether the page renders it correctly.
+> Run `node ${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs <file> --kind infographic` (W2; from W3, `${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs` — OQ13-a keeps one copy under concept-animation until S10-W3-2 moves it). It runs its static checks, then `npm run audit:visual` when `$LEARN_HUB_DIR` is valid; without learn-hub it returns `incomplete`. Proceed to Step 3 only on `verdict:"pass"`. On `fail`, fix each issue's `fix` text (no dark-mode block, ≥12px text, the `.mech` strip stacks on mobile, self-contained) and re-run. On `incomplete` (exit 3), say the checks did not run and why, and go on to Step 3 with that statement (`audit.verdict: "incomplete"`). This step never changes what a fact says, only whether the page renders it correctly.
 
 **H-CI2 Step 3 filing** (I11 visual filing sentence, owner S07 §2.7, adopted verbatim per CX-8): "Run `vault-keeper:vault-keeper` (OPTIONAL). If it is not available in this session — or the sink cannot resolve a destination and this is a non-interactive run — do not stall: file via `vault-keeper` when present; if absent, write `<slug>.html` and `<slug>.meta.json` to `$LEARN_HUB_DIR/research-notes/visuals/` when its marker validates, otherwise to cwd, and say where." As a separate sentence: "Filing never publishes: the user files it into the Learn hub with `ingest-visual` ('file <asset>')." `.meta.json`: `{kind:"infographic",title:"<h1>",description:"<topic/scope>",topic_hint:"<id/phrase/null>",source_report:"<basename>",producer:"clinical-infographic",created:"<YYYY-MM-DD>",audit:{tool,verdict:"pass|incomplete"}}` (fields per I09, same shape S05's H-7 defines for animations).
 
-**H-CE1 Step 3.5 fidelity** (replaces explanation-contract.md:145-146, ce-2, W3): "Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs <file> --kind code-explainer --source <original-source-file>`. It diffs the rendered code pane's text against the source bytes and reports any escaping or truncation drift as an issue. This is on top of the render checklist above, not instead of it."
+**H-CE1 Step 3.5 fidelity** (replaces explanation-contract.md:145-146, ce-2, W3): "Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs <file> --kind code-explainer --source <original-source-file>`. It reads the code pane's text from the HTML (no browser, OQ13-a) and diffs it against the source bytes and reports any escaping or truncation drift as an issue. This is on top of the render checklist above, not instead of it."
 
 ### 2.7 Interfaces (consumed only — this spec owns none)
 
 | Interface | Owner | ASSUMES |
 |---|---|---|
 | I01 | S01 | for an HTML deliverable, "open the output"=first line of the chat hand-back |
-| I07 | S05 | `check-html.mjs --kind infographic` runs I07-B/I07-D static checks only, no render/drive (I07-A). The `--kind code-explainer --source <file>` flag is this spec's own to implement (S06-W3-3, CX-33) on top of S05-W3-1's canonical script — not an ASSUMES on S05. |
-| I08 | S16 | `audit:visual --kind infographic` implements the same rule set as `check-html.mjs`'s own port (I07-K) |
+| I07 | S05 | `check-html.mjs --kind infographic` runs its static subset and delegates I07-B/I07-D to `audit:visual` (OQ13-a). The `--kind code-explainer --source <file>` flag is this spec's own to implement (S06-W3-3, CX-33) on top of S05-W3-1's canonical script — not an ASSUMES on S05. |
+| I08 | S16 | `audit:visual --kind infographic` implements I07-B/I07-D; `check-html.mjs` has no own port (OQ13-a, I07-K) |
 | I09 | S15 | `research-notes/visuals/<slug>.html`+`<slug>.meta.json`, `kind:"infographic"` accepted, fields per H-CI2 |
 | I11 | S07 | producers call `vault-keeper:vault-keeper` with the two files, never `sink.py` directly |
 | I17 | S12 | layout `plugins/<p>/evals/<skill>/<case>/`; tags per §4.1; alias skills exempt from ≥3-case rule |
@@ -210,7 +210,7 @@ Shorthand: `CI`=`plugins/clinical-infographic`, `CE`=`plugins/code-explainer`(bo
 - Done when: `all checks passed`.
 - Rollback: n/a.
 
-**S06-W1-5** · depends on: S06-W1-1, S06-W1-2, S06-W1-3
+**S06-W1-5** · DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. · depends on: S06-W1-1, S06-W1-2, S06-W1-3
 - Change: release the W1 fixes — `python3 scripts/bump.py clinical-infographic patch --write`; `python3 scripts/bump.py code-explainer patch --write`.
 - Files: both plugins' `.claude-plugin/plugin.json` and `CHANGELOG.md` (entry: "Light-lock, contrast, legibility fixes (H36/H37); dead template pointers removed (H42)."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for either entry.
@@ -220,14 +220,14 @@ W1 exit: no `prefers-color-scheme:dark` block in either CI file; both pass `audi
 
 ### Wave W2 (CI only — code-explainer has no W2 step)
 
-**S06-W2-1** · depends on: S05-W2-2 (creates `CI/scripts/check-html.mjs`), S16-W2-3 (consumers before producers — the `.meta.json` filing shape this step writes against must exist first, CX-35)
+**S06-W2-1** · depends on: S05-W2-1 (creates concept-animation's `check-html.mjs`, the one copy — OQ13-a), S16-W2-3 (consumers before producers — the `.meta.json` filing shape this step writes against must exist first, CX-35)
 - Files: edit `CI/skills/clinical-infographic/SKILL.md` (Step 2.5, Step 3).
 - Change: Step 2.5 → H-CI1 (§2.6, ci-5); Step 3's filing item → H-CI2 (§2.6, ci-6, `.meta.json` per I09).
-- Commands: `node CI/scripts/check-html.mjs CI/examples/ppgl-perioperative-management.html --kind infographic --own`; `grep -c "vault/assets" CI/skills/clinical-infographic/SKILL.md`.
+- Commands: `node plugins/concept-animation/scripts/check-html.mjs CI/examples/ppgl-perioperative-management.html --kind infographic`; `grep -c "vault/assets" CI/skills/clinical-infographic/SKILL.md`.
 - Done when: `check-html.mjs` prints `"verdict":"pass"` (or stated `"incomplete"` if no learn-hub/browser available, exit 3); the `vault/assets` grep = 0.
 - Rollback: `git checkout -- CI/skills/clinical-infographic/SKILL.md`.
 
-**S06-W2-2** · depends on: S06-W2-1
+**S06-W2-2** · DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. · depends on: S06-W2-1
 - Change: release the W2 fix — `python3 scripts/bump.py clinical-infographic minor --write`.
 - Files: `CI/.claude-plugin/plugin.json`, `CI/CHANGELOG.md` (entry: "Render/verify via `check-html.mjs`; filing via the sink."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for this entry.
@@ -246,13 +246,13 @@ W2 exit: `check-html.mjs --kind infographic` passes on both the template-derived
 
 **S06-W3-2** · depends on: S06-W3-1, S01-W3-2, S12-W3-2 (CX-37)
 - Files: edit `V/skills/clinical-infographic/SKILL.md` (frontmatter, reference-load line, Handoffs, Failure), `V/skills/code-explainer/SKILL.md` (description, Not-for, Handoffs).
-- Change: namespace substitution per §2.6; CI's reference-load line drops `lessons-learned.md`; CI Step 3 links the example (ci-10); CE description "(Dark+ theme…)"→"(Dark Modern theme…)"(ce-3); CE Not-for gains the ml-concept-lab line(ce-6).
+- Change: namespace substitution per §2.6; CI's reference-load line drops `lessons-learned.md`; CI Step 3 links the example (ci-10); CE description "(Dark+ theme…)"→"(Dark Modern theme…)"(ce-3); CE Not-for gains the ml-concept-lab line(ce-6); CI Step 2.5's `check-html.mjs` path → `${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs` (OQ13-a).
 - Commands: `python3 measure.py skill V/skills/clinical-infographic/SKILL.md V/skills/code-explainer/SKILL.md`; `grep -c "Dark+" V/skills/code-explainer/SKILL.md V/README.md V/skills/code-explainer/references/vscode-shell.md`; `grep -c "ml-concept-lab" V/skills/code-explainer/SKILL.md`.
 - Done when: both `measure.py` calls report `yaml_valid:true`, description ≤1,024; `Dark+` grep = 0; `ml-concept-lab` grep ≥1.
 - Rollback: `git checkout -- V/skills/clinical-infographic/SKILL.md V/skills/code-explainer/SKILL.md`.
 
 **S06-W3-3** · depends on: S06-W3-2, S05-W3-1 (this plugin's own step now implements the flag itself, per CX-33 — depends on S05-W3-1 only for `check-html.mjs` existing at `V/scripts/`)
-- Files: edit `V/scripts/check-html.mjs` and its test file (implement `--kind code-explainer --source <file>`, diffing the rendered code pane's text against the source bytes for escaping/truncation drift, per H-CE1); edit `V/skills/code-explainer/references/explanation-contract.md` (:22, :145-146), `V/skills/code-explainer/references/vscode-shell.md` (:8, :35-36).
+- Files: edit `V/scripts/check-html.mjs` and its test file (implement `--kind code-explainer --source <file>`, diffing the code pane's text, read from the HTML without a browser (OQ13-a), against the source bytes for escaping/truncation drift, per H-CE1); edit `V/skills/code-explainer/references/explanation-contract.md` (:22, :145-146), `V/skills/code-explainer/references/vscode-shell.md` (:8, :35-36).
 - Change: button-card rule → `role="button" tabindex="0"` div (ce-4); fidelity-check item → H-CE1 (§2.6, ce-2); theme line → "Dark Modern" only (ce-3); fit rule gains the stacked-layout scroll clarification (ce-5).
 - Commands: `grep -c "Cards are real \`<button>\`" V/skills/code-explainer/references/explanation-contract.md`; `grep -c "check-html.mjs --source" V/skills/code-explainer/references/explanation-contract.md`; `grep -c "Dark+" V/skills/code-explainer/references/vscode-shell.md`; `node --test 'V/scripts/*.test.mjs'`.
 - Done when: first grep = 0, second ≥1, third = 0; tests pass, including a `--kind code-explainer --source <file>` case.
@@ -467,7 +467,7 @@ Smoke: `bash scripts/eval.sh --smoke visuals -- --allow-tools "Write,Bash(node *
 3. `node --input-type=module -e "const [{auditInfographicResponsive},{readFileSync}]=await Promise.all([import('$LEARN_HUB_DIR/scripts/lib/infographic-responsive.mjs'),import('fs')]); console.log(JSON.stringify(auditInfographicResponsive(readFileSync(process.argv[1],'utf8'))))" <file>` prints `[]` for both CI files (post-W1; CX-56).
 4. `grep -oP 'font-size:\s*\K[0-9.]+(?=px)' <file> | awk '$1<12'` prints nothing for both CI files (post-W1).
 5. `grep -c "explainer-template" plugins/code-explainer/skills/code-explainer/SKILL.md plugins/code-explainer/README.md` = 0 (post-W1).
-6. `node plugins/clinical-infographic/scripts/check-html.mjs <file> --kind infographic --own` reports `"verdict":"pass"` for the template-filled example (post-W2).
+6. `node plugins/concept-animation/scripts/check-html.mjs <file> --kind infographic` with `$LEARN_HUB_DIR` set reports `"verdict":"pass"` for the template-filled example (post-W2; OQ13-a).
 7. `grep -c "vault/assets" plugins/visuals/skills/clinical-infographic/SKILL.md` = 0 (ci-6 closed, post-W3).
 8. `test ! -f plugins/visuals/skills/clinical-infographic/references/lessons-learned.md` (post-W3).
 9. `grep -c "Dark+" plugins/visuals/skills/code-explainer/SKILL.md plugins/visuals/README.md plugins/visuals/skills/code-explainer/references/vscode-shell.md` = 0 (post-W3).
@@ -494,7 +494,7 @@ No phrase is removed or moved outside the two commands — neither skill's defec
 
 ## 8. Open questions
 
-- **ASSUMES-1** (I07, owner S05): `check-html.mjs` accepts `--kind infographic` (static-only, per I07-A) at `V/scripts/`. `--kind code-explainer --source <file>` is no longer an assumption on S05 (CX-33) — S06-W3-3 implements it directly.
+- **ASSUMES-1** (I07, owner S05): `check-html.mjs` accepts `--kind infographic` (static subset, then `audit:visual`; OQ13-a) at `V/scripts/`. `--kind code-explainer --source <file>` is no longer an assumption on S05 (CX-33) — S06-W3-3 implements it directly.
 - **ASSUMES-2** (I09, owner S15): `.meta.json`'s exact field list and the `-2`/`-3` collision-suffix rule, reused here from S05's H-7 shape. Check: read S15's spec once written.
 - **ASSUMES-3** (I11, owner S07): producers call `vault-keeper` with exactly two files. Check: read S07's spec once written.
 - **ASSUMES-4** (path layout, owner S10/S08): where the merged `visuals` CHANGELOG lives. Check: read S10's skeleton-PR spec and S08's release-tooling spec once written; S06-W3-1's CHANGELOG path is written against this assumption.

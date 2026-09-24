@@ -294,7 +294,7 @@ Path shorthand used below: `Q` = `plugins/pubmed-research-note` (W2 location); `
 - Commands / done when: `grep -c "contract: report/1" $Q/references/report-contract.md` = 1; `ls $Q/evals/fixtures | wc -l` = 3.
 - Rollback: `git rm $Q/references/report-contract.md && git rm -r $Q/evals/fixtures`.
 
-**S03-W2-5** · depends on: S03-W2-1, S03-W2-2, S03-W2-3, S03-W2-4
+**S03-W2-5** · DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. · depends on: S03-W2-1, S03-W2-2, S03-W2-3, S03-W2-4
 - Change: release the W2 fixes — `python3 scripts/bump.py pubmed-research-note minor --write` (CX-13).
 - Files: `$Q/.claude-plugin/plugin.json`, `$Q/CHANGELOG.md` (entry: "H44 closed: single Assumed: line, OPTIONAL fallbacks, runtime MCP resolution, sink filing, report/1 contract."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for this entry.

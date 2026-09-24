@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | Repos | micky-psych-tools (`/home/user/micky-psych-tools`) and learn-hub (`/home/user/learn-hub`) |
-| Units (today → target) | `plugins/concept-animation`(+`/animate`) → `plugins/visuals/skills/concept-animation`+dmi alias `visuals:animate`. `plugins/ml-concept-lab`(+`/visualize`) → `plugins/visuals/skills/ml-concept-lab`+dmi alias `visuals:visualize`. learn-hub `.claude/skills/concept-animation` (the copy) → absorbed then deleted (atomic swap, W2). New family files: `references/html-artifact-contract.md`, `references/render-verify.md`, `scripts/check-html.mjs`(+tests, fallback port), parity fixture. |
-| Waves | W1 (copy YAML fix, H43); W2 (layout port+5-frame verify both skills; `check-html.mjs`+parity fixture; filing via sink; atomic swap deletes copy); W3 (move into `visuals`; shared contract stated once; ML size trim) |
-| Owner decisions assumed | OD1-a, OD2-a, OD3-a, OD4-a, OD5-a, OD9-a, OD10-a, OD13-a, OD14-a |
+| Units (today → target) | `plugins/concept-animation`(+`/animate`) → `plugins/visuals/skills/concept-animation`+dmi alias `visuals:animate`. `plugins/ml-concept-lab`(+`/visualize`) → `plugins/visuals/skills/ml-concept-lab`+dmi alias `visuals:visualize`. learn-hub `.claude/skills/concept-animation` (the copy) → absorbed then deleted (atomic swap, W2). New family files: `references/html-artifact-contract.md`, `references/render-verify.md`, `scripts/check-html.mjs`(+tests; a static subset that delegates to learn-hub `audit:visual`, OQ13-a). |
+| Waves | W1 (copy YAML fix, H43); W2 (layout port+5-frame verify both skills through `audit:visual`; `check-html.mjs`, delegating (OQ13-a); filing via sink; atomic swap deletes copy); W3 (move into `visuals`; shared contract stated once; ML size trim) |
+| Owner decisions assumed | OD1-a, OD2-a, OD3-a, OD4-a, OD5-a, OD9-a, OD10-a, OD13-a, OD14-a; owner answers OQ12-a, OQ13-a (all confirmed 2026-09-24) |
 | Defects closed | 27 of 27 assigned (HIGH: H38, H39, H40, H41, H43) |
 | Interfaces owned | I07 |
 | Interfaces consumed | I01(S01), I08(S16), I09(S15), I11(S07), I16(S11), I17(S12), I20(S08), I23(S10) |
@@ -60,14 +60,14 @@ Every id, prefixes `concept-animation-`,`ml-concept-lab-`,`concept-animation (le
 | concept-animation-9 | L | — | 0 hits `grep examples SKILL.md` | Example orphaned → S05-W2-3: Step 3 links it | W2 |
 | concept-animation-10 | L | — | only SKILL.md+references/ | No evals → S05-W2-5: 4 cases | W2 |
 | ml-concept-lab-1 | H | H40 | build-contract:140,141 same as ca-1. P2: stage 0px, 4 frames | Same collapse → S05-W2-4: I07-C port | W2 |
-| ml-concept-lab-2 | H | H41 | build-contract:195-202 bare `import{chromium}`,1 viewport; `ERR_MODULE_NOT_FOUND`(global-only) | Recipe can't run → S05-W2-4: resolves via `npm root -g`; recipe deleted | W2 |
+| ml-concept-lab-2 | H | H41 | build-contract:195-202 bare `import{chromium}`,1 viewport; `ERR_MODULE_NOT_FOUND`(global-only) | Recipe can't run → S05-W2-4: recipe deleted; Step 3.5 calls `check-html.mjs`, which delegates the render to `audit:visual` (OQ13-a) | W2 |
 | ml-concept-lab-3 | M | — | build-contract:103 "rel err<1e-5" vs example:333-346 absolute-diff impl | Contract drifted → S05-W2-4: abs diff+floor(H-10) | W2 |
 | ml-concept-lab-4 | M | — | SKILL.md:15 clinical→CI;:196-198 clinical→CA | Routing self-contradicts → S05-W2-4: all clinical→CA | W2 |
 | ml-concept-lab-5 | M | — | SKILL.md:76-77 path unresolvable from skill dir | S05-W2-4: → `${CLAUDE_PLUGIN_ROOT}/examples/…` | W2 |
 | ml-concept-lab-6 | M | — | body 3,533 tok; JS recipe in fence; 10,839 tok full load | Over-long → S05-W2-4: script(W2); S05-W3-3: ≤5,000(W3) | W2/W3 |
 | ml-concept-lab-7 | L | — | SKILL.md:9-10 2 CA-overlapping phrases | Over-broad → S05-W2-4: removed | W2 |
 | ml-concept-lab-8 | L | — | example doctype-less | Quirks mode → S05-W2-4: full document | W2 |
-| ml-concept-lab-9 | L | — | no evals/CHANGELOG/README | S05-W2-5: → 4 cases; S05-W2-6: +files | W2 |
+| ml-concept-lab-9 | L | — | no evals/CHANGELOG/README | S05-W2-5: → 4 cases; S05-W2-6: README/CHANGELOG entries (no bump, OQ12-a) | W2 |
 | concept-animation (learn-hub copy)-1 | H | H43 | copy SKILL.md:3 unquoted `description:` w/": " → ScannerError | Strict loaders get empty metadata → S05-W1-1: folded `>-` | W1 |
 | concept-animation (learn-hub copy)-2 | M | — | copy grammar:58 `min()` overridden. P2: 116px at 844×390 | Collapses landscape → S05-W2-3: `max()` port; S05-W2-8: copy deleted | W2 |
 | concept-animation (learn-hub copy)-3 | M | — | copy SKILL.md:129 omits 844×390 | S05-W2-3: → 5-frame check; S05-W2-8: copy deleted | W2 |
@@ -81,15 +81,15 @@ No deferrals; no ratchet entry kept past W3.
 
 ### 1.4 Other findings
 
-Shared tail (verify/output/handoffs/close/failure) = 41% CA / 35% ML body → W3 moves into `html-artifact-contract.md`. The layout fix existed only in the learn-hub copy → one ported grammar(I07-C); ground truth lives entirely in learn-hub scripts, ported by `check-html.mjs`. NEW-1(P3): Playwright with `PUPPETEER_EXECUTABLE_PATH` crashes; its own Chromium works → resolution order §2.5. NEW-3: the copy's example differs from `vault/tms-principles/…html` only at line 156 (vault has the fixed floor). NEW-6(P6): a quoted test glob is required, Node 22 fails on a bare dir. NEW-7: `auditAnimationLayout` misses copy-2's landscape defect — only render check I07-G catches it. NEW-9/10/11(P4/P5): both examples' non-layout logic is sound; the W2 contract renders clean at all 5 frames. NEW-12: refs need `## Contents`.
+Shared tail (verify/output/handoffs/close/failure) = 41% CA / 35% ML body → W3 moves into `html-artifact-contract.md`. The layout fix existed only in the learn-hub copy → one ported grammar(I07-C); ground truth lives entirely in learn-hub scripts, reached through `check-html.mjs`'s delegation (OQ13-a). NEW-1(P3): Playwright with `PUPPETEER_EXECUTABLE_PATH` crashes; its own Chromium works → moot under OQ13-a: `check-html.mjs` runs no browser, and `audit:visual` (S16) resolves Chromium. NEW-3: the copy's example differs from `vault/tms-principles/…html` only at line 156 (vault has the fixed floor). NEW-6(P6): a quoted test glob is required, Node 22 fails on a bare dir. NEW-7: `auditAnimationLayout` misses copy-2's landscape defect — only render check I07-G catches it. NEW-9/10/11(P4/P5): both examples' non-layout logic is sound; the W2 contract renders clean at all 5 frames. NEW-12: refs need `## Contents`.
 
 ## 2. Target state
 
 ### 2.1 Location and tree
 
-**After W2** (plugins stay at today's names): `CA` gets `plugin.json`(v0.2.0)+README/CHANGELOG/LICENSE; `commands/animate.md`(pointer only, deleted W3); rebuilt `examples/tms-electromagnetic-induction.html`(+`.final.png`); `scripts/check-html.mjs`+`.test.mjs`+`fixtures/{bad-animation.html,bad-infographic.html,parity.json}`(canonical, I07); `skills/concept-animation/SKILL.md`+`references/animation-grammar.md`; 4 eval cases. `ML` mirrors it (v0.2.0, README/CHANGELOG/LICENSE, rebuilt example, byte-identical `check-html.mjs`, `skills/ml-concept-lab/SKILL.md`+`references/{build-contract,concept-patterns}.md`, 4 eval cases). Plus `plugins/clinical-infographic/scripts/check-html.mjs`(byte-identical copy, S06 uses it). learn-hub `.claude/skills/concept-animation/` DELETED on a branch by S05-W2-8, merged by S11-W2-3 (CX-30).
+**After W2** (plugins stay at today's names): `CA` gets README/CHANGELOG/LICENSE (W2 entries under `## Unreleased`, no bump — OQ12-a); `commands/animate.md`(pointer only, deleted W3); rebuilt `examples/tms-electromagnetic-induction.html`(+`.final.png`); `scripts/check-html.mjs`+`.test.mjs` (I07; the only copy — ml-concept-lab and clinical-infographic call it until W3, OQ13-a); `skills/concept-animation/SKILL.md`+`references/animation-grammar.md`; 4 eval cases. `ML` mirrors it (README/CHANGELOG/LICENSE, rebuilt example, `skills/ml-concept-lab/SKILL.md`+`references/{build-contract,concept-patterns}.md`, 4 eval cases). learn-hub `.claude/skills/concept-animation/` DELETED on a branch by S05-W2-8, merged by S11-W2-3 (CX-30).
 
-**After W3** (S10's skeleton moves both plugins unchanged into `plugins/visuals/`; S05 edits content): `V=plugins/visuals` gets `.claude-plugin/plugin.json`(S10 creates; S05-W3-4 sets fields), README/CHANGELOG/LICENSE, `references/{html-artifact-contract,render-verify}.md`(I07, stated once), `scripts/check-html.mjs`+`.test.mjs`+`fixtures/`(single copy), both examples(+S06's), `skills/{concept-animation,ml-concept-lab,animate(dmi),visualize(dmi)}/`+S06's 4 skills, `evals/{concept-animation,ml-concept-lab}/`. Removed in W3: `plugins/concept-animation/`, `plugins/ml-concept-lab/`, both `commands/` files, the 2 non-canonical `check-html.mjs` copies after `cmp` confirms identity.
+**After W3** (S10's skeleton moves both plugins unchanged into `plugins/visuals/`; S05 edits content): `V=plugins/visuals` gets `.claude-plugin/plugin.json`(S10 creates; S05-W3-4 sets fields), README/CHANGELOG/LICENSE, `references/{html-artifact-contract,render-verify}.md`(I07, stated once), `scripts/check-html.mjs`+`.test.mjs`(single copy), both examples(+S06's), `skills/{concept-animation,ml-concept-lab,animate(dmi),visualize(dmi)}/`+S06's 4 skills, `evals/{concept-animation,ml-concept-lab}/`. Removed in W3: `plugins/concept-animation/`, `plugins/ml-concept-lab/`, both `commands/` files.
 
 ### 2.2 Frontmatter
 
@@ -140,6 +140,8 @@ metadata:
 ---
 ```
 
+At W2, ml-concept-lab's first `allowed-tools` entry reads `"Bash(node ${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs *)"`: OQ13-a keeps one copy under concept-animation until S10-W3-2 moves it to `visuals/scripts/`. S05-W3-1 sets it to the line above.
+
 **W3 alias skills** (dmi; S10's skeleton creates them from the I20 template — §2.7 ASSUMES-4 tracks who writes it): `skills/animate/SKILL.md` (89-char description, 1-line body):
 ```markdown
 ---
@@ -169,7 +171,7 @@ Actions: keep|cut(reason)|move→file|script→name|new. Targets: CA SKILL.md �
 
 **ML SKILL.md**: title/rules keep + R27 + Step-3.5-before-4. Refs: rewrite — read `concept-patterns.md`'s `## Contents` then match; read `build-contract.md`; example path via `${CLAUDE_PLUGIN_ROOT}`(ml-5,R13,R49). Step0: new(H-2). Steps1-2: keep. Step3: keep + full document + drive hooks. Step3.5: script→`--kind explorable`(H-5 variant). Step4: rewrite as CA, `kind:explorable`. Handoffs: rewrite — CA(watch-only+clinical, fixes ml-4); code-explainer; dataviz; gridgeist; firecrawl/vault-keeper(OPT). Close/Gotchas(new,H-9)/Failure: same edits as CA.
 
-**ML build-contract**: keep title+anatomy/engine/determinism/numbers+`## Contents`; gradient row replaced by H-10; keep perf; replace explorable layout with I07-C variant; keep palette/a11y/footer; replace the JS recipe with a ≤10-line list of what `check-html.mjs` drives. `concept-patterns.md`: add `## Contents` only.
+**ML build-contract**: keep title+anatomy/engine/determinism/numbers+`## Contents`; gradient row replaced by H-10; keep perf; replace explorable layout with I07-C variant; keep palette/a11y/footer; replace the JS recipe with a ≤10-line list of what `audit:visual` drives (through `check-html.mjs`, OQ13-a). `concept-patterns.md`: add `## Contents` only.
 
 **Learn-hub copy→destinations**: description phrases→CA description+`ingest-visual`(S16); Step0/1/topic→CA; Step3/builder/phone rules→CA/grammar(W2)→`html-artifact-contract.md`+I07-C(W3, H-6 to S16); viewport verify+frame formula→`check-html.mjs`+`render-verify.md`; sidecar/sync/SQL verify→cut(`ingest-visual` owns filing); example→superseded by the vault-file rebuild.
 
@@ -188,30 +190,25 @@ Actions: keep|cut(reason)|move→file|script→name|new. Targets: CA SKILL.md �
 
 ### 2.5 Scripts
 
-**`check-html.mjs`**(I07). W2 at `concept-animation/scripts/`, byte-identical at `ml-concept-lab/scripts/`+`clinical-infographic/scripts/`(S06). W3: single copy at `visuals/scripts/`. ESM, Node ≥18, no npm deps; Playwright optional, loaded at run time.
+**`check-html.mjs`**(I07; OQ13-a: a static subset plus delegation — no render port, no parity fixture). W2: one copy at `concept-animation/scripts/`; ml-concept-lab and clinical-infographic (S06) call it as `${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs` (no copies). W3: the single copy at `visuals/scripts/` (S10-W3-2 moves it). ESM, Node ≥18, no npm deps, no browser.
 
 CLI:
 ```
 node check-html.mjs <file.html> [--kind infographic|animation|explorable|code-explainer]
-                    [--own] [--static-only] [--shots <dir>] [--learn-hub <dir>] [--json]
-node check-html.mjs --parity [--root <micky-dir>] [--learn-hub <dir>] [--json]
+                    [--shots <dir>] [--learn-hub <dir>] [--json]
 node check-html.mjs --help
 ```
-`--kind` picks the rule set(I07-A), inferred if omitted; skills always pass it. `--learn-hub` default `$LEARN_HUB_DIR`, valid only if a real learn-hub checkout. Default **delegates** to `npm --prefix <dir> run -s audit:visual -- <abs file> --json --kind <kind>` when valid (`"tool":"audit:visual"`); on failure, `delegation_error`+own checks. `--kind code-explainer` is **never delegated** — I08's `audit:visual` rejects it (exit 2); `check-html.mjs` always runs its own port for that kind (CX-10). `--own` skips delegation. `--static-only` skips render/drive. `--shots <dir>` writes PNGs regardless of delegation. `--root` default `$MICKY_TOOLS_DIR`. `--help` exits 0.
+`--kind` picks the rule set(I07-A), inferred if omitted; skills always pass it. `--learn-hub` default `$LEARN_HUB_DIR`, valid only if a real learn-hub checkout (`package.json` `"name": "learn-hub"` and `scripts/apply-sync.mjs`, the I11 marker). Order: (1) the static subset, always; (2) when learn-hub is valid, delegate to `npm --prefix <dir> run -s audit:visual -- <abs file> --json --kind <kind>` (plus `--shots <dir>` when given; `"tool":"audit:visual"`). `--kind code-explainer` is **never delegated** — I08's `audit:visual` rejects it (exit 2); code-explainer keeps its own static check: I07-H's static rules for that kind (`no-doctype`, `no-lang`, `no-color-scheme`, `no-painted-ground`, `external-reference`, `no-reduced-motion`), plus S06's `--source` check from W3 (CX-10, CX-33). `--help` exits 0.
 
-Own checks: (1) static(I07-H, no browser); (2) render(anim/explorable): per `VIEWPORTS`, context `appFrame(vw,vh)`, load+measure(I07-G); animation walks scenes via `#nextBtn`, keeps worst; plus a reduced-motion pass for page-errors; (3) drive: animation completes the walk+`#restartBtn`; explorable exercises every `[data-preset]`/range/`#play`/`#reset`/`#step`/`[data-check]`, scans for non-finite tokens.
+Static subset (≤60 lines, OQ13-a): `no-doctype`, `no-lang`, `no-color-scheme` and `external-reference` (an absolute or protocol-relative URL) for every kind; `prefers-color-scheme-dark` for infographic; and one code of its own, `wrap-not-min-height` (animation, explorable: the `.wrap` rule lacks `min-height:100dvh`). `audit:visual` reports every other I07-H code.
 
-Browser resolution: Playwright via `createRequire`(falls back to `npm root -g`) → its bundled Chromium → `PUPPETEER_EXECUTABLE_PATH` if set(NEW-1 order) → no render, reason stated. 10s/action, ≤180s/file.
+Stdout, one JSON object: `tool,schema,file,kind,verdict,delegated,issues[{code,where,detail,fix}],raw` (`raw` = `audit:visual`'s JSON when delegated; `delegation_error` when delegation failed).
 
-Stdout, one JSON object: `tool,schema,file,kind,verdict,delegated,render{ran,browser,reason},issues[{code,method,where,detail,fix}],frames[{viewport,frame,stage_min_px,controls_max_bottom_px,limit_px,clipped,overlaps,scroll_width_px}],drive{ran,scenes,restart_ok,checks_failing},shots`; delegation adds `raw` instead of `frames`/`drive`.
+`verdict`: `fail` on any static or delegated issue; `pass` only when the static subset is clean and `audit:visual` passed with an empty `skipped` array (a producer must never file an unrendered file as `pass`, CX-10); `incomplete` when learn-hub is absent or invalid, delegation fails, or `skipped` is non-empty. For `code-explainer`, `pass` = its static check clean (and, from W3, `--source` clean). Exit: 0 pass, 1 fail, 2 usage error, 3 incomplete.
 
-`verdict`: `fail` on any issue; `pass` when every check the kind needs ran; `incomplete` if render/drive couldn't run — including when delegating and `audit:visual`'s own response carries a non-empty `skipped` array (a producer must never file an unrendered file as `pass`, CX-10). Exit: 0 pass, 1 fail, 2 usage error, 3 incomplete/`--parity` env missing.
+Pure exports (tested browser-free): `RULES,inferKind,staticIssues,delegationCommand,verdictOf`.
 
-`--parity`(I07-J): reads `fixtures/parity.json`, resolves rows by basename(0/≥2 matches→exit 2), runs own+`audit:visual` per row, prints `agree`+per-row `missing_codes`. Exit 0 all agree, 1 disagree, 3 env missing.
-
-Pure exports (tested browser-free): `RULES,VIEWPORTS,inferKind,staticIssues,appFrame,foldLimit,overlapPairs,parseIndicator,verdictOf,loadParityManifest,resolveByBasename`. Ported verbatim, commented at source (learn-hub `7ce31aa`), from the 4 files cited in §1.1.
-
-**`check-html.test.mjs`** (`node:test`; no network/browser/wall-clock). Run via the quoted glob(NEW-6), never a bare dir. Groups: help/usage; bad fixtures (exact codes); static rules (pass+fail per rule); layout (the 8 `auditAnimationLayout` cases ported from `animation-responsive.test.mjs:81-169`); geometry (`appFrame`, fold limits, overlap sort, indicator parse, kind inference); copies+parity (byte-equal canonical; manifest valid, static verdict=`expected`).
+**`check-html.test.mjs`** (`node:test`; no network/browser/wall-clock). Run via the quoted glob(NEW-6), never a bare dir. Fixtures are inline HTML strings. Groups: help/usage; each static rule, pass and fail; kind inference; the delegation command (stub runner); verdict (no learn-hub → `incomplete`; a delegated result with `skipped` → `incomplete`; a delegated fail → `fail`).
 
 ### 2.6 Handoffs
 
@@ -222,7 +219,9 @@ Exact sentences. W2 names given; W3 substitutes `intent-lock:intent-lock`→`ali
 **H-3 CA Step 1**: "Query `vault-keeper:vault-keeper` (OPTIONAL) for a matching review or decision report. If it is not available, ask the user to point at a sourced report file. In a headless run, use the general lane only and name the clinical facts left out."
 
 **H-5 Step 3.5** (CA; ML uses `--kind explorable`/"preview"):
-> Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs <file> --kind animation --shots <shots-dir>`. It uses `npm run audit:visual` when `$LEARN_HUB_DIR` is valid, its own port otherwise; the JSON `tool` field says which ran. Proceed to Step 4 only on `verdict:"pass"`. On `fail`, fix each issue's `fix` text and re-run. On `incomplete`(exit 3), say the render checks did not run and why, deliver with that statement. Then open the shots: each scene's hold and the final frame, storyboard order, nothing clipped, captions legible. Keep the final-frame PNG.
+> Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs <file> --kind animation --shots <shots-dir>`. It runs its static checks, then `npm run audit:visual` when `$LEARN_HUB_DIR` is valid; without learn-hub it returns `incomplete` (OQ13-a). Proceed to Step 4 only on `verdict:"pass"`. On `fail`, fix each issue's `fix` text and re-run. On `incomplete`(exit 3), say the render checks did not run and why, deliver with that statement. Then open the shots: each scene's hold and the final frame, storyboard order, nothing clipped, captions legible. Keep the final-frame PNG.
+
+At W2, ml-concept-lab runs the same command through `${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs` (OQ13-a: one copy until S10-W3-2).
 
 **H-6 Handover to S16** (pk-plasma-animation; replaces copy SKILL.md:92-99, copy-6):
 > An animation with a real simulator or state machine is built, not hand-written. Keep the engine and state as pure, import-free modules (shared `scripts/animations/pk-plasma/`, drug data `scripts/animations/<drug>-plasma/`), test with vitest, inline with `node scripts/animations/pk-plasma/build.mjs <drug>-plasma` (methylphenidate: `npm run anim:mph`). Two phone rules: a mobile grid override uses `minmax(0,1fr)`, never a bare `1fr`; the stage is never `position:sticky` over the controls.
@@ -235,7 +234,7 @@ The two phone rules also enter I07-C.
 
 **H-8 CA Gotchas**(4): fixed `height:100dvh` pushes overflow into children — filed animations collapsed on phones; use `min-height:100dvh`. A proportional floor needs an absolute one under it — bare `min(38dvh,280px)` gives 116px landscape; use `max(220px,min(38dvh,280px))`. One viewport can't fail on collapse — Step 3.5 checks 5 incl. 844×390. A doctype-less fragment renders in quirks mode, opaque white canvas — start `<!DOCTYPE html><html lang="en">`+`:root{color-scheme:dark}`. The sandbox's opaque origin fails external refs silently.
 
-**H-9 ML Gotchas**(5): bare `import{chromium}` fails global-only — resolves via `npm root -g`. A relative gradient error is a false failure near a stationary point — use absolute diff+noise floor(H-10). A scrolling explorable is fine on a phone; the stage floor is not negotiable, controls fit at 1440×900. Clinical concepts go to concept-animation even phrased "interactive". Same document/layout traps as concept-animation.
+**H-9 ML Gotchas**(5): bare `import{chromium}` fails global-only — the render runs in learn-hub's `audit:visual`, reached through `check-html.mjs` (OQ13-a). A relative gradient error is a false failure near a stationary point — use absolute diff+noise floor(H-10). A scrolling explorable is fine on a phone; the stage floor is not negotiable, controls fit at 1440×900. Clinical concepts go to concept-animation even phrased "interactive". Same document/layout traps as concept-animation.
 
 **H-10 ML gradient row** (replaces build-contract.md:103): "Anything with gradients: analytic ∇ against a central finite difference, as an ABSOLUTE difference — pass when `max|∇ᵢ−fdᵢ| ≤ max(1e-6·s, floor)`, `s`=largest `|component|` of either gradient, `floor=20·ε·max(1,|L|)/h`(ε=`Number.EPSILON`, h=fd step, L=loss). Never a relative error near a stationary point — it measures cancellation, not correctness." (`examples/learning-rate-and-conditioning.html:333-346` already implements this.)
 
@@ -243,7 +242,7 @@ The two phone rules also enter I07-C.
 
 ### 2.7 Interfaces
 
-#### Owned: I07 — HTML artifact contract, `render-verify.md`, `check-html.mjs`, parity fixture
+#### Owned: I07 — HTML artifact contract, `render-verify.md`, `check-html.mjs`
 
 **I07-A Kinds.** infographic(`visuals:clinical-infographic`→`infographics`; `allow-same-origin allow-modals`, no scripts). animation(`visuals:concept-animation`, learn-hub `pk-plasma-animation`→`animations`; `allow-scripts`, opaque origin; scripted). explorable(`visuals:ml-concept-lab`→`animations`,`type:animation`; `allow-scripts`; scripted). code-explainer(`visuals:code-explainer`→held, no receiver; scripted).
 
@@ -268,7 +267,7 @@ Never: fixed `height` on `.wrap`; a stage with `min-height:0` and no floor; the 
 
 **I07-F Accessibility.** Colour never the only signal; WCAG AA text; a real `<h1>`; SVG `role="img"`+`<title>`; captions are DOM text; real keyboard-operable controls; `prefers-reduced-motion:reduce` gives a stepped storyboard or full use by stepping.
 
-**I07-G Verification.** Tool order: `check-html.mjs`(delegates when learn-hub valid, own port otherwise); `.meta.json` records `audit.tool`+`audit.verdict`. Frame formula: `w=min(1152,vw−(vw<640?16:32))`, `h=max(min(0.78·vh,704),min(w·10/16,vh−96))`.
+**I07-G Verification.** Tool order: `check-html.mjs` (static subset, then delegates to `audit:visual` when learn-hub is valid; `incomplete` otherwise — OQ13-a); `.meta.json` records `audit.tool`+`audit.verdict`. Frame formula: `w=min(1152,vw−(vw<640?16:32))`, `h=max(min(0.78·vh,704),min(w·10/16,vh−96))`.
 
 | Viewport | Frame | Anim. limit | Explorable limit |
 |---|---|---|---|
@@ -280,26 +279,26 @@ Never: fixed `height` on `.wrap`; a stage with `min-height:0` and no floor; the 
 
 At every frame: stage ≥200px; no clipped/overlapping children (sorted by rendered top); `scrollWidth`≤w+1; no page error. Animation values=worst over the walk. Measured(P4): rebuilt CA peaks 580-627px; ML+contract 586px desktop, 779-805px phones(scroll, allowed).
 
-**I07-H Rule ids** (`audit:visual` asked to match, §8 Q3). Static(all unless noted): `no-doctype`,`no-lang`,`no-color-scheme`,`no-painted-ground`,`external-reference`,`no-reduced-motion`(anim/explorable/code-explainer). Infographic-only static: `color-scheme-not-light`,`prefers-color-scheme-dark`,`strip-cramps`. Anim/explorable-only static: `children-can-shrink`,`stage-can-collapse`(both ported audits). Render: `no-wrap`/`no-stage`/`no-controls`,`stage-collapsed`,`child-clipped`/`children-overlap`,`controls-below-fold`,`horizontal-overflow`,`page-error`. Drive: `drive-hooks-missing`; animation `scene-walk-stuck`/`restart-not-scene-1`; explorable `step-counter-off`,`self-check-failing`,`non-finite-on-screen`. 26 codes total; each `fix` names the concrete repair.
+**I07-H Rule ids** (`audit:visual` asked to match, §8 Q3). Static(all unless noted): `no-doctype`,`no-lang`,`no-color-scheme`,`no-painted-ground`,`external-reference`,`no-reduced-motion`(anim/explorable/code-explainer). Infographic-only static: `color-scheme-not-light`,`prefers-color-scheme-dark`,`strip-cramps`. Anim/explorable-only static: `children-can-shrink`,`stage-can-collapse`(both ported audits). Render: `no-wrap`/`no-stage`/`no-controls`,`stage-collapsed`,`child-clipped`/`children-overlap`,`controls-below-fold`,`horizontal-overflow`,`page-error`. Drive: `drive-hooks-missing`; animation `scene-walk-stuck`/`restart-not-scene-1`; explorable `step-counter-off`,`self-check-failing`,`non-finite-on-screen`. 26 codes total; each `fix` names the concrete repair. `check-html.mjs`'s static subset (§2.5, OQ13-a) adds one code of its own, `wrap-not-min-height`; the layout itself is judged by `audit:visual`'s `children-can-shrink`, `stage-can-collapse` and render codes.
 
-**I07-J Parity fixture.** `fixtures/parity.json`, 6 rows: `ci-example`/`ci-template`(infographic examples, pass), `ca-example`(animation example, pass), `ml-example`(explorable example, pass), `bad-animation`(fail; `no-doctype,no-lang,no-color-scheme,no-painted-ground,children-can-shrink,stage-can-collapse`), `bad-infographic`(fail; `color-scheme-not-light,prefers-color-scheme-dark,strip-cramps`). `shared_codes`=those 9+`external-reference`,`no-reduced-motion`. Rows resolve by basename. Agreement: `check-html --own` verdict=`audit:visual` verdict=`expected`, every code in `codes ∩ shared_codes` in both. P7 confirmed both bad fixtures match I07-H exactly.
+**I07-J Known-bad shapes.** OQ13-a dropped the parity fixture (`fixtures/parity.json` and its 4 example rows), `--parity` and the cross-tool agreement check. Two shapes stay, as the definition S16-W2-1's inline test fixtures follow: `bad-animation`(fail; `no-doctype,no-lang,no-color-scheme,no-painted-ground,children-can-shrink,stage-can-collapse`), `bad-infographic`(fail; `color-scheme-not-light,prefers-color-scheme-dark,strip-cramps`). P7 confirmed both shapes match I07-H exactly.
 
-Bad fixtures (created S05-W2-1, never "fixed" later): animation=doctype-less fragment, `.wrap{height:100dvh}`, `.stage-wrap{flex:1 1 auto;min-height:0}`, no color-scheme/painted ground, valid control ids (only the 6 codes fire). Infographic=valid document but `color-scheme:light dark`(not exactly light), a dark-mode block, a `.mech` strip with no mobile stacking rule. Runs at W2 exit(S05-W2-5), in S08's `validate.py --cross-repo`, in any S16 step touching `audit:visual`.
+Shapes (inline strings in S16-W2-1's test; no file in micky — OQ13-a): animation=doctype-less fragment, `.wrap{height:100dvh}`, `.stage-wrap{flex:1 1 auto;min-height:0}`, no color-scheme/painted ground, valid control ids (only the 6 codes fire). Infographic=valid document but `color-scheme:light dark`(not exactly light), a dark-mode block, a `.mech` strip with no mobile stacking rule.
 
-**I07-K Consumers.** S06 calls `check-html.mjs`(W2 own-plugin copy from S05-W2-2; W3 links the family refs), adds byte-fidelity via `--source <file>` in W3 without changing any existing flag/field/id. S16's `audit:visual` implements I07-H/I07-G/I07-E. S08's `validate.py --cross-repo` runs `--parity --root <micky> --learn-hub <learn-hub>`.
+**I07-K Consumers.** S06 calls `check-html.mjs` (W2: concept-animation's copy, OQ13-a; W3 links the family refs), adds byte-fidelity via `--source <file>` in W3 without changing any existing flag/field/id. S16's `audit:visual` implements I07-H/I07-G/I07-E and does the render for every producer. No parity check (OQ13-a).
 
 #### Consumed
 
 | Interface | Owner | ASSUMES |
 |---|---|---|
 | I01 | S01 | "open the output"=first line of chat hand-back; `Assumed:` never in the HTML |
-| I08 | S16 | `audit:visual -- <abs file> --json --kind <k>` prints `verdict`+`issues[].code` from I07-H; exit 0/1/2; renders the 5 I07-G frames when possible |
+| I08 | S16 | `audit:visual -- <abs file> --json --kind <k>` prints `verdict`+`issues[].code` from I07-H; exit 0/1/2; renders the 5 I07-G frames when possible; `--shots <dir>` writes their PNGs (OQ13-a) |
 | I09 | S15 | `research-notes/visuals/<slug>.html`+`<slug>.meta.json` per H-7; `kind` accepts `animation`/`explorable`; slug kebab-case, `-2`/`-3` on collision |
 | I11 | S07 | producers call `vault-keeper` with the two files, never `sink.py` directly; H-7 is the filing sentence |
 | I16 | S11 | W2-exit row adds both micky plugin paths; a cloud session can load learn-hub on a named branch |
 | I17 | S12 | layout `plugins/<p>/evals/<skill>/<case>/`; tags per §4.1; alias skills exempt from ≥3-case rule |
 | I20 | S08 | whitelist has `argument-hint`,`allowed-tools`,`disable-model-invocation`,`metadata`; R13 exempts test/fixture files |
-| I23 | S10 | skeleton moves each skill's dirs unchanged; `concept-animation/scripts/` canonical; creates the 2 alias skills of §2.2 |
+| I23 | S10 | skeleton moves each skill's dirs unchanged; `concept-animation/scripts/` is the only copy (OQ13-a); creates the 2 alias skills of §2.2 |
 
 ## 3. Change steps
 
@@ -317,13 +316,13 @@ Shorthand: `CA`=`plugins/concept-animation`,`ML`=`plugins/ml-concept-lab`,`CI`=`
 ### Wave W2 (repo: micky, except W2-7/-8 which touch learn-hub)
 
 **S05-W2-1** · depends on: none
-- Files: create `CA/scripts/check-html.mjs`, `CA/scripts/check-html.test.mjs`, `CA/scripts/fixtures/{bad-animation.html,bad-infographic.html,parity.json}`.
-- Change: implement §2.5's CLI/JSON/exit-codes/I07-H; write the 2 bad fixtures per I07-J and the 6-row manifest (other 4 rows resolve once real examples exist).
-- Commands: `node --test 'CA/scripts/*.test.mjs'`; `node CA/scripts/check-html.mjs --help`.
-- Done when: tests pass; `--help` exits 0 listing 26 rule ids; `bad-animation.html --kind animation --static-only --own` exits 1 with the 6 codes.
+- Files: create `CA/scripts/check-html.mjs`, `CA/scripts/check-html.test.mjs`.
+- Change: implement §2.5 (OQ13-a): the static subset (≤60 lines, between the comments `// static subset: start` and `// static subset: end`), code-explainer's own static check, delegation to `audit:visual`, and `incomplete` without learn-hub. No render port and no fixture files.
+- Commands: `node --test 'CA/scripts/*.test.mjs'`; `node CA/scripts/check-html.mjs --help`; `sed -n '/static subset: start/,/static subset: end/p' CA/scripts/check-html.mjs | wc -l`; `LEARN_HUB_DIR= node CA/scripts/check-html.mjs CA/examples/tms-electromagnetic-induction.html --kind animation --json`.
+- Done when: tests pass; `--help` exits 0; the static subset is ≤60 lines; the last command exits 1 and lists `no-doctype` (today's example is doctype-less, ca-4).
 - Rollback: `git rm -r CA/scripts`.
 
-**S05-W2-2** · depends on: S05-W2-1
+**S05-W2-2** · DROPPED (OQ13-a): no copies of `check-html.mjs`; ml-concept-lab and clinical-infographic call concept-animation's copy until S10-W3-2 moves it to `visuals/scripts/`. · depends on: S05-W2-1
 - Files: create `ML/scripts/check-html.mjs`, `CI/scripts/check-html.mjs`.
 - Change: `cp CA/scripts/check-html.mjs ML/scripts/check-html.mjs`; same to `CI/scripts/`.
 - Commands: `cmp CA/scripts/check-html.mjs ML/scripts/check-html.mjs`; `cmp CA/scripts/check-html.mjs CI/scripts/check-html.mjs`.
@@ -331,16 +330,16 @@ Shorthand: `CA`=`plugins/concept-animation`,`ML`=`plugins/ml-concept-lab`,`CI`=`
 - Rollback: `git rm ML/scripts/check-html.mjs CI/scripts/check-html.mjs`.
 
 **S05-W2-3** · depends on: S05-W2-1, S16-W2-3 (consumers before producers — the `.meta.json` filing shape this step's H-7 sentence writes against must exist first, CX-35)
-- Files: edit `CA/skills/concept-animation/SKILL.md`, `.../references/animation-grammar.md`; replace `CA/examples/tms-electromagnetic-induction.html` (start from learn-hub's `vault/tms-principles/tms-electromagnetic-induction.html`, apply I07-B/I07-C); edit `CA/.claude-plugin/plugin.json` (description only, bump is W2-6).
+- Files: edit `CA/skills/concept-animation/SKILL.md`, `.../references/animation-grammar.md`; replace `CA/examples/tms-electromagnetic-induction.html` (start from learn-hub's `vault/tms-principles/tms-electromagnetic-induction.html`, apply I07-B/I07-C); edit `CA/.claude-plugin/plugin.json` (description only; no bump, OQ12-a).
 - Change: §2.3's CA row set and grammar; description → §2.2's W2 text.
-- Commands: `node CA/scripts/check-html.mjs CA/examples/tms-electromagnetic-induction.html --kind animation --own`; `python3 measure.py skill CA/skills/concept-animation/SKILL.md`.
-- Done when: `check-html.mjs` prints `"verdict":"pass"`(or stated `"incomplete"`); `measure.py` reports description ≤1,024 chars, `yaml_valid:true`.
+- Commands: `node CA/scripts/check-html.mjs CA/examples/tms-electromagnetic-induction.html --kind animation`; `python3 measure.py skill CA/skills/concept-animation/SKILL.md`.
+- Done when: `check-html.mjs` prints `"tool":"audit:visual"` and `"verdict":"pass"` with `$LEARN_HUB_DIR` set to a checkout that has `audit:visual` (S16-W2-2), or a stated `"incomplete"` without one (OQ13-a); `measure.py` reports description ≤1,024 chars, `yaml_valid:true`.
 - Rollback: `git checkout -- CA/skills/concept-animation CA/examples`.
 
-**S05-W2-4** · depends on: S05-W2-2, S16-W2-3 (consumers before producers — CX-35)
+**S05-W2-4** · depends on: S05-W2-1, S16-W2-3 (consumers before producers — CX-35)
 - Files: edit `ML/skills/ml-concept-lab/SKILL.md`, `.../references/{build-contract,concept-patterns}.md`; rewrite `ML/examples/learning-rate-and-conditioning.html` in place (I07-B/I07-C; algorithm unchanged, NEW-9 verified sound); rename `ML/examples/README.md`→`.../learning-rate-and-conditioning.md`.
-- Change: §2.3's ML row sets (H-10, ml-4, ml-5); description → §2.2's W2 text.
-- Commands: `node ML/scripts/check-html.mjs ML/examples/learning-rate-and-conditioning.html --kind explorable --own`; `grep -c "clinical-infographic" ML/skills/ml-concept-lab/SKILL.md`; `grep -c "1e-5\|relative error" ML/skills/ml-concept-lab/references/build-contract.md`.
+- Change: §2.3's ML row sets (H-10, ml-4, ml-5); description → §2.2's W2 text; Step 3.5 and the W2 `allowed-tools` entry name `${CLAUDE_PLUGIN_ROOT}/../concept-animation/scripts/check-html.mjs` (OQ13-a).
+- Commands: `node CA/scripts/check-html.mjs ML/examples/learning-rate-and-conditioning.html --kind explorable`; `grep -c "clinical-infographic" ML/skills/ml-concept-lab/SKILL.md`; `grep -c "1e-5\|relative error" ML/skills/ml-concept-lab/references/build-contract.md`.
 - Done when: `check-html.mjs` prints pass/stated-incomplete; clinical grep shows only the CA handoff; gradient grep = 0.
 - Rollback: `git checkout -- ML/skills ML/examples/learning-rate-and-conditioning.md && git mv ML/examples/learning-rate-and-conditioning.md ML/examples/README.md`.
 
@@ -352,11 +351,11 @@ Shorthand: `CA`=`plugins/concept-animation`,`ML`=`plugins/ml-concept-lab`,`CI`=`
 - Rollback: `git rm -r CA/evals ML/evals`.
 
 **S05-W2-6** · depends on: S05-W2-3, S05-W2-4, S10-W0-8
-- Files: edit (not create — S10-W0-8 already backfills README/CHANGELOG/LICENSE for both plugins, CX-45) `CA/{README,CHANGELOG}.md`, `CA/LICENSE`; `ML/{README,CHANGELOG}.md`, `ML/LICENSE`; bump both `plugin.json` to `0.2.0`.
-- Change: README links the worked example (closes ca-9); CHANGELOG's first entry describes the W2 rewrite.
-- Commands: `python3 scripts/bump.py concept-animation minor --write`; `python3 scripts/bump.py ml-concept-lab minor --write`; `python3 scripts/validate.py`.
-- Done when: both `plugin.json` read `0.2.0`; `marketplace.json` has no `version` for either entry (CX-12); `validate.py` prints `all checks passed`.
-- Rollback: `git checkout -- CA/README.md CA/CHANGELOG.md CA/LICENSE CA/.claude-plugin/plugin.json ML/README.md ML/CHANGELOG.md ML/LICENSE ML/.claude-plugin/plugin.json`.
+- Files: edit (not create — S10-W0-8 already backfills README/CHANGELOG/LICENSE for both plugins, CX-45) `CA/{README,CHANGELOG}.md`, `CA/LICENSE`; `ML/{README,CHANGELOG}.md`, `ML/LICENSE`. No version bump (OQ12-a: Windows loads plugins in place from W1 entry; `release.py` sets the version once at W3).
+- Change: README links the worked example (closes ca-9); each CHANGELOG gets the W2 rewrite entry under `## Unreleased`.
+- Commands: `grep -c '^## Unreleased' CA/CHANGELOG.md ML/CHANGELOG.md`; `python3 scripts/validate.py`.
+- Done when: the grep prints 1 for each file; both `plugin.json` versions are unchanged; `validate.py` prints `all checks passed`.
+- Rollback: `git checkout -- CA/README.md CA/CHANGELOG.md CA/LICENSE ML/README.md ML/CHANGELOG.md ML/LICENSE`.
 
 **S05-W2-8** [learn-hub] · depends on: S05-W2-6, S16-W2-5 (CX-30 — the swap verification itself moves to S11-W2-3, which merges the deletion branch only once S11's cloud-enable schedule confirms `visuals:concept-animation`/`concept-animation:concept-animation` loads from the micky path)
 - Files: delete `LH/.claude/skills/concept-animation/` on a learn-hub deletion branch.
@@ -365,12 +364,12 @@ Shorthand: `CA`=`plugins/concept-animation`,`ML`=`plugins/ml-concept-lab`,`CI`=`
 - Done when: the branch is pushed with the deletion committed; `master` is untouched until S11-W2-3 merges it.
 - Rollback: delete the branch.
 
-W2 exit: `validate.py`+`route.py` clean; `check-html.mjs --parity --root . --own` shows the 2 bad fixtures failing with exact codes and the 2 real examples passing/stating `incomplete`; learn-hub deletion branch pushed (merge is S11-W2-3's step, CX-30).
+W2 exit: `validate.py`+`route.py` clean; `node --test 'CA/scripts/*.test.mjs'` passes and both rebuilt examples pass `check-html.mjs` with `$LEARN_HUB_DIR` set (OQ13-a); learn-hub deletion branch pushed (merge is S11-W2-3's step, CX-30).
 
 ### Wave W3 (depends on S10's skeleton-PR move step, I23)
 
 **S05-W3-1** · depends on: S10-W3-2, S01-W3-2
-- Files: create `V/references/{html-artifact-contract,render-verify}.md`; verify exactly one `V/scripts/check-html.mjs` exists (S10-W3-2 already moves `CA/scripts/*` as the canonical copy and drops the `ml-concept-lab`/`clinical-infographic` duplicates — this step deletes nothing itself, CX-2); edit both SKILL.md/grammar/build-contract per §2.3's W3-trim.
+- Files: create `V/references/{html-artifact-contract,render-verify}.md`; verify exactly one `V/scripts/check-html.mjs` exists (S10-W3-2 moves `CA/scripts/*`; OQ13-a left no other copy — this step deletes nothing itself, CX-2); edit both SKILL.md/grammar/build-contract per §2.3's W3-trim, and point ml-concept-lab's Step 3.5 and `allowed-tools` back at `${CLAUDE_PLUGIN_ROOT}/scripts/check-html.mjs`.
 - Change: write I07-A…H into `html-artifact-contract.md`; write I07-G into `render-verify.md`; replace inline document/layout text with a family-file pointer.
 - Commands: `find V -name check-html.mjs | wc -l`; `node --test 'V/scripts/*.test.mjs'`.
 - Done when: exactly 1 `check-html.mjs` under `V/`; tests pass; `grep -c "min-height:100dvh" V/skills/*/references/*.md` = 0.
@@ -410,7 +409,7 @@ W2 exit: `validate.py`+`route.py` clean; `check-html.mjs --parity --root . --own
 - Done when: `$VALIDATE --repo .` prints `all checks passed`; the first `## ` line of `V/CHANGELOG.md` names the `plugin.json` version; `marketplace.json` has no `version` key for `visuals`.
 - Rollback: `git revert <this commit>`.
 
-W3 exit: all 5 steps done; `--parity --root . --learn-hub <lh>` agrees on all 6 rows (or exits 3 naming the missing environment); CA/ML tokens at target; H38-H41,H43 closed; no `check-html.mjs` outside `V/scripts/`; one family README/CHANGELOG/LICENSE, no per-member copies.
+W3 exit: all 5 steps done; both examples pass `check-html.mjs` with `$LEARN_HUB_DIR` set (OQ13-a); CA/ML tokens at target; H38-H41,H43 closed; no `check-html.mjs` outside `V/scripts/`; one family README/CHANGELOG/LICENSE, no per-member copies.
 
 ## 4. Evals
 
@@ -564,7 +563,7 @@ Smoke: `bash scripts/eval.sh --smoke visuals -- --allow-tools Write`. Release: `
 
 1. `python3 scripts/validate.py` (micky) prints `all checks passed` after W2; `$VALIDATE --repo .` (post-S08-W3-1's move, CX-11) prints `all checks passed` after W3.
 2. `test ! -d /home/user/learn-hub/.claude/skills/concept-animation` (post-W2-8).
-3. `node plugins/visuals/scripts/check-html.mjs --parity --root . --own` (post-W3) exits 0/1 with `"agree":true` per checkable-without-browser row; with browser+`--learn-hub`, all 6 agree.
+3. `node plugins/visuals/scripts/check-html.mjs <each example> --kind <its kind>` (post-W3) prints `"tool":"audit:visual"` and `"verdict":"pass"` with `$LEARN_HUB_DIR` set, and `"verdict":"incomplete"` with it unset (OQ13-a).
 4. `node --test 'plugins/visuals/scripts/*.test.mjs'` (post-W3; concept-animation's copy post-W2) reports 0 failures.
 5. `grep -Pc '(?<!min-)height:\s*100dvh' plugins/visuals/skills/*/references/*.md plugins/visuals/examples/*.html` = 0.
 6. `measure.py skill` on both SKILL.md reports `yaml_valid:true`, description ≤1,024 chars.
@@ -601,4 +600,4 @@ Smoke: `bash scripts/eval.sh --smoke visuals -- --allow-tools Write`. Release: `
 - **ASSUMES-4**(I23,S10): S10's skeleton creates the two alias skills verbatim, moves `concept-animation/scripts/` as canonical (S05-W3-1 only verifies this landed, per CX-2 — it does not move anything itself).
 - **Q3**: whether `audit:visual` reports the exact I07-H strings. Check: read S16's spec; else add a lookup table — no I07 change required.
 - **Q14**: whether S11-W2-3's swap verification (CX-30 moves it there) can run headless. Not resolved — the architecture reads as requiring a live check. Check: S11's spec, once read, for a scriptable "plugin X loaded" probe.
-- **ARCH-CONFLICT**: none found. The parity fixture's known-bad files are described by property (I07-J) rather than given as full byte contents — a size-budget compression of this spec's presentation, not a change to what W2-1 must create.
+- **ARCH-CONFLICT**: none found. OQ13-a (2026-09-24) dropped the render port, the parity fixture, the VAL parity check and S05-W2-2's copies; the two known-bad shapes stay described by property (I07-J).

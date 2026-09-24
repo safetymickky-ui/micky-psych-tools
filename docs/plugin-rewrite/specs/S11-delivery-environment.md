@@ -3,9 +3,9 @@
 | Field | Value |
 |---|---|
 | Repos | micky-psych-tools (`docs/rewrite/`, `scripts/`, `README.md`, `MEMORY.md`), learn-hub (`docs/cloud-env-setup.md`). OWNER actions on the Claude Code cloud environment and on the owner's Windows machine. |
-| Units (today → target) | Cloud environment configuration: app variables only, no setup script, `CLAUDE_CODE_PLUGIN_DIRS` unset → adds `LEARN_HUB_DIR`, `MICKY_TOOLS_DIR`, `PUPPETEER_EXECUTABLE_PATH`, `PUPPETEER_SKIP_DOWNLOAD`, the scheduled `CLAUDE_CODE_PLUGIN_DIRS` and a VM-tooling setup script. `CLAUDE_CODE_PLUGIN_DIRS` schedule: none → seven exact values (§2.7 I16.2). `docs/rewrite/delivery-log.md`: absent → new (micky). Cloud setup script: absent → `docs/rewrite/cloud-setup.sh` + the environment field. `ARTICLE_INBOX_DIR`, `BOOK_ROOT`: undefined contract → I27. W0 checklist a–h: unanswered → procedures + recorded answers. Windows route: user-scope marketplace install → user env var from W3 entry (OD2-a). New checker `scripts/delivery_log.py` (+ tests). |
-| Waves | W0 (canary + checklist), W1 exit, W2 exit, W3 entry, W5 |
-| Owner decisions assumed | OD1-a, OD2-a, OD4-a, OD6-a, OD11-b, OD12-a, OD13-a |
+| Units (today → target) | Cloud environment configuration: app variables only, no setup script, `CLAUDE_CODE_PLUGIN_DIRS` unset → adds `LEARN_HUB_DIR`, `MICKY_TOOLS_DIR`, `PUPPETEER_EXECUTABLE_PATH`, `PUPPETEER_SKIP_DOWNLOAD`, the scheduled `CLAUDE_CODE_PLUGIN_DIRS` and a VM-tooling setup script. `CLAUDE_CODE_PLUGIN_DIRS` schedule: none → the exact values of §2.7 I16.2. `docs/rewrite/delivery-log.md`: absent → new (micky). Cloud setup script: absent → `docs/rewrite/cloud-setup.sh` + the environment field. `ARTICLE_INBOX_DIR`, `BOOK_ROOT`: undefined contract → I27. W0 checklist a–h: unanswered → procedures + recorded answers. Windows route: user-scope marketplace install → user env var from W1 entry (OD2-a, OQ12-a). New checker `scripts/delivery_log.py` (+ tests). |
+| Waves | W0 (canary + checklist), W1 entry (Windows switch) and exit, W2 exit, W3 (family by family, OQ10-a), W5 |
+| Owner decisions assumed | OD1-a, OD2-a, OD4-a, OD6-a, OD11-b, OD12-a, OD13-a; owner answers OQ3, OQ4-a, OQ6-a, OQ10-a, OQ12-a (2026-09-24) |
 | Defects closed | 0 of 0 assigned (HIGH: none). This spec serves the environment half of H25, H14 and K15 (see §1.4). |
 | Interfaces owned | I16, I27 |
 | Interfaces consumed | I14 (owner S13), I15 (owner S14), I17 (owner S12) |
@@ -110,11 +110,11 @@ micky-psych-tools/
   scripts/test_delivery_log.py      new (W0); unittest
   scripts/health.sh                 S10's file; +2 lines (W0)
   README.md                         "## Install per environment" replaces the install and update sections (W3)
-  MEMORY.md                         delivery fact at line 11 rewritten (W0 after check g; W3)
+  MEMORY.md                         delivery fact at line 11 rewritten (W0 after check g; W1 entry)
 learn-hub/
   docs/cloud-env-setup.md           new section "### C. Delivery and VM tooling" (W0)
 Cloud environment (owner)           variables per I16.1; setup script = docs/rewrite/cloud-setup.sh
-Windows (owner)                     user variables MICKY_TOOLS_DIR, LEARN_HUB_DIR, BOOK_ROOT (W0); CLAUDE_CODE_PLUGIN_DIRS (W3); no marketplace installs (W3)
+Windows (owner)                     user variables MICKY_TOOLS_DIR, LEARN_HUB_DIR, BOOK_ROOT (W0); CLAUDE_CODE_PLUGIN_DIRS (W1 entry, learn-hub folder added at W2 exit; OQ12-a); no marketplace installs (W1 entry)
 ```
 
 ### 2.2 Frontmatter
@@ -213,7 +213,7 @@ Test cases in `scripts/test_delivery_log.py` (each a `unittest.TestCase` method;
 
 | variable | cloud environment | Windows (user variable) | set at | read by |
 |---|---|---|---|---|
-| `CLAUDE_CODE_PLUGIN_DIRS` | schedule I16.2 | from W3 entry: `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins;C:\Users\User\Desktop\Learn\plugins` (paths confirmed by W0-g) | W0 (cloud), W3 entry (Windows) | Claude Code ≥ 2.1.280 |
+| `CLAUDE_CODE_PLUGIN_DIRS` | schedule I16.2 | from W1 entry (OQ12-a): `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins`; from W2 exit (S11-W2-6, checklist b = yes): `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins;C:\Users\User\Desktop\Learn\plugins` (paths confirmed by W0-g) | W0 (cloud), W1 entry (Windows) | Claude Code ≥ 2.1.280 |
 | `LEARN_HUB_DIR` | `/home/user/learn-hub` | `C:\Users\User\Desktop\Learn` | W0 | vault-keeper `sink.py`, empty-vault, visuals audit call, learn-hub hooks (I14, I15) |
 | `MICKY_TOOLS_DIR` | `/home/user/micky-psych-tools` | `C:\Users\User\Desktop\My skill\micky-psych-tools` | W0 | alignment `ledger.py`, lit-watch, vault-keeper, plugin-creator guard |
 | `PUPPETEER_EXECUTABLE_PATH` | `/opt/pw-browsers/chromium` | unset | W0 | mermaid prebake, thumbs, `audit:visual` |
@@ -235,16 +235,18 @@ Existing app variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_K
 | V3 · W2 step 6a | V2 + `:/home/user/micky-psych-tools/plugins/pubmed-research-note:/home/user/micky-psych-tools/plugins/comprehensive-review:/home/user/micky-psych-tools/plugins/clinical-infographic:/home/user/micky-psych-tools/plugins/ml-concept-lab:/home/user/micky-psych-tools/plugins/code-explainer` | I16.3 for the five | V2 + the five |
 | V4 · W2 step 6b | V3 + `:/home/user/micky-psych-tools/plugins/concept-animation` | micky concept-animation W2 rewrite merged; learn-hub branch deleting `.claude/skills/concept-animation` pushed | V3 + concept-animation |
 | V5 · W2 step 6c (W2 exit value) | V4 + `:/home/user/learn-hub/plugins` | `ls /home/user/learn-hub/plugins` prints only `learn-hub-session`; `/home/user/learn-hub/.claude-plugin/` absent; checklist b = yes | V4 + learn-hub-session |
-| V6 · W3 entry (final) | `/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins` | W2 exit gates passed | `auto` (15 before the W3 skeleton PR: 14 micky + learn-hub-session; 8 after it) |
+| V5' · W3, at the skeleton merge (S11-W3-5) | V5 minus the six per-plugin segments the skeleton removes (`pubmed-research-note`, `comprehensive-review`, `clinical-infographic`, `ml-concept-lab`, `code-explainer`, `concept-animation`) | S10-W3-2 merged on master | gridgeist, vault-keeper, firecrawl, plugin-creator, learn-hub-session |
+| V5' + family · W3 (S11-W3-6 alignment, S11-W3-7 evidence, S11-W3-8 visuals; OQ10-a) | the current value + `:/home/user/micky-psych-tools/plugins/<family>` | the family's release step is on master (S01-W3-7, S03-W3-8, S05-W3-6); I16.3 for the family | the current set + the family |
+| V6 · W3, with the last family merge (final) | `/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins` | S11-W3-6, S11-W3-7 and S11-W3-8 done | `auto` (8) |
 | W5 | V6 unchanged | — | `auto` |
 
-Measured lengths: V0 70, V1 46, V2 195, V3 473, V4 528, V5 557, V6 65 characters; all pass DL8 (prototype, 2026-09-24). V4 loaded exactly its 10 plugins with no errors against today's tree.
+Measured lengths: V0 70, V1 46, V2 195, V3 473, V4 528, V5 557, V6 65 characters; all pass DL8 (prototype, 2026-09-24). V4 loaded exactly its 10 plugins with no errors against today's tree. The V5' values (OQ10-a) are not measured here; DL8 checks each at its step. Between the skeleton merge and S11-W3-7/-8, the six plugins V5' drops do not load in cloud sessions (plan §8 Q31).
 
 If checklist b = no: skip V5; V6 becomes `/home/user/micky-psych-tools/plugins`, and the Windows value becomes `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins`. If checklist a = no: stop at V1, do not make any later cloud edit, and re-ask OD1 before W1 exit (architecture §10 W0 exit).
 
 **I16.3 Enablement conditions (architecture §2.7), made checkable.** Before a schedule point adds a plugin, all four hold:
 
-1. HIGH defects: at a wave **exit**, every Appendix A defect of the plugin assigned to that wave or an earlier one is `closed` in `docs/rewrite/h-coverage.md` (for a split row such as H10 "W1/W2", the part assigned to that wave); at **W3 entry**, those assigned to W2 or earlier. Command: `grep -E '^\| (H08\|H09) ' docs/rewrite/h-coverage.md` shows `closed` on each line (ids per plugin from architecture Appendix A). See §8 ARCH-CONFLICT 4.
+1. HIGH defects: at a wave **exit**, every Appendix A defect of the plugin assigned to that wave or an earlier one is `closed` in `docs/rewrite/h-coverage.md` (for a split row such as H10 "W1/W2", the part assigned to that wave). When a family joins during W3 (OQ10-a), every Appendix A defect of its members assigned to W3 or earlier has its closing step (plan §7) merged on master (`git merge-base --is-ancestor <sha> origin/master`), because the W3 rows of `h-coverage.md` close only at the tag step. Command: `grep -E '^\| (H08\|H09) ' docs/rewrite/h-coverage.md` shows `closed` on each line (ids per plugin from architecture Appendix A). See §8 ARCH-CONFLICT 4.
 2. Handoffs: `grep -rn '(OPTIONAL)' plugins/<p>/skills` shows the §4.2 fallback sentence at every cross-plugin handoff, or the plugin has none, or the target is already in the value.
 3. No same-named unit elsewhere: after the edit, `live` passes L2 and L6 (and DL15 passes before the edit).
 4. Smoke: `bash scripts/eval.sh --smoke <p>` (I17, owner S12) passed for the plugin; its result path goes into the evidence cell.
@@ -443,7 +445,7 @@ G2 — W0, after G1 passes (persistent user variables; no plugin-loading change)
 $env:MICKY_TOOLS_DIR; $env:LEARN_HUB_DIR; $env:BOOK_ROOT
 ```
 
-G3 — W1 exit and W2 exit, until W3 (installs are cache copies, N5, so only released versions arrive):
+G3 — not used under OQ12-a (Windows switches at W1 entry, so no install is refreshed); kept for OD2-b. W1 exit and W2 exit, until W3 (installs are cache copies, N5, so only released versions arrive):
 
 ```powershell
 claude plugin marketplace update micky-psych-tools
@@ -462,12 +464,12 @@ claude plugin marketplace remove learn-hub-local
 claude plugin marketplace list --json
 ```
 
-G5 — W3 entry, the switch (set the variable first, verify, then uninstall; ARCH-CONFLICT 3):
+G5 — W1 entry, the switch (OQ12-a; set the variable first, verify, then uninstall; ARCH-CONFLICT 3). The value holds the micky folder only; G7 adds the learn-hub folder at W2 exit, once `$L\plugins` holds only `learn-hub-session`:
 
 ```powershell
-claude plugin list --json | Out-File -Encoding utf8 "$env:USERPROFILE\w3-plugin-list-before.json"
-claude plugin marketplace list --json | Out-File -Encoding utf8 "$env:USERPROFILE\w3-marketplace-list-before.json"
-[Environment]::SetEnvironmentVariable('CLAUDE_CODE_PLUGIN_DIRS', "$M\plugins;$L\plugins", 'User')
+claude plugin list --json | Out-File -Encoding utf8 "$env:USERPROFILE\w1-plugin-list-before.json"
+claude plugin marketplace list --json | Out-File -Encoding utf8 "$env:USERPROFILE\w1-marketplace-list-before.json"
+[Environment]::SetEnvironmentVariable('CLAUDE_CODE_PLUGIN_DIRS', "$M\plugins", 'User')
 # open a NEW PowerShell window ($M and $L again), then check that the @inline copies load:
 claude plugin list --json
 foreach ($p in (claude plugin list --json | ConvertFrom-Json | Where-Object { $_.id -like '*@micky-psych-tools' })) { claude plugin uninstall $p.id --scope $p.scope }
@@ -483,8 +485,20 @@ G6 — rollback of the switch, before the W3 skeleton merges (after it, set the 
 ```powershell
 [Environment]::SetEnvironmentVariable('CLAUDE_CODE_PLUGIN_DIRS', $null, 'User')
 claude plugin marketplace add '<source recorded in G1: the directory path or owner/repo>'
-foreach ($n in '<names from the W3 installs row>'.Split(',')) { claude plugin install "$n@micky-psych-tools" --scope user }
+foreach ($n in '<names from the W1-entry installs row>'.Split(',')) { claude plugin install "$n@micky-psych-tools" --scope user }
 ```
+
+G7 — W2 exit, only if checklist b = yes, after S11-W2-1 (OQ12-a): add the learn-hub plugins folder.
+
+```powershell
+Get-ChildItem "$L\plugins" -Directory | Select-Object -ExpandProperty Name
+[Environment]::SetEnvironmentVariable('CLAUDE_CODE_PLUGIN_DIRS', "$M\plugins;$L\plugins", 'User')
+# open a NEW PowerShell window ($M and $L again), then:
+cd $M
+python scripts\delivery_log.py live --env windows:$env:COMPUTERNAME --expect auto --project-roots "$L,$M"
+```
+
+Pass: the first command lists only `learn-hub-session`; `"ok": true`.
 
 **I16.9 Rollback.** Cloud: open the environment (menu in the session title bar → Edit), set the variable to the row's `previous` value (delete the line for `(unset)`), Save changes, start a new session, run `live` with the previous expected set, append a row `rollback of #N`. Setup script: paste `git show <commit>:docs/rewrite/cloud-setup.sh` of the previous version. Windows: `[Environment]::SetEnvironmentVariable('<NAME>', '<previous>', 'User')` (`$null` for `(unset)`), new window, `live`. A wave rollback (architecture §7) = `git revert` of the wave merge + this procedure for the rows the wave added.
 
@@ -516,7 +530,7 @@ foreach ($n in '<names from the W3 installs row>'.Split(',')) { claude plugin in
 
 ## 3. Change steps
 
-Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `main`); `<host>` = `$env:COMPUTERNAME`; V0–V6 = I16.2 values; "new session" = a session the owner starts from claude.ai/code in the cloud environment, with both repos, on the default branches unless stated. Log rows use the I16.4 grammar; `<URL>` = the session URL command in I16.4.
+Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `main`); `<host>` = `$env:COMPUTERNAME`; V0–V6 and V5' = I16.2 values; "new session" = a session the owner starts from claude.ai/code in the cloud environment, with both repos, on the default branches unless stated. Log rows use the I16.4 grammar; `<URL>` = the session URL command in I16.4.
 
 ### W0
 
@@ -577,7 +591,7 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 - Rollback: `git revert <this commit>`.
 
 **S11-W0-5 · OWNER (+ micky log commit) · configure the cloud environment**
-- Depends on: S11-W0-2 pushed to the W0 branch (the owner copies the setup script text from it).
+- Depends on: S11-W0-2 merged to master (OQ7-a; the owner copies the setup script text from it).
 - Actions (owner, claude.ai/code): open any session in the environment → the cloud environment menu in the session title bar → the environment → Edit.
   1. Note the environment name and the Network access level. Choose an id (letters, digits, `.`, `_`, `-`).
   2. If the Setup script field is not empty, stop and copy its text to the executor, who merges any still-needed step into `docs/rewrite/cloud-setup.sh` before continuing (record `previous` as `(unrecorded)`).
@@ -628,15 +642,15 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 - Rollback: not applicable.
 
 **S11-W0-9 · micky (log) · check d**
-- Depends on: S11-W0-2. Owner approves the eval cost (≤ USD 0.50).
-- Actions: run I16.7 row d in a scratch dir outside both repos.
-- Done when: row d answered; the result goes to S12 (I17 runner choice).
+- Depends on: S11-W0-2. The owner approved the eval cost (≤ USD 0.50) on 2026-09-24 (OQ3).
+- Actions: run I16.7 row d in a scratch dir outside both repos; record the cost each run reports (S12-W0-9 sets the eval caps from it; plan §8 Q30).
+- Done when: row d answered, with the cost per run in its evidence cell; the result goes to S12 (I17 runner choice).
 - Rollback: not applicable.
 
 **S11-W0-10 · OWNER Windows (+ micky log and MEMORY commit) · check g and Windows variables**
 - Depends on: S11-W0-2.
 - Actions: I16.8 G1; if it passes, G2.
-- Files (executor): fill checklist row g; add `## Environments` row `windows:<host>`; append rows `MICKY_TOOLS_DIR`, `LEARN_HUB_DIR`, `BOOK_ROOT` (`(unset)` → the confirmed paths), reason `W0 check g`, rollback `set (unset)`. Replace `MEMORY.md:11` with: `- Delivery: cloud sessions load plugins through \`CLAUDE_CODE_PLUGIN_DIRS\` on the cloud environment; Windows runs the user-scope marketplace install \`micky-psych-tools\` (source: <directory|github> <path or repo>, checked <date>) until W3. Windows installs are cache copies: a fix reaches them only after a version bump, \`claude plugin marketplace update micky-psych-tools\` and \`claude plugin update\`. Current values: \`docs/rewrite/delivery-log.md\`.`
+- Files (executor): fill checklist row g; add `## Environments` row `windows:<host>`; append rows `MICKY_TOOLS_DIR`, `LEARN_HUB_DIR`, `BOOK_ROOT` (`(unset)` → the confirmed paths), reason `W0 check g`, rollback `set (unset)`. Replace `MEMORY.md:11` with: `- Delivery: cloud sessions load plugins through \`CLAUDE_CODE_PLUGIN_DIRS\` on the cloud environment; Windows runs the user-scope marketplace install \`micky-psych-tools\` (source: <directory|github> <path or repo>, checked <date>) until W1 entry (OQ12-a). Windows installs are cache copies: a fix reaches them only after a version bump, \`claude plugin marketplace update micky-psych-tools\` and \`claude plugin update\`. Current values: \`docs/rewrite/delivery-log.md\`.`
 - Commands: `python3 scripts/delivery_log.py check`
 - Done when: row g answered; `check` exits 0.
 - Rollback: G2 variables → `$null`; revert the commit.
@@ -651,8 +665,15 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 
 ### W1
 
+**S11-W3-2 · OWNER Windows (+ micky log and MEMORY commit) · W1 entry: Windows switch (OQ12-a; the id is kept)**
+- Depends on: S11-W0-10 (checklist g = yes), S11-W0-11 (W0 exit); both Windows checkouts on master (`git -C $M pull`, `git -C $L pull`).
+- Actions: I16.8 G5.
+- Files: `## Environments` unchanged; log rows `CLAUDE_CODE_PLUGIN_DIRS` `(unset)` → `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins` (or the G1 path; the learn-hub folder joins at S11-W2-6); `installs:micky-psych-tools` names → `(none)`; `marketplace:micky-psych-tools` `<source>` → `(absent)`; reason `W1 entry: Windows switch (OD2-a, OQ12-a)`; rollback `G6`. Replace `MEMORY.md:11` with: `- Delivery: plugins load in place through \`CLAUDE_CODE_PLUGIN_DIRS\` (cloud environment variable; Windows user variable from W1). No marketplace installs. Current values, history and rollback: \`docs/rewrite/delivery-log.md\`.`
+- Done when: G5 pass criterion holds; `check --strict` exits 0; a new Windows session starts with no hook error (critique F9; S11-W2-6 repeats this check when the learn-hub-session hooks arrive).
+- Rollback: I16.8 G6.
+
 **S11-W1-1 · OWNER (+ micky log commit) · W1 exit: cloud V1 → V2**
-- Depends on: checklist a = yes; S07-W0-1, S08-W0-1, S09-W0-1 (smoke seeds), S07-W1-3 (H08/H09 fix), S07-W1-4, S08-W1-2, S09-W1-2 (releases of vault-keeper, plugin-creator, firecrawl), S11-W0-11.
+- Depends on: checklist a = yes; S07-W0-1, S08-W0-1, S09-W0-1 (smoke seeds), S07-W1-2, S07-W1-3 (H08–H11 W1 fixes), S08-W1-1, S09-W1-1 (the W1 fixes of plugin-creator and firecrawl; no release needed, since the cloud loads in place — OQ12-a), S11-W0-11.
 - Read-only checks first (executor, in a new session): I16.3 conditions 1, 2 and 4 for vault-keeper, firecrawl, plugin-creator; `python3 /home/user/micky-psych-tools/scripts/delivery_log.py current --env cloud:<id>` prints V1.
 - Actions (owner): set the line to V2; Save changes; new session.
 - Commands (in the new session): `python3 /home/user/micky-psych-tools/scripts/delivery_log.py live --env cloud:<id> --expect gridgeist,vault-keeper,firecrawl,plugin-creator`
@@ -660,12 +681,19 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 - Done when: `live` prints `"ok": true`; `check --strict` exits 0.
 - Rollback: set V1; row `rollback of #N`.
 
-**S11-W1-2 · OWNER Windows (+ micky log commit) · refresh installs after W1 releases**
+**S11-W1-2 · DROPPED (OQ12-a): OWNER Windows · refresh installs after W1 releases.** Windows loads plugins in place from W1 entry (S11-W3-2), so there are no installs to refresh; the `ready.mjs` check moves to S11-W1-3.
 - Depends on: S04-W1-3, S06-W1-5, S07-W1-4, S08-W1-2, S09-W1-2 (pushed to `origin/master`); S13-W1-1, S13-W1-2 (on learn-hub `origin/master`).
 - Actions: I16.8 G3. Then, in `$L` after `git pull`: `node scripts/ready.mjs --json` — the `chromium` check must be ok through puppeteer's own browser, with `PUPPETEER_EXECUTABLE_PATH` unset (S13 §2.5 `checkChromium`, critique F5); record the JSON's `ok` value as the row's evidence.
 - Files: log row `installs:micky-psych-tools` (previous = new = the installed names), reason `W1 exit: refreshed <name>@<version>, …`.
 - Done when: G3 pass criterion holds.
 - Rollback: not needed (a later refresh replaces it).
+
+**S11-W1-3 (new, OQ12-a) · OWNER Windows (+ micky baseline commit) · `ready.mjs` Chromium check**
+- Depends on: S11-W3-2; S13-W1-1, S13-W1-2 (on learn-hub `origin/master`).
+- Actions: in `$L` after `git pull`: `node scripts/ready.mjs --json` — the `chromium` check must be ok through puppeteer's own browser, with `PUPPETEER_EXECUTABLE_PATH` unset (S13 §2.5 `checkChromium`, critique F5). This is the half of S11-W1-2 that OQ12-a keeps.
+- Files: micky `docs/rewrite/baseline.md` `## Owner records` (the JSON's `ok` value and its `chromium` line).
+- Done when: the `chromium` check is ok and recorded (plan §8 Q28).
+- Rollback: not applicable (a record).
 
 ### W2
 
@@ -677,10 +705,10 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 - Rollback: `claude plugin marketplace add <source>` and reinstall the recorded names.
 
 **S11-W2-2 · OWNER (+ micky log commit) · W2 step 6a: cloud V2 → V3**
-- Depends on: S03-W2-5, S04-W2-3, S05-W2-6, S06-W2-2 (releases), S04-W2-1 (CR fallback/sink/MCP resolution), S03-W0-1, S04-W0-2 (smoke seeds), S05-W2-5 (ML cases), S06-W1-3 (CE cases) — I16.3 condition 4 needs a passing smoke suite for ml-concept-lab and code-explainer too.
+- Depends on: S03-W2-1…4, S04-W2-1, S04-W2-2, S05-W2-6, S06-W2-1 (the last W2 change steps of each plugin; no release is needed, since the cloud loads in place — OQ12-a), S04-W2-1 (CR fallback/sink/MCP resolution), S03-W0-1, S04-W0-2 (smoke seeds), S05-W2-5 (ML cases), S06-W1-3 (CE cases) — I16.3 condition 4 needs a passing smoke suite for ml-concept-lab and code-explainer too.
 - Read-only checks first: I16.3 for pubmed-research-note, comprehensive-review, clinical-infographic, ml-concept-lab, code-explainer.
 - Actions: set V3; Save; new session; `live --env cloud:<id> --expect gridgeist,vault-keeper,firecrawl,plugin-creator,pubmed-research-note,comprehensive-review,clinical-infographic,ml-concept-lab,code-explainer`.
-- Files: log row V2→V3, reason `W2 step 6a`. Evidence cell also records: pubmed-research-note joins with H45 open (due W3) — a named exception under the §2.7 I16.3 reading (defects due by that wave; ARCH-CONFLICT 4, CX-50); owner confirms this reading.
+- Files: log row V2→V3, reason `W2 step 6a`. Evidence cell also records: pubmed-research-note joins with H45 open (due W3) — a named exception under the §2.7 I16.3 reading (defects due by that wave; ARCH-CONFLICT 4, CX-50); the owner confirmed this reading (OQ4-a, 2026-09-24).
 - Done when: `"ok": true` (L7 may warn; no error).
 - Rollback: set V2.
 
@@ -700,29 +728,29 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 - Done when: `"ok": true` with 11 entries; `/doctor` shows no overflow (or the overflow is recorded for S12).
 - Rollback: set V4.
 
-**S11-W2-5 · OWNER Windows (+ micky log commit) · refresh installs after W2 releases**
+**S11-W2-5 · DROPPED (OQ12-a): OWNER Windows · refresh installs after W2 releases.** Windows loads plugins in place from W1 entry (S11-W3-2), so there are no installs to refresh; S11-W2-6 adds the learn-hub folder instead.
 - Depends on: S01-W2-2, S02-W2-2, S03-W2-5, S04-W2-3, S05-W2-6, S06-W2-2, S07-W2-6 (pushed).
 - Actions and files: as S11-W1-2, reason `W2 exit: refreshed …`.
 - Done when: G3 pass criterion holds.
 
+**S11-W2-6 (new, OQ12-a) · OWNER Windows (+ micky log commit) · W2 exit: add the learn-hub plugins folder on Windows**
+- Depends on: checklist b = yes (else skip this step, as V5 is skipped, I16.2); S11-W2-1; S11-W2-4 (its read-only conditions on `learn-hub/plugins` hold); both Windows checkouts on master after `git pull`.
+- Actions: I16.8 G7.
+- Files: log row `CLAUDE_CODE_PLUGIN_DIRS` (Windows) `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins` → `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins;C:\Users\User\Desktop\Learn\plugins` (or the G1 paths), reason `W2 exit: learn-hub plugins folder (OQ12-a)`, rollback `set the previous value`.
+- Done when: G7 pass criterion holds; `check --strict` exits 0; a new Windows session starts with no hook error (learn-hub-session's hooks call `bash`; critique F9).
+- Rollback: set the previous value (I16.9).
+
 ### W3
 
-**S11-W3-1 · OWNER (+ micky log and MEMORY commit) · W3 entry: cloud V5 → V6**
-- Depends on: W2 exit gates passed.
-- Actions: set V6; Save; new session; `live --env cloud:<id> --expect auto` (expect 15 entries before the S10 skeleton PR).
-- Files: log row V5→V6, reason `W3 entry: folder paths`. Replace `MEMORY.md:11` with: `- Delivery: plugins load in place through \`CLAUDE_CODE_PLUGIN_DIRS\` (cloud environment variable; Windows user variable from W3). No marketplace installs. Current values, history and rollback: \`docs/rewrite/delivery-log.md\`.` Evidence cell also records: intent-lock, decision-interview, plan-critique and psych-paper-digest join with no smoke suite yet (their cases are W3) — a named exception under the §2.7 I16.3 reading (defects due by that wave; the four plugins' callers carry the §4.2 fallback; ARCH-CONFLICT 4, CX-50); owner confirms this reading.
-- Done when: `"ok": true` (L7 warns about `psych-paper-digest` until the lit-watch rename; accepted).
-- Rollback: set V5 (per-plugin paths keep working until the skeleton merges).
-
-**S11-W3-2 · OWNER Windows (+ micky log commit) · W3 entry: Windows switch**
-- Depends on: S11-W3-1; W2 merged in both Windows checkouts (`git -C $M pull`, `git -C $L pull` on master).
-- Actions: I16.8 G5.
-- Files: `## Environments` unchanged; log rows `CLAUDE_CODE_PLUGIN_DIRS` `(unset)` → `C:\Users\User\Desktop\My skill\micky-psych-tools\plugins;C:\Users\User\Desktop\Learn\plugins` (or the G1 paths); `installs:micky-psych-tools` names → `(none)`; `marketplace:micky-psych-tools` `<source>` → `(absent)`; reason `W3 entry: Windows switch (OD2-a)`; rollback `G6`.
-- Done when: G5 pass criterion holds; `check --strict` exits 0; a new Windows session starts with no hook error (both plugin folders now load there, and the plugin-creator and learn-hub-session hooks call `bash`/POSIX `test`; critique F9).
-- Rollback: I16.8 G6.
+**S11-W3-1 · OWNER (+ micky log commit) · W3, with the last family merge: cloud V5' → V6 (OQ10-a)**
+- Depends on: S11-W3-6, S11-W3-7, S11-W3-8.
+- Actions: set V6; Save; new session; `live --env cloud:<id> --expect auto` (8 entries; 7 if checklist b = no).
+- Files: log row V5'→V6, reason `W3: folder paths with the last family merge (OQ10-a)`. OQ10-a drops the OQ4 exception for intent-lock, decision-interview, plan-critique and psych-paper-digest: they joined only with their family's rewrite (S11-W3-6, S11-W3-7). The `MEMORY.md:11` line moved to S11-W3-2 (OQ12-a).
+- Done when: `"ok": true`.
+- Rollback: set the previous V5' value.
 
 **S11-W3-3 · micky · README install section**
-- Depends on: S11-W3-2.
+- Depends on: S11-W3-2, S11-W3-1 (the README states the V6 value).
 - Files: edit `README.md`: replace the sections `## Register it once` and `## Update it` (README.md:5-48 today) with:
 
   ```markdown
@@ -759,26 +787,50 @@ Notation: `<id>` = the cloud environment id chosen in S11-W0-5 (for example `mai
 
 **S11-W3-4 · OWNER (+ micky commit) · firecrawl enablement**
 - Depends on: S09-W3-1.
-- The question is asked at W3 entry as plan OQ6 and its answer is recorded before S09-W3-1 (critique P9); this step carries out the enablement actions for the recorded answer. The question (ARCH-CONFLICT 1, CX-51): keep firecrawl's `"defaultEnabled": false` (R30, external-service plugin; accept it disabled by default in cloud multi-repo sessions until the block below enables it) or drop the flag (cloud multi-repo sessions keep no user settings to hold an enablement, so the flag would otherwise silently leave firecrawl off from W3 with no step to notice). The answer is already recorded (plan OQ6); S09-W3-1 followed it.
-- Actions if the owner keeps `defaultEnabled: false`: Windows `claude plugin enable firecrawl@inline` (writes the user setting, N4); cloud: add to `docs/rewrite/cloud-setup.sh` (next `SETUP_VERSION`) the block `mkdir -p /root/.claude && [ -f /root/.claude/settings.json ] || echo '{"enabledPlugins":{"firecrawl@inline":true}}' > /root/.claude/settings.json`, paste it, Save; new session; `live --env cloud:<id> --expect auto`.
+- OQ6-a (2026-09-24; ARCH-CONFLICT 1, CX-51): firecrawl keeps `"defaultEnabled": false` (R30, external-service plugin; OD12-a), and this step enables it where the owner works, because cloud multi-repo sessions keep no user settings to hold an enablement. S09-W3-1 sets the flag.
+- Actions: Windows `claude plugin enable firecrawl@inline` (writes the user setting, N4); cloud: add to `docs/rewrite/cloud-setup.sh` (next `SETUP_VERSION`) the block `mkdir -p /root/.claude && [ -f /root/.claude/settings.json ] || echo '{"enabledPlugins":{"firecrawl@inline":true}}' > /root/.claude/settings.json`, paste it, Save; new session; `live --env cloud:<id> --expect auto`.
 - Files: log rows `enabled:firecrawl@inline` `(unset)`→`true` for each environment; `setup-script` row.
 - Done when: `live` passes on both environments (no "present but disabled").
 - Fallback when the cloud block does not survive into sessions: accept the router disabled in cloud (the CLI from the setup script still serves evidence fetches); log `enabled:firecrawl@inline` `false` for cloud with that reason.
 - Rollback: remove the block (previous setup version); `claude plugin disable firecrawl@inline` on Windows.
 
-**S11-W3-5 · micky (log) · after the W3 skeleton PR**
-- Depends on: S10-W3-2.
-- Actions: new session; `live --env cloud:<id> --expect auto` (expect 8 entries: alignment, evidence, visuals, vault-keeper, firecrawl, gridgeist, plugin-creator, learn-hub-session); on Windows the same command from `$M` after `git pull`.
-- Files: log rows V6→V6 (cloud) and the Windows value → same value, reason `W3 skeleton merged: the folders now load the families`.
+**S11-W3-5 · OWNER (+ micky log commit) · after the W3 skeleton PR: cloud V5 → V5' (OQ10-a)**
+- Depends on: S10-W3-2 merged to master.
+- Actions: (1) cloud: set the line to V5' (V5 minus the six per-plugin segments the skeleton removed, I16.2); Save; new session; `live --env cloud:<id> --expect gridgeist,vault-keeper,firecrawl,plugin-creator,learn-hub-session` (without `learn-hub-session` if checklist b = no). The six plugins do not load in cloud sessions until their family joins (S11-W3-7, S11-W3-8; plan §8 Q31). (2) Windows: from `$M` after `git pull`, `live --env windows:<host> --expect auto` — the folder path now loads the families (8 entries; 7 if checklist b = no).
+- Files: log rows V5→V5' (cloud) and the Windows value → same value, reasons `W3 skeleton merged: moved segments dropped (OQ10-a)` and `W3 skeleton merged: the folder now loads the families`.
 - Done when: both `live` runs print `"ok": true`.
-- Rollback: the skeleton's own revert (the folder path absorbs it with no edit).
+- Rollback: set V5 (cloud) together with the skeleton's own revert (the Windows folder path absorbs it with no edit).
+
+**S11-W3-6 (new, OQ10-a) · OWNER (+ micky log commit) · W3: alignment joins the cloud value**
+- Depends on: S11-W3-5; S01-W3-7 merged to master (`git merge-base --is-ancestor <sha> origin/master`).
+- Read-only checks first: I16.3 for alignment (condition 1 as stated for W3 joins; condition 4: `bash scripts/eval.sh --smoke alignment` passes).
+- Actions: set the line to the current value + `:/home/user/micky-psych-tools/plugins/alignment`; Save; new session; `live --env cloud:<id> --expect auto`.
+- Files: log row, reason `W3: alignment joins (OQ10-a)`.
+- Done when: `"ok": true`.
+- Rollback: set the previous value.
+
+**S11-W3-7 (new, OQ10-a) · OWNER (+ micky log commit) · W3: evidence joins the cloud value**
+- Depends on: S11-W3-5; S03-W3-8 merged to master (`git merge-base --is-ancestor <sha> origin/master`).
+- Read-only checks first: I16.3 for evidence (condition 1 as stated for W3 joins; condition 4: `bash scripts/eval.sh --smoke evidence` passes).
+- Actions: set the line to the current value + `:/home/user/micky-psych-tools/plugins/evidence`; Save; new session; `live --env cloud:<id> --expect auto`.
+- Files: log row, reason `W3: evidence joins (OQ10-a)`.
+- Done when: `"ok": true`.
+- Rollback: set the previous value.
+
+**S11-W3-8 (new, OQ10-a) · OWNER (+ micky log commit) · W3: visuals joins the cloud value**
+- Depends on: S11-W3-5; S05-W3-6 merged to master (`git merge-base --is-ancestor <sha> origin/master`).
+- Read-only checks first: I16.3 for visuals (condition 1 as stated for W3 joins; condition 4: `bash scripts/eval.sh --smoke visuals` passes).
+- Actions: set the line to the current value + `:/home/user/micky-psych-tools/plugins/visuals`; Save; new session; `live --env cloud:<id> --expect auto`.
+- Files: log row, reason `W3: visuals joins (OQ10-a)`.
+- Done when: `"ok": true`.
+- Rollback: set the previous value.
 
 ### W5
 
 **S11-W5-1 · micky · close the delivery record**
 - Depends on: W3 and W4 exits; any W5 decision that retires gridgeist or lit-watch has merged (the folder path needs no edit; log a same-value row with the reason).
 - Actions: `live --expect auto` in a new cloud session and on Windows; `/doctor` in both (record); confirm the latest values equal V6 and the final Windows value.
-- Files: log rows for any W5 change; the MEMORY living-section delivery line kept as in S11-W3-1.
+- Files: log rows for any W5 change; the MEMORY living-section delivery line kept as in S11-W3-2.
 - Commands: `python3 scripts/delivery_log.py check --strict`
 - Done when: `check --strict` exits 0 and both `live` runs pass.
 - Rollback: not applicable.
@@ -805,7 +857,7 @@ None. The W0 checks a (skill listing contains `gridgeist:gridgeist`) and e (proj
 | every commit | `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts -p 'test_delivery_log.py' -q` | `OK` |
 | W0 exit and every wave exit | `python3 scripts/delivery_log.py check --strict` | exit 0 |
 | after every environment edit (new cloud session) | `python3 /home/user/micky-psych-tools/scripts/delivery_log.py live --env cloud:<id> --expect <set or auto>` | `"ok": true` |
-| Windows after W3 | `python scripts\delivery_log.py live --env windows:<host> --expect auto` | `"ok": true` |
+| Windows from W1 entry (OQ12-a) | `python scripts\delivery_log.py live --env windows:<host> --expect auto` | `"ok": true` |
 
 ## 5. Acceptance criteria
 
@@ -819,9 +871,9 @@ None. The W0 checks a (skill listing contains `gridgeist:gridgeist`) and e (proj
 8. W0 exit: `echo $LEARN_HUB_DIR $MICKY_TOOLS_DIR $PUPPETEER_EXECUTABLE_PATH $PUPPETEER_SKIP_DOWNLOAD` in a new cloud session prints `/home/user/learn-hub /home/user/micky-psych-tools /opt/pw-browsers/chromium 1`.
 9. W1 exit: `live --env cloud:<id> --expect gridgeist,vault-keeper,firecrawl,plugin-creator` → `"ok": true`.
 10. W2 exit: `live --env cloud:<id> --expect auto` → `"ok": true` with `"entries": 11`; `ls /home/user/learn-hub/plugins` → `learn-hub-session`; `test ! -d /home/user/learn-hub/.claude/skills/concept-animation`.
-11. W3 entry: `python3 scripts/delivery_log.py current --env cloud:<id>` → `/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins`; `live --expect auto` → `"ok": true`.
-12. W3, Windows: `[Environment]::GetEnvironmentVariable('CLAUDE_CODE_PLUGIN_DIRS','User')` equals the logged Windows value; `claude plugin marketplace list --json` lists no `micky-psych-tools`; `python scripts\delivery_log.py live --env windows:<host> --expect auto` → `"ok": true`.
-13. After the W3 skeleton: `live --expect auto` → `"ok": true` with `"entries": 8` in cloud.
+11. W3, after the last family merge (S11-W3-1, OQ10-a): `python3 scripts/delivery_log.py current --env cloud:<id>` → `/home/user/micky-psych-tools/plugins:/home/user/learn-hub/plugins`; `live --expect auto` → `"ok": true`.
+12. W1 entry, Windows (OQ12-a): `[Environment]::GetEnvironmentVariable('CLAUDE_CODE_PLUGIN_DIRS','User')` equals the logged Windows value; `claude plugin marketplace list --json` lists no `micky-psych-tools`; `python scripts\delivery_log.py live --env windows:<host> --expect auto` → `"ok": true`.
+13. After the W3 skeleton: `live --expect auto` → `"ok": true` with `"entries": 8` on Windows; in cloud, 8 entries after S11-W3-1 (OQ10-a).
 14. `grep -c '^## Install per environment' README.md` → `1`; `grep -c 'plugin marketplace add' README.md` → `0`.
 15. `grep -E 'fc-[A-Za-z0-9]{8,}|service_role|eyJ[A-Za-z0-9_-]{10,}' docs/rewrite/delivery-log.md docs/rewrite/cloud-setup.sh` → no output.
 16. I27 (implemented by S17 and S20): `grep -c '^/Raw Article PDF/$' .gitignore` in learn-hub → `1`; `grep -c 'C:/Users' .claude/skills/vault-coverage/SKILL.md` → `0`; `grep -c 'C:\\\\Users' .claude/skills/ingest-article/SKILL.md` → `0`.
@@ -844,7 +896,7 @@ None. The W0 checks a (skill listing contains `gridgeist:gridgeist`) and e (proj
 | Plugin hooks do not fire in platform sessions | K17 | W0-b; on "no", V5 is skipped and S14 does not build the hooks plugin |
 | A setup-script step fails silently (every step is non-fatal) | new | `/var/log/cloud-setup.log` WARN lines; acceptance 7 at W0 exit; `ready.mjs` preflight names the install command (S13) |
 | The W0 probe stays behind | new | DL19 under `--strict` at W0 exit |
-| Windows runs stale cache copies until W3 | new (N5) | G1 stale-copy check; G3 refresh after each wave's releases |
+| Windows runs stale cache copies until W1 entry | new (N5) | G1 stale-copy check; the switch at W1 entry (S11-W3-2, OQ12-a) ends it |
 | Environment values are readable by anyone using the environment | new | single-owner environment; DL10 keeps keys out of the repo; API credentials considered later (§8 Q8) |
 | The Chromium path changes with an image update | new | one row in I16.1 and one line in session-start.sh (S13); `ready.mjs` detects it (S13) |
 | firecrawl disabled once `defaultEnabled: false` lands | new (N4) | S11-W3-4; ARCH-CONFLICT 1 |
@@ -860,10 +912,10 @@ OD sensitivity:
 
 ## 8. Open questions
 
-1. **OWNER-QUESTION — ARCH-CONFLICT 1 — `defaultEnabled: false` versus in-place delivery (CX-51; asked as plan OQ6 at W3 entry, before S09-W3-1; S11-W3-4 acts on the answer).** Architecture §2.2 (architecture.md:90) and OD12-a set firecrawl `defaultEnabled: false`, and R30 requires it for external-service plugins. Probe N4: an env-var-loaded plugin with that flag is listed `"enabled": false` / `× disabled`. Cloud multi-repo sessions keep no user settings (no `/root/.claude/settings.json` exists; the session runs with `--settings launcher-settings.json`), so nothing enables it there, and from W3 the W1-exit enablement of firecrawl becomes a no-op in cloud. This spec follows the architecture and adds the conditional step S11-W3-4. Settles it: the owner (keep the flag, or drop it because OD2-a leaves no installs for it to protect), and a W3 probe of whether a setup-script-written `/root/.claude/settings.json` survives into sessions.
-2. **ARCH-CONFLICT 2 — directory marketplaces are not in place for installs.** Architecture §2.5 (architecture.md:163) calls a local-directory source "in place, PLG-09", and W0-g's fallback (architecture.md:739) says "GitHub source → switch it to a local directory". Probe N5: an install from a directory marketplace is a versioned cache copy, and an unbumped edit does not reach it through `marketplace update` + `plugin update`. Consequence followed here: until W3, Windows gets only released versions, whatever the source (G3 after each wave), and switching GitHub → directory only removes the push. Settles the remaining unknown (does a session start refresh a directory install without a bump?): the G1 `same=` lines on Windows.
+1. **CLOSED (OQ6-a, 2026-09-24: keep the flag and add the cloud setup-script enable block; S11-W3-4 acts on it) — ARCH-CONFLICT 1 — `defaultEnabled: false` versus in-place delivery (CX-51).** Architecture §2.2 (architecture.md:90) and OD12-a set firecrawl `defaultEnabled: false`, and R30 requires it for external-service plugins. Probe N4: an env-var-loaded plugin with that flag is listed `"enabled": false` / `× disabled`. Cloud multi-repo sessions keep no user settings (no `/root/.claude/settings.json` exists; the session runs with `--settings launcher-settings.json`), so nothing enables it there, and from W3 the W1-exit enablement of firecrawl becomes a no-op in cloud. This spec follows the architecture; S11-W3-4 enables firecrawl through the setup script and on Windows. Still to observe at S11-W3-4: whether a setup-script-written `/root/.claude/settings.json` survives into sessions (the step carries the fallback).
+2. **ARCH-CONFLICT 2 — directory marketplaces are not in place for installs.** Architecture §2.5 (architecture.md:163) calls a local-directory source "in place, PLG-09", and W0-g's fallback (architecture.md:739) says "GitHub source → switch it to a local directory". Probe N5: an install from a directory marketplace is a versioned cache copy, and an unbumped edit does not reach it through `marketplace update` + `plugin update`. Consequence followed here: until the W1-entry switch (OQ12-a), Windows gets only released versions, whatever the source, and switching GitHub → directory only removes the push. Settles the remaining unknown (does a session start refresh a directory install without a bump?): the G1 `same=` lines on Windows.
 3. **ARCH-CONFLICT 3 — order of the Windows switch.** §2.5 (architecture.md:163) says the variable is set "after the marketplace copies are uninstalled"; §10 W3 step 1 (architecture.md:825) says "set the env var, then uninstall". This spec follows §10: set, verify, then uninstall (G5), because PLG-51 makes the env copy win during the overlap (N6 shows both listed) and the reverse order leaves nothing loaded if the variable fails.
-4. **OWNER-QUESTION — ARCH-CONFLICT 4 — condition 1 of §2.7 versus the schedule (CX-50).** §2.7 (architecture.md:198) requires "all its HIGH defects are closed", yet the schedule enables pubmed-research-note at W2 exit with H45 due in W3 (architecture.md:1015), vault-keeper at W1 exit with H10/H11 split W1/W2, plugin-creator at W1 exit with H07 split W1/W3, and intent-lock, decision-interview, plan-critique and psych-paper-digest at W3 entry with H01–H04 due in W3 and no smoke suite yet (their cases are W3). This spec applies the reading in I16.3 (defects due by that wave) and now records each exception by name in the log's evidence cell at S11-W2-2 and S11-W3-1 (§3). Settles it: the owner confirms this reading.
+4. **CLOSED (OQ4-a, 2026-09-24; OQ10-a drops the exception for intent-lock, decision-interview, plan-critique and psych-paper-digest, which join only with their family's rewrite) — ARCH-CONFLICT 4 — condition 1 of §2.7 versus the schedule (CX-50).** §2.7 (architecture.md:198) requires "all its HIGH defects are closed", yet the schedule enables pubmed-research-note at W2 exit with H45 due in W3 (architecture.md:1015), vault-keeper at W1 exit with H10/H11 split W1/W2, plugin-creator at W1 exit with H07 split W1/W3, and intent-lock, decision-interview, plan-critique and psych-paper-digest at W3 entry with H01–H04 due in W3 and no smoke suite yet (their cases are W3). This spec applies the reading in I16.3 (defects due by that wave) and now records each exception by name in the log's evidence cell at S11-W2-2 and S11-W3-1 (§3). Settles it: the owner confirms this reading.
 5. ASSUMES I14, I15, I17, I18 as stated in §2.7 — S13, S14, S12 and S10 to confirm.
 6. U1, U2, U3, U4, U7: answered by W0 checks b, h, g, e and b respectively; U5 pre-answered yes (N7); U6 applies only under OD13-b.
 7. Can the claude.ai/code session dialog start a multi-repo session with a chosen branch for one repo? Needed by W0-e (option 1) and S11-W2-3 (branch session). Settled at S11-W0-7; each step carries a fallback.

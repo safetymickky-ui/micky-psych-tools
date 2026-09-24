@@ -295,7 +295,7 @@ Two consecutive rounds resolving no item end the interview (intent-lock: and no 
 - Commands/Done when: `wc -l …lock-record.md` → 37; `grep -c "^> Run" …` → 2.
 - Rollback: `git rm plugins/intent-lock/references/lock-record.md`.
 
-**S01-W2-2** — micky-psych-tools · depends on: S01-W2-1
+**S01-W2-2** — DROPPED (OQ12-a): Windows loads plugins in place from W1 entry (S11-W3-2), so this interim version bump is not needed; the change steps write their CHANGELOG entries under `## Unreleased`, and `release.py` sets the version once at W3. micky-psych-tools · depends on: S01-W2-1
 - Change: release the W2-1 fix — `python3 scripts/bump.py intent-lock patch --write`.
 - Files: `plugins/intent-lock/.claude-plugin/plugin.json`, `plugins/intent-lock/CHANGELOG.md` (entry: "Interim lock record: single `Assumed:` line, both Handoff sentences (H05 interim fix)."). `.claude-plugin/marketplace.json` is not touched: S10-W0-3 removed every entry `version` (I18, CX-12).
 - Done when: `python3 scripts/validate.py` prints `all checks passed`; `marketplace.json` has no `version` key for this entry.

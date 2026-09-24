@@ -4,8 +4,8 @@
 |---|---|
 | Repos | learn-hub |
 | Units (today → target) | `CLAUDE.md` (3,126 lines / 268,390 B) → ≤32 KB (OD11-b); new `docs/vault-format.md`; new `docs/gotchas-archive.md`; new `docs/rewrite/gotcha-map.md`; new `.claude/rules/*.md` (13 files); new `scripts/lib/skill-lint.mjs` + `src/lib/__tests__`-style vitest test; `package.json` scripts `test:py`, `check:skills` (+ the I22 registry) |
-| Waves | W0 (skill-lint.mjs + tests; `test:py`; `check:skills`), W1 (4 factual corrections), W4 stage a (pipeline gotchas + vault format out), W4 stage b (app gotchas + Pages → `.claude/rules`) |
-| Owner decisions assumed | OD11-b (staged, a then b) |
+| Waves | W0 (skill-lint.mjs + tests; `test:py`; `check:skills`; then, right after W0 check e = yes, stage b (app gotchas + Pages → `.claude/rules`) inside a CLAUDE.md freeze — OQ9-a, OQ14-a), W1 (4 factual corrections), W4 stage a (pipeline gotchas + vault format out; size guard) |
+| Owner decisions assumed | OD11-b (staged, a then b); owner answers OQ9-a, OQ14-a (all confirmed 2026-09-24) |
 | Defects closed | 0 of 0 assigned (this spec has no inventory defect ids; it serves other specs — see digest) |
 | Interfaces owned | I21, I22 |
 | Interfaces consumed | I13 (owner S13), I16 (owner S11), I17 (owner S12), I19 (owner S08, not yet written) |
@@ -399,6 +399,22 @@ Settled by reading S08 once it exists; no conflict expected since I19's owner is
 - Done when: the clean run exits 0; the scratch commit is blocked; `npx vitest run scripts/pre-commit.test.mjs` passes.
 - Rollback: `git revert <this commit>`.
 
+**S21-W0-4 (new, OQ9-a)** — Start the CLAUDE.md freeze for stage b.
+- Repo: learn-hub · depends on: S11-W0-7 (W0 check e = yes; OQ14-a runs stage b right after it), S21-W0-3
+- Files: create `docs/gotchas-inbox.md`; edit `CLAUDE.md` (one line right under the `## Gotchas (hard-won)` heading and one right under `## Pages`, both outside every gotcha block)
+- Change: `docs/gotchas-inbox.md` gets a `# Gotchas inbox` header and one sentence: "Frozen window S21-W0-4 … S21-W0-5 (OQ9-a): add a new learn-hub gotcha here as a `- **…**` bullet; it moves to its destination when the window ends." Each CLAUDE.md line reads: "Frozen for the plugin rewrite (OQ9-a, from <date>): do not edit this section; add a new gotcha to `docs/gotchas-inbox.md`."
+- Commands: `grep -c 'Frozen for the plugin rewrite' CLAUDE.md`; `test -f docs/gotchas-inbox.md`
+- Done when: the grep prints 2; the file exists; the commit is merged to learn-hub master before S21-W4a-1 starts, because other sessions read master (OQ7-a).
+- Rollback: `git revert <this commit>`.
+
+**S21-W0-5 (new, OQ9-a)** — End the freeze.
+- Repo: learn-hub · depends on: S21-W4b-1
+- Files: delete `docs/gotchas-inbox.md`; edit `CLAUDE.md` and each `.claude/rules/*.md` file an inbox entry goes to
+- Change: move each entry of `docs/gotchas-inbox.md`, verbatim: an app-area entry to the `.claude/rules/*.md` file that §2.4's area rules name; a pipeline-area entry under `## Gotchas` in CLAUDE.md, where S21-W4a-3 maps it as a `new` row in W4. Delete the inbox file and every freeze line S21-W0-4 added that S21-W4b-1 did not already remove.
+- Commands: `grep -c 'Frozen for the plugin rewrite' CLAUDE.md`; `test ! -e docs/gotchas-inbox.md`; `node scripts/move-blocks.mjs --check`
+- Done when: the grep prints 0; the inbox file is gone; `--check` exits 0.
+- Rollback: `git revert <this commit>`.
+
 ### Wave W1 — CLAUDE.md factual corrections
 
 **S21-W1-1** — Fix the figure disposition list.
@@ -429,30 +445,30 @@ Settled by reading S08 once it exists; no conflict expected since I19's owner is
 - Done when: both greps above return 1 line each.
 - Rollback: revert the one-line diff.
 
-### Wave W4, stage a — pipeline gotchas + vault format out
+### Wave W4, stage a — pipeline gotchas + vault format out (S21-W4a-1 and S21-W4a-4 run before W1 with stage b — OQ14-a; ids kept)
 
 **S21-W4a-1** — Write `docs/rewrite/gotcha-map.md`.
-- Repo: learn-hub · depends on: S21-W0-1 (no functional dependency; ordered here for wave clarity)
+- Repo: learn-hub · depends on: S21-W0-1, S21-W0-4 (the freeze is on master). Runs right after W0 check e = yes, before W1 (OQ14-a).
 - Files: create `docs/rewrite/gotcha-map.md`
 - Change: write the table from §2.4, keyed by heading text (the bold first sentence of each
   `- **…**` gotcha bullet) with the line number as a second column, plus the header line stated
-  there and the W4-entry commit sha. Build it from the live `CLAUDE.md` at W4 entry, not from
+  there and the base commit sha (the frozen `CLAUDE.md`). Build it from the live `CLAUDE.md` at the start of the frozen window (S21-W0-4; OQ9-a, OQ14-a), not from
   the 2026-09-24 line numbers: other sessions add gotchas every week. A heading added since
   2026-09-24 gets a destination by §2.4's area rules and is marked `new` (critique C2-09).
 - Commands: `wc -l docs/rewrite/gotcha-map.md`; `grep -c '^- \*\*' CLAUDE.md` inside `## Gotchas`.
-- Done when: every gotcha heading in the W4-entry `CLAUDE.md` appears exactly once in the map
+- Done when: every gotcha heading in the frozen `CLAUDE.md` appears exactly once in the map
   (136 plus the `new` rows), and every row's heading text still occurs exactly once in `CLAUDE.md`.
 - Rollback: `git rm docs/rewrite/gotcha-map.md`.
 
 **S21-W4a-4 (new, critique C2-08)** — Write the block mover.
-- Repo: learn-hub · depends on: S21-W4a-1
+- Repo: learn-hub · depends on: S21-W4a-1 (runs before W1, OQ14-a)
 - Files: create `scripts/lib/move-blocks.mjs` (pure planner), `scripts/lib/move-blocks.test.mjs`, `scripts/move-blocks.mjs` (CLI).
-- Change: a block is a gotcha heading line (`- **…`) through the line before the next heading or `## ` section. `--map <file> [--dest <key>] --write` cuts every block the map assigns to `<key>` (all keys when omitted) from `CLAUDE.md` and appends it, verbatim, under `## <heading text>` plus the `<!-- CLAUDE.md:<line> -->` provenance comment, to the destination file I21 names. `--archive <out>` writes every mapped block in original order without cutting. `--check` compares the sha256 of the sorted blocks of the W4-entry `CLAUDE.md` (`git show <map sha>:CLAUDE.md`) with the blocks found across `CLAUDE.md` and every destination: exit 0 only when each block occurs exactly once, byte-identical. `--check-archive` does the same for the archive. Dry run by default.
+- Change: a block is a gotcha heading line (`- **…`) through the line before the next heading or `## ` section. `--map <file> [--dest <key>] --write` cuts every block the map assigns to `<key>` (all keys when omitted) from `CLAUDE.md` and appends it, verbatim, under `## <heading text>` plus the `<!-- CLAUDE.md:<line> -->` provenance comment, to the destination file I21 names. `--archive <out>` writes every mapped block in original order without cutting. `--check` compares the sha256 of the sorted blocks of each row's base `CLAUDE.md` (`git show <base sha>:CLAUDE.md`; the map's base sha unless the row names its own — S21-W4a-3 gives the rows still in CLAUDE.md the W4-entry sha, OQ14-a) with the blocks found across `CLAUDE.md` and every destination: exit 0 only when each block occurs exactly once, byte-identical. `--check-archive` does the same for the archive. Dry run by default.
 - Commands: `npx vitest run scripts/lib/move-blocks.test.mjs`; `node scripts/move-blocks.mjs --map docs/rewrite/gotcha-map.md` (dry run).
-- Done when: the tests pass, including a case where one changed character inside a moved block makes `--check` exit 1; the dry run lists every map row with its block's line range.
+- Done when: the tests pass, including a case where one changed character inside a moved block makes `--check` exit 1 and a case with two base shas; the dry run lists every map row with its block's line range.
 - Rollback: `git revert <this commit>`.
 
-**S21-W4a-3** — Write `docs/gotchas-archive.md` (archive FIRST, before any deletion — CX-28);
+**S21-W4a-3** — Write `docs/gotchas-archive.md` (archive before any stage-a deletion — CX-28; OQ14-a moved stage b's deletions before W1);
 fix the pk-plasma-animation location line (the edit noted in §8).
 - Repo: learn-hub · depends on: S21-W4a-4 (the mover writes the archive, critique C2-08), S21-W4a-1 (the map — this step no longer depends on S21-W4a-2;
   CX-28 moves the archive ahead of the first deletion, closing the transient-unrecoverable window
@@ -460,10 +476,13 @@ fix the pk-plasma-animation location line (the edit noted in §8).
   headings in one shot — including AB's 26 and SV's 20, which S19-W4-8/S13-W4-1 delete only later
   — so there is no longer a reason to archive after a partial deletion); S16-W2-6 (CX-34 —
   pk-plasma-animation must already be at `.claude/skills/pk-plasma-animation` for the line fix)
-- Files: create `docs/gotchas-archive.md`; edit `CLAUDE.md:355`
+- Files: create `docs/gotchas-archive.md`; edit `CLAUDE.md:355` and `docs/rewrite/gotcha-map.md` (base shas, `new` rows)
 - Change: `docs/gotchas-archive.md` per §2.7 (I21) — every mapped heading, verbatim, written by
   `node scripts/move-blocks.mjs --map docs/rewrite/gotcha-map.md --archive docs/gotchas-archive.md`
-  from `CLAUDE.md` at the W4-entry commit, before S21-W4a-2's or any other spec's deletions (a
+  from each row's base commit, before S21-W4a-2's or any other stage-a deletion. First (OQ14-a): give
+  every row still in CLAUDE.md the W4-entry sha as its base (a pipeline block may have changed since
+  S21-W4a-1, e.g. at S21-W1-1) and add a `new` row for any pipeline heading added since; the rows
+  S21-W4b-1 moved before W1 keep the map's base sha, so the archive still holds their frozen text (a
   script copy, not a hand copy, so the archive cannot carry a hand-made error; critique C2-08). CLAUDE.md's
   pk-plasma line: replace
   `` the `pk-plasma-animation` plugin (`plugins/pk-plasma-animation/`, `/pk-animation <drug>`) ``
@@ -471,7 +490,7 @@ fix the pk-plasma-animation location line (the edit noted in §8).
   <drug>`) ``.
 - Commands: `ls .claude/skills/pk-plasma-animation/SKILL.md` (precondition check); `grep -n
   "pk-plasma-animation.*plugin" CLAUDE.md` (should be empty after the edit); `grep -c '^## ' docs/gotchas-archive.md` → the map's row count; `node scripts/move-blocks.mjs --check-archive` exits 0.
-- Done when: both greps above match expectations, and the archive holds exactly one block per map row, byte-identical to the W4-entry `CLAUDE.md`.
+- Done when: both greps above match expectations, and the archive holds exactly one block per map row, byte-identical to its row's base commit.
 - Rollback: revert the diffs; the archive file is additive and safe to leave.
 
 **S21-W4a-2** — Move `Vault note format` to `docs/vault-format.md`; move the pipeline-destined
@@ -498,13 +517,22 @@ S13-W4-1 create independently, each reading this step's `gotcha-map.md`).
 - Rollback: `git revert` the commit; the moved text is recoverable from `docs/gotchas-archive.md`
   (S21-W4a-3, already written before this step ran) regardless.
 
-### Wave W4, stage b — app gotchas + Pages → `.claude/rules/*.md`
+**S21-W4a-5 (new, OQ14-a)** — Size guard after stage a.
+- Repo: learn-hub · depends on: S21-W4a-2, S13-W4-1, S19-W4-8 (every pipeline row has moved)
+- Files: edit `scripts/lib/skill-lint.mjs`, `scripts/lib/skill-lint.test.mjs`, `CLAUDE.md` (the `## Documentation upkeep` line)
+- Change: add skill-lint check 10: `CLAUDE.md` over 32,768 bytes fails (with a vitest case), so the target cannot erode. Set the upkeep line to its final text: "New trap → add it to the file `docs/rewrite/gotcha-map.md` names for its area; CLAUDE.md keeps pointers only." Both moved here from S21-W4b-1: stage b runs before W1, when CLAUDE.md still holds the 66 pipeline gotchas and the vault format (OQ14-a).
+- Commands: `python3 $MICKY_TOOLS_DIR/docs/plugin-rewrite/phase3/measure.py file CLAUDE.md`; `npm run check:skills`; `node scripts/move-blocks.mjs --check`
+- Done when: `wc -c CLAUDE.md` ≤ 32,768; `grep -c '^- \*\*' CLAUDE.md` inside `## Gotchas` → 0; `npm run check:skills` passes with check 10; `--check` exits 0 (the W4 exit gate's own check, §4.4, §5).
+- Rollback: `git revert <this commit>`.
+
+### Wave W4, stage b — app gotchas + Pages → `.claude/rules/*.md` (runs right after W0 check e = yes, before W1 — OQ14-a; id kept)
 
 **S21-W4b-1** — Create the 13 `.claude/rules/*.md` files and move the 70 app gotcha headings plus
 the Pages content into them; reduce CLAUDE.md's `## Gotchas` and `## Pages` sections to indexes.
-- Repo: learn-hub · depends on: S21-W4a-2, S13-W4-1, S19-W4-8 (CX-28 — explicit, not implied: all
-  three must land before what remains under `## Gotchas` is exactly the 70 app headings — S21-W4a-2
-  removes IV/PK/IA/VC/CR/VR, S13-W4-1 removes SV, S19-W4-8 removes AB)
+- Repo: learn-hub · depends on: S21-W4a-1, S21-W4a-4, S21-W0-4. OQ14-a: runs right after W0 check
+  e = yes, before W1, inside the OQ9-a freeze. The 66 pipeline headings stay under `## Gotchas`
+  until stage a moves them in W4 (S21-W4a-2, S13-W4-1, S19-W4-8). If check e = no, this step waits
+  for W4, runs after those three steps and targets `docs/gotchas/` (§7).
 - Files: create the 13 files listed in §2.1/§2.4; edit `CLAUDE.md`
 - Change: for each rule file, write the `paths:` frontmatter (§2.4's table) then the assigned
   Gotcha headings (verbatim, `## Gotchas` subsection) and the assigned Pages content (verbatim,
@@ -514,23 +542,24 @@ the Pages content into them; reduce CLAUDE.md's `## Gotchas` and `## Pages` sect
   `swipe-gestures.md`, `color-similarity.md`, `dev-workflow.md`, `articles-feed.md` receive Pages
   content only where §2.3's table names them — `articles-feed.md` gets Pages content (item 6) but
   no Gotcha headings, per §2.4's note). CLAUDE.md's `## Gotchas` becomes the short pointer text
-  from §2.3; `## Pages` becomes the 14-row index from §2.3. Gotcha blocks move with
+  from §2.3; `## Pages` becomes the 14-row index from §2.3; the `## Gotchas` pointer text sits above the 66
+  pipeline blocks until W4. Gotcha blocks move with
   `node scripts/move-blocks.mjs --map docs/rewrite/gotcha-map.md --dest rules --write` (critique C2-08).
   Same commit (critique C2-09): replace the "New trap discovered → add it to Gotchas" line in
   `## Documentation upkeep` with "New trap → add it to the file `docs/rewrite/gotcha-map.md` names
-  for its area; CLAUDE.md keeps pointers only.", and add skill-lint check 10: `CLAUDE.md` over
-  32,768 bytes fails (with a vitest case), so the target cannot erode.
-- Commands: `python3 $MICKY_TOOLS_DIR/docs/plugin-rewrite/phase3/measure.py file CLAUDE.md` (must report ≤32,768 bytes)
-- Done when: `wc -c CLAUDE.md` ≤ 32,768; `grep -c "^- \*\*" CLAUDE.md` between lines 817-2996
-  (now much shorter) → 0 (no gotcha heading text remains inline — only the pointer list);
-  `ls .claude/rules/*.md | wc -l` → 13; for the exactly-once grep across all destinations
-  (gotchas.md files + rules files + CLAUDE.md), `node scripts/move-blocks.mjs --check` exits 0:
-  every mapped block from the W4-entry `CLAUDE.md` exists exactly once across the destinations,
-  byte-identical (replaces the first-8-words grep, which a changed number or a dropped sentence
-  inside a block would pass; critique C2-08) — this is the W4 exit gate's own check (§4.4, §5);
-  `npm run check:skills` passes with check 10.
-- Rollback: `git revert`; `docs/gotchas-archive.md` (S21-W4a-3) still holds every heading's text
-  verbatim regardless of this step's outcome.
+  for its area; until the W4 moves, a pipeline-area trap goes under `## Gotchas` here." S21-W4a-5
+  sets the final wording and adds skill-lint check 10: after this step CLAUDE.md is still about
+  135 KB (measured 2026-09-24: 268,390 bytes, of which about 39 KB is Pages and 94 KB app
+  gotchas), so the 32,768-byte check waits for stage a (OQ14-a).
+- Commands: `node scripts/move-blocks.mjs --check`; `ls .claude/rules/*.md | wc -l`
+- Done when: `grep -c "^- \*\*" CLAUDE.md` inside `## Gotchas` → the pipeline rows only (66, plus
+  any `new` pipeline row), which stage a moves in W4; `ls .claude/rules/*.md | wc -l` → 13;
+  `node scripts/move-blocks.mjs --check` exits 0: every mapped block from the frozen `CLAUDE.md`
+  exists exactly once across CLAUDE.md and the destinations, byte-identical (replaces the
+  first-8-words grep, which a changed number or a dropped sentence inside a block would pass;
+  critique C2-08); `npm run check:skills` passes.
+- Rollback: `git revert`; the map commit (S21-W4a-1) holds every moved block's text, and
+  `docs/gotchas-archive.md` (S21-W4a-3, W4) archives it from there (OQ14-a).
 
 **Owner action (OWNER)** — none required for this spec's own steps; all four waves are executable
 without a human decision beyond the already-assumed OD11-b.
@@ -559,8 +588,8 @@ here has a description Claude routes to. No family membership, no near-miss quer
 - Smoke: `npx vitest run scripts/lib/skill-lint.test.mjs` (W0); `npm run check:skills` (every
   wave exit, per the standard exit gates in architecture §10); `npm run test:py` (every wave
   exit).
-- Release: `python3 $MICKY_TOOLS_DIR/docs/plugin-rewrite/phase3/measure.py file CLAUDE.md` ≤ 32,768 bytes (W4b exit); the exactly-once
-  grep script named in S21-W4b-1's "Done when" (W4 exit, and again at the overall migration's W5
+- Release: `python3 $MICKY_TOOLS_DIR/docs/plugin-rewrite/phase3/measure.py file CLAUDE.md` ≤ 32,768 bytes (W4 exit, S21-W4a-5); the exactly-once
+  grep script named in S21-W4a-5's "Done when" (W4 exit, and again at the overall migration's W5
   exit per architecture §10 W4's "A grep shows every mapped heading exists exactly once in its
   destination").
 
@@ -569,7 +598,7 @@ here has a description Claude routes to. No family membership, no near-miss quer
 1. `grep -n "^## " CLAUDE.md | wc -l` reports 14 at every wave (no section header is deleted,
    only bodies shrink/move) until W4b, after which `## Vault note format`, `## Pages` and
    `## Gotchas` are pointer-only.
-2. `wc -c CLAUDE.md` ≤ 32,768 after S21-W4b-1 (OD11-b).
+2. `wc -c CLAUDE.md` ≤ 32,768 after S21-W4a-5 (OD11-b; OQ14-a).
 3. `wc -l docs/rewrite/gotcha-map.md` — table row count (excluding header rows) sums to 136
    across the two grouped tables in §2.4 (66 + 70).
 4. `ls docs/vault-format.md docs/gotchas-archive.md` both succeed after W4a.
@@ -601,7 +630,9 @@ Not applicable — this spec's units carry no descriptions Claude routes to.
   BEFORE S21-W4a-2's first deletion (CX-28) — archiving all 136 headings in one shot, before any
   spec (this one or S13/S19) has deleted anything, closes the transient-unrecoverable window a
   git-history-only backstop used to leave open. S21-W4a-2, S13-W4-1 and S19-W4-8 all run only
-  after the archive exists.
+  after the archive exists. Under OQ14-a, stage b's deletions (S21-W4b-1) run before W1, before the
+  archive exists; their backstop is `move-blocks --check` in the same step plus the map commit in
+  git, and S21-W4a-3 later archives those rows from the map's base sha.
 - **OD11 sensitivity.** Under OD11-a (architecture's non-recommended option), stage b
   (S21-W4b-1) does not run: CLAUDE.md stops after stage a at a larger size (architecture's own
   estimate: "the §9 total becomes ≈48k" tokens, i.e. `.claude/rules/` is never created and the 70
@@ -614,13 +645,17 @@ Not applicable — this spec's units carry no descriptions Claude routes to.
   pointer index in CLAUDE.md, instead of `.claude/rules/*.md`. This spec's W4b-1 step would then
   create `docs/gotchas/*.md` (same content, same `paths:` metadata kept as a documentation
   comment even though it does nothing) instead of `.claude/rules/*.md`. Not built two ways here —
-  §8 names this as the one open item this spec cannot close without S11's checklist result.
+  §8 names this as the one open item this spec cannot close without S11's checklist result. Under
+  OQ14-a, stage b runs before W1 only when check e = yes; on "no", it waits for W4, after stage a.
 
 ## 8. Open questions
 
 - `ASSUMES: W0 check (e) (S11/I16) reports "yes" — .claude/rules/*.md load by path match in a
   multi-repo session. If "no", S21-W4b-1's target directory changes to docs/gotchas/ (§7);
   settled by reading S11's W0 checklist result before running S21-W4b-1.`
+- **CLOSED (OQ9-a, OQ14-a, 2026-09-24).** Stage b runs right after W0 check e = yes, before W1,
+  inside a freeze of CLAUDE.md `## Gotchas` and `## Pages` (S21-W0-4 … S21-W0-5); stage a stays in
+  W4, and S21-W4a-5 adds the size guard.
 - `ASSUMES: S08's plugin-creator validate.py (I19, not yet written) does not duplicate
   check:skills's checks in a conflicting way — settled by reading S08 once it exists.`
 - **CLOSED (CX-19).** Check 9 imports `scripts/lib/rewrite-gate.mjs` (S12) directly rather than
