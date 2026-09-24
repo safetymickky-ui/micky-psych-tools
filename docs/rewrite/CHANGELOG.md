@@ -43,3 +43,5 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   held each skill at `<ref>`; `--` passes extra args through (S12-W0-3).
 - `scripts/delivery_log.py` (`check`, `current`, `live`; rules DL1–DL19, L1–L7) and
   `scripts/test_delivery_log.py` (25 cases) (S11-W0-1).
+- `docs/rewrite/delivery-log.md` (the I16.4 W0 template) and `docs/rewrite/cloud-setup.sh`
+  (setup script version 1, with the W0 probe block) (S11-W0-2).
