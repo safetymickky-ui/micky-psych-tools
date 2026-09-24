@@ -481,7 +481,7 @@ Near-miss queries (2–4, for S12's family query sets):
 
 ### 4.4 Commands
 
-- Smoke: `bash scripts/eval-project-skill.sh sync-vault --smoke -- --allow-tools Bash --json /tmp/sync-vault-smoke.json` (S12's wrapper, §6.5 of the architecture; CX-46). `sync-preflight-before-apply` is smoke-tagged so the W1 exit gate "sync-vault picks preflight" runs it; it needs the Bash grant and the scaffold (the wrapper passes `--scaffold`, critique F3).
+- Smoke: `bash scripts/eval-project-skill.sh sync-vault --smoke -- --allow-tools "Bash(npm run sync:preflight *),Bash(npm run sync:apply *),Bash(git status *),Bash(git log *)" --json /tmp/sync-vault-smoke.json` (S12's wrapper, §6.5 of the architecture; CX-46). `sync-preflight-before-apply` is smoke-tagged so the W1 exit gate "sync-vault picks preflight" runs it; it needs these grants and the scaffold (the wrapper passes `--scaffold`, critique F3). The fixture's `package.json` makes both npm scripts print-only stubs. Bash is granted per command, never as the whole tool (plan §8 Q33-a); a call denied because it adds a redirect still counts for the `tool_order` grader, which reads attempted calls.
 - Release: `bash scripts/eval-project-skill.sh sync-vault --release --json /tmp/sync-vault-release.json` (two-arm, at the W3/W5 exits per §10; CX-46).
 - Project-side: `npx vitest run scripts/lib/readiness.test.mjs scripts/lib/sync-preflight.test.mjs scripts/lib/session-start-hook.test.mjs`.
 

@@ -508,7 +508,7 @@ Family (§6.3): `{intent-lock, decision-interview, plan-critique, misread-captur
 ### 4.4 Commands
 
 - Smoke: `bash scripts/eval.sh --smoke alignment` (§6.6) — 5 of 9 cases `smoke`-tagged, `--ablation none --runs 1`.
-- Release: `bash scripts/eval.sh --release alignment -- --allow-tools Bash` — two arms, `--runs 3`, all 9 cases + S02's; `--allow-tools Bash` is required for `misread-capture/append-writes-ledger`, which runs `ledger.py append` (`eval.sh` grants no Bash/Write/AskUserQuestion by default — factcheck F3).
+- Release: `bash scripts/eval.sh --release alignment -- --allow-tools "Bash(python3 *)"` — two arms, `--runs 3`, all 9 cases + S02's; the `Bash(python3 *)` grant is required for `misread-capture/append-writes-ledger`, which runs `ledger.py append` (a pattern grant, not the whole `Bash` tool: whole-tool Bash cannot start in the cloud container, plan §8 Q33-a) (`eval.sh` grants no Bash/Write/AskUserQuestion by default — factcheck F3).
 - This session's own check (a scratch script, not kept in either repo): 0 problems.
 
 ## 5. Acceptance criteria

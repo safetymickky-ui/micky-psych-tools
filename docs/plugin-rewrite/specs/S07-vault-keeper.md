@@ -667,8 +667,8 @@ Family: neither skill names an architecture §6.3 contested family — a sink/tr
 
 ### 4.4 Commands
 
-- Smoke: `bash scripts/eval.sh --smoke vault-keeper -- --allow-tools "Write,Bash,AskUserQuestion"` (once `scripts/eval.sh` exists, per S10/I18; `verify-before-delete-fixture-inbox` is smoke-tagged and needs all three — factcheck F3)
-- Release: `bash scripts/eval.sh --release vault-keeper -- --allow-tools "Write,Bash,AskUserQuestion"`
+- Smoke: `bash scripts/eval.sh --smoke vault-keeper -- --allow-tools "Write,AskUserQuestion,Bash(ls *),Bash(mkdir *),Bash(git status *),Bash(git log *),Bash(git diff *)"` (once `scripts/eval.sh` exists, per S10/I18; `verify-before-delete-fixture-inbox` is smoke-tagged and needs Write, AskUserQuestion and the read-only git commands — factcheck F3). Bash is granted per command, never as the whole tool: whole-tool Bash cannot start in the cloud container, and a pattern grant does not cover an output redirect, so files are written with `Write` (plan §8 Q33-a). No delete command is granted; the `no-delete` graders still count an attempted `rm`/`git rm`.
+- Release: `bash scripts/eval.sh --release vault-keeper -- --allow-tools "Write,AskUserQuestion,Bash(ls *),Bash(mkdir *),Bash(git status *),Bash(git log *),Bash(git diff *)"` (the W2 `drain_plan.py` cases, if S07-W5-2 builds it, add `Bash(python3 *)`)
 - Direct: `claude plugin eval plugins/vault-keeper --tag smoke --ablation none --runs 1 --json /tmp/vk.json --max-cost-usd 2`
 
 ## 5. Acceptance criteria
