@@ -1146,6 +1146,7 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
 ## Open threads
 
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
+- Plugin rewrite plan (both repos) is ready in `docs/plugin-rewrite/` (`plan.md`, 21 specs, 285 steps, waves W0–W5) on branch `claude/skill-plugin-rewrite-plan-cckyld`. Not started: W0 waits on the owner's answers to OD1–OD14 and OQ1–OQ16 (`plan.md` §1).
 
 ## Health check
 

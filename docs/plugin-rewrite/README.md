@@ -1,8 +1,8 @@
-# Plugin rewrite — research and target architecture (work in progress)
+# Plugin rewrite — research, target architecture and execution plan
 
-**Status (2026-09-23):** phases 1–2 of 3 done. Paused at the owner's request, before
-phase 3. **This folder is NOT the plan yet.** It holds the evidence and the target
-architecture that the plan will be built from.
+**Status (2026-09-24):** phases 1–3 done. The plan is ready to execute, and nothing in
+either repo has been changed yet. Execution starts at wave W0, after the owner answers
+the owner decisions and owner questions that W0 needs (`plan.md` §1).
 
 **Scope:** every plugin and skill in both repos:
 - micky-psych-tools: 14 plugins, 18 skills, 12 commands, `scripts/`, `ROUTING.md`,
@@ -15,7 +15,12 @@ architecture that the plan will be built from.
 
 | File | What it is |
 | --- | --- |
-| `architecture.md` | **Start here.** The target architecture. It covers topology and delivery per environment, a disposition for every unit, the cross-repo pipeline contract, evals, versioning, context budgets, migration waves W0–W5, owner decisions OD1–OD14 and risks. Appendix A maps all 49 HIGH defects to a wave. |
+| `plan.md` | **Start here to execute.** The execution plan: 285 change steps from the 21 specs, in waves W0–W5, each with its dependencies, entry and exit gates, and rollback. §1 lists the owner decisions (OD1–OD14) and owner questions (OQ1–OQ16); §4 lists the 36 owner-only steps. |
+| `specs/S01…S21` | One rewrite spec per unit group: current state with measured descriptions, defects with `path:line` evidence, target frontmatter and body outline, scripts, handoffs, change steps (one commit each), eval cases with graders, acceptance criteria, trigger lock, risks, open questions. |
+| `coverage.md` | Every one of the 313 defects → spec → fix step → wave. Generated; rebuild with `python3 phase3/gen_coverage.py evidence/defect-index.txt coverage.md`. |
+| `critique-log.md` | The 89 findings of the plan critique and what happened to each (applied to a spec or the plan, or turned into an owner question). |
+| `phase3/` | Support files for the specs: `interfaces.md` (the 27 cross-spec interfaces I01–I27 and their owners), `spec-template.md`, `eval-format.md` (the `claude plugin eval` format extract), `measure.py` (description and body metrics), `gen_coverage.py`. `phase3/reviews/` holds the review records: cross-spec consistency (`cx.md`), fact check, the two reconcile passes and the two critique lenses. Those records cite `phaseB/`, which is now `phase3/reviews/`. |
+| `architecture.md` | The design the plan implements. The target architecture. It covers topology and delivery per environment, a disposition for every unit, the cross-repo pipeline contract, evals, versioning, context budgets, migration waves W0–W5, owner decisions OD1–OD14 and risks. Appendix A maps all 49 HIGH defects to a wave. |
 | `rubric.md` | 92 authoring rules (R1–R92), each with its source claim ids, how it is enforced, and MUST/SHOULD. It also lists the conflicts between sources and where the repos' conventions diverge from the rules. |
 | `proposals/` | The three competing architectures the synthesis was built from: purist, risk-first, workflow-first. |
 | `evidence/claims-digest.txt` | 259 best-practice claims. Each has a source URL and quote, and an adversarial check verdict: 228 confirmed, 30 partial with corrected wording, 1 refuted. |
@@ -59,11 +64,10 @@ now `evidence/phase1-results.json`, and `wf2/` is this folder.
   concept-animation and ml-concept-lab still prescribe the `100dvh` stage collapse, and
   clinical-infographic still ships a dark-mode block.
 
-## Owner decisions to make before phase 3
+## Owner decisions
 
-These are OD1–OD14 in `architecture.md` §11. The architecture assumes the recommended
-option for each, and says what changes if you pick differently. The ones that change
-the most:
+The architecture and the specs assume the recommended option for each of OD1–OD14
+(`architecture.md` §11). The ones that change the most:
 - **OD1/OD2:** how plugins reach cloud and Windows sessions. The recommendation is the
   `CLAUDE_CODE_PLUGIN_DIRS` environment variable.
 - **OD3:** whether to merge plugins into the families `alignment`, `evidence` and
@@ -73,10 +77,55 @@ the most:
   with the claude.ai skill.
 - **OD9:** slash names survive as alias skills.
 
-## Phase 3 (not started)
+The plan critique added ten owner questions (OQ7–OQ16) on top of the six from the specs.
+The ones that change the most work:
+- **OQ7:** branch model. One short branch per spec block, merged to master when green
+  (recommended), or one branch per wave.
+- **OQ11:** eval run counts. About 1,140 live-trigger runs and 1,380 release runs at the
+  architecture's counts; the recommendation cuts most re-runs.
+- **OQ12:** load Windows plugins in place from W1. This drops 12 interim release steps and
+  two Windows install-refresh steps.
+- **OQ13:** build the visual audit once (in learn-hub) instead of twice.
+- **OQ15:** cut or defer two vault-keeper scripts for a vault of 16 files.
 
-1. Write per-plugin rewrite specs from `architecture.md`. Each spec covers the new
-   description (measured), the body outline (keep / cut / move to references / convert
-   to script), the defects it fixes, the eval cases with graders, and acceptance
-   criteria. Then adversarially verify each spec.
-2. Assemble the execution plan, run an adversarial critique pass, and commit it here.
+## Phase 3 — how the plan was made
+
+1. **Specs.** 21 specs were written in parallel against a fixed template
+   (`phase3/spec-template.md`) and an interface registry (`phase3/interfaces.md`). Each
+   claim about today's files was re-opened in the repo, and each description was measured
+   with `phase3/measure.py`.
+2. **Checks.** One agent checked consistency across the specs (62 findings). One
+   fact-checked them against both repos (10 findings). Two agents applied both lists to
+   the specs.
+3. **Plan.** One agent ordered every step into waves and checked that each step id
+   appears exactly once.
+4. **Critique.** Two independent critics reviewed the plan and the riskiest specs. One
+   covered goal fit, completeness, verifiability and hidden assumptions (22 findings).
+   The other covered sequencing, feasibility, risk and simplicity (31 findings). A repair
+   agent then handled 89 findings: the critics' 53, the planner's 35 and one left over
+   from reconciling. It applied 77 to the specs or the plan and turned 12 into owner
+   questions. Three were partly rejected; the log gives the reason for each.
+5. **Final checks:**
+   - 285 step ids are defined, and each is in `plan.md` §3 exactly once.
+   - No reference to a step id is dangling.
+   - All 313 defects map to a spec, and all 49 HIGH defects have a closing step.
+
+Known limits:
+- Line numbers in the specs were true on 2026-09-24. Other sessions keep editing
+  learn-hub, so the plan's §0 rule 3 tells the executor to locate quoted text when a
+  line number has moved.
+- `specs/S11-delivery-environment.md` is about 90 KB, over the 40 KB spec target. It
+  was checked by the consistency, fact-check and critique passes, but it had no
+  dedicated spec-level verification.
+- §8 of the plan lists the facts that could not be checked from a cloud session
+  (Windows behaviour, environment settings). Each names the check that settles it.
+
+## How to execute
+
+1. Answer the ODs and OQs that `plan.md` §3 names in the W0 entry.
+2. Run the steps of W0 in table order. For each step, open its spec at the step id and
+   follow its files, commands, done-when and rollback. One step is one commit in one
+   repo.
+3. Close a wave only when its exit gates pass (the standard gates in `plan.md` §3, plus
+   the wave's own). Then move to the next wave:
+   W0 → W1 → W2 → {W3, W4} → W5.
