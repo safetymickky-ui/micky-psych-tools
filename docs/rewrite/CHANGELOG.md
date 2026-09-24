@@ -34,3 +34,6 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   ROUTING.md demoted to on-demand reading; the workflow and health check run
   `bash scripts/health.sh`; the layout lists README, CHANGELOG, LICENSE, `hooks/hooks.json`,
   `references/` and `evals/<skill>/<case>/` (S10-W0-5).
+- `README.md`: validation uses `claude plugin validate --strict` on the catalog and on a
+  plugin dir, with the corrected CLI / `validate.py` coverage split; a GitHub source works
+  as a private repo; a note that `.gitignore` excludes `.env` and `.firecrawl/` (S10-W0-6).

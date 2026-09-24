@@ -11,8 +11,12 @@ A personal Claude Code plugin marketplace. One installer: you.
 /plugin install pubmed-research-note@micky-psych-tools
 ```
 
-**GitHub (only if you need it on more than one machine).** Claude Code fetches marketplaces
-directly from the host, so a GitHub-sourced marketplace must be a **public** repo:
+**GitHub (only if you need it on more than one machine).** The source must be a repo you can
+clone with your own git credentials, so it works with a **private** repo too (this marketplace
+is installed from a private GitHub remote today).
+
+`.gitignore` excludes `.env` and `.firecrawl/` (firecrawl's API key and cache), so the
+`git add -A` below does not stage them:
 
 ```bash
 git init && git add -A && git commit -m "init"
@@ -50,13 +54,18 @@ re-reads the directory. Bump when you want the version to mean something.
 ## Validate before you register
 
 ```bash
-python3 scripts/validate.py          # always available
-claude plugin validate .claude-plugin/marketplace.json   # if the CLI is installed
+python3 scripts/validate.py                                        # always available
+claude plugin validate --strict .claude-plugin/marketplace.json    # the catalog
+claude plugin validate --strict plugins/<name>                     # one plugin's content
 ```
 
-The validator enforces things the CLI does not: `SKILL.md` description length (200–1024
-characters), version parity between a plugin's manifest and its marketplace entry, per-skill
-`evals.json` validity, and that every command/agent carries a frontmatter description.
+The CLI covers the manifests, and `--strict` turns its warnings (a version mismatch among
+them) into failures. A run on the catalog alone never opens a plugin's content, so validate
+each `plugins/<name>` directory too. `validate.py` adds what the CLI does not check: every
+file load counted rather than crashing, strict YAML frontmatter, the 1,024-character
+`SKILL.md` description cap (under 200 is a warning), a description on every command and
+agent, MCP server shapes (http/sse or stdio), and legacy `evals.json` validity. Versions live
+in `plugin.json` only, so there is no catalog version left to compare.
 
 ## Plugins
 
