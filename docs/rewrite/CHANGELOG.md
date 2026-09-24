@@ -28,3 +28,5 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
 - `scripts/health.sh [--fast]`: validate.py, `claude plugin validate --strict` on the
   catalog and every plugin, `ratchet verify`, `triggers verify`; the full mode adds the
   script unit tests (S10-W0-9).
+- `.githooks/pre-commit`: runs `bash scripts/health.sh --fast`; enable once per clone with
+  `git config core.hooksPath .githooks` (S10-W0-10).
