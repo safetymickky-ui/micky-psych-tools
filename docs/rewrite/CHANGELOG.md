@@ -37,3 +37,7 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
 - `README.md`: validation uses `claude plugin validate --strict` on the catalog and on a
   plugin dir, with the corrected CLI / `validate.py` coverage split; a GitHub source works
   as a private repo; a note that `.gitignore` excludes `.env` and `.firecrawl/` (S10-W0-6).
+- `scripts/eval.sh`: `--smoke`/`--release <plugin>` with pinned `EVAL_MODEL`,
+  `EVAL_JUDGE_MODEL`, `EVAL_BUDGET`, always `--scaffold`; `--release` runs 3 for alignment
+  and evidence, 1 otherwise; `--against <ref>` runs today's cases against the plugin that
+  held each skill at `<ref>`; `--` passes extra args through (S12-W0-3).
