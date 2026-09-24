@@ -1,0 +1,3 @@
+# ml-concept-lab
+
+Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.

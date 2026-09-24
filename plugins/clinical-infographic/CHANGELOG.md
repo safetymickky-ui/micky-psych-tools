@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+no contemporaneous entry; see `git log` around this version.
+
 ## 0.2.0 — 2026-07-11
 
 **Visual-first.** After the first real run rendered a text-heavy first pass, the defaults now

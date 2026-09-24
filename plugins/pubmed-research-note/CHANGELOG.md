@@ -64,6 +64,14 @@
   frames. Evals rewritten to test brief-building, verdict-first, decision-shaped headings, and
   adjudication rather than frame classification and the fixed template.
 
+## 1.4.0
+
+no contemporaneous entry; see `git log` around this version.
+
+## 1.3.0
+
+no contemporaneous entry; see `git log` around this version.
+
 ## 1.2.0 — 2026-07-10
 
 - **Portable output.** Dropped the claude.ai-sandbox-only output path (`/mnt/user-data/outputs`)
