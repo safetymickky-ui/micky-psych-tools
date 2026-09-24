@@ -682,7 +682,7 @@ query-set run. Routing-smoke near-misses:
 
 ### 4.4 Commands
 
-- Smoke: `bash scripts/eval.sh --smoke plugin-creator` (S12, I17) — smoke-tagged cases, free graders, `--ablation none --runs 1`; none of the smoke-tagged cases need more than the default read-only tool grant.
+- Smoke: `bash scripts/eval.sh --smoke plugin-creator -- --allow-tools "Write,Edit,Bash(python3 *)"` (S12, I17) — smoke-tagged cases, free graders, `--ablation none --runs 1`; the W0 seeds `scaffold-output` and `fix-then-release` write files and run `bump.py`/`validate.py`, so they need this grant (corrected 2026-09-24; Q33-a).
 - Release: `bash scripts/eval.sh --release plugin-creator -- --allow-tools "Write,Edit,Bash(python3 *)"` — two arms, `--runs 1 --threshold 0.8` (OQ11-a: not a gate skill or report writer), all cases; `scaffold-output` and `fix-then-release` need Write/Edit/Bash (factcheck F3).
 
 ## 5. Acceptance criteria
