@@ -4,3 +4,4 @@ __pycache__/
 .env
 .firecrawl/
 plugins/*/evals/results/
+evals/results/
