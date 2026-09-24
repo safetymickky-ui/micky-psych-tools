@@ -45,3 +45,5 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   `scripts/test_delivery_log.py` (25 cases) (S11-W0-1).
 - `docs/rewrite/delivery-log.md` (the I16.4 W0 template) and `docs/rewrite/cloud-setup.sh`
   (setup script version 1, with the W0 probe block) (S11-W0-2).
+- `scripts/health.sh`: the fast path also runs `delivery_log.py check` and the
+  delivery-log unit tests, through a new `fail` helper (S11-W0-3).
