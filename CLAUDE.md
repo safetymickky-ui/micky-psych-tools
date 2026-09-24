@@ -4,19 +4,17 @@ Personal Claude Code plugin marketplace. Single owner: Thanawat Suharit (Micky).
 This repo is BOTH the marketplace and the home of every plugin in it.
 
 **`CLAUDE.md` holds stable conventions; `MEMORY.md` holds living state** (current
-versions, recent milestones, open threads). Read `MEMORY.md` first to know where things
-stand, and update it whenever you release, add a plugin, or close a milestone.
+versions, recent milestones, open threads). `MEMORY.md` is not required reading: open it
+when you need that state, and update it whenever you release, add a plugin, or close a
+milestone.
 
-## Routing — pick the right tool first
+## Routing (note)
 
-Before acting on any request one of these plugins could serve, **route it first**:
-consult the generated `ROUTING.md` (or run `/route "<request>"`) and hand off to the
-skill or command it names — do not do the work ad hoc when a plugin already owns it.
-If nothing fits, run `/new-plugin` to build one.
-
-`ROUTING.md` is a GENERATED artifact — never hand-edit it. `scripts/route.py` writes it
-from the catalog + every plugin's components, and `/new-plugin` and `/refine-plugin`
-rerun it automatically, so the router never drifts.
+Skills route from their own descriptions. `ROUTING.md` is an optional index of every
+skill and command, not required reading; `/route "<request>"` names the skill or
+command that owns a request. `ROUTING.md` is GENERATED — never hand-edit it.
+`scripts/route.py` writes it from the catalog + every plugin's components, and
+`/new-plugin` and `/refine-plugin` rerun it automatically.
 
 ## Layout
 
@@ -24,12 +22,18 @@ rerun it automatically, so the router never drifts.
 .claude-plugin/marketplace.json   # catalog — every plugin listed here
 plugins/<name>/
   .claude-plugin/plugin.json       # plugin manifest (name, version, author, keywords)
+  README.md                        # what the plugin does, how to use it
+  CHANGELOG.md                     # top entry == plugin.json version
+  LICENSE                          # MIT (gridgeist keeps upstream's)
   .mcp.json                        # optional — MCP servers (referenced from plugin.json)
+  hooks/hooks.json                 # optional — plugin hooks
   skills/<skill>/SKILL.md          # skill(s): frontmatter (name, description) + body
+  skills/<skill>/references/       # optional — files the skill body links to
+  evals/<skill>/<case>/            # eval cases (plugin root, one dir per case)
   commands/<cmd>.md                # optional — slash commands
   agents/<agent>.md                # optional — subagents
 scripts/validate.py                # full marketplace + plugin validation
-scripts/bump.py                    # version bump in BOTH manifest + catalog
+scripts/bump.py                    # version bump in plugin.json + CHANGELOG (dry run unless --write)
 scripts/route.py                   # generates ROUTING.md from the catalog + every plugin's components
 ROUTING.md                         # generated router — never hand-edit
 vault/                             # shared knowledge vault — managed by vault-keeper
@@ -37,10 +41,11 @@ vault/                             # shared knowledge vault — managed by vault
 
 ## Hard rules (these have bitten before)
 
-- **Version lives in two files.** A plugin's version in `plugins/<name>/.claude-plugin/plugin.json`
-  MUST equal its entry in `.claude-plugin/marketplace.json`. If they drift, Claude Code sees
-  no version change and silently offers no update. NEVER edit a version by hand — run
-  `python3 scripts/bump.py <plugin> patch|minor|major` (it edits both, then validates).
+- **Version lives in `plugin.json` only.** `plugins/<name>/.claude-plugin/plugin.json` holds
+  the plugin's version; the catalog entry in `.claude-plugin/marketplace.json` carries none.
+  NEVER edit a version by hand — run `python3 scripts/bump.py <plugin> patch|minor|major --write`
+  (without `--write` it is a dry run; with it, it validates, writes plugin.json and adds a
+  CHANGELOG entry).
 - **SKILL.md description cap:** hard limit 1024 chars; aim well under. Too short (<~200) triggers
   unreliably. The description is the ONLY thing that decides when the skill fires — invest in it.
 - **`name` is kebab-case** and must match: plugin dir name == plugin.json name == marketplace entry.
@@ -50,18 +55,21 @@ vault/                             # shared knowledge vault — managed by vault
 ## Workflow for adding / changing a plugin
 
 1. Scaffold under `plugins/<name>/` following the layout above.
-2. Add the entry to `.claude-plugin/marketplace.json` (name, source, version, description, category, keywords).
-3. `python3 scripts/validate.py` — must print `all checks passed`.
-4. Regenerate the router: `python3 scripts/route.py` (any change to a skill/command description
-   alters ROUTING.md; `/new-plugin` and `/refine-plugin` do this automatically).
-5. Bump with `scripts/bump.py` when releasing, never by hand.
-6. Commit (conventional commits: `feat:`, `fix:`, `refactor:`…). One logical change per commit.
-7. Update `MEMORY.md` (versions table, milestones) when releasing.
+2. Add the entry to `.claude-plugin/marketplace.json` (name, source, description, category, keywords; no version).
+3. `bash scripts/health.sh` must be green.
+4. Bump with `python3 scripts/bump.py <plugin> patch|minor|major --write` when releasing, never by hand.
+5. Commit (conventional commits: `feat:`, `fix:`, `refactor:`…). One logical change per commit.
+6. Update `MEMORY.md` (versions table, milestones) when releasing.
+
+Optional: `python3 scripts/route.py` regenerates `ROUTING.md` after a skill or command
+description changes (`/new-plugin` and `/refine-plugin` do this automatically).
 
 ## Health check — run before every commit
 
-- `python3 scripts/validate.py` — must print `all checks passed`.
-- `python3 scripts/route.py` — regenerates `ROUTING.md` after any skill/command description change.
+- `bash scripts/health.sh` — must print `health: OK`. It runs `validate.py`,
+  `claude plugin validate --strict` on the catalog and every plugin, the ratchet and
+  trigger-lock checks, and the script unit tests. `--fast` skips the tests; the
+  pre-commit hook runs it (enable once per clone: `git config core.hooksPath .githooks`).
 
 ## Plugins
 

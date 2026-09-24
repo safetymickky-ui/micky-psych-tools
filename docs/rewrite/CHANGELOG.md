@@ -30,3 +30,7 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   script unit tests (S10-W0-9).
 - `.githooks/pre-commit`: runs `bash scripts/health.sh --fast`; enable once per clone with
   `git config core.hooksPath .githooks` (S10-W0-10).
+- `CLAUDE.md`: version rule is "plugin.json only" with `bump.py --write`; MEMORY.md and
+  ROUTING.md demoted to on-demand reading; the workflow and health check run
+  `bash scripts/health.sh`; the layout lists README, CHANGELOG, LICENSE, `hooks/hooks.json`,
+  `references/` and `evals/<skill>/<case>/` (S10-W0-5).
