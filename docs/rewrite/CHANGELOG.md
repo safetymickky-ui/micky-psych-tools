@@ -53,3 +53,5 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   `rewrite_gate.py baseline measure --write` (S12-W0-7, micky half).
 - `.gitignore`: also ignores repo-root `evals/results/`, where `scripts/eval.sh` writes its
   JSON (S10-W0-7 follow-up; plan §8 Q34).
+- `docs/rewrite/delivery-log.md`: checklist row d answered (`claude plugin eval` enabled;
+  canary findings) (S11-W0-9).
