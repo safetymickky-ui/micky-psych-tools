@@ -25,3 +25,6 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
 - Every plugin has a README, a LICENSE (MIT, Thanawat Suharit (Micky), 2026; gridgeist
   keeps upstream's) and a CHANGELOG whose top entry equals its `plugin.json` version;
   this file created (S10-W0-8).
+- `scripts/health.sh [--fast]`: validate.py, `claude plugin validate --strict` on the
+  catalog and every plugin, `ratchet verify`, `triggers verify`; the full mode adds the
+  script unit tests (S10-W0-9).
