@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+# Fixture marketplace (eval scaffold): a catalog, two valid plugins, and stub
+# scripts/{validate,route,bump}.py that enforce the marketplace's mechanical rules.
+# Planted: the gridgeist description has no Use-when clause.
+set -euo pipefail
+mkdir -p .claude-plugin scripts
+cat > .claude-plugin/marketplace.json <<'EOF'
+{
+  "name": "micky-psych-tools",
+  "owner": {"name": "fixture"},
+  "plugins": [
+    {"name": "vault-keeper", "source": "./plugins/vault-keeper", "version": "0.4.0", "description": "Fixture plugin.", "category": "productivity", "keywords": ["vault", "notes", "index"]},
+    {"name": "pubmed-research-note", "source": "./plugins/pubmed-research-note", "version": "1.7.0", "description": "Fixture plugin.", "category": "research", "keywords": ["pubmed", "evidence", "psychiatry"]},
+    {"name": "gridgeist", "source": "./plugins/gridgeist", "version": "0.1.0", "description": "Fixture plugin.", "category": "design", "keywords": ["web-design", "frontend", "grid"]}
+  ]
+}
+EOF
+mkdir -p plugins/vault-keeper/.claude-plugin plugins/vault-keeper/skills/vault-keeper
+cat > plugins/vault-keeper/.claude-plugin/plugin.json <<'EOF'
+{
+  "name": "vault-keeper",
+  "version": "0.4.0",
+  "description": "Fixture plugin.",
+  "author": {"name": "fixture"},
+  "keywords": ["vault", "notes", "index"]
+}
+EOF
+cat > plugins/vault-keeper/skills/vault-keeper/SKILL.md <<'EOF'
+---
+name: vault-keeper
+description: Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root. Use when the user says "save this to the vault", "vault this", "index the vault", or "search my vault". Not for producing the artifact itself; the source skill does that.
+---
+
+# vault-keeper
+
+Fixture skill body.
+EOF
+mkdir -p plugins/pubmed-research-note/.claude-plugin plugins/pubmed-research-note/skills/pubmed-research-note
+cat > plugins/pubmed-research-note/.claude-plugin/plugin.json <<'EOF'
+{
+  "name": "pubmed-research-note",
+  "version": "1.7.0",
+  "description": "Fixture plugin.",
+  "author": {"name": "fixture"},
+  "keywords": ["pubmed", "evidence", "psychiatry"]
+}
+EOF
+cat > plugins/pubmed-research-note/skills/pubmed-research-note/SKILL.md <<'EOF'
+---
+name: pubmed-research-note
+description: Answers a clinical question from primary literature with a quantified, adjudicated evidence report and a clearly marked verdict. Use when asked to "research", "what does the literature say about", or "search PubMed for". Not for whole-disorder reviews (comprehensive-review).
+---
+
+# pubmed-research-note
+
+Fixture skill body.
+EOF
+mkdir -p plugins/gridgeist/.claude-plugin plugins/gridgeist/skills/gridgeist
+cat > plugins/gridgeist/.claude-plugin/plugin.json <<'EOF'
+{
+  "name": "gridgeist",
+  "version": "0.1.0",
+  "description": "Fixture plugin.",
+  "author": {"name": "fixture"},
+  "keywords": ["web-design", "frontend", "grid"]
+}
+EOF
+cat > plugins/gridgeist/skills/gridgeist/SKILL.md <<'EOF'
+---
+name: gridgeist
+description: Designs, redesigns, and reviews web interfaces around a rigorous grid, precise typography, quiet 1px rules, and Swiss or editorial influence, replacing generic SaaS aesthetics with a product-specific visual system for landing pages, dashboards, and docs sites. Not for backend-only or non-UI tasks.
+---
+
+# gridgeist
+
+Craft distinctive interfaces from content and product intent.
+EOF
+cat > scripts/validate.py <<'EOF'
+#!/usr/bin/env python3
+"""Fixture validator (eval scaffold): the marketplace's mechanical rules only."""
+import json, os, re, sys
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+cat = json.load(open(os.path.join(root, ".claude-plugin", "marketplace.json"), encoding="utf-8"))
+kebab = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+fails = []
+for e in cat.get("plugins", []):
+    name = e.get("name", "")
+    if not kebab.match(name):
+        fails.append(f"{name}: name is not kebab-case")
+    src = os.path.join(root, e.get("source", ""))
+    pj = os.path.join(src, ".claude-plugin", "plugin.json")
+    if not os.path.isfile(pj):
+        fails.append(f"{name}: missing .claude-plugin/plugin.json")
+        continue
+    p = json.load(open(pj, encoding="utf-8"))
+    if p.get("name") != name:
+        fails.append(f"{name}: plugin.json name {p.get('name')!r} != catalog name")
+    if p.get("version") != e.get("version"):
+        fails.append(f"{name}: version parity: plugin.json {p.get('version')} != catalog {e.get('version')}")
+    skills = os.path.join(src, "skills")
+    for s in sorted(os.listdir(skills)) if os.path.isdir(skills) else []:
+        md = os.path.join(skills, s, "SKILL.md")
+        text = open(md, encoding="utf-8").read() if os.path.isfile(md) else ""
+        m = re.match(r"---\n(.*?)\n---", text, re.S)
+        fm = m.group(1) if m else ""
+        nm = re.search(r"^name:\s*(\S+)", fm, re.M)
+        if not nm or nm.group(1) != s:
+            fails.append(f"{name}/{s}: frontmatter name does not match its directory")
+        d = re.search(r"^description:\s*(.+)$", fm, re.M)
+        n = len(d.group(1).strip()) if d else 0
+        if not 200 <= n <= 1024:
+            fails.append(f"{name}/{s}: description {n} chars (must be 200-1024)")
+for f in fails:
+    print("FAIL", f)
+print("all checks passed" if not fails else f"{len(fails)} check(s) failed")
+sys.exit(1 if fails else 0)
+EOF
+cat > scripts/route.py <<'EOF'
+#!/usr/bin/env python3
+"""Fixture router (eval scaffold): regenerate ROUTING.md from the catalog."""
+import json, os
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+cat = json.load(open(os.path.join(root, ".claude-plugin", "marketplace.json"), encoding="utf-8"))
+lines = ["# ROUTING (generated by scripts/route.py)", ""]
+lines += [f"- {e['name']}: {e.get('description', '')}" for e in cat.get("plugins", [])]
+open(os.path.join(root, "ROUTING.md"), "w", encoding="utf-8").write("\n".join(lines) + "\n")
+print("ROUTING.md written")
+EOF
+cat > scripts/bump.py <<'EOF'
+#!/usr/bin/env python3
+"""Fixture bump (eval scaffold): raise a plugin's version in plugin.json AND its catalog
+entry together, then run the validator."""
+import json, os, subprocess, sys
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if len(sys.argv) != 3 or sys.argv[2] not in ("patch", "minor", "major"):
+    print("usage: bump.py <plugin> patch|minor|major")
+    sys.exit(2)
+name, level = sys.argv[1], sys.argv[2]
+cp = os.path.join(root, ".claude-plugin", "marketplace.json")
+cat = json.load(open(cp, encoding="utf-8"))
+entry = next((e for e in cat["plugins"] if e["name"] == name), None)
+if entry is None:
+    print(f"no such plugin: {name}")
+    sys.exit(2)
+pj = os.path.join(root, entry["source"], ".claude-plugin", "plugin.json")
+p = json.load(open(pj, encoding="utf-8"))
+old = p["version"]
+ma, mi, pa = (int(x) for x in old.split("."))
+new = {"patch": f"{ma}.{mi}.{pa + 1}", "minor": f"{ma}.{mi + 1}.0", "major": f"{ma + 1}.0.0"}[level]
+p["version"] = new
+entry["version"] = new
+with open(pj, "w", encoding="utf-8") as f:
+    json.dump(p, f, indent=2)
+    f.write("\n")
+with open(cp, "w", encoding="utf-8") as f:
+    json.dump(cat, f, indent=2)
+    f.write("\n")
+print(f"{name}: {old} -> {new} (plugin.json + marketplace.json)")
+sys.exit(subprocess.call([sys.executable, os.path.join(root, "scripts", "validate.py")]))
+EOF
+chmod +x scripts/*.py

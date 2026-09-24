@@ -7,6 +7,10 @@
   existing decision-interview and misread-capture carve-outs. Phrasing tightened to fit
   the 1024-char cap ("Use when…" canonical form; no meaning change).
 
+## 0.4.1
+
+no contemporaneous entry; see `git log` around this version.
+
 ## 0.4.0 — 2026-07-10
 
 - **Fixed the misread ledger.** `misread-capture` addressed the ledger as a bare

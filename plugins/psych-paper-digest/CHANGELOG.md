@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+no contemporaneous entry; see `git log` around this version.
+
 ## 0.1.0 — 2026-07-10
 
 Initial release. Watchlist-driven literature surveillance: windowed sweeps of PubMed

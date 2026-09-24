@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
-"""Validate the marketplace and every plugin in it.
+"""Validate the marketplace catalog and every plugin it lists.
 
-Runs the checks `claude plugin validate` runs, plus the two that have actually
-bitten: the SKILL.md description length cap, and version drift between a
-plugin's own manifest and its marketplace entry.
+What it checks, per run:
+  - marketplace.json loads, has a kebab-case name, owner.name and a non-empty plugins[];
+  - per entry: relative `source`, the directory exists, plugin.json loads, its name
+    matches the entry and is kebab-case, its version is semver, declared component
+    paths exist, a declared mcpServers file loads and every server is either http/sse
+    (`type` + `url`) or stdio (`command`);
+  - per skill: SKILL.md exists, its frontmatter parses as strict YAML (CRLF-safe),
+    `name` matches the directory, description <= 1,024 chars (a description under 200
+    chars is a WARN, never a failure), and a legacy evals/evals.json is valid JSON;
+  - per command/agent: frontmatter parses and carries a description (agents <= 1,024).
+
+Every result is counted: a missing or malformed file is a FAIL line, never a
+traceback. A YAML failure on a file listed in docs/rewrite/ratchet.json under
+check_id "yaml-parse" prints WARN instead of FAIL (known, ratcheted violation).
+
+It does NOT run `claude plugin validate --strict`; scripts/health.sh does both.
 
     python3 scripts/validate.py
 """
@@ -12,128 +25,262 @@ import os
 import re
 import sys
 
+try:
+    import yaml
+except ImportError:  # pragma: no cover - exercised only on a machine without PyYAML
+    yaml = None
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FAILURES = []
+KEBAB = r"[a-z0-9]+(-[a-z0-9]+)*"
+DESC_CAP = 1024
+DESC_WARN_BELOW = 200
+FM_RE = re.compile(r"^---\n(.*?)\n---[ \t]*(?:\n|$)", re.S)
 
 
-def check(condition, message):
-    print(("  PASS  " if condition else "  FAIL  ") + message)
-    if not condition:
-        FAILURES.append(message)
+class Report:
+    """Collects PASS / FAIL / WARN lines. Every check goes through check() or warn()."""
+
+    def __init__(self, out=None):
+        self.out = out if out is not None else sys.stdout
+        self.failures = []
+        self.warnings = []
+
+    def say(self, line=""):
+        self.out.write(line + "\n")
+
+    def check(self, condition, message):
+        self.say(("  PASS  " if condition else "  FAIL  ") + message)
+        if not condition:
+            self.failures.append(message)
+        return bool(condition)
+
+    def warn(self, message):
+        self.say("  WARN  " + message)
+        self.warnings.append(message)
+
+
+def yaml_error_text(exc):
+    """One-line YAML error: the problem plus its position inside the frontmatter block."""
+    problem = getattr(exc, "problem", None)
+    mark = getattr(exc, "problem_mark", None)
+    if problem and mark is not None:
+        # mark.line is 0-based within the block, and the block starts on file line 2
+        return f"{problem} (file line {mark.line + 2}, column {mark.column + 1})"
+    return " ".join(str(exc).split())
 
 
 def frontmatter(path):
-    """Parse YAML frontmatter without requiring pyyaml.
+    """Return the frontmatter of a markdown file.
 
-    Only two fields matter here — name and description — and description may be
-    a folded block scalar (`>-`), so fold continuation lines into one string.
+    dict                       -> parsed YAML mapping
+    None                       -> no frontmatter block
+    ("yaml-error", message)    -> the block is not valid YAML (or not a mapping)
+    CRLF line endings are normalised before parsing.
     """
-    text = open(path, encoding="utf-8").read()
-    match = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read().replace("\r\n", "\n")
+    match = FM_RE.match(text)
     if not match:
         return None
-    fields, key = {}, None
-    for line in match.group(1).split("\n"):
-        header = re.match(r"^(\w[\w-]*):\s*(.*)$", line)
-        if header:
-            key = header.group(1)
-            value = header.group(2).strip()
-            fields[key] = "" if value in (">-", ">", "|", "|-") else value
-        elif key and line.startswith("  "):
-            fields[key] = (fields[key] + " " + line.strip()).strip()
-    return fields
+    if yaml is None:
+        return ("yaml-error", "PyYAML is not installed (python3 -m pip install pyyaml)")
+    try:
+        data = yaml.safe_load(match.group(1))
+    except yaml.YAMLError as exc:
+        return ("yaml-error", yaml_error_text(exc))
+    if data is None:
+        return {}
+    if not isinstance(data, dict):
+        return ("yaml-error", f"frontmatter is a {type(data).__name__}, not a mapping")
+    return data
 
 
-def main():
-    mkt_path = os.path.join(ROOT, ".claude-plugin", "marketplace.json")
-    print("marketplace")
-    check(os.path.isfile(mkt_path), ".claude-plugin/marketplace.json exists at repo root")
-    mkt = json.load(open(mkt_path, encoding="utf-8"))
-    check(bool(re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", mkt.get("name", ""))),
-          f"marketplace name is kebab-case: {mkt.get('name')}")
-    check("owner" in mkt and "name" in mkt["owner"], "owner.name present")
-    check(isinstance(mkt.get("plugins"), list) and mkt["plugins"], "plugins[] is a non-empty list")
+def load_json(report, path, label):
+    """Load a JSON file; a missing or malformed file is a counted FAIL, returns None."""
+    if not report.check(os.path.isfile(path), f"{label} exists"):
+        return None
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError) as exc:
+        report.check(False, f"{label} is valid JSON ({' '.join(str(exc).split())})")
+        return None
+    return data
 
-    for entry in mkt["plugins"]:
-        name = entry.get("name", "<unnamed>")
-        print(f"\nplugin: {name}")
 
-        # source must resolve. relative paths only work for git/local marketplaces,
-        # never for a marketplace distributed as a bare URL.
-        src = entry.get("source", "")
-        check(isinstance(src, str) and src.startswith("./"),
-              f"source is a relative path: {src}")
-        pdir = os.path.join(ROOT, src)
-        check(os.path.isdir(pdir), f"source directory exists: {src}")
-        if not os.path.isdir(pdir):
+def load_ratchet(report, root):
+    """Ratcheted (known) violations: {(check_id, path)}. Absent file = none listed."""
+    path = os.path.join(root, "docs", "rewrite", "ratchet.json")
+    if not os.path.isfile(path):
+        return set()
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+        entries = data.get("entries", []) if isinstance(data, dict) else None
+        if not isinstance(entries, list):
+            raise ValueError("'entries' is not a list")
+        return {(e.get("check_id"), e.get("path")) for e in entries if isinstance(e, dict)}
+    except (OSError, ValueError) as exc:
+        report.check(False, f"docs/rewrite/ratchet.json is readable ({' '.join(str(exc).split())})")
+        return set()
+
+
+def rel(root, path):
+    return os.path.relpath(path, root).replace(os.sep, "/")
+
+
+def parsed_frontmatter(report, root, ratchet, path):
+    """Frontmatter as a dict, or None after reporting why (FAIL, or WARN if ratcheted)."""
+    fm = frontmatter(path)
+    rpath = rel(root, path)
+    if fm is None:
+        report.check(False, f"{rpath}: frontmatter block present")
+        return None
+    if isinstance(fm, tuple):
+        message = f"{rpath}: yaml-error: {fm[1]}"
+        if ("yaml-parse", rpath) in ratchet:
+            report.warn(message + " (ratcheted: yaml-parse)")
+        else:
+            report.check(False, message)
+        return None
+    report.check(True, f"{rpath}: frontmatter parses")
+    return fm
+
+
+def check_mcp(report, pdir, ref):
+    mcp = load_json(report, os.path.join(pdir, ref), f"declared mcpServers file {ref}")
+    if mcp is None:
+        return
+    servers = mcp.get("mcpServers", {}) if isinstance(mcp, dict) else None
+    if not report.check(isinstance(servers, dict), f"{ref}: mcpServers is an object"):
+        return
+    for sname, spec in sorted(servers.items()):
+        ok = isinstance(spec, dict) and (
+            ("url" in spec and "type" in spec) or "command" in spec)
+        report.check(ok, f"{ref}: server {sname} is http/sse (type + url) or stdio (command)")
+
+
+def check_skills(report, root, ratchet, pdir):
+    skills_dir = os.path.join(pdir, "skills")
+    if not os.path.isdir(skills_dir):
+        return
+    for skill in sorted(os.listdir(skills_dir)):
+        sdir = os.path.join(skills_dir, skill)
+        if not os.path.isdir(sdir):
             continue
+        sp = os.path.join(sdir, "SKILL.md")
+        if not report.check(os.path.isfile(sp), f"skills/{skill}/SKILL.md exists"):
+            continue
+        fm = parsed_frontmatter(report, root, ratchet, sp)
+        if fm is None:
+            continue
+        report.check(fm.get("name") == skill, f"skills/{skill}: frontmatter name matches directory")
+        desc = fm.get("description")
+        desc = desc if isinstance(desc, str) else ""
+        n = len(desc)
+        report.check(n <= DESC_CAP, f"skills/{skill}: description {n} chars (hard cap {DESC_CAP})")
+        if n < DESC_WARN_BELOW:
+            report.warn(f"skills/{skill}: description {n} chars is short; under ~{DESC_WARN_BELOW} "
+                        "chars triggers unreliably")
+        ev = os.path.join(sdir, "evals", "evals.json")
+        if os.path.isfile(ev):
+            load_json(report, ev, f"skills/{skill}/evals/evals.json")
 
-        man_path = os.path.join(pdir, ".claude-plugin", "plugin.json")
-        check(os.path.isfile(man_path), ".claude-plugin/plugin.json exists")
-        man = json.load(open(man_path, encoding="utf-8"))
-        check(man.get("name") == name, "plugin.json name matches marketplace entry")
-        check(bool(re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", man.get("name", ""))), "name is kebab-case")
-        check(bool(re.fullmatch(r"\d+\.\d+\.\d+", man.get("version", ""))),
-              f"version is semver: {man.get('version')}")
 
-        # the check that stops silent staleness: a bumped plugin whose catalog
-        # entry still advertises the old version will not offer an update.
-        check(entry.get("version") == man.get("version"),
-              f"marketplace entry version {entry.get('version')} == plugin.json {man.get('version')}")
+def check_components(report, root, ratchet, pdir):
+    for comp in ("commands", "agents"):
+        cdir = os.path.join(pdir, comp)
+        if not os.path.isdir(cdir):
+            continue
+        for fname in sorted(os.listdir(cdir)):
+            if not fname.endswith(".md"):
+                continue
+            fm = parsed_frontmatter(report, root, ratchet, os.path.join(cdir, fname))
+            if fm is None:
+                continue
+            desc = fm.get("description")
+            desc = desc if isinstance(desc, str) else ""
+            report.check(bool(desc), f"{comp}/{fname}: frontmatter description present")
+            if comp == "agents":
+                report.check(len(desc) <= DESC_CAP,
+                             f"agents/{fname}: description {len(desc)} chars (hard cap {DESC_CAP})")
 
-        for declared in ("commands", "agents", "hooks", "skills"):
-            if declared in man and isinstance(man[declared], str):
-                check(os.path.exists(os.path.join(pdir, man[declared])),
-                      f"declared {declared} path exists")
 
-        if "mcpServers" in man and isinstance(man["mcpServers"], str):
-            mcp_path = os.path.join(pdir, man["mcpServers"])
-            check(os.path.isfile(mcp_path), f"declared mcpServers file exists: {man['mcpServers']}")
-            mcp = json.load(open(mcp_path, encoding="utf-8"))
-            check(all("url" in s and "type" in s for s in mcp.get("mcpServers", {}).values()),
-                  "every mcp server has type and url")
+def check_plugin(report, root, ratchet, entry):
+    name = entry.get("name", "<unnamed>") if isinstance(entry, dict) else "<not an object>"
+    report.say(f"\nplugin: {name}")
+    if not report.check(isinstance(entry, dict), "catalog entry is an object"):
+        return
+    # source must resolve. relative paths only work for git/local marketplaces,
+    # never for a marketplace distributed as a bare URL.
+    src = entry.get("source", "")
+    if not report.check(isinstance(src, str) and src.startswith("./"),
+                        f"source is a relative path: {src}"):
+        return
+    pdir = os.path.join(root, src)
+    if not report.check(os.path.isdir(pdir), f"source directory exists: {src}"):
+        return
 
-        skills_dir = os.path.join(pdir, "skills")
-        if os.path.isdir(skills_dir):
-            for skill in sorted(os.listdir(skills_dir)):
-                sp = os.path.join(skills_dir, skill, "SKILL.md")
-                check(os.path.isfile(sp), f"skills/{skill}/SKILL.md exists")
-                if not os.path.isfile(sp):
-                    continue
-                fm = frontmatter(sp)
-                check(fm is not None, f"skills/{skill}: frontmatter parses")
-                if not fm:
-                    continue
-                check(fm.get("name") == skill, f"skills/{skill}: frontmatter name matches directory")
-                n = len(fm.get("description", ""))
-                check(n <= 1024, f"skills/{skill}: description {n} chars (hard cap 1024)")
-                check(n >= 200, f"skills/{skill}: description {n} chars (min 200 for reliable triggering)")
-                ev = os.path.join(skills_dir, skill, "evals", "evals.json")
-                if os.path.isfile(ev):
-                    json.load(open(ev, encoding="utf-8"))
-                    print(f"  PASS  skills/{skill}/evals/evals.json is valid JSON")
+    man = load_json(report, os.path.join(pdir, ".claude-plugin", "plugin.json"),
+                    ".claude-plugin/plugin.json")
+    if man is None:
+        return
+    if not report.check(isinstance(man, dict), "plugin.json is an object"):
+        return
+    report.check(man.get("name") == name, "plugin.json name matches marketplace entry")
+    report.check(isinstance(man.get("name"), str) and bool(re.fullmatch(KEBAB, man["name"])),
+                 "name is kebab-case")
+    version = man.get("version")
+    report.check(isinstance(version, str) and bool(re.fullmatch(r"\d+\.\d+\.\d+", version)),
+                 f"version is semver: {version}")
 
-        for comp in ("commands", "agents"):
-            cdir = os.path.join(pdir, comp)
-            if os.path.isdir(cdir):
-                for fname in sorted(os.listdir(cdir)):
-                    if not fname.endswith(".md"):
-                        continue
-                    fm = frontmatter(os.path.join(cdir, fname)) or {}
-                    check(bool(fm.get("description")),
-                          f"{comp}/{fname}: frontmatter description present")
-                    if comp == "agents":
-                        n = len(fm.get("description", ""))
-                        check(200 <= n <= 1024,
-                              f"agents/{fname}: description {n} chars in 200-1024")
+    for declared in ("commands", "agents", "hooks", "skills"):
+        if isinstance(man.get(declared), str):
+            report.check(os.path.exists(os.path.join(pdir, man[declared])),
+                         f"declared {declared} path exists: {man[declared]}")
 
-    print()
-    if FAILURES:
-        print(f"{len(FAILURES)} failure(s):")
-        for f in FAILURES:
-            print("  - " + f)
+    if isinstance(man.get("mcpServers"), str):
+        check_mcp(report, pdir, man["mcpServers"])
+
+    check_skills(report, root, ratchet, pdir)
+    check_components(report, root, ratchet, pdir)
+
+
+def run(root=ROOT, out=None):
+    """Validate the repo at `root`; returns the Report (failures, warnings)."""
+    report = Report(out)
+    report.say("marketplace")
+    if yaml is None:
+        report.check(False, "PyYAML is installed (python3 -m pip install pyyaml)")
+    ratchet = load_ratchet(report, root)
+    mkt = load_json(report, os.path.join(root, ".claude-plugin", "marketplace.json"),
+                    ".claude-plugin/marketplace.json at repo root")
+    if mkt is None:
+        return report
+    if not report.check(isinstance(mkt, dict), "marketplace.json is an object"):
+        return report
+    report.check(isinstance(mkt.get("name"), str) and bool(re.fullmatch(KEBAB, mkt["name"])),
+                 f"marketplace name is kebab-case: {mkt.get('name')}")
+    owner = mkt.get("owner")
+    report.check(isinstance(owner, dict) and "name" in owner, "owner.name present")
+    plugins = mkt.get("plugins")
+    if not report.check(isinstance(plugins, list) and bool(plugins), "plugins[] is a non-empty list"):
+        return report
+    for entry in plugins:
+        check_plugin(report, root, ratchet, entry)
+    return report
+
+
+def main(root=ROOT, out=None):
+    report = run(root, out)
+    report.say()
+    if report.failures:
+        report.say(f"{len(report.failures)} failure(s):")
+        for f in report.failures:
+            report.say("  - " + f)
         return 1
-    print("all checks passed")
+    suffix = f" ({len(report.warnings)} warning(s))" if report.warnings else ""
+    report.say("all checks passed" + suffix)
     return 0
 
 

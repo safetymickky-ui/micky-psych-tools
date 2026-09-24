@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "generated_at": "2026-09-24",
+  "repo": "micky-psych-tools",
+  "entries": [
+    {"check_id": "yaml-parse", "path": "plugins/intent-lock/skills/intent-lock/SKILL.md", "message": "yaml-error: mapping values are not allowed here (file line 3, column 574)"}
+  ]
+}

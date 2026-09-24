@@ -1146,6 +1146,7 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
 ## Open threads
 
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
+- Plugin rewrite (both repos): plan in `docs/plugin-rewrite/` (`plan.md`, 21 specs, 296 steps of which 280 active, waves W0–W5). All ODs and OQs answered 2026-09-24 (recommended options; OQ6 = a chosen by Claude). W0 in progress on branch `claude/skill-plugin-rewrite-plan-cckyld` in both repos. Open: OQ3 dollar caps (S12-W0-9, set from the W0-d probe: USD 0.05 per one-case smoke run); `pre-rewrite` tag push (cloud proxy refused it); OD8 owner edit of the synced `daily-random-review` skill (W2); whole-`Bash` eval grants fail in the cloud container (seccomp cannot write uid_map).
 
 ## Health check
 

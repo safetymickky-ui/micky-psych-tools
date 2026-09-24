@@ -1,6 +1,5 @@
 {
   "name": "micky-psych-tools",
-  "version": "1.16.0",
   "description": "Personal Claude Code plugins for clinical psychiatry, evidence appraisal, and pre-build alignment.",
   "owner": {
     "name": "Thanawat Suharit (Micky)"
@@ -9,7 +8,6 @@
     {
       "name": "pubmed-research-note",
       "source": "./plugins/pubmed-research-note",
-      "version": "1.7.0",
       "description": "Answers a clinical question from primary literature. Quantified, adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full per-study depth, in whatever shape serves the question — decision-shaped or topic-shaped. Runs the intent-lock plugin first to lock the question, then renders the report inline and files it to the vault by default; atomic notes on request.",
       "category": "research",
       "keywords": [
@@ -22,7 +20,6 @@
     {
       "name": "intent-lock",
       "source": "./plugins/intent-lock",
-      "version": "0.4.2",
       "description": "Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.",
       "category": "productivity",
       "keywords": [
@@ -34,7 +31,6 @@
     {
       "name": "plugin-creator",
       "source": "./plugins/plugin-creator",
-      "version": "0.3.0",
       "description": "Plugin lifecycle toolkit for this marketplace. /new-plugin scaffolds a new plugin (elicit checklist, generate component skeleton, register, validate); /refine-plugin audits and refines an existing plugin or skill, then bumps and validates. /route regenerates ROUTING.md and routes a request to the owning skill or command.",
       "category": "productivity",
       "keywords": [
@@ -48,7 +44,6 @@
     {
       "name": "vault-keeper",
       "source": "./plugins/vault-keeper",
-      "version": "0.4.0",
       "description": "Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill, deleting only after a verified sync.",
       "category": "productivity",
       "keywords": [
@@ -63,7 +58,6 @@
     {
       "name": "psych-paper-digest",
       "source": "./plugins/psych-paper-digest",
-      "version": "0.1.1",
       "description": "Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.",
       "category": "research",
       "keywords": [
@@ -78,7 +72,6 @@
     {
       "name": "comprehensive-review",
       "source": "./plugins/comprehensive-review",
-      "version": "0.3.0",
       "description": "Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across every coverage domain (epidemiology to prognosis), with the chapter's structure designed to fit the topic and load-bearing studies in full per-study depth, never silently narrowed to a treatment essay. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.",
       "category": "research",
       "keywords": [
@@ -92,7 +85,6 @@
     {
       "name": "clinical-infographic",
       "source": "./plugins/clinical-infographic",
-      "version": "0.2.1",
       "description": "Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/\"medications to avoid\" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.",
       "category": "research",
       "keywords": [
@@ -107,7 +99,6 @@
     {
       "name": "firecrawl",
       "source": "./plugins/firecrawl",
-      "version": "0.2.0",
       "description": "Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. Routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier — and deep-integrates with the pipeline: the general-web evidence engine for pubmed-research-note and comprehensive-review, intent-lock gating on deliverables, vault saves via vault-keeper.",
       "category": "productivity",
       "keywords": [
@@ -122,7 +113,6 @@
     {
       "name": "concept-animation",
       "source": "./plugins/concept-animation",
-      "version": "0.1.1",
       "description": "Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds the concept scene by scene with synchronized captions, player controls, and a reduced-motion fallback. Intent-lock is the mandatory Step 0 gate; any concept is in scope, but clinical facts come only from sourced reports (this session, the vault, or generated first by comprehensive-review / pubmed-research-note) — never invented. Files the finished animation to the vault as an asset via vault-keeper.",
       "category": "education",
       "keywords": [
@@ -137,7 +127,6 @@
     {
       "name": "gridgeist",
       "source": "./plugins/gridgeist",
-      "version": "0.1.0",
       "description": "Design, redesign, and review distinctive web interfaces with a strong grid, precise typography, and product-specific visual systems.",
       "category": "design",
       "keywords": [
@@ -152,7 +141,6 @@
     {
       "name": "code-explainer",
       "source": "./plugins/code-explainer",
-      "version": "0.1.0",
       "description": "Explains given code as one self-contained, interactive HTML page — the original source on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked line by line. Ships three linked modes over one id space: hover/click line↔explanation highlighting, a debug-style step-through walkthrough in execution order, and a clickable inline SVG flow diagram. Reproduces the source verbatim, names real defects, and never invents a runtime value. Intent-lock gates only ambiguous asks; the vault is opt-in.",
       "category": "education",
       "keywords": [
@@ -167,7 +155,6 @@
     {
       "name": "ml-concept-lab",
       "source": "./plugins/ml-concept-lab",
-      "version": "0.1.0",
       "description": "Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.",
       "category": "education",
       "keywords": [
@@ -182,7 +169,6 @@
     {
       "name": "decision-interview",
       "source": "./plugins/decision-interview",
-      "version": "0.1.1",
       "description": "Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Sweeps the task end to end, triages by whether the answers change the work, asks with a recommended option first, and records the resolutions in a decision ledger that governs the rest of the session. The execution-phase sibling of intent-lock, which owns pre-build alignment.",
       "category": "productivity",
       "keywords": [
@@ -197,7 +183,6 @@
     {
       "name": "plan-critique",
       "source": "./plugins/plan-critique",
-      "version": "0.1.0",
       "description": "Adversarial critique of an existing plan that ends in a better plan: nine lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) find where it breaks, repairs with one right answer are applied, and every fork only the plan's owner can decide is resolved in a relentless batched option-picker interview. Verdict-first critique + the full revised plan under a decision ledger. One skill (plan-critique) + /critique-plan [plan-or-path].",
       "category": "productivity",
       "keywords": [
