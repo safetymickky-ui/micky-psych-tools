@@ -49,3 +49,5 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   delivery-log unit tests, through a new `fail` helper (S11-W0-3).
 - `docs/rewrite/delivery-log.md`: W0 checklist row c answered yes (many-to-one `renames`
   validates on a scratch catalog copy; the cycle control fails) (S11-W0-8).
+- `docs/rewrite/baseline.md`: the dated `## W0` section written by
+  `rewrite_gate.py baseline measure --write` (S12-W0-7, micky half).
