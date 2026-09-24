@@ -40,7 +40,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 
 ## Plugins
 
-### pubmed-research-note — research  _v1.7.0_
+### pubmed-research-note — research
 
 Answers a clinical question from primary literature. Quantified, adjudicated, trial-registry-checked evidence reports with a clearly marked verdict and full per-study depth, in whatever shape serves the question — decision-shaped or topic-shaped. Runs the intent-lock plugin first to lock the question, then renders the report inline and files it to the vault by default; atomic notes on request.
 
@@ -48,7 +48,7 @@ Keywords: pubmed, clinical-trials, psychiatry, evidence
 
 - **skill `pubmed-research-note`** (skill) — Answers a clinical question from primary literature — a quantified, adjudicated evidence report with a clearly marked verdict and full per-study depth, in whatever shape serves the question (decision-shaped or topic-sha…
 
-### intent-lock — productivity  _v0.4.2_
+### intent-lock — productivity
 
 Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.
 
@@ -57,7 +57,7 @@ Keywords: prompting, alignment, elicitation
 - **skill `intent-lock`** (skill) — Interrogates a request until it has exactly one reading, then executes it as written.
 - **skill `misread-capture`** (skill) — Captures a misread in the user's own words and appends it to the misread ledger.
 
-### plugin-creator — productivity  _v0.3.0_
+### plugin-creator — productivity
 
 Plugin lifecycle toolkit for this marketplace. /new-plugin scaffolds a new plugin (elicit checklist, generate component skeleton, register, validate); /refine-plugin audits and refines an existing plugin or skill, then bumps and validates. /route regenerates ROUTING.md and routes a request to the owning skill or command.
 
@@ -69,7 +69,7 @@ Keywords: plugin, scaffold, meta, marketplace, generator
 - **`/refine-plugin`** (command) — Audit and refine an existing plugin or skill in the marketplace
 - **`/route`** (command) — Recommend which marketplace skill/plugin fits a request, from ROUTING.md
 
-### vault-keeper — productivity  _v0.4.0_
+### vault-keeper — productivity
 
 Files, indexes, links, and retrieves any skill's output in the shared Obsidian-style vault at the marketplace repo root (vault/). The single place everything lands. Five jobs: init, save, index, query, empty — the empty-vault skill (+ /empty-vault) drains the vault into the Learn hub via learn-hub's digest-report skill, deleting only after a verified sync.
 
@@ -79,7 +79,7 @@ Keywords: vault, obsidian, knowledge, notes, index, moc
 - **skill `vault-keeper`** (skill) — Files, indexes, links, and retrieves any skill's output in the shared vault at the marketplace repo root (vault/) — the one Obsidian-style place everything lands.
 - **`/empty-vault`** (command) — Empty the shared vault into the Learn hub — move, verify, then delete; whole vault or one topic passed as argument
 
-### psych-paper-digest — research  _v0.1.1_
+### psych-paper-digest — research
 
 Multi-domain literature surveillance on a personal watchlist. Sweeps PubMed and ClinicalTrials.gov for what appeared since the last sweep and delivers a triaged, read-once digest — practice-changing first, worth-reading next, noise suppressed with counts. Hands practice-changing items to pubmed-research-note and vault saves to vault-keeper.
 
@@ -88,7 +88,7 @@ Keywords: pubmed, digest, psychiatry, surveillance, clinical-trials, current-awa
 - **skill `psych-paper-digest`** (skill) — Sweeps every domain on the user's watchlist for literature published since the last sweep and delivers a triaged, read-once digest — practice-changing first, then worth-reading, plus registry trial readouts; noise suppr…
 - **`/digest`** (command) — Run the psych-paper-digest sweep now — all watchlist domains, or one domain passed as argument
 
-### comprehensive-review — research  _v0.3.0_
+### comprehensive-review — research
 
 Whole-disorder academic literature reviews of psychiatric topics — textbook-chapter breadth across every coverage domain (epidemiology to prognosis), with the chapter's structure designed to fit the topic and load-bearing studies in full per-study depth, never silently narrowed to a treatment essay. Gated by intent-lock, searches PubMed and ClinicalTrials.gov itself, files the finished md review to the vault via vault-keeper.
 
@@ -97,7 +97,7 @@ Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 - **skill `comprehensive-review`** (skill) — Writes a comprehensive, textbook-chapter academic review of a whole psychiatric disorder or topic from primary literature — covering definition, epidemiology, pathophysiology, clinical features, diagnosis, comorbidity,…
 - **`/comprehensive-review`** (command) — Write a whole-disorder comprehensive review of the given psychiatric topic and file it to the vault
 
-### clinical-infographic — research  _v0.2.1_
+### clinical-infographic — research
 
 Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/"medications to avoid" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.
 
@@ -106,7 +106,7 @@ Keywords: infographic, clinical-reference, visual-summary, html, medical, poster
 - **skill `clinical-infographic`** (skill) — Renders a professional, print-ready medical summary infographic (a self-contained HTML file) for clinical reference from a SOURCED evidence report.
 - **`/infographic`** (command) — Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic
 
-### firecrawl — productivity  _v0.2.0_
+### firecrawl — productivity
 
 Firecrawl onboarding and routing for web data: search the web, scrape clean markdown, and interact with live pages via the Firecrawl CLI or API. Routes each request to the right path — live CLI work, app-code integration, web-powered deliverables, credentials, REST-only, or the keyless free tier — and deep-integrates with the pipeline: the general-web evidence engine for pubmed-research-note and comprehensive-review, intent-lock gating on deliverables, vault saves via vault-keeper.
 
@@ -114,7 +114,7 @@ Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
 
 - **skill `firecrawl`** (skill) — Routes any general-web data request to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyles…
 
-### concept-animation — education  _v0.1.1_
+### concept-animation — education
 
 Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds the concept scene by scene with synchronized captions, player controls, and a reduced-motion fallback. Intent-lock is the mandatory Step 0 gate; any concept is in scope, but clinical facts come only from sourced reports (this session, the vault, or generated first by comprehensive-review / pubmed-research-note) — never invented. Files the finished animation to the vault as an asset via vault-keeper.
 
@@ -123,7 +123,7 @@ Keywords: animation, concept-explainer, html, svg, motion, visual-teaching
 - **skill `concept-animation`** (skill) — Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS, nothing external) that plays in any browser, unfolding the concept scene by scene: mechanisms, pathways, processes…
 - **`/animate`** (command) — Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper
 
-### gridgeist — design  _v0.1.0_
+### gridgeist — design
 
 Design, redesign, and review distinctive web interfaces with a strong grid, precise typography, and product-specific visual systems.
 
@@ -131,7 +131,7 @@ Keywords: web-design, frontend, ui-review, grid, typography, design-system
 
 - **skill `gridgeist`** (skill) — Designs, redesigns, and reviews web interfaces around a rigorous grid, precise typography, quiet 1px rules, and Swiss/editorial or technical-minimal influence — replacing generic AI-generated SaaS aesthetics (rounded-ca…
 
-### code-explainer — education  _v0.1.0_
+### code-explainer — education
 
 Explains given code as one self-contained, interactive HTML page — the original source on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked line by line. Ships three linked modes over one id space: hover/click line↔explanation highlighting, a debug-style step-through walkthrough in execution order, and a clickable inline SVG flow diagram. Reproduces the source verbatim, names real defects, and never invents a runtime value. Intent-lock gates only ambiguous asks; the vault is opt-in.
 
@@ -140,7 +140,7 @@ Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highl
 - **skill `code-explainer`** (skill) — Explains given code as one interactive, self-contained HTML page — the original code on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked li…
 - **`/explain-code`** (command) — Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram
 
-### ml-concept-lab — education  _v0.1.0_
+### ml-concept-lab — education
 
 Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.
 
@@ -149,7 +149,7 @@ Keywords: machine-learning, ai, computer-science, interactive-visualization, exp
 - **skill `ml-concept-lab`** (skill) — Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file (inline CSS/SVG/Canvas/JS) in which the real algorithm runs live and the learner drive…
 - **`/visualize`** (command) — Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the vault via vault-keeper
 
-### decision-interview — productivity  _v0.1.1_
+### decision-interview — productivity
 
 Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Sweeps the task end to end, triages by whether the answers change the work, asks with a recommended option first, and records the resolutions in a decision ledger that governs the rest of the session. The execution-phase sibling of intent-lock, which owns pre-build alignment.
 
@@ -158,7 +158,7 @@ Keywords: decisions, interview, batching, clarification, elicitation, autonomy
 - **skill `decision-interview`** (skill) — Mid-task decision gate — fires after the goal is locked, when execution surfaces decisions only the user can make (scope forks, trade-offs, destructive or irreversible steps, missing preferences), and resolves them all…
 - **`/resolve-decisions`** (command) — Sweep the current task for every open decision that needs the user and resolve them all in one batched interview
 
-### plan-critique — productivity  _v0.1.0_
+### plan-critique — productivity
 
 Adversarial critique of an existing plan that ends in a better plan: nine lenses (goal-fit, gaps, sequencing, feasibility, risk, assumptions, verifiability, simplicity, alternatives) find where it breaks, repairs with one right answer are applied, and every fork only the plan's owner can decide is resolved in a relentless batched option-picker interview. Verdict-first critique + the full revised plan under a decision ledger. One skill (plan-critique) + /critique-plan [plan-or-path].
 

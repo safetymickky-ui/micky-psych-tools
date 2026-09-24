@@ -12,6 +12,7 @@ Kept in sync automatically: /new-plugin and /refine-plugin run this after they
 register or edit a plugin, so a new or changed skill shows up in the router
 without a manual step.
 """
+import argparse
 import json
 import os
 import re
@@ -111,7 +112,11 @@ def cell(text):
     return " ".join(text.split()).replace("|", "\\|")
 
 
-def main():
+def main(argv=None):
+    # Parse first: -h/--help (or a bad flag) exits here, before anything is read or written.
+    argparse.ArgumentParser(
+        description="Regenerate ROUTING.md from the catalog and every plugin's components. "
+                    "Takes no arguments; --help writes nothing.").parse_args(argv)
     mkt = json.load(open(MKT, encoding="utf-8"))
     plugins = mkt["plugins"]
 
@@ -142,7 +147,7 @@ def main():
 
     for p in plugins:
         cat = p.get("category", "")
-        header = f"### {p['name']}" + (f" — {cat}" if cat else "") + f"  _v{p['version']}_"
+        header = f"### {p['name']}" + (f" — {cat}" if cat else "")
         lines.append(header)
         lines.append("")
         lines.append(cell(p["description"]))
