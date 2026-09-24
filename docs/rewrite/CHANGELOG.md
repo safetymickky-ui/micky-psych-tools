@@ -47,3 +47,5 @@ Every repo-tooling step of specs S10, S11 and S12 adds its line under `## Unrele
   (setup script version 1, with the W0 probe block) (S11-W0-2).
 - `scripts/health.sh`: the fast path also runs `delivery_log.py check` and the
   delivery-log unit tests, through a new `fail` helper (S11-W0-3).
+- `docs/rewrite/delivery-log.md`: W0 checklist row c answered yes (many-to-one `renames`
+  validates on a scratch catalog copy; the cycle control fails) (S11-W0-8).
