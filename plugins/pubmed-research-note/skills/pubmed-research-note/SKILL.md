@@ -211,10 +211,12 @@ Both halves hold together: they are what keep the report readable *and* auditabl
   `PMID 12345678` mid-sentence, no superscript numerals, no `[3]`. The reader reads once;
   brackets tax every sentence for provenance he checks in maybe one.
 - **Evidence strength stays inline, always.** Study design, n, effect size, CI, NNT/NNH,
-  dose, absolute percentages. `"reduced nightmares"` is a failure. `"CAPS-B2 fell 3.2
-  points more than placebo (n=304, d≈0.15, non-significant)"` is the standard. A section
-  with no number in it is decoration. For load-bearing studies, the full per-study detail
-  of the depth contract applies on top of this floor.
+  dose, absolute percentages. `"reduced nightmares"` is a failure. `"CAPS item B2 (0–8)
+  differed from placebo by 0.2 points at 10 weeks (95% CI −0.3 to 0.8; n=304, double-blind
+  RCT)"` is the standard. A section with no number in it is decoration. For load-bearing
+  studies, the full per-study detail of the depth contract applies on top of this floor.
+  Every number in an example — here and in the references — must be checkable against a
+  cited record; an example teaches the error it carries.
 - **A `## Sources` block, compressed to one line per source: the topic it supports, then the
   DOI link.** Nothing else. No authors, no journal, no publication year, no volume, no pages,
   no PMID. The topic phrase *is* the annotation — it names what the source carries, so the

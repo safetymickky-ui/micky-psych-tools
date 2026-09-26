@@ -43,8 +43,8 @@ Two rules make that real:
 
 **4. Evidence travels as numbers.** A claim without a magnitude is decoration. Effect sizes,
 CIs, n, NNT/NNH, doses, absolute event rates, remission and durability figures live *inside*
-the prose — `"CAPS-B2 fell 3.2 points more than placebo (n=304, d≈0.15, non-significant)"`,
-never `"reduced nightmares"`. A section with no number in it is not carrying its weight.
+the prose — `"CAPS item B2 (0–8) differed from placebo by 0.2 points at 10 weeks (95% CI
+−0.3 to 0.8; n=304, double-blind RCT)"`, never `"reduced nightmares"`. A section with no number in it is not carrying its weight.
 
 **5. Adjudicate, don't list.** When the trials disagree, say which one you believe and why —
 size, control quality, blinding, funding, population, endpoint validity — and say it in the
