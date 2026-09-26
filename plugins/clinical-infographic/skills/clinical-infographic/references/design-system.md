@@ -104,12 +104,17 @@ A drawn curve or timeline *looks* like data even when it is not. So:
 ## The critical-safety banner
 
 Model it on the reference standard: a full-width band, crimson header reading **CRITICAL
-SAFETY — MEDICATIONS / ACTIONS TO AVOID**, prohibition iconography, and 1–4 cells each naming
-a contraindication group and *why*. Drug names stay verbatim. This band is the last thing cut
-from a crowded page, never the first — if space is tight, shrink a column, not the safety.
+SAFETY — MEDICATIONS / ACTIONS TO AVOID**, prohibition iconography, a one-line coverage note
+under the header, and 1–4 cells, each marked by class (🚫 contraindication / boxed warning,
+⚠ warning / interaction / serious harm, ⏱ monitoring) and carrying the source's own *why*. Drug
+names stay verbatim. This band is the last thing cut from a crowded page, never the first — if
+space is tight, shrink a column, not the safety.
 
-Include it whenever the source names any contraindication, black-box warning, or "do not use /
-avoid" item. Omit it only when the source genuinely has none — and say so in the Close.
+What goes on it is decided by clinical class, not by the word "avoid" — the table and rules are
+in [source-contract.md](source-contract.md) → *The safety band*. The band always renders: when
+the source has no safety content it shows a neutral coverage line ("the source report does not
+address contraindications or interactions — check the current label"). "No benefit shown"
+items get the neutral `.nobenefit` panel, never crimson.
 
 ## Self-contained HTML — non-negotiable
 
@@ -148,7 +153,8 @@ A clinical reference must open on a locked-down hospital machine and print ident
 
 - Numbers keep units and qualifiers; ranges stay ranges.
 - Nothing on the page that is not in the source report.
-- Contraindications always reach the safety banner.
+- Every safety item reaches the band by class, with the source's verb and reason; the band's
+  coverage line is always shown.
 - `[unverified]` is never rendered as a fact.
 
 The full rationale is in [source-contract.md](source-contract.md).

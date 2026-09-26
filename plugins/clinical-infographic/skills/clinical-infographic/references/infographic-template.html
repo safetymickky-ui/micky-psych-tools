@@ -2,8 +2,9 @@
 <!--
   Clinical Infographic template — self-contained, print-ready, accessible.
   Fill the {{TOKENS}} from the SOURCE report only. No external CSS/JS/fonts/images.
-  Repeat/delete .col blocks for 2-4 columns; drop the .safety block ONLY if the
-  source names no contraindication / avoid item. See design-system.md.
+  Repeat/delete .col blocks for 2-4 columns. The .safety band always stays: fill it by
+  clinical class (source-contract.md -> The safety band), or with its neutral coverage line
+  when the source has no safety content. See design-system.md.
   VISUAL-FIRST: prefer a diagram to a prose card. Commented, copy-ready scaffolds for a
   signature journey-curve, mechanism strip, decision-flow, escalation ladder, and surge/crash
   split sit below the columns — design the signature visual first and place it high on the page.
@@ -61,6 +62,9 @@
   .safety-body { padding:12px 16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .safety h3 { margin:0 0 4px; font-size:14px; color:var(--danger); }
   .safety p { margin:0; font-size:13.5px; }
+  .safety .coverage { padding:8px 16px 0; margin:0; font-size:12px; color:#5a2230; }
+  .nobenefit { margin-top:16px; border:1px solid var(--line); border-left:5px solid var(--muted); border-radius:10px; padding:10px 14px; background:#f6f7f9; }
+  .nobenefit h2 { margin:0 0 4px; font-size:15px; } .nobenefit p { margin:0; font-size:13.5px; }
 
   .foot { margin-top:18px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
   .foot .disclaimer { font-weight:600; color:#40495a; margin:0 0 4px; }
@@ -211,16 +215,30 @@
   </div>
   -->
 
-  <!-- CRITICAL SAFETY: mandatory when the source names contraindications / avoid items.
-       Delete only if the source has none (and say so in the Close). -->
+  <!-- NO BENEFIT SHOWN (optional): null / futility items the source says not to use for lack of
+       effect. Neutral, never crimson — they are not harms.
+  <section class="nobenefit" aria-label="Not recommended — no benefit shown">
+    <h2>Not recommended — no benefit shown</h2>
+    <p>{{item — the source's reason, with its number}}</p>
+  </section>
+  -->
+
+  <!-- SAFETY BAND: always present. Fill by clinical class (source-contract.md -> The safety band):
+       🚫 contraindication / boxed warning · ⚠ warning, interaction, serious harm · ⏱ monitoring.
+       Header: "CRITICAL SAFETY — MEDICATIONS / ACTIONS TO AVOID" when any 🚫/⚠ item exists,
+       else "MONITORING & CAUTIONS". Source with no safety content: keep the band, drop the
+       cells, and let the coverage line say "Safety: the source report does not address
+       contraindications or interactions — check the current label before prescribing." -->
   <section class="safety" aria-label="Critical safety — do not do">
     <div class="safety-head">
       <svg class="icon" aria-hidden="true"><use href="#i-ban"/></svg>
       {{CRITICAL SAFETY — MEDICATIONS / ACTIONS TO AVOID}}
     </div>
+    <p class="coverage">{{From the source's safety section. Not assessed in the source: … }}</p>
     <div class="safety-body">
-      <div><h3>🚫 {{CONTRAINDICATION_GROUP}}</h3><p>{{what to avoid and why — drug names verbatim}}</p></div>
-      <div><h3>⚠ {{NAMED_PITFALL}}</h3><p>{{the trap and the safe alternative}}</p></div>
+      <div><h3>🚫 {{CONTRAINDICATION_GROUP}}</h3><p>{{what, and the source's own why — drug names verbatim}}</p></div>
+      <div><h3>⚠ {{WARNING / INTERACTION}}</h3><p>{{the source's wording and reason, with its rate}}</p></div>
+      <div><h3>⏱ Monitor: {{WHAT}}</h3><p>{{how often · the action threshold}}</p></div>
     </div>
   </section>
 
