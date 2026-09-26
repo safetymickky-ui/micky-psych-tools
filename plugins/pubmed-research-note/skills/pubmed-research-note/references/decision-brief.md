@@ -90,7 +90,7 @@ These are what you hunt for — not "evidence about the topic" in general.
 ## 6. The anti-goal — the report that satisfies the words and still fails
 
 Name the specific failure this decision invites, so the report can dodge it by design. The
-most common: efficacy in a specialist RCT population generalising silently to a Klaeng OPD
+most common: efficacy in a specialist RCT population generalising silently to a community OPD
 patient with three comorbidities and no monitoring; the survey that catalogues the topic and
 never answers the question; the balanced catalogue that lists both sides of a disagreement
 and adjudicates neither; the answer hollowed by compression — a verdict whose load-bearing
