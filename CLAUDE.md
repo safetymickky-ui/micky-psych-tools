@@ -51,6 +51,10 @@ vault/                             # shared knowledge vault — managed by vault
 - **`name` is kebab-case** and must match: plugin dir name == plugin.json name == marketplace entry.
   Skill frontmatter `name` == its directory name.
 - **`source` is a relative path** (`./plugins/<name>`) in the marketplace entry.
+- **`SKILL.md` is a reserved file name.** Only `skills/<skill>/SKILL.md` may carry it: some
+  surfaces load any `SKILL.md` they find as a skill, so a nested template once showed up as
+  a live skill named `skill-name`. Name templates and fixtures otherwise
+  (`SKILL.template.md`); `validate.py` fails on a stray one.
 
 ## Workflow for adding / changing a plugin
 

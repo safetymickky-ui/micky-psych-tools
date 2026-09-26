@@ -55,8 +55,8 @@ server code — only write the `.mcp.json` that references a server the user alr
 Create `plugins/<name>/` and fill placeholders from `references/templates/`:
 
 - Always: `.claude-plugin/plugin.json`.
-- Per chosen component: `skills/<skill>/SKILL.md`, `commands/<cmd>.md`,
-  `agents/<agent>.md`, `hooks/hooks.json`, `.mcp.json`.
+- Per chosen component: `skills/<skill>/SKILL.md` (from `SKILL.template.md`),
+  `commands/<cmd>.md`, `agents/<agent>.md`, `hooks/hooks.json`, `.mcp.json`.
 
 For every **skill or agent** description, follow the recipe in
 `references/authoring-rules.md` (action-first, third person, embed the verbatim trigger
@@ -67,8 +67,9 @@ get a plain one-line description.
 ### 4. Register
 
 Add the plugin's entry to `.claude-plugin/marketplace.json`:
-`{ name, source: "./plugins/<name>", version: "0.1.0", description, category, keywords }`.
-The entry `version` MUST equal the plugin.json `version` — this parity is a hard rule.
+`{ name, source: "./plugins/<name>", description, category, keywords }`.
+The entry carries **no `version`**: the version lives in `plugin.json` only (`0.1.0` for a
+new plugin). A second copy in the entry can drift from the first.
 
 ### 5. Validate
 

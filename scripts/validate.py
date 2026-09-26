@@ -10,7 +10,9 @@ What it checks, per run:
   - per skill: SKILL.md exists, its frontmatter parses as strict YAML (CRLF-safe),
     `name` matches the directory, description <= 1,024 chars (a description under 200
     chars is a WARN, never a failure), and a legacy evals/evals.json is valid JSON;
-  - per command/agent: frontmatter parses and carries a description (agents <= 1,024).
+  - per command/agent: frontmatter parses and carries a description (agents <= 1,024);
+  - per plugin: no file named SKILL.md (any case) outside skills/<skill>/, because some
+    surfaces load every SKILL.md they find as a skill.
 
 Every result is counted: a missing or malformed file is a FAIL line, never a
 traceback. A YAML failure on a file listed in docs/rewrite/ratchet.json under
@@ -187,6 +189,27 @@ def check_skills(report, root, ratchet, pdir):
             load_json(report, ev, f"skills/{skill}/evals/evals.json")
 
 
+def check_skill_md_placement(report, root, pdir):
+    """SKILL.md is a reserved name: only skills/<skill>/SKILL.md may carry it. Some surfaces
+    load every SKILL.md they find, so a nested one (a template, an example) becomes a
+    stray skill. Matched case-insensitively: on Windows, skill.md opens as SKILL.md."""
+    stray = []
+    for dirpath, dirnames, filenames in os.walk(pdir):
+        dirnames[:] = [d for d in dirnames if d not in (".git", "node_modules")]
+        for fname in filenames:
+            if fname.lower() != "skill.md":
+                continue
+            path = os.path.join(dirpath, fname)
+            parts = os.path.relpath(path, pdir).split(os.sep)
+            if not (len(parts) == 3 and parts[0] == "skills"):
+                stray.append(rel(root, path))
+    for path in sorted(stray):
+        report.check(False, f"{path}: only skills/<skill>/SKILL.md may be named SKILL.md "
+                            "(some surfaces load it as a skill); rename it, e.g. SKILL.template.md")
+    if not stray:
+        report.check(True, "no SKILL.md outside skills/<skill>/")
+
+
 def check_components(report, root, ratchet, pdir):
     for comp in ("commands", "agents"):
         cdir = os.path.join(pdir, comp)
@@ -243,6 +266,7 @@ def check_plugin(report, root, ratchet, entry):
         check_mcp(report, pdir, man["mcpServers"])
 
     check_skills(report, root, ratchet, pdir)
+    check_skill_md_placement(report, root, pdir)
     check_components(report, root, ratchet, pdir)
 
 

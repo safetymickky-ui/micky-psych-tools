@@ -13,16 +13,17 @@ of these, `validate.py` fails and the plugin is not done.
 
 ## Versions
 
-- `version` is semver `\d+\.\d+\.\d+`. New plugins start at **`0.1.0`**.
-- **Parity rule (the one that bites):** the marketplace entry `version` must equal the
-  plugin.json `version`. If they drift, Claude Code offers no update silently. New plugins
-  set both to `0.1.0`; later changes go through `scripts/bump.py`, never by hand.
+- `version` is semver `\d+\.\d+\.\d+` and lives in `plugin.json` **only**; the
+  marketplace entry carries none. New plugins start at **`0.1.0`**.
+- Later releases go through `python3 scripts/bump.py <plugin> patch|minor|major --write`
+  (a dry run without `--write`). It validates, writes the new version to `plugin.json` and
+  adds a `## <version> — <date>` CHANGELOG heading to fill in. Never edit a version by hand.
 
 ## Marketplace entry
 
 - Lives in `.claude-plugin/marketplace.json` under `plugins[]`.
 - `source` is a **relative path starting `./`** → `./plugins/<name>`.
-- Fields: `name`, `source`, `version`, `description`, `category`, `keywords[]`.
+- Fields: `name`, `source`, `description`, `category`, `keywords[]`. No `version`.
 
 ## Skill / agent descriptions
 
@@ -63,8 +64,13 @@ plugins/<name>/
   hooks/hooks.json
 ```
 
-Only the immediate children of `plugins/<name>/skills/` are scanned as skills. Nested
-folders (e.g. a skill's own `references/`) are not validated as skills.
+`validate.py` validates only the immediate children of `plugins/<name>/skills/` as
+skills, but some Claude surfaces search deeper and load any file named `SKILL.md` as a
+skill: plugin-creator's own `references/templates/SKILL.md` once appeared as a live skill
+named `skill-name`. So `SKILL.md` is a reserved file name, and only
+`skills/<skill>/SKILL.md` may carry it. Give a skill-shaped template, example or fixture
+another name (`SKILL.template.md`). `validate.py` fails on a `SKILL.md` (any case)
+anywhere else in the plugin.
 
 ## Done means
 

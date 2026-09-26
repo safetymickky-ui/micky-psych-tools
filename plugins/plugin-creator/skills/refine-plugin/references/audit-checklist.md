@@ -1,9 +1,10 @@
 # Audit checklist — quality tier
 
 The mechanical tier lives in `../plugin-creator/references/authoring-rules.md` (version
-parity, kebab-case, semver, skill/agent description length, command/agent description
-presence, MCP type/url, name==dir). This file is the **quality tier** — the judgment
-checks that a rule-passing skill can still fail. Each is a pass/fail with a concrete fix.
+only in `plugin.json`, kebab-case, semver, skill/agent description length, command/agent
+description presence, MCP type/url, name==dir, no `SKILL.md` outside `skills/<skill>/`).
+This file is the **quality tier** — the judgment checks that a rule-passing skill can
+still fail. Each is a pass/fail with a concrete fix.
 
 ## Skill / agent description (the trigger)
 

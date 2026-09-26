@@ -196,6 +196,30 @@ class ValidateTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("skills/alpha/evals/evals.json is valid JSON", out)
 
+    def test_nested_skill_md_fails(self):
+        make_repo(self.root)
+        write(self.root, "plugins/alpha/skills/alpha/references/templates/SKILL.md",
+              skill_md("{{SKILL_NAME}}"))
+        code, out = run(self.root)
+        self.assertEqual(code, 1)
+        self.assertIn("FAIL  plugins/alpha/skills/alpha/references/templates/SKILL.md: "
+                      "only skills/<skill>/SKILL.md may be named SKILL.md", out)
+
+    def test_lowercase_skill_md_outside_skills_fails(self):
+        make_repo(self.root)
+        write(self.root, "plugins/alpha/examples/demo/skill.md", skill_md("demo"))
+        code, out = run(self.root)
+        self.assertEqual(code, 1)
+        self.assertIn("FAIL  plugins/alpha/examples/demo/skill.md: only skills/<skill>/SKILL.md", out)
+
+    def test_renamed_skill_template_passes(self):
+        make_repo(self.root)
+        write(self.root, "plugins/alpha/skills/alpha/references/templates/SKILL.template.md",
+              skill_md("{{SKILL_NAME}}"))
+        code, out = run(self.root)
+        self.assertEqual(code, 0, out)
+        self.assertIn("PASS  no SKILL.md outside skills/<skill>/", out)
+
     def test_command_without_description_fails(self):
         make_repo(self.root)
         write(self.root, "plugins/alpha/commands/go.md", "---\nargument-hint: x\n---\nbody\n")

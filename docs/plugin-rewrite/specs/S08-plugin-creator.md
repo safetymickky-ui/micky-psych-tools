@@ -399,6 +399,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 ### W3
 
 **S08-W3-1 · micky · self-contained scripts + manifest + health.sh**
+- **Changed ahead of wave (2026-09-26, plugin-creator 0.3.1):** repo-root `scripts/validate.py` gained a per-plugin check that fails on any `SKILL.md` (any case) outside `skills/<skill>/` — a surface loaded the nested `templates/SKILL.md` as a live skill `skill-name` — with 3 tests in `scripts/test_validate.py`. Keep the check and its tests when commit (b) moves the validator into `plugins/plugin-creator/scripts/`.
 - Depends on: S08-W1-1; S10-W0-1, S10-W0-2, S10-W0-3 (S10's W0-fixed `validate.py`/`bump.py` and entry-version strip, CX-34); S10-W3-2 (the skeleton move — CX-36); S11-W0-3 (both this step and S11-W0-3 edit `scripts/health.sh` — CX-39); S10-W0-8.
 - Files: create `plugins/plugin-creator/scripts/{validate.py,release.py,test_validate.py,test_release.py}`; create `plugins/plugin-creator/references/lists/{synced-names,sibling-pairs,dmi-skills,fork-denylist,gate-skills}.md` (CX-21 — this spec owns these committed lists; derived from architecture §2.8 for synced names, §6.3's families for sibling pairs, OD9/OD10 for dmi skills, §8 for the fork denylist and gate skills); edit (not create — S10-W0-8 already backfills a LICENSE for every plugin that lacks one, CX-45) `plugins/plugin-creator/LICENSE` if S10-W0-8's text needs a plugin-creator-specific tweak, otherwise leave it untouched; edit `plugin.json` (`$schema`, keywords trimmed to 5, `hooks: "./hooks/hooks.json"`); delete repo-root `scripts/validate.py`, `scripts/bump.py`; edit `scripts/health.sh` (CX-11) to call `python3 plugins/plugin-creator/scripts/validate.py --repo .` (+ `--cross-repo "$LEARN_HUB_DIR"` when set), a per-directory unittest loop — `for d in plugins/*/scripts; do ls "$d"/test_*.py >/dev/null 2>&1 || continue; out=$(python3 -m unittest discover -s "$d" -p 'test_*.py' 2>&1) || { echo "$out"; exit 1; }; case "$out" in *'Ran 0 tests'*) echo "health: no tests ran in $d"; exit 1;; esac; done` (critique P3: `discover -s plugins` finds no test under `plugins/*/scripts/`, which have no `__init__.py`, and prints `Ran 0 tests … OK`), `node --test 'plugins/*/scripts/*.test.mjs'` — keeping S11-W0-3's two existing lines, not replacing them.
 - Commands: `python3 plugins/plugin-creator/scripts/validate.py --help` ; `python3 -m unittest discover -s plugins/plugin-creator/scripts -p 'test_*.py' -v` ; `$VALIDATE --repo .` ; `bash scripts/health.sh --fast` ; `ls plugins/plugin-creator/references/lists`
@@ -431,6 +432,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 - Rollback: `revert`.
 
 **S08-W3-5 · micky · templates fixed (valid YAML, no command template, alias template, hooks/MCP guidance)**
+- **Changed ahead of wave (2026-09-26, plugin-creator 0.3.1):** `templates/SKILL.md` is now `templates/SKILL.template.md` (why: S08-W3-1's note). Read every `templates/SKILL.md` in this spec's target sections (§2.1, §2.4, this step, §5 item 4) as `templates/SKILL.template.md`; no template may be named `SKILL.md` again (validate.py fails on it).
 - Depends on: S08-W3-1.
 - Files: `templates/{SKILL.md,agent.md}` (quote placeholders), `templates/alias-skill.md` (new), delete `templates/{command.md,evals.json}`, `authoring-rules.md` (MCP + Hooks sections, missing best practices) — per §2.4/§1.3 (-6,-7,-8,-13) in full.
 - Commands: YAML-parse `templates/SKILL.md` (now succeeds, was `ConstructorError`) ; `find plugins/plugin-creator/skills/plugin-creator/references/templates -name 'command.md' -o -name 'evals.json'` (expect empty).
@@ -452,6 +454,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 - Rollback: `revert`.
 
 **S08-W3-8 · micky · eval conversion**
+- **Changed ahead of wave (2026-09-26, plugin-creator 0.3.1):** the W0 seeds were re-seeded for the plugin.json-only version contract (CP-27, version parts): fixture catalogs carry no version, stub `validate.py`/`bump.py` mirror the real scripts (`--write` required), `scaffold-output` grades `registered.md` + `no-catalog-version.md`, `fix-then-release` grades `patch-level.md` on `plugin.json` + `no-catalog-version.md`, and `explicit-invoke` plants a frontmatter name mismatch (`fire-crawl`, `name-mismatch-found.md`) instead of a parity break. Keep `no-catalog-version.md` in the §4.1 `scaffold-output` and `fix-then-release` cases.
 - Depends on: S08-W3-2, S08-W3-3.
 - Files: create the 6 case dirs in §4.1 in full; confirm no `evals.json` remains.
 - Commands: `find plugins/plugin-creator -iname 'evals.json'` (empty) ; `$VALIDATE --repo .`
