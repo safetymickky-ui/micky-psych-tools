@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.1 — 2026-09-26
+
+- **The SKILL template no longer loads as a skill.** `references/templates/SKILL.md` is now
+  `SKILL.template.md`. Some Claude surfaces search `skills/` deeper than one level and load
+  any `SKILL.md` they find, so the unfilled template appeared as a live skill named
+  `skill-name` whose description was the `{{placeholder}}` text: listing noise and a
+  random-trigger risk. The scaffold step maps `SKILL.template.md` to
+  `skills/<skill>/SKILL.md`.
+- **The rule is enforced.** `scripts/validate.py` now fails on a `SKILL.md` (any case)
+  outside `skills/<skill>/`. `authoring-rules.md` states `SKILL.md` as a reserved file name,
+  replacing the false note that nested folders are never loaded as skills; refine-plugin's
+  blocker tier and the audit checklist list the rule.
+
 ## 0.3.0 — 2026-07-10
 
 - **Router routes on triggers, not summaries.** `route.py` now fills the routing cue from a

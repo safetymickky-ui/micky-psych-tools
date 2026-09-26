@@ -18,7 +18,7 @@ a milestone.
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.8.0   |
 | intent-lock           | 0.4.2   |
-| plugin-creator        | 0.3.0   |
+| plugin-creator        | 0.3.1   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.1   |
 | comprehensive-review  | 0.3.0   |
@@ -175,6 +175,12 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-09-26** — **plugin-creator 0.3.1**: the unfilled SKILL template
+  (`skills/plugin-creator/references/templates/SKILL.md`) was listed as a live skill
+  `skill-name` with the `{{placeholder}}` description by a surface that scans nested folders
+  (CLI 2.1.283 loads only `skills/<skill>/SKILL.md` and did not list it). Renamed to
+  `SKILL.template.md`; `validate.py` now fails on any `SKILL.md` outside `skills/<skill>/`
+  (new CLAUDE.md hard rule).
 - **2026-09-26** — Added **bullet-reconstruct 0.1.0**, moved in from the claude.ai-uploaded skill
   (`anthropic-skills:bullet-reconstruct`, the synced name in rewrite family 4) after a refine-plugin
   audit found a self-graded gate, recall-only checking, lost evidence tiers, no figure images,
@@ -1189,6 +1195,8 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
 
 ## Open threads
 
+- plugin-creator 0.3.1: after updating the plugin, confirm `skill-name` is gone from the
+  surface that listed it; if it stays, that surface holds a cached copy — remove it there.
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
 - Quality pass 2026-09-26: owner must push the `pre-rewrite` tag at `fd47fba` before the
   branch merges; `auditInfographicResponsive` check for S06-W1-1 still owed (needs
