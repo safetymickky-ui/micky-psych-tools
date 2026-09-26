@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.2 — 2026-09-26
+
+- **Authoring rules match `validate.py`.** `authoring-rules.md` marks each rule `[FAIL]` or
+  `[WARN]` (unmarked = a CLAUDE.md rule the script does not check). It no longer claims a
+  200-char floor is enforced (a short skill description is a WARN; an agent's floor is
+  unchecked) or that every MCP server needs `type` + `url` (stdio servers with `command`
+  pass), and it adds the strict-YAML frontmatter rule. refine-plugin stops reporting those
+  two as blockers (a short description moves to the quality tier) and flags non-YAML
+  frontmatter instead; the mcp-wiring questions cover stdio servers too.
+- **explicit-invoke graders check the finding, not a keyword.** `two-tiers` needs the
+  planted blocker inside the `[BLOCKER]` tier, ranked above `[QUALITY]`; `not-for-found`
+  needs the Not-for clause called missing, or a fix that adds one. The case's firecrawl
+  fixture description is now quoted (strict YAML), so the audit finds only the two
+  planted defects.
+
 ## 0.3.1 — 2026-09-26
 
 - **The SKILL template no longer loads as a skill.** `references/templates/SKILL.md` is now

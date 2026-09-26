@@ -1,8 +1,9 @@
 # Audit checklist — quality tier
 
 The mechanical tier lives in `../plugin-creator/references/authoring-rules.md` (version
-only in `plugin.json`, kebab-case, semver, skill/agent description length, command/agent
-description presence, MCP type/url, name==dir, no `SKILL.md` outside `skills/<skill>/`).
+only in `plugin.json`, kebab-case, semver, description over 1024 chars, strict-YAML
+frontmatter, command/agent description presence, MCP server shape (http/sse or stdio),
+name==dir, no `SKILL.md` outside `skills/<skill>/`).
 This file is the **quality tier** — the judgment checks that a rule-passing skill can
 still fail. Each is a pass/fail with a concrete fix.
 
@@ -16,8 +17,8 @@ The description is the ONLY thing that decides when a skill or agent fires. Chec
       in the description. Fix: pull them in as a "Use when the user says '…', '…'" clause.
 - [ ] **Has a Use-when clause AND a Not-for clause** — positive scope alone triggers on
       neighbours; negative scope sharpens it. Fix: add the missing clause.
-- [ ] **Length in the sweet spot** — 200–1024 chars (validate.py enforces), but aim
-      ~400–900. Under ~200 triggers unreliably even though it passes. Fix: expand with
+- [ ] **Length in the sweet spot** — aim ~400–900 chars. `validate.py` fails over 1024
+      but only warns under 200, and under ~200 triggers unreliably. Fix: expand with
       more trigger phrasings and scope.
 - [ ] **Concrete, not abstract** — names the real objects/verbs it acts on, not "helps
       with tasks". Fix: replace vague nouns with the actual domain terms.

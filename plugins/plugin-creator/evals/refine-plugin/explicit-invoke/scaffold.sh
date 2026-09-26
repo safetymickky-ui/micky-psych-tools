@@ -70,7 +70,7 @@ EOF
 cat > plugins/firecrawl/skills/firecrawl/SKILL.md <<'EOF'
 ---
 name: fire-crawl
-description: Routes general-web data requests to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyless free tier. Use when the user says "firecrawl", "scrape this page", "search the web", or "crawl these docs".
+description: 'Routes general-web data requests to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyless free tier. Use when the user says "firecrawl", "scrape this page", "search the web", or "crawl these docs".'
 ---
 
 # firecrawl

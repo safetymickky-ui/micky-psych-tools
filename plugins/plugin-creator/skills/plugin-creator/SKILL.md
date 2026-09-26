@@ -41,8 +41,9 @@ seed and only ask the gaps. Ask conversationally but cover every slot:
 Version is fixed at `0.1.0`. Keywords are **derived** (3–6, from purpose + trigger
 phrases) and shown for a quick confirm — don't ask for them separately.
 
-For **mcp-wiring**, also ask for the existing server's `url` and `type`. Never generate
-server code — only write the `.mcp.json` that references a server the user already runs.
+For **mcp-wiring**, also ask for the existing server's `type` + `url` (http/sse) or its
+`command` + `args` (stdio). Never generate server code — only write the `.mcp.json` that
+references a server the user already runs.
 
 ### 2. Guard — before writing anything
 
