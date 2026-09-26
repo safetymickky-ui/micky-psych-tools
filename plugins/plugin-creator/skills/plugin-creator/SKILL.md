@@ -67,8 +67,9 @@ get a plain one-line description.
 ### 4. Register
 
 Add the plugin's entry to `.claude-plugin/marketplace.json`:
-`{ name, source: "./plugins/<name>", version: "0.1.0", description, category, keywords }`.
-The entry `version` MUST equal the plugin.json `version` — this parity is a hard rule.
+`{ name, source: "./plugins/<name>", description, category, keywords }`.
+The entry carries **no `version`**: the version lives in `plugin.json` only (`0.1.0` for a
+new plugin). A second copy in the entry can drift from the first.
 
 ### 5. Validate
 

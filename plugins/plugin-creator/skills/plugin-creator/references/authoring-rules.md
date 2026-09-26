@@ -13,16 +13,17 @@ of these, `validate.py` fails and the plugin is not done.
 
 ## Versions
 
-- `version` is semver `\d+\.\d+\.\d+`. New plugins start at **`0.1.0`**.
-- **Parity rule (the one that bites):** the marketplace entry `version` must equal the
-  plugin.json `version`. If they drift, Claude Code offers no update silently. New plugins
-  set both to `0.1.0`; later changes go through `scripts/bump.py`, never by hand.
+- `version` is semver `\d+\.\d+\.\d+` and lives in `plugin.json` **only**; the
+  marketplace entry carries none. New plugins start at **`0.1.0`**.
+- Later releases go through `python3 scripts/bump.py <plugin> patch|minor|major --write`
+  (a dry run without `--write`). It validates, writes the new version to `plugin.json` and
+  adds a `## <version> — <date>` CHANGELOG heading to fill in. Never edit a version by hand.
 
 ## Marketplace entry
 
 - Lives in `.claude-plugin/marketplace.json` under `plugins[]`.
 - `source` is a **relative path starting `./`** → `./plugins/<name>`.
-- Fields: `name`, `source`, `version`, `description`, `category`, `keywords[]`.
+- Fields: `name`, `source`, `description`, `category`, `keywords[]`. No `version`.
 
 ## Skill / agent descriptions
 

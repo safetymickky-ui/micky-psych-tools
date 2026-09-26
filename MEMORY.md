@@ -33,9 +33,9 @@ a milestone.
 | clinical-minimal      | 0.1.0   |
 | bullet-reconstruct    | 0.1.0   |
 
-A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
-`.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
-update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> patch|minor|major`.
+The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
+`.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
+`python3 scripts/bump.py <plugin> patch|minor|major --write` (a dry run without `--write`).
 
 ## Plugins at a glance
 

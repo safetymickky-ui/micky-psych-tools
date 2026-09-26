@@ -39,7 +39,8 @@ their skills) and ask which to refine. The target is a whole plugin or one named
 
 Read the target's files. Produce findings in two ranked, tagged tiers:
 
-- **[BLOCKER] mechanical** (from `authoring-rules.md`): version parity broken, non-kebab
+- **[BLOCKER] mechanical** (from `authoring-rules.md`): version parity broken (a `version`
+  in the plugin's catalog entry; the version lives in `plugin.json` only), non-kebab
   name, bad semver, skill/agent description outside 200–1024, missing `description` in a
   command's or agent's frontmatter, MCP server missing `type`/`url`, `source` not `./`,
   skill frontmatter `name` != directory, a `SKILL.md` outside `skills/<skill>/` (it loads
@@ -62,11 +63,14 @@ Propose a level from the change nature — **patch** (wording/mechanical), **min
 (behavior/capability), **major** (breaking). On confirmation run from the repo root:
 
 ```
-python scripts/bump.py <plugin> <level>   # fall back to python3
+python scripts/bump.py <plugin> <level> --write   # fall back to python3
 ```
 
-`bump.py` raises `plugin.json` + the catalog entry together and validates. If no edits
-were applied, do not bump. For an out-of-marketplace audit-only run, there is no bump.
+Without `--write`, `bump.py` only prints its plan. With it, `bump.py` validates, writes the
+new version to `plugin.json` (the catalog entry carries none), adds a
+`## <version> — <date>` heading to the plugin's `CHANGELOG.md`, and validates again. Fill
+that heading with one line per applied fix. If no edits were applied, do not bump. For an
+out-of-marketplace audit-only run, there is no bump.
 
 ### 6. Refresh the router
 
