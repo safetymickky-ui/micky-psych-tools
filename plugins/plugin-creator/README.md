@@ -26,9 +26,9 @@ skill or command already owns a given request.
 
 Every plugin this toolkit scaffolds or refines is judged against:
 
-- `skills/plugin-creator/references/authoring-rules.md` — the mechanical rules
-  `scripts/validate.py` actually enforces (single source of truth), plus the
-  description-writing recipe.
+- `skills/plugin-creator/references/authoring-rules.md` — the mechanical rules, each
+  marked with whether `scripts/validate.py` fails or only warns on it (unmarked rules come
+  from CLAUDE.md and go unchecked), plus the description-writing recipe.
 - `skills/refine-plugin/references/audit-checklist.md` — the quality tier: judgment
   checks a rule-passing plugin can still fail (commands, catalog coverage, router sync,
   plugin docs).

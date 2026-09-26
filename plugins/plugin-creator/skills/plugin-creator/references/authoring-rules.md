@@ -1,19 +1,20 @@
 # Authoring rules — what every generated plugin must satisfy
 
-Distilled from `scripts/validate.py` and the repo `CLAUDE.md`. If a scaffold breaks any
-of these, `validate.py` fails and the plugin is not done.
+Distilled from `scripts/validate.py` and the repo `CLAUDE.md`. A rule marked **[FAIL]**
+makes `validate.py` fail; **[WARN]** makes it warn only. Unmarked rules come from
+CLAUDE.md: the script does not check them, but they still bind.
 
 ## Names
 
-- Plugin `name` is **kebab-case**: `^[a-z0-9]+(-[a-z0-9]+)*$`.
+- Plugin `name` is **kebab-case**: `^[a-z0-9]+(-[a-z0-9]+)*$`. **[FAIL]**
 - These three must be identical: the `plugins/<name>/` directory, `plugin.json` `name`,
-  and the marketplace entry `name`.
+  and the marketplace entry `name` (`plugin.json` vs entry: **[FAIL]**).
 - A **skill's** frontmatter `name` must equal its own directory name
-  (`skills/<skill>/SKILL.md` → `name: <skill>`).
+  (`skills/<skill>/SKILL.md` → `name: <skill>`). **[FAIL]**
 
 ## Versions
 
-- `version` is semver `\d+\.\d+\.\d+` and lives in `plugin.json` **only**; the
+- `version` is semver `\d+\.\d+\.\d+` **[FAIL]** and lives in `plugin.json` **only**; the
   marketplace entry carries none. New plugins start at **`0.1.0`**.
 - Later releases go through `python3 scripts/bump.py <plugin> patch|minor|major --write`
   (a dry run without `--write`). It validates, writes the new version to `plugin.json` and
@@ -22,14 +23,16 @@ of these, `validate.py` fails and the plugin is not done.
 ## Marketplace entry
 
 - Lives in `.claude-plugin/marketplace.json` under `plugins[]`.
-- `source` is a **relative path starting `./`** → `./plugins/<name>`.
+- `source` is a **relative path starting `./`** → `./plugins/<name>`. **[FAIL]**
 - Fields: `name`, `source`, `description`, `category`, `keywords[]`. No `version`.
 
 ## Skill / agent descriptions
 
-- Length **200–1024 chars** for BOTH skill and agent descriptions (hard cap 1024; under
-  ~200 triggers unreliably). `validate.py` enforces this range for every `skills/*/SKILL.md`
-  and every `agents/*.md`.
+- **Hard cap 1024 chars** for skill and agent descriptions. **[FAIL]**
+- **Aim for 200+ chars**: under ~200 triggers unreliably. **[WARN]** for a skill;
+  `validate.py` does not check an agent's floor.
+- Frontmatter must parse as **strict YAML**. **[FAIL]** Wrap the description in double
+  quotes when it contains `: ` (a colon and a space), the usual cause.
 - The description is the ONLY thing that decides when the skill/agent fires. Recipe:
   - **Third person, action-first** — "Scaffolds a…", not "This skill will…".
   - **Embed the verbatim trigger phrases** the user gave.
@@ -38,19 +41,19 @@ of these, `validate.py` fails and the plugin is not done.
 ## Command / agent frontmatter presence
 
 - Every `commands/*.md` and every `agents/*.md` file must have a **non-empty
-  `description`** field in its frontmatter — `validate.py` checks this for both.
+  `description`** field in its frontmatter. **[FAIL]**
 - Commands do NOT trigger on description, so no length requirement applies to them — a
   plain one-liner is fine, it just has to exist.
-- Agents DO trigger on description (same mechanism as skills), so on top of presence,
-  `validate.py` also enforces the 200–1024 length gate from the section above.
+- Agents DO trigger on description (same mechanism as skills), so the 1024-char cap
+  applies too **[FAIL]**; aim for 200+ as for a skill.
 - Hooks have no description field and are not checked here.
 
 ## MCP wiring (never generate a server)
 
 - `plugin.json` references the file: `"mcpServers": "./.mcp.json"`.
-- `.mcp.json` shape: `{ "mcpServers": { "<id>": { "type": "...", "url": "..." } } }`.
-- Every server entry must have both `type` and `url`. Only wire a server the user already
-  runs — do not author server code.
+- Each server in `.mcp.json` is either **http/sse** (`{ "type": "http", "url": "…" }`) or
+  **stdio** (`{ "command": "…", "args": [ … ] }`). Any other shape **[FAIL]**.
+- Only wire a server the user already runs — do not author server code.
 
 ## Folder layout
 
@@ -69,8 +72,8 @@ skills, but some Claude surfaces search deeper and load any file named `SKILL.md
 skill: plugin-creator's own `references/templates/SKILL.md` once appeared as a live skill
 named `skill-name`. So `SKILL.md` is a reserved file name, and only
 `skills/<skill>/SKILL.md` may carry it. Give a skill-shaped template, example or fixture
-another name (`SKILL.template.md`). `validate.py` fails on a `SKILL.md` (any case)
-anywhere else in the plugin.
+another name (`SKILL.template.md`). A `SKILL.md` (any case) anywhere else in the plugin
+**[FAIL]**.
 
 ## Done means
 

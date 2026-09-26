@@ -41,13 +41,15 @@ Read the target's files. Produce findings in two ranked, tagged tiers:
 
 - **[BLOCKER] mechanical** (from `authoring-rules.md`): version parity broken (a `version`
   in the plugin's catalog entry; the version lives in `plugin.json` only), non-kebab
-  name, bad semver, skill/agent description outside 200–1024, missing `description` in a
-  command's or agent's frontmatter, MCP server missing `type`/`url`, `source` not `./`,
+  name, bad semver, skill/agent description over 1024 chars, frontmatter that is not
+  strict YAML, missing `description` in a command's or agent's frontmatter, an MCP server
+  that is neither http/sse (`type` + `url`) nor stdio (`command`), `source` not `./`,
   skill frontmatter `name` != directory, a `SKILL.md` outside `skills/<skill>/` (it loads
   as a stray skill).
 - **[QUALITY] triggering / clarity** (from `references/audit-checklist.md`): description
-  not action-first, trigger phrases missing from the description, no Use-when / Not-for
-  clause, vague or bloated SKILL.md, redundant reference files.
+  under ~200 chars (`validate.py` only warns), description not action-first, trigger
+  phrases missing from the description, no Use-when / Not-for clause, vague or bloated
+  SKILL.md, redundant reference files.
 
 For each finding give: the file, the problem, and a **before/after** fix. Rank blockers
 first. If nothing is wrong, say so plainly — do not invent findings.
