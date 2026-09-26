@@ -18,7 +18,7 @@ a milestone.
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.8.0   |
 | intent-lock           | 0.4.2   |
-| plugin-creator        | 0.3.1   |
+| plugin-creator        | 0.3.2   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.1   |
 | comprehensive-review  | 0.3.0   |
@@ -175,6 +175,10 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 
 ## Recent milestones
 
+- **2026-09-26** — **plugin-creator 0.3.2**: `authoring-rules.md` marks what `validate.py`
+  fails or warns on; refine-plugin drops the false 200-char-floor and MCP `type`/`url`
+  blockers (CP-28, now part); explicit-invoke graders tell a found defect from a denied
+  one (CP-27 done).
 - **2026-09-26** — **plugin-creator 0.3.1**: the unfilled SKILL template
   (`skills/plugin-creator/references/templates/SKILL.md`) was listed as a live skill
   `skill-name` with the `{{placeholder}}` description by a surface that scans nested folders

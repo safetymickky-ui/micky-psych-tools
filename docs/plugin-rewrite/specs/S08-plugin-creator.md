@@ -462,6 +462,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 - Rollback: `revert`.
 
 **S08-W3-9 · micky · release the W3 rewrite**
+- **Changed ahead of wave (2026-09-26):** plugin-creator is at `0.3.2` (0.3.1 and 0.3.2 released per CLAUDE.md; `docs/rewrite/baseline.md` owner records), so read `0.3.1`→`0.4.0` below as `0.3.2`→`0.4.0`; the minor release still lands on `0.4.0`.
 - Depends on: S08-W3-1 … S08-W3-8.
 - Commands: `python3 plugins/plugin-creator/scripts/release.py plugin-creator minor --write`
 - Files: `plugin.json` (`0.3.1`→`0.4.0`), `CHANGELOG.md` (summarizes the move, template fix, dmi, router retirement). Wave exit: note, per S11's I16 item 4 template: "Ready for cloud delivery: HIGH defects due by this wave closed (H07); handoffs carry the §4.2 fallback or target an enabled plugin; no same-named unit elsewhere; smoke suite passed (<result path>)."
