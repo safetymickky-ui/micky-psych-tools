@@ -146,8 +146,34 @@ An infographic that was never rendered is a guess. Before it is filed:
 4. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
    deliverable** alongside the HTML — offer it for sharing or embedding.
 
-This is a *layout* check, never a content one — it changes how a fact sits on the page, never
-the fact.
+This step checks layout — it changes how a fact sits on the page, never the fact. Content is
+Step 2.6, and every layout fix re-runs it.
+
+## Step 2.6 — Fidelity check before filing
+
+A number trace alone has passed pages that dropped a population, an arm label or a
+"non-significant", and turned a "trial" into an "RCT". So the check has two halves, and both
+run after every layout change:
+
+1. **Run the script** —
+   `node <this skill>/scripts/verify-infographic.mjs --source <report.md> --html <file.html> --render --pages <N>`.
+   It fails on a number not in the source, a unit that differs from the source's (`mcg` ≡
+   `µg`), a design label (RCT, meta-analysis, Cochrane, crossover…) the source never uses,
+   template residue (`{{`, `-->`), and an `[unverified]` number shown without a gap marker.
+   With `--render` (when Playwright resolves; it says so when it cannot) it also fails on a
+   unit whose case CSS changed, columns that stack in print, more than N A4 pages, and any
+   network request. Mark chart axis ticks `data-axis` and step numbers `data-ordinal` — they
+   are scale and order, not claims. Fix every error; read every warning.
+2. **Keep a claim ledger** — split the visible text (cards, tiles and their labels, diagram
+   labels, SVG titles, the safety band) into claim units and map each to its source sentence
+   and heading: *traced*, *altered* or *untraceable*. Check each against the qualifiers:
+   population, comparator and arm, significance and CI, design label, subgroup, time horizon,
+   dose arm, the words *not / only / if / unless / proven*, and the source's own tags
+   (`my inference:`, `abstract only`, `calculated`, `[unverified]`) — a tag in the source
+   stays on the page. An altered-and-strengthened, merged or untraceable unit blocks filing
+   until fixed. For a long source, give the ledger to a subagent with the source and the HTML.
+3. **Save the ledger** beside the HTML as `<name>.fidelity.md` (working directory only — it is
+   not filed to the vault) and put its counts in the Close.
 
 ## Step 3 — Where output goes
 
@@ -181,8 +207,9 @@ or filed. Never claim a save you did not perform, and never invent a vault path.
 
 Two lines in chat: what was rendered and from which source report, the file path, the vault
 asset path returned by vault-keeper (or that the save was skipped), the safety band's path
-(marked safety block or full-text sweep) and coverage line, the A4 page count, and any
-`[unverified]` gap that was omitted rather than shown. The HTML file is
+(marked safety block or full-text sweep) and coverage line, the A4 page count, the fidelity
+counts (script errors fixed; ledger units traced / altered-fixed), and any `[unverified]` gap
+that was omitted rather than shown. The HTML file is
 the deliverable — never restate its content inline as prose.
 
 ## Failure conditions
@@ -191,6 +218,8 @@ This skill has failed if:
 
 - A clinical claim, drug, dose, or number appears on the infographic that is not traceable to
   the source report — or the skill authored clinical content instead of rendering sourced content.
+- The infographic was filed without Step 2.6 (the script and the claim ledger), or with an
+  altered, strengthened or untraceable claim unit still on the page.
 - A number lost its units, or a safety-critical qualifier ("unless contraindicated", "only
   after alpha-blockade") was trimmed to fit a card.
 - A source safety item (contraindication, boxed warning, interaction, monitoring) is missing

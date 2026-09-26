@@ -94,6 +94,9 @@ A drawn curve or timeline *looks* like data even when it is not. So:
   invented to make the picture read.
 - **Never a false axis.** A qualitative or unlabelled axis is fine; a fabricated *quantitative*
   one that implies precision the source lacks is not.
+- **Mark scale and order.** Axis tick values carry `data-axis` (on the `<text>` or its `<g>`);
+  ladder and column step numbers carry `data-ordinal`. They are scale and order, not claims, so
+  the Step 2.6 script skips them — and nothing else may carry these attributes.
 
 ### Diagram accessibility
 - Informative SVGs get `role="img"` with a `<title>` and a `<desc>` that states the finding.

@@ -66,7 +66,8 @@ Everything else is forbidden:
   drawn to a fabricated axis, or read as real data, is the same failure as an invented tile.
 
 If honouring all of this leaves a panel that will not fit, the panel shrinks or splits — the
-*content* does not bend.
+*content* does not bend. Step 2.6 (the fidelity script and the claim ledger) verifies all of
+this on the rendered page.
 
 ## The safety band — by clinical class, not by keyword
 
