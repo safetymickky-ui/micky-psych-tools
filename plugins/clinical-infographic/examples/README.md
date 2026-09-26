@@ -8,10 +8,12 @@ Reference renders that show the skill's grammar in practice. Open the `.html` in
 *Perioperative Management of Pheochromocytoma & Sympathetic Paraganglioma (PPGL)*, rendered
 from the sourced report `vault/artifacts/ppgl-perioperative-management.md` (PubMed 15 · trials 4).
 
-This is the **dense reference** end of the format range — a maximal, single-sheet clinical
-reference that packs the whole protocol onto one page. Use it as the pattern to copy when the
-brief is "one page that has everything," and dial *down* (fewer diagrams, larger type, a pocket
-card) for lighter briefs.
+This is the **dense reference** end of the format range — a maximal clinical reference that
+packs the whole protocol onto one screen-width sheet. On paper it prints on **3 A4 pages**
+with its three columns intact (the content is about 2.1 A4 pages tall; measured 2026-09-26).
+It is a screen / wall reference, not a one-page handout: for a brief that must fit one A4
+page, dial *down* (fewer diagrams, a shorter drug list, a pocket card) and check the page count
+in Step 2.5.
 
 What it demonstrates from the [diagram grammar](../skills/clinical-infographic/references/design-system.md):
 

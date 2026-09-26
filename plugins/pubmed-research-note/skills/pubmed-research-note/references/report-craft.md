@@ -13,9 +13,10 @@ vault, as a reference. Write for both readers.
 
 **1. The answer exists and is marked.** Somewhere in the report — the top, when the reader
 is deciding under time pressure; the close, when the argument needs to build — the verdict
-is stated explicitly, marked so a skimmer finds it in seconds (a bolded verdict line or its
-own heading), and carries an explicit confidence (high | moderate | moderate-low | low)
-with the one clause it is not higher. A report that catalogues the literature and never
+is stated explicitly, marked with the word **Verdict** so a skimmer finds it in seconds (a
+bolded verdict line or its own heading), and carries `Confidence:` with one GRADE level
+(high | moderate | low | very low) and the clause naming why it is not higher — see
+[evidence-checks.md](evidence-checks.md) §5. A report that catalogues the literature and never
 plants a flag has failed, whatever its depth. Verdict-first is a good default; it is not a
 law.
 
@@ -33,7 +34,8 @@ Two rules make that real:
 
 - **Load-bearing studies get the full treatment** — a developed paragraph each: design,
   population and setting, n, comparator, primary endpoint, effect size with CI, the harms
-  and dropout that matter, and what makes this study believable or not. Supporting studies
+  and dropout that matter, its risk of bias (the tool and its weakest domain) and whether
+  it replicated — [evidence-checks.md](evidence-checks.md) §2. Supporting studies
   may be grouped and summarized; the ones the verdict rests on may not be compressed to a
   clause.
 - **Mechanism and background are woven in wherever they illuminate** — receptor
@@ -43,14 +45,18 @@ Two rules make that real:
 
 **4. Evidence travels as numbers.** A claim without a magnitude is decoration. Effect sizes,
 CIs, n, NNT/NNH, doses, absolute event rates, remission and durability figures live *inside*
-the prose — `"CAPS-B2 fell 3.2 points more than placebo (n=304, d≈0.15, non-significant)"`,
-never `"reduced nightmares"`. A section with no number in it is not carrying its weight.
+the prose — `"CAPS item B2 (0–8) differed from placebo by 0.2 points at 10 weeks (95% CI
+−0.3 to 0.8; n=304, double-blind RCT)"`, never `"reduced nightmares"`. An evidence section with no number in it is not carrying its
+weight; mechanism prose is exempt, and marks what goes beyond its sources `my inference:`.
+Every number comes from a record opened this run, with its provenance tag when it is not
+from a full text — [evidence-checks.md](evidence-checks.md) §1.
 
 **5. Adjudicate, don't list.** When the trials disagree, say which one you believe and why —
 size, control quality, blinding, funding, population, endpoint validity — and say it in the
 flow of the argument, not in a summary paragraph bolted on at the end. A neutral catalogue of
 both sides is not balance; it is a refusal to do the one thing the reader cannot do for
-themselves.
+themselves. Name the strongest study or synthesis against your verdict and say why it
+loses — [evidence-checks.md](evidence-checks.md) §3.
 
 **6. Read clean.** No inline citations taxing the prose — provenance lives in a compressed
 `## Sources` block at the end, one auditable line per source (topic phrase + DOI; a web
@@ -63,8 +69,9 @@ characteristic failure mode. Never pad with repetition, throat-clearing, or evid
 bears on a neighbouring question: padding is the lesser failure, but still one. The length
 of the report is a *consequence* of what the literature contains, not a target.
 
-**8. Declare confidence and what would move it.** End the verdict with its confidence level
-and the one clause it is not higher. Somewhere the report names the live disagreements, the
+**8. Declare confidence and what would move it.** End the verdict with `Confidence:` and its
+GRADE level for the decision-driving outcome, and the clause naming the domain that keeps
+it from being higher; when outcomes differ in certainty, a small certainty table. Somewhere the report names the live disagreements, the
 replication status, and the completed-unpublished or ongoing trials with expected readout
 that would change the verdict. If nothing would change it, say so — that is itself a
 finding.
@@ -132,9 +139,11 @@ Diagnostic, not a checklist. The failure now has two directions — watch both:
   no effect size.
 - Mechanism or background the reader needs, stripped to keep the report short.
 - A real finding cut, or a source dropped, for leanness rather than irrelevance.
-- A paragraph with no number.
+- An evidence paragraph with no number (mechanism prose is exempt).
 
 **Either way:**
 
 - A structure you didn't choose — a remembered template, or Wikipedia's section list.
+- Confidence above what the evidence allows; a heading the numbers beneath it contradict;
+  a number with no fetched record behind it.
 - An outline that could not answer the question no matter how well it were written.

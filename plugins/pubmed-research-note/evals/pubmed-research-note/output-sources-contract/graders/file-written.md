@@ -1,7 +1,7 @@
 ---
-# Today's "Where output goes" step 1: the report is written into the working directory.
+# "Where output goes" step 1: the report is written where the prompt asked.
 type: file_exists
-path: "*.md"
+path: "esketamine-trd.md"
 exists: true
 weight: 1
 ---

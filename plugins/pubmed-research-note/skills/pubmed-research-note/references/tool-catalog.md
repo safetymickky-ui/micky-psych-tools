@@ -4,8 +4,8 @@ Read before your first tool call. Five engines, five jobs. PubMed and ClinicalTr
 an **MCP path** — this plugin bundles both servers in its own `.mcp.json` — and a **web
 fallback**. Open Library has **no MCP server wired by this plugin**; it is web-fallback only
 (WebSearch/WebFetch), unless an external Open Library connector happens to be installed.
-Firecrawl rides the **firecrawl plugin / CLI** (keyless fallback exists) and is optional on
-every run. A missing server never blocks the run — except PubMed, whose absence is fatal and
+Firecrawl rides the **firecrawl plugin / CLI** (keyless fallback exists); it is optional
+except for the label check whenever the verdict names a dose or endorses an agent. A missing server never blocks the run — except PubMed, whose absence is fatal and
 must be stated rather than worked around.
 
 **Bundled servers have stable prefixes — no hunting required.** This plugin's own two MCP
@@ -35,8 +35,8 @@ find_related_articles · convert_article_ids · lookup_article_by_citation
 | Tool | Use | Key args |
 |------|-----|----------|
 | `search_articles` | Find papers. The workhorse. | `query` (field tags `[Title]`, `[Author]`, `[MeSH Terms]`, `[Publication Type]`, boolean AND/OR/NOT), `max_results`, `sort` (`relevance` / `pub_date`), `date_from` / `date_to`. No `*` wildcards, no empty query. |
-| `get_article_metadata` | Full record — **capture PMID, title, journal, year, DOI**. | `pmids: ["...", "..."]` |
-| `get_full_text_article` | PMC full text (~6M articles). Use for the papers the verdict actually hinges on — however many the question has; every load-bearing study owed the full per-study treatment is a candidate. | `pmc_ids: ["PMC..."]` |
+| `get_article_metadata` | Full record — **capture PMID, title, journal, year, DOI**, and any correction, retraction or "Update in" notice (use the final version). | `pmids: ["...", "..."]` |
+| `get_full_text_article` | PMC full text (~6M articles). **Required for every load-bearing study that has a PMCID** (`convert_article_ids` first) — abstracts drop null secondary outcomes, dropout and harms. No full text → the number's sentence says `abstract only` ([evidence-checks.md](evidence-checks.md) §1). | `pmc_ids: ["PMC..."]` |
 | `find_related_articles` | Close gaps; find full-text availability. | `pmids`, `link_type` |
 | `convert_article_ids` | PMID ↔ PMCID ↔ DOI. | ids |
 | `lookup_article_by_citation` | Resolve a half-remembered citation. | citation fields |
@@ -46,10 +46,14 @@ find_related_articles · convert_article_ids · lookup_article_by_citation
 <topic> AND (Guideline[Publication Type] OR Meta-Analysis[Publication Type]
   OR systematic[sb] OR Randomized Controlled Trial[Publication Type])
 ```
-Widen only if thin. Then run **one deliberately adversarial query** — search for the
-negative or null result explicitly (`AND (negative OR null OR "failed to")`, or search the
-known large trial by name). A verdict built only from the positive literature is the
-publication bias, restated.
+Widen only if thin. Then run **one deliberately adversarial query against the provisional
+verdict**: a positive verdict searches the negative or null result (`AND (negative OR null
+OR "failed to")`, or the known large trial by name); a null or debunking verdict searches
+for the effect (`AND (Meta-Analysis[Publication Type] OR systematic[sb])` on the outcome,
+then prospective cohorts for an observational claim). Then a **recency sweep**: reviews
+newer than the newest one you cite (`sort: pub_date`, `date_from`). A verdict built only
+from the literature that agrees with it is publication bias, restated
+([evidence-checks.md](evidence-checks.md) §3).
 
 **Web fallback.** WebSearch `pubmed.ncbi.nlm.nih.gov`, WebFetch the article page, capture
 PMID + DOI (both printed). Or E-utilities:
@@ -137,9 +141,21 @@ H2 headings) is the specific defect this version exists to remove.
 ## 5. Firecrawl — the general-web document engine
 
 **Load-bearing when the verdict hinges on a document that is not in PubMed or the
-registry** — a regulator's label or safety communication (FDA, EMA, MHRA), a guideline
-body's full text on its own site (NICE, APA, WFSBP), gray literature or a preprint the
-decision genuinely needs. Optional on every other run.
+registry** — a regulator's label or safety communication (Thai FDA, FDA, EMA, MHRA), a
+guideline body's full text on its own site (NICE, APA, WFSBP), gray literature or a
+preprint the decision genuinely needs. **Mandatory whenever the verdict names a dose or
+endorses an agent** (the label check, [evidence-checks.md](evidence-checks.md) §4).
+Optional on every other run.
+
+**Label routes, in order** (open the newest version; cite an older one only as superseded):
+
+1. Thai FDA — `firecrawl search "<drug> เอกสารกำกับยา site:fda.moph.go.th"`, then scrape the
+   ndi.fda.moph.go.th drug-detail page or the label PDF it lists (the direct NDI URL is
+   script-driven and often 404s — search first).
+2. US FDA — DailyMed `https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json?drug_name=<drug>`
+   → setid → the SPL's DOSAGE AND ADMINISTRATION and WARNINGS sections; openFDA
+   `https://api.fda.gov/drug/label.json?search=openfda.generic_name:<drug>` as fallback.
+3. EMA — the EPAR product information (SmPC 4.1–4.6); an RMP is not an SmPC.
 
 **Path.** The `firecrawl` plugin owns the how-to (install, auth, keyless fallback). In
 practice: `firecrawl search "<query>"` when the URL is unknown, `firecrawl scrape <url>`
@@ -153,5 +169,6 @@ guideline body, registry — and it feeds the verdict the same way any other sou
 Firecrawl fetches; this skill adjudicates.
 
 **Citation.** A scraped document keeps its exact URL and access date. In `## Sources`:
-`<topic it supports> — <URL> (accessed YYYY-MM-DD)`. A DOI link stays preferred whenever
-one exists.
+`<topic it supports> — <URL> (accessed YYYY-MM-DD)`. A label names its regulator and its own
+revision inside the topic phrase: `<topic> (<regulator> label, revised YYYY-MM) — <URL>
+(accessed YYYY-MM-DD)`. A DOI link stays preferred whenever one exists.

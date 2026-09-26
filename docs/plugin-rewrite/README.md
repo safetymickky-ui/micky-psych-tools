@@ -1,5 +1,7 @@
 # Plugin rewrite — research, target architecture and execution plan
 
+**Quality pass (2026-09-26):** S06-W1-1 done ahead of wave and S03-W3-2 partly done (K13) on branch `claude/pubmed-clinical-infographic-quality-ei2th0` — see `docs/rewrite/baseline.md` `## Owner records`.
+
 **Status (2026-09-24):** phases 1–3 done. The owner confirmed the owner decisions and
 answered the owner questions on 2026-09-24 (`plan.md` §1); the plan and the specs already
 reflect the answers (Q33 answered (a) the same day). W0 executor steps are done on branch `claude/skill-plugin-rewrite-plan-cckyld` in both repos: micky S10-W0-1…10, S11-W0-1…3, S11-W0-8, S11-W0-9 (check d = yes), S12-W0-1, S12-W0-3, S12-W0-7 and the 7 smoke-seed steps; learn-hub S21-W0-1…3, S12-W0-2, S12-W0-4, S11-W0-4, S11-W0-6 (probe branch pushed), S12-W0-7 and the 3 smoke-seed steps; S12-W0-5 counts ≥3 for all 10 units. The W0 owner actions still ahead, in `plan.md` §4 order: merge the two W0 PRs; push the `pre-rewrite` tag from your own machine (S12-W0-0; the cloud session's git proxy refused the tag push with HTTP 403, so the tag exists only in that container), set up and check the cloud environment (S11-W0-5, S11-W0-7), confirm `claude plugin eval` (S12-W0-6), set the eval caps from the W0-d probe (S12-W0-9), run Windows check g (S11-W0-10), move the cloud to V1 (S11-W0-11) and tag `wave-0` (S12-W0-T).

@@ -70,6 +70,11 @@ authoring clinical facts yourself**:
    Those plugins own their own intent-lock gate, searches, and citation discipline — let them.
    This skill never re-implements the interview and never issues a clinical claim of its own.
 
+**Check the source's safety coverage.** When the infographic will show a dose or endorse an
+agent and the source carries no safety content for it, say so and offer a
+pubmed-research-note harms-and-interactions pass before rendering (source-contract.md → The
+safety band).
+
 The only infographic-specific choices that vary — **page format** (wall poster / A4 handout /
 pocket card), **column model** (clinical phases vs themes vs a decision's steps), and **length**
 — default sensibly from the source's structure. Ask only when genuinely ambiguous; do not run a
@@ -91,7 +96,9 @@ From the source report, pull the renderable skeleton — nothing invented:
   real choice → a decision-flow; two mirrored states → a paired split. Prefer these to text.
 - **Cards** — the residue a diagram can't carry, each keeping its numbers and qualifiers.
 - **Stat tiles** — the targets, doses, thresholds, and rates worth surfacing as figures.
-- **Safety** — every contraindication / "avoid" / high-risk item, gathered for the banner.
+- **Safety** — gathered by clinical class, not by keyword: the source's marked safety block,
+  harms, special-population and "where the verdict inverts" sections, label warnings. Note
+  what the source did not assess (source-contract.md → The safety band).
 - **Provenance** — the source's title, date, counts (`PubMed N · trials N`), and its
   `## Sources` mapping, carried into the footer so the infographic stays auditable.
 
@@ -110,9 +117,12 @@ self-contained, print-ready skeleton — following the grammar in
   CSS, JS, fonts, images, or CDN** — it must open offline and print identically on any machine.
 - **Color-coded columns** with a header chip (icon + phase/theme label), a tint, and stacked
   cards — the spine of the layout.
-- **The critical-safety banner is mandatory** whenever the source carries contraindications or
-  "avoid" content: a full-width, high-contrast band ("CRITICAL SAFETY — MEDICATIONS / ACTIONS
-  TO AVOID") with prohibition iconography. Omit it *only* if the source truly has no such item.
+- **The safety band is mandatory — always.** A full-width, high-contrast band built by
+  clinical class (source-contract.md → The safety band): 🚫 contraindications and boxed
+  warnings, ⚠ warnings, interactions and serious harms, ⏱ monitoring — each with the source's
+  own verb and reason. Headed "CRITICAL SAFETY — MEDICATIONS / ACTIONS TO AVOID" when any harm
+  item exists; with a visible coverage line always, including when the source has no safety
+  content at all. "No benefit shown" items go to a neutral panel, never the crimson band.
 - **Accessibility is not optional.** Color is never the only signal — every color pairs with a
   label or icon; contrast meets WCAG AA; headings are semantic; informative SVGs carry a label.
 - **A footer that keeps it honest** — the source title, the render date, and a collapsed
@@ -123,16 +133,47 @@ self-contained, print-ready skeleton — following the grammar in
 
 An infographic that was never rendered is a guess. Before it is filed:
 
-1. **Rasterise it** — render the HTML to an image (a headless-browser screenshot) and *look*:
-   nothing clipped or overlapping, columns balanced, the safety banner intact, every diagram
-   and curve label legible, arrows pointing the way the flow reads.
-2. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
+1. **Rasterise it** — render the HTML to an image (a headless-browser screenshot at desktop
+   and phone width) and *look*: nothing clipped or overlapping, columns balanced, the safety
+   banner intact, every diagram and curve label legible, arrows pointing the way the flow reads.
+2. **Print it** — with the same headless browser, render the A4 PDF (print media, the page's
+   own `@page` size) and check: the page count fits the chosen format (one page for a wall
+   poster or A4 handout unless the user accepted more — state the count in the Close), the
+   columns did not stack, nothing is clipped, the safety band is not stranded alone on a page,
+   and no unit changed case (`MG`, `MMHG` in the PDF text means a `text-transform` slipped in).
+3. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
    not silently drop or overlap; the OCR text should contain the load-bearing numbers.
-3. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
+4. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
    deliverable** alongside the HTML — offer it for sharing or embedding.
 
-This is a *layout* check, never a content one — it changes how a fact sits on the page, never
-the fact.
+This step checks layout — it changes how a fact sits on the page, never the fact. Content is
+Step 2.6, and every layout fix re-runs it.
+
+## Step 2.6 — Fidelity check before filing
+
+A number trace alone has passed pages that dropped a population, an arm label or a
+"non-significant", and turned a "trial" into an "RCT". So the check has two halves, and both
+run after every layout change:
+
+1. **Run the script** —
+   `node <this skill>/scripts/verify-infographic.mjs --source <report.md> --html <file.html> --render --pages <N>`.
+   It fails on a number not in the source, a unit that differs from the source's (`mcg` ≡
+   `µg`), a design label (RCT, meta-analysis, Cochrane, crossover…) the source never uses,
+   template residue (`{{`, `-->`), and an `[unverified]` number shown without a gap marker.
+   With `--render` (when Playwright resolves; it says so when it cannot) it also fails on a
+   unit whose case CSS changed, columns that stack in print, more than N A4 pages, and any
+   network request. Mark chart axis ticks `data-axis` and step numbers `data-ordinal` — they
+   are scale and order, not claims. Fix every error; read every warning.
+2. **Keep a claim ledger** — split the visible text (cards, tiles and their labels, diagram
+   labels, SVG titles, the safety band) into claim units and map each to its source sentence
+   and heading: *traced*, *altered* or *untraceable*. Check each against the qualifiers:
+   population, comparator and arm, significance and CI, design label, subgroup, time horizon,
+   dose arm, the words *not / only / if / unless / proven*, and the source's own tags
+   (`my inference:`, `abstract only`, `calculated`, `[unverified]`) — a tag in the source
+   stays on the page. An altered-and-strengthened, merged or untraceable unit blocks filing
+   until fixed. For a long source, give the ledger to a subagent with the source and the HTML.
+3. **Save the ledger** beside the HTML as `<name>.fidelity.md` (working directory only — it is
+   not filed to the vault) and put its counts in the Close.
 
 ## Step 3 — Where output goes
 
@@ -165,8 +206,10 @@ or filed. Never claim a save you did not perform, and never invent a vault path.
 ## Close
 
 Two lines in chat: what was rendered and from which source report, the file path, the vault
-asset path returned by vault-keeper (or that the save was skipped), whether the safety banner
-was included, and any `[unverified]` gap that was omitted rather than shown. The HTML file is
+asset path returned by vault-keeper (or that the save was skipped), the safety band's path
+(marked safety block or full-text sweep) and coverage line, the A4 page count, the fidelity
+counts (script errors fixed; ledger units traced / altered-fixed), and any `[unverified]` gap
+that was omitted rather than shown. The HTML file is
 the deliverable — never restate its content inline as prose.
 
 ## Failure conditions
@@ -175,9 +218,13 @@ This skill has failed if:
 
 - A clinical claim, drug, dose, or number appears on the infographic that is not traceable to
   the source report — or the skill authored clinical content instead of rendering sourced content.
+- The infographic was filed without Step 2.6 (the script and the claim ledger), or with an
+  altered, strengthened or untraceable claim unit still on the page.
 - A number lost its units, or a safety-critical qualifier ("unless contraindicated", "only
   after alpha-blockade") was trimmed to fit a card.
-- The source named contraindications / "avoid" items and the critical-safety banner was omitted.
+- A source safety item (contraindication, boxed warning, interaction, monitoring) is missing
+  from the band; a judgement or a "no benefit" item was upgraded to a 🚫 prohibition or put
+  under CRITICAL SAFETY; or the band was dropped instead of showing its coverage line.
 - An `[unverified]` gap was rendered as a confident fact.
 - The HTML referenced any external CSS, JS, font, image, or CDN — i.e. it is not self-contained
   and would not open or print offline.
@@ -185,7 +232,9 @@ This skill has failed if:
 - A schematic/illustrative figure was drawn without an "illustrative — not measured data"
   label, to a fabricated axis, or carrying a number not in the source.
 - The infographic was filed without ever being rendered and eyeballed for clipped text, broken
-  layout, or a diagram/arrow that reads the wrong way.
+  layout, or a diagram/arrow that reads the wrong way — or without an A4 print render and its
+  page count.
+- CSS changed the case of a unit or a drug name (`µg` → `ΜG`, `mmHg` → `MMHG`).
 - Content was rendered with no traceable source when comprehensive-review or
   pubmed-research-note should have generated it first.
 - A vault path was resolved or a file written into `vault/` by this skill instead of vault-keeper,
