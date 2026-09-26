@@ -180,7 +180,9 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `skill-name` with the `{{placeholder}}` description by a surface that scans nested folders
   (CLI 2.1.283 loads only `skills/<skill>/SKILL.md` and did not list it). Renamed to
   `SKILL.template.md`; `validate.py` now fails on any `SKILL.md` outside `skills/<skill>/`
-  (new CLAUDE.md hard rule).
+  (new CLAUDE.md hard rule). Same release: CP-23 interim fix (scaffold registers entries
+  without `version`; refine-plugin releases with `bump.py --write`) and the W0 smoke seeds
+  re-seeded to that contract (CP-27, version parts).
 - **2026-09-26** — Added **bullet-reconstruct 0.1.0**, moved in from the claude.ai-uploaded skill
   (`anthropic-skills:bullet-reconstruct`, the synced name in rewrite family 4) after a refine-plugin
   audit found a self-graded gate, recall-only checking, lost evidence tiers, no figure images,

@@ -454,6 +454,7 @@ Invoke `{{PLUGIN}}:{{SKILL}}` with: $ARGUMENTS
 - Rollback: `revert`.
 
 **S08-W3-8 · micky · eval conversion**
+- **Changed ahead of wave (2026-09-26, plugin-creator 0.3.1):** the W0 seeds were re-seeded for the plugin.json-only version contract (CP-27, version parts): fixture catalogs carry no version, stub `validate.py`/`bump.py` mirror the real scripts (`--write` required), `scaffold-output` grades `registered.md` + `no-catalog-version.md`, `fix-then-release` grades `patch-level.md` on `plugin.json` + `no-catalog-version.md`, and `explicit-invoke` plants a frontmatter name mismatch (`fire-crawl`, `name-mismatch-found.md`) instead of a parity break. Keep `no-catalog-version.md` in the §4.1 `scaffold-output` and `fix-then-release` cases.
 - Depends on: S08-W3-2, S08-W3-3.
 - Files: create the 6 case dirs in §4.1 in full; confirm no `evals.json` remains.
 - Commands: `find plugins/plugin-creator -iname 'evals.json'` (empty) ; `$VALIDATE --repo .`

@@ -12,6 +12,16 @@
   outside `skills/<skill>/`. `authoring-rules.md` states `SKILL.md` as a reserved file name,
   replacing the false note that nested folders are never loaded as skills; refine-plugin's
   blocker tier and the audit checklist list the rule.
+- **The version lives in `plugin.json` only.** The scaffold registers a catalog entry with
+  no `version` (step 4 and `templates/marketplace-entry.json`), and `authoring-rules.md`
+  drops the entry/plugin.json parity rule. refine-plugin's "version parity" blocker now
+  means a `version` found in the catalog entry, and its release step runs
+  `bump.py <plugin> <level> --write` and fills the CHANGELOG heading it adds; before, it
+  ran without `--write`, a dry run that wrote nothing.
+- **W0 smoke cases re-seeded to that contract.** Fixture catalogs carry no version; the
+  stub `validate.py` and `bump.py` mirror the real scripts; graders check that no catalog
+  `version` is written and that `plugin.json` reaches `0.1.1`; the explicit-invoke case
+  plants a frontmatter name mismatch instead of a parity break.
 
 ## 0.3.0 — 2026-07-10
 
