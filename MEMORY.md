@@ -11,18 +11,18 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-08-08
+## Current versions — 2026-09-26
 
 | item                  | version |
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
-| pubmed-research-note   | 1.7.0   |
+| pubmed-research-note   | 1.8.0   |
 | intent-lock           | 0.4.2   |
 | plugin-creator        | 0.3.0   |
 | vault-keeper          | 0.4.0   |
 | psych-paper-digest    | 0.1.1   |
 | comprehensive-review  | 0.3.0   |
-| clinical-infographic  | 0.2.1   |
+| clinical-infographic  | 0.3.0   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | concept-animation     | 0.1.1   |
@@ -166,6 +166,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
 
 ## Recent milestones
 
+- **2026-09-26** — **Quality pass: pubmed-research-note 1.8.0, clinical-infographic 0.3.0**
+  (branch `claude/pubmed-clinical-infographic-quality-ei2th0`; plan, evidence and deferred
+  findings in `docs/quality-pass/`). Diagnosed 12 plugins with live probes; the owner then
+  scoped the fix to these two plugins, high findings only (14), one plan, one critique pass.
+  Measured: pubmed reports 92–95% claim-accurate with errors clustered in the verdict and
+  adjudication, an abstract hiding a null outcome, a 2009 label cited as current, and a wrong
+  number in the skill's own model sentence (CAPS-B2 3.2 vs published 0.2); infographic probes
+  passing a 100% number trace yet altering 6 and 11 claims, `µg` rendering as `ΜG`, the
+  example printing as one stacked column on 3 pages, the banner keyed on the word "avoid",
+  and every file grader using a glob path the harness reads literally. Fixed: pubmed
+  `references/evidence-checks.md` (provenance, appraisal, counter-search against the
+  provisional verdict, label + safety step with Thai FDA first, GRADE confidence, claim
+  check); infographic Step 2.6 fidelity script + claim ledger, safety band by clinical class,
+  A4 print, unit case, S06-W1-1 done ahead of wave. The 221 other findings (10 plugins + this
+  pair's medium/low) wait in `docs/quality-pass/deferred-findings.md`.
 - **2026-09-24** — Added **clinical-minimal 0.1.0**, moved from the standalone
   `~/.claude/skills/clinical-minimal` skill (branch `claude/clinical-minimal-plugin`). Adds the per-slide
   verification layer (`slidecheck.py`) and picture selection algorithm (`imgpick.py`) built after the lithium
@@ -1161,6 +1176,10 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
 ## Open threads
 
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
+- Quality pass 2026-09-26: owner must push the `pre-rewrite` tag at `fd47fba` before the
+  branch merges; `auditInfographicResponsive` check for S06-W1-1 still owed (needs
+  `$LEARN_HUB_DIR`); next pass works from `docs/quality-pass/deferred-findings.md`
+  (verify the "deduped, not verified" rows first).
 - Plugin rewrite (both repos): plan in `docs/plugin-rewrite/` (`plan.md`, 21 specs, 296 steps of which 280 active, waves W0–W5). All ODs and OQs answered 2026-09-24 (recommended options; OQ6 = a chosen by Claude). W0 in progress on branch `claude/skill-plugin-rewrite-plan-cckyld` in both repos. Open: OQ3 dollar caps (S12-W0-9, set from the W0-d probe: USD 0.05 per one-case smoke run); `pre-rewrite` tag push (cloud proxy refused it); OD8 owner edit of the synced `daily-random-review` skill (W2); whole-`Bash` eval grants fail in the cloud container (seccomp cannot write uid_map).
 
 ## Health check

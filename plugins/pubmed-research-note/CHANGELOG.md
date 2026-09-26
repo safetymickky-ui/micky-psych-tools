@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.8.0 — 2026-09-26
+
+Quality pass on measured defects (three live reports: 92–95% of claims verified, errors
+clustered in the verdict and adjudication; an abstract hid a null outcome; a 2009 label was
+cited as current). Report shape unchanged. Details: `docs/quality-pass/`.
+
+- **Evidence checks** — new `references/evidence-checks.md`: provenance (every number from a
+  record fetched this run; full text for load-bearing studies; `abstract only` and other
+  tags in the sentence; `my inference:`), appraisal (RoB 2 / ROBINS-I / AMSTAR 2 / MR
+  instrument; heterogeneity, small-study and subgroup checks), a counter-search against the
+  provisional verdict plus a recency sweep, a dose-and-safety step (newest official label
+  opened this run, Thai FDA first; country, revision date, on/off-label; a marked safety
+  block), GRADE confidence, and a claim check between Write and Show.
+- **Confidence** is `Confidence:` + one GRADE level (high / moderate / low / very low) for the
+  decision-driving outcome, naming the downgrading domain; `moderate-low` is retired.
+- **Fixed the model evidence sentence**: CAPS item B2 differed from placebo by 0.2 points
+  (95% CI −0.3 to 0.8), not 3.2.
+- **Evals**: the output case writes `esketamine-trd.md` and grades it at a literal path
+  (the glob path threw on every run); new graders for the marked verdict and confidence, the
+  registry sweep, the `abstract only` tag and the load-bearing CIs.
+
 ## 1.7.0 — 2026-08-08
 
 - **Freed the report's shape.** The verdict-first mandate and the ban on topic-domain

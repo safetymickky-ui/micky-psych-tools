@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.3.0 — 2026-09-26
+
+Quality pass on measured defects (two probes passed a 100% number trace yet altered 6 and 11
+claims; `µg` could render as `ΜG`; the example printed as one stacked column on 3 pages; the
+banner keyed on the word "avoid"). Details: `docs/quality-pass/`.
+
+- **Step 2.6 fidelity check** — `scripts/verify-infographic.mjs` (numbers, units, design
+  labels, template residue, `[unverified]` gaps; with `--render`: unit case, print stacking,
+  A4 page count, network) plus a claim ledger for qualifiers; blocks filing on an altered or
+  untraceable claim.
+- **Safety band by clinical class** — 🚫 contraindication / boxed warning, ⚠ warning /
+  interaction / serious harm, ⏱ monitoring, each with the source's verb and reason; "no
+  benefit shown" goes to a neutral panel; a coverage line is always shown; the generate
+  handoff sends a render brief instead of "brevity welcome".
+- **Print** — breakpoints scoped to `@media screen`, `@page { size:A4 }`, break-inside on
+  cards not columns; Step 2.5 renders the A4 PDF and counts pages. The example keeps its
+  three columns on paper (3 A4 pages; its README no longer says single-sheet).
+- **Units keep their case** — no `text-transform` on labels that hold numbers, units or drug
+  names; write `mcg`.
+- **Rewrite step S06-W1-1 done ahead of wave** — light-lock (dark block removed,
+  `color-scheme:light`), AA column accents (`#3b8368`, `#aa6527`), 12px floor, mobile
+  mechanism strip. Template comment leak fixed.
+- **Evals** — the output case writes `ppgl-infographic.html` and grades it at a literal path
+  (the glob paths failed every run); new grader: the fidelity script ran.
+
 ## 0.2.1
 
 no contemporaneous entry; see `git log` around this version.
