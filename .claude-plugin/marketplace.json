@@ -208,6 +208,20 @@
         "journal-club",
         "thai"
       ]
+    },
+    {
+      "name": "bullet-reconstruct",
+      "source": "./plugins/bullet-reconstruct",
+      "description": "Distils a dense source (paper, chapter, review, transcript) into scannable bullets with measured, bounded loss under 10%: units frozen from the source before writing, anchor-checked in the output, every number traced back to the source. Keeps figures and tables as image snips cropped from the PDF (vector tables included) and delivers one self-contained HTML file; the .md stays as the vault source. One skill, no commands.",
+      "category": "education",
+      "keywords": [
+        "bullets",
+        "distillation",
+        "paper-notes",
+        "figure-snips",
+        "html",
+        "coverage-check"
+      ]
     }
   ]
 }

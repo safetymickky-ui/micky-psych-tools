@@ -38,6 +38,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user presents a plan and says "critique this plan", "review my plan", "improve this plan", "วิจารณ์แผน", "ช่วยปรับแผนให้ดีขึ้น", "find weaknesses in my plan", "poke holes in my plan"… | plan-critique | skill `plan-critique` |
 | Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan | plan-critique | `/critique-plan` |
 | whenever the user asks for a .docx, .pptx or .xlsx, or for a document, report, handout, summary, letter, memo, slide deck, presentation, lecture, journal club, spreadsheet, tracker, budget or model… | clinical-minimal | skill `clinical-minimal` |
+| when the user says "reconstruct this article", "reconstruct in bullets", "bulletise", "condense", "distil", "strip to essentials", "keep the figures", "as html", "ทำเป็น bullet", "ย่อเป็นข้อ ๆ", or… | bullet-reconstruct | skill `bullet-reconstruct` |
 
 ## Plugins
 
@@ -175,3 +176,11 @@ Personal Office design system (Clinical Minimal) for every .docx, .pptx and .xls
 Keywords: design-system, docx, pptx, xlsx, slides, journal-club, thai
 
 - **skill `clinical-minimal`** (skill) — The user's personal design system ("Clinical Minimal") for every Word, PowerPoint and Excel file Claude makes for them.
+
+### bullet-reconstruct — education
+
+Distils a dense source (paper, chapter, review, transcript) into scannable bullets with measured, bounded loss under 10%: units frozen from the source before writing, anchor-checked in the output, every number traced back to the source. Keeps figures and tables as image snips cropped from the PDF (vector tables included) and delivers one self-contained HTML file; the .md stays as the vault source. One skill, no commands.
+
+Keywords: bullets, distillation, paper-notes, figure-snips, html, coverage-check
+
+- **skill `bullet-reconstruct`** (skill) — Distils a dense source (paper, article, book chapter, review, transcript) into scannable bullets with measured, bounded loss under 10%, keeps its figures and tables as image snips cropped from the file, and delivers one…

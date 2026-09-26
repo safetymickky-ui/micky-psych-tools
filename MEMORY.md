@@ -31,6 +31,7 @@ a milestone.
 | decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
 | clinical-minimal      | 0.1.0   |
+| bullet-reconstruct    | 0.1.0   |
 
 A version MUST be identical in `plugins/<name>/.claude-plugin/plugin.json` and its
 `.claude-plugin/marketplace.json` entry — if they drift, Claude Code silently offers no
@@ -164,8 +165,21 @@ update. Never hand-edit versions; bump with `python3 scripts/bump.py <plugin> pa
   subject fill → contact sheet as placed → visual judgement → choose, credits recorded). Brand book is the
   Clinical Minimal Design System artifact. Windows + Microsoft Office required. One skill, no commands.
 
+- **bullet-reconstruct** — distils a dense source (paper, chapter, review, transcript) into scannable
+  bullets with measured, bounded loss under 10%: units frozen from the source before writing, anchors
+  checked in the output by `coverage_check.py` (downgrades what the notes do not support; `distorted`
+  = full loss; every number traced back to the source text). Keeps figures and tables as image snips
+  (`snip_figures.py`, vector tables included) and delivers one self-contained HTML (`build_html.py`);
+  the .md stays as the vault source. Evidence tier (hedge, species, design, population) is part of each
+  unit. One skill, no commands; script tests in `plugins/bullet-reconstruct/tests/`.
+
 ## Recent milestones
 
+- **2026-09-26** — Added **bullet-reconstruct 0.1.0**, moved in from the claude.ai-uploaded skill
+  (`anthropic-skills:bullet-reconstruct`, the synced name in rewrite family 4) after a refine-plugin
+  audit found a self-graded gate, recall-only checking, lost evidence tiers, no figure images,
+  md-only output, hard-coded delivery paths and a Not-for naming the non-existent crq-essay-review.
+  The upload is to be deleted once the marketplace copy is installed (name collision).
 - **2026-09-26** — **Quality pass: pubmed-research-note 1.8.0, clinical-infographic 0.3.0**
   (branch `claude/pubmed-clinical-infographic-quality-ei2th0`; plan, evidence and deferred
   findings in `docs/quality-pass/`). Diagnosed 12 plugins with live probes; the owner then

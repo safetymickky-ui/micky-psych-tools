@@ -194,6 +194,11 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   delivery) and `imgpick.py` (picture selection: brief → Google Images candidates → filter → score incl.
   subject fill → contact sheet as placed → visual judgement → choose, credits recorded). Brand book is the
   Clinical Minimal Design System artifact. Windows + Microsoft Office required. One skill, no commands.
+- **bullet-reconstruct** — bounded-loss distillation of a dense source into scannable bullets, delivered
+  as one self-contained HTML with the source's figures and tables embedded as image snips. The <10% loss
+  cap is measured: units frozen from the source first, anchors checked in the output, numbers traced to
+  the source (`coverage_check.py`). `snip_figures.py` crops captioned regions (vector tables included);
+  `build_html.py` renders `notes.md`. One skill, no commands; script tests under the plugin's `tests/`.
 
 ## Style
 

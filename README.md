@@ -117,3 +117,6 @@ Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/ma
 - **plan-critique** — adversarial nine-lens critique of an existing plan that ends in a better
   plan: repairs with one right answer are applied, owner-held forks are resolved in a batched
   interview, and the full revised plan ships under a decision ledger.
+- **bullet-reconstruct** — turns a dense paper, chapter or transcript into tight bullets with
+  measured loss under 10% (units frozen first, anchors and numbers checked against the output),
+  keeps its figures and tables as image snips, and delivers one self-contained HTML file.

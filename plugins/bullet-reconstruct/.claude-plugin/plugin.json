@@ -1,0 +1,17 @@
+{
+  "name": "bullet-reconstruct",
+  "version": "0.1.0",
+  "description": "Distils a dense source (paper, chapter, review, transcript) into scannable bullets with measured, bounded loss under 10% (units frozen from the source, anchor-checked in the output, every number traced back), keeps its figures and tables as image snips cropped from the file, and delivers one self-contained HTML file.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "bullets",
+    "distillation",
+    "paper-notes",
+    "figure-snips",
+    "html",
+    "coverage-check"
+  ]
+}
