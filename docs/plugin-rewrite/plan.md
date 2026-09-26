@@ -210,6 +210,9 @@ If check a = no: skip every later cloud step, stay at V1, re-ask OD1 before W1 e
 
 **Entry.** W0 exit gates green; tag `wave-0` pushed; W0 check g = yes. The first row is the Windows switch to in-place loading (S11-W3-2, OQ12-a). If check g = no, stop and ask: OQ12-a assumed g = yes, and without the switch the dropped W1/W2 release steps are needed again.
 
+
+**Done ahead of wave (2026-09-26, quality pass, owner decision QD2):** S06-W1-1 landed on branch `claude/pubmed-clinical-infographic-quality-ei2th0` (commit `9f276bb`); its breakpoints were then scoped to `@media screen and (…)` for print (CI-05). Still owed at W1: the `auditInfographicResponsive` check (needs `$LEARN_HUB_DIR`; confirm it accepts `@media screen and`). Record: `docs/rewrite/baseline.md` `## Owner records`.
+
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|
 | 1 | S11-W3-2 | S11 | Win+MK | W1 entry: Windows loads in place — user variable (micky folder), verify, uninstall the marketplace copies (OD2-a, OQ12-a) | S11-W0-10 (check g = yes), S11-W0-11 | yes |
@@ -400,6 +403,9 @@ If check a = no: skip every later cloud step, stay at V1, re-ask OD1 before W1 e
 ### W3 — micky consolidation (skeleton, then alignment, evidence, visuals)
 
 **Entry.** W2 exit gates green; tag `wave-2` pushed. S08-W3-1 is placed right after the skeleton because every later W3 check uses its validator. Under OQ10-a the cloud value changes family by family: S11-W3-5 drops the six per-plugin segments the skeleton removes, S11-W3-6, S11-W3-7 and S11-W3-8 add each family once its release step is on master, and S11-W3-1 switches to V6 with the last of them. The W3 live-trigger runs set the variable for their `claude -p` child only (S12-W3-2). §8 Q31 must be settled before the skeleton merges.
+
+
+**Done ahead of wave (2026-09-26, quality pass, owner decision QD2):** S03-W3-2 part — K13 ("a community OPD") in commit `6c9a348`; the H45 slot split and the intent-lock-pairing mirror remain. The same pass added `references/evidence-checks.md` to pubmed-research-note and a Step 2.6 fidelity script to clinical-infographic; S03 and S06 carry notes so W3 keeps them. Record: `docs/rewrite/baseline.md` `## Owner records`.
 
 | # | Step | Spec | Repo | What | Depends on | OWNER |
 |---|---|---|---|---|---|---|

@@ -50,3 +50,7 @@ Named skills (body = SKILL.md after frontmatter; references = every file under `
 | pubmed-research-note | 305 | ~4,693 | ~8,527 |
 | firecrawl | 368 | ~4,215 | ~0 |
 | ml-concept-lab | 226 | ~3,534 | ~7,306 |
+
+## Owner records
+
+- **2026-09-26 — quality pass (pubmed-research-note 1.8.0, clinical-infographic 0.3.0).** Branch `claude/pubmed-clinical-infographic-quality-ei2th0`; plan and evidence in `docs/quality-pass/`. Owner decisions: QD1 bump per CLAUDE.md with `bump.py` (knowingly overrides plan rule 8 for these two plugins; W3 discards member `plugin.json` anyway); QD2 run rewrite steps that are pure fixes now; QD3 no skill `description` edits; QD4 report machine-read shape unchanged. Done ahead of wave: S06-W1-1 (`9f276bb`; deferred check `auditInfographicResponsive`, needs `$LEARN_HUB_DIR` — confirm it accepts `@media screen and (…)`); S03-W3-2 part, K13 only (`6c9a348`). Because this pass changes both plugins' skill text, their S12-W0-8 smoke baseline must run `--against pre-rewrite`. Owner action: push the `pre-rewrite` tag at `fd47fba` from your own machine before this branch merges.
