@@ -42,7 +42,8 @@ Read the target's files. Produce findings in two ranked, tagged tiers:
 - **[BLOCKER] mechanical** (from `authoring-rules.md`): version parity broken, non-kebab
   name, bad semver, skill/agent description outside 200–1024, missing `description` in a
   command's or agent's frontmatter, MCP server missing `type`/`url`, `source` not `./`,
-  skill frontmatter `name` != directory.
+  skill frontmatter `name` != directory, a `SKILL.md` outside `skills/<skill>/` (it loads
+  as a stray skill).
 - **[QUALITY] triggering / clarity** (from `references/audit-checklist.md`): description
   not action-first, trigger phrases missing from the description, no Use-when / Not-for
   clause, vague or bloated SKILL.md, redundant reference files.

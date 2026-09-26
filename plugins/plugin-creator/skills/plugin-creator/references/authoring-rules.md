@@ -68,7 +68,8 @@ skills, but some Claude surfaces search deeper and load any file named `SKILL.md
 skill: plugin-creator's own `references/templates/SKILL.md` once appeared as a live skill
 named `skill-name`. So `SKILL.md` is a reserved file name, and only
 `skills/<skill>/SKILL.md` may carry it. Give a skill-shaped template, example or fixture
-another name (`SKILL.template.md`).
+another name (`SKILL.template.md`). `validate.py` fails on a `SKILL.md` (any case)
+anywhere else in the plugin.
 
 ## Done means
 
