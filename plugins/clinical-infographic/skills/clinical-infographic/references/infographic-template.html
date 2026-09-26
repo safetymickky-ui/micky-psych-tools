@@ -54,7 +54,7 @@
   .stats { display:flex; flex-wrap:wrap; gap:8px; }
   .stat { flex:1 1 30%; text-align:center; border:1px solid var(--line); border-radius:8px; padding:8px 6px; background:#fff; }
   .stat .v { font-size:16px; font-weight:800; letter-spacing:-0.01em; }
-  .stat .k { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
+  .stat .k { font-size:12px; color:var(--muted); letter-spacing:.01em; } /* never text-transform: it rewrites units (µg→ΜG, mmHg→MMHG) */
 
   .safety { margin-top:20px; border:2px solid var(--danger); border-radius:10px; background:var(--danger-tint); overflow:hidden; }
   .safety-head { background:var(--danger); color:#fff; padding:10px 16px; font-weight:800; letter-spacing:.02em; font-size:15px; display:flex; align-items:center; gap:10px; }
@@ -82,7 +82,7 @@
   .chooser { border:1px solid var(--line); border-radius:10px; padding:11px 14px; margin-bottom:16px; background:#fff; }
   .chooser .opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .opt { border:1px solid var(--line); border-top:4px solid var(--c1); border-radius:8px; padding:9px 11px; }
-  .opt .cond { font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
+  .opt .cond { font-size:12px; letter-spacing:.01em; color:var(--muted); font-weight:700; }
   .opt .name { font-size:14px; font-weight:800; margin:2px 0 3px; }
   .chooser .verdict { margin-top:9px; background:#f3f6fa; border:1px solid var(--line); border-radius:8px; padding:7px 11px; font-size:12px; text-align:center; }
   .split { display:flex; gap:8px; margin:0 0 10px; }
@@ -91,12 +91,14 @@
   .half.up { background:var(--danger-tint); border-color:#e3b9c4; } .half.up .ar,.half.up .th { color:var(--danger); }
   .half.down { background:#eaf1f7; border-color:#bcd2e6; } .half.down .ar,.half.down .th { color:#2f6ca8; }
 
-  @media (max-width:720px){ .columns{ grid-template-columns:1fr; } .safety-body{ grid-template-columns:1fr; } .mech{ flex-direction:column; } .mech .node{ flex:0 0 auto; } .mech .sep{ transform:rotate(90deg); } }
+  @media screen and (max-width:720px){ .columns{ grid-template-columns:1fr; } .safety-body{ grid-template-columns:1fr; } .mech{ flex-direction:column; } .mech .node{ flex:0 0 auto; } .mech .sep{ transform:rotate(90deg); } }
+  /* Print: breakpoints above are screen-only, so A4 keeps the desktop columns. Break inside
+     columns between cards, never move a whole column; Step 2.5 checks the page count. */
+  @page { size:A4; margin:10mm; }
   @media print {
     body { font-size:12px; }
     .sheet { max-width:none; padding:0; }
-    .col,.card,.safety,.stat { break-inside:avoid; }
-    @page { margin:12mm; }
+    .card,.stat,.safety,.viz,.mech,.chooser,.tier,.half { break-inside:avoid; }
   }
 </style>
 </head>
@@ -174,7 +176,7 @@
     <svg viewBox="0 0 1080 300" role="img" aria-labelledby="vt vd">
       <title id="vt">{{what the curve shows}}</title>
       <desc id="vd">{{the finding, in words}}</desc>
-      <!-- phase bands · threshold lines labelled with SOURCED values · <polyline> curve · event markers -->
+      {{phase bands · threshold lines labelled with SOURCED values · polyline curve · event markers}}
     </svg>
     <p class="cap">Illustrative pattern — not measured data. Thresholds ({{sourced values}}) are from the source.</p>
   </section>

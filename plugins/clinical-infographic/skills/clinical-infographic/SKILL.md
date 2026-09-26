@@ -123,12 +123,17 @@ self-contained, print-ready skeleton — following the grammar in
 
 An infographic that was never rendered is a guess. Before it is filed:
 
-1. **Rasterise it** — render the HTML to an image (a headless-browser screenshot) and *look*:
-   nothing clipped or overlapping, columns balanced, the safety banner intact, every diagram
-   and curve label legible, arrows pointing the way the flow reads.
-2. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
+1. **Rasterise it** — render the HTML to an image (a headless-browser screenshot at desktop
+   and phone width) and *look*: nothing clipped or overlapping, columns balanced, the safety
+   banner intact, every diagram and curve label legible, arrows pointing the way the flow reads.
+2. **Print it** — with the same headless browser, render the A4 PDF (print media, the page's
+   own `@page` size) and check: the page count fits the chosen format (one page for a wall
+   poster or A4 handout unless the user accepted more — state the count in the Close), the
+   columns did not stack, nothing is clipped, the safety band is not stranded alone on a page,
+   and no unit changed case (`MG`, `MMHG` in the PDF text means a `text-transform` slipped in).
+3. **Optionally OCR** the render — cheap insurance that a dense card or a curve annotation did
    not silently drop or overlap; the OCR text should contain the load-bearing numbers.
-3. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
+4. Fix layout in the HTML and re-render until it holds. The **PNG render is a first-class
    deliverable** alongside the HTML — offer it for sharing or embedding.
 
 This is a *layout* check, never a content one — it changes how a fact sits on the page, never
@@ -185,7 +190,9 @@ This skill has failed if:
 - A schematic/illustrative figure was drawn without an "illustrative — not measured data"
   label, to a fabricated axis, or carrying a number not in the source.
 - The infographic was filed without ever being rendered and eyeballed for clipped text, broken
-  layout, or a diagram/arrow that reads the wrong way.
+  layout, or a diagram/arrow that reads the wrong way — or without an A4 print render and its
+  page count.
+- CSS changed the case of a unit or a drug name (`µg` → `ΜG`, `mmHg` → `MMHG`).
 - Content was rendered with no traceable source when comprehensive-review or
   pubmed-research-note should have generated it first.
 - A vault path was resolved or a file written into `vault/` by this skill instead of vault-keeper,
