@@ -11,7 +11,9 @@
   frontmatter instead; the mcp-wiring questions cover stdio servers too.
 - **explicit-invoke graders check the finding, not a keyword.** `two-tiers` needs the
   planted blocker inside the `[BLOCKER]` tier, ranked above `[QUALITY]`; `not-for-found`
-  needs the Not-for clause called missing, or a fix that adds one.
+  needs the Not-for clause called missing, or a fix that adds one. The case's firecrawl
+  fixture description is now quoted (strict YAML), so the audit finds only the two
+  planted defects.
 
 ## 0.3.1 — 2026-09-26
 
