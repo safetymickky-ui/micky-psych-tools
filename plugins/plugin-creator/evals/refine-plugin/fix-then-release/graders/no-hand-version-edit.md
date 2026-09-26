@@ -1,5 +1,6 @@
 ---
-# Today's hard rule: never edit a version by hand; bump.py edits both files.
+# Never edit a version by hand: bump.py --write writes plugin.json, and the catalog
+# carries no version at all.
 type: tool_used
 tool: Edit
 input_match: '"file_path"\s*:\s*"[^"]*(?:plugin|marketplace)\.json"'

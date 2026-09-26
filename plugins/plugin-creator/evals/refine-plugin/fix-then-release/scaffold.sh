@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fixture marketplace (eval scaffold): a catalog, two valid plugins, and stub
 # scripts/{validate,route,bump}.py that enforce the marketplace's mechanical rules.
+# The version lives in plugin.json only; catalog entries carry none.
 # Planted: the gridgeist description has no Use-when clause.
 set -euo pipefail
 mkdir -p .claude-plugin scripts
@@ -9,9 +10,9 @@ cat > .claude-plugin/marketplace.json <<'EOF'
   "name": "micky-psych-tools",
   "owner": {"name": "fixture"},
   "plugins": [
-    {"name": "vault-keeper", "source": "./plugins/vault-keeper", "version": "0.4.0", "description": "Fixture plugin.", "category": "productivity", "keywords": ["vault", "notes", "index"]},
-    {"name": "pubmed-research-note", "source": "./plugins/pubmed-research-note", "version": "1.7.0", "description": "Fixture plugin.", "category": "research", "keywords": ["pubmed", "evidence", "psychiatry"]},
-    {"name": "gridgeist", "source": "./plugins/gridgeist", "version": "0.1.0", "description": "Fixture plugin.", "category": "design", "keywords": ["web-design", "frontend", "grid"]}
+    {"name": "vault-keeper", "source": "./plugins/vault-keeper", "description": "Fixture plugin.", "category": "productivity", "keywords": ["vault", "notes", "index"]},
+    {"name": "pubmed-research-note", "source": "./plugins/pubmed-research-note", "description": "Fixture plugin.", "category": "research", "keywords": ["pubmed", "evidence", "psychiatry"]},
+    {"name": "gridgeist", "source": "./plugins/gridgeist", "description": "Fixture plugin.", "category": "design", "keywords": ["web-design", "frontend", "grid"]}
   ]
 }
 EOF
@@ -77,16 +78,19 @@ Craft distinctive interfaces from content and product intent.
 EOF
 cat > scripts/validate.py <<'EOF'
 #!/usr/bin/env python3
-"""Fixture validator (eval scaffold): the marketplace's mechanical rules only."""
+"""Fixture validator (eval scaffold): the marketplace's mechanical rules only. The version
+lives in plugin.json only; catalog entries carry none, so nothing is compared."""
 import json, os, re, sys
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cat = json.load(open(os.path.join(root, ".claude-plugin", "marketplace.json"), encoding="utf-8"))
 kebab = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
-fails = []
+fails, warns = [], []
 for e in cat.get("plugins", []):
     name = e.get("name", "")
     if not kebab.match(name):
         fails.append(f"{name}: name is not kebab-case")
+    if not str(e.get("source", "")).startswith("./"):
+        fails.append(f"{name}: source is not a ./ relative path")
     src = os.path.join(root, e.get("source", ""))
     pj = os.path.join(src, ".claude-plugin", "plugin.json")
     if not os.path.isfile(pj):
@@ -95,8 +99,8 @@ for e in cat.get("plugins", []):
     p = json.load(open(pj, encoding="utf-8"))
     if p.get("name") != name:
         fails.append(f"{name}: plugin.json name {p.get('name')!r} != catalog name")
-    if p.get("version") != e.get("version"):
-        fails.append(f"{name}: version parity: plugin.json {p.get('version')} != catalog {e.get('version')}")
+    if not re.fullmatch(r"\d+\.\d+\.\d+", str(p.get("version", ""))):
+        fails.append(f"{name}: plugin.json version {p.get('version')!r} is not semver")
     skills = os.path.join(src, "skills")
     for s in sorted(os.listdir(skills)) if os.path.isdir(skills) else []:
         md = os.path.join(skills, s, "SKILL.md")
@@ -108,8 +112,17 @@ for e in cat.get("plugins", []):
             fails.append(f"{name}/{s}: frontmatter name does not match its directory")
         d = re.search(r"^description:\s*(.+)$", fm, re.M)
         n = len(d.group(1).strip()) if d else 0
-        if not 200 <= n <= 1024:
-            fails.append(f"{name}/{s}: description {n} chars (must be 200-1024)")
+        if n > 1024:
+            fails.append(f"{name}/{s}: description {n} chars (hard cap 1024)")
+        elif n < 200:
+            warns.append(f"{name}/{s}: description {n} chars is short; under ~200 triggers unreliably")
+    for dirpath, _, files in os.walk(src):
+        for f in files:
+            parts = os.path.relpath(os.path.join(dirpath, f), src).split(os.sep)
+            if f.lower() == "skill.md" and not (len(parts) == 3 and parts[0] == "skills"):
+                fails.append(f"{name}: {'/'.join(parts)} is a SKILL.md outside skills/<skill>/")
+for w in warns:
+    print("WARN", w)
 for f in fails:
     print("FAIL", f)
 print("all checks passed" if not fails else f"{len(fails)} check(s) failed")
@@ -128,34 +141,46 @@ print("ROUTING.md written")
 EOF
 cat > scripts/bump.py <<'EOF'
 #!/usr/bin/env python3
-"""Fixture bump (eval scaffold): raise a plugin's version in plugin.json AND its catalog
-entry together, then run the validator."""
-import json, os, subprocess, sys
+"""Fixture bump (eval scaffold): the version lives in plugin.json only (catalog entries
+carry none). A dry run unless --write; --write validates, writes plugin.json, adds a
+"## <version> — <date>" heading to the plugin's CHANGELOG.md, then validates again."""
+import datetime, json, os, subprocess, sys
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if len(sys.argv) != 3 or sys.argv[2] not in ("patch", "minor", "major"):
-    print("usage: bump.py <plugin> patch|minor|major")
-    sys.exit(2)
-name, level = sys.argv[1], sys.argv[2]
-cp = os.path.join(root, ".claude-plugin", "marketplace.json")
-cat = json.load(open(cp, encoding="utf-8"))
-entry = next((e for e in cat["plugins"] if e["name"] == name), None)
-if entry is None:
-    print(f"no such plugin: {name}")
-    sys.exit(2)
-pj = os.path.join(root, entry["source"], ".claude-plugin", "plugin.json")
+args = [a for a in sys.argv[1:] if a != "--write"]
+if len(args) != 2 or args[1] not in ("patch", "minor", "major"):
+    print("usage: bump.py <plugin> patch|minor|major [--write]")
+    sys.exit(1)
+name, level = args
+cat = json.load(open(os.path.join(root, ".claude-plugin", "marketplace.json"), encoding="utf-8"))
+entry = next((e for e in cat.get("plugins", []) if e.get("name") == name), None)
+pdir = os.path.join(root, entry["source"]) if entry else os.path.join(root, "plugins", name)
+pj = os.path.join(pdir, ".claude-plugin", "plugin.json")
+if not os.path.isfile(pj):
+    print(f"unknown plugin: {name}")
+    sys.exit(1)
 p = json.load(open(pj, encoding="utf-8"))
 old = p["version"]
 ma, mi, pa = (int(x) for x in old.split("."))
 new = {"patch": f"{ma}.{mi}.{pa + 1}", "minor": f"{ma}.{mi + 1}.0", "major": f"{ma + 1}.0.0"}[level]
+print(f"{name}: {old} -> {new}")
+if "--write" not in sys.argv[1:]:
+    print("dry run: nothing written; re-run with --write to apply")
+    sys.exit(0)
+validate = [sys.executable, os.path.join(root, "scripts", "validate.py")]
+if subprocess.call(validate) != 0:
+    print("validate.py failed before the bump; nothing written")
+    sys.exit(1)
 p["version"] = new
-entry["version"] = new
 with open(pj, "w", encoding="utf-8") as f:
     json.dump(p, f, indent=2)
     f.write("\n")
-with open(cp, "w", encoding="utf-8") as f:
-    json.dump(cat, f, indent=2)
-    f.write("\n")
-print(f"{name}: {old} -> {new} (plugin.json + marketplace.json)")
-sys.exit(subprocess.call([sys.executable, os.path.join(root, "scripts", "validate.py")]))
+cl = os.path.join(pdir, "CHANGELOG.md")
+text = open(cl, encoding="utf-8").read() if os.path.isfile(cl) else "# Changelog\n"
+head, sep, rest = text.partition("\n## ")
+with open(cl, "w", encoding="utf-8") as f:
+    f.write(head.rstrip("\n") + "\n\n" + f"## {new} — {datetime.date.today().isoformat()}\n\n"
+            + ("## " + rest if sep else ""))
+print("wrote plugin.json and CHANGELOG.md")
+sys.exit(subprocess.call(validate))
 EOF
 chmod +x scripts/*.py
