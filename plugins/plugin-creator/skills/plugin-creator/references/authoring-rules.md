@@ -63,8 +63,12 @@ plugins/<name>/
   hooks/hooks.json
 ```
 
-Only the immediate children of `plugins/<name>/skills/` are scanned as skills. Nested
-folders (e.g. a skill's own `references/`) are not validated as skills.
+`validate.py` validates only the immediate children of `plugins/<name>/skills/` as
+skills, but some Claude surfaces search deeper and load any file named `SKILL.md` as a
+skill: plugin-creator's own `references/templates/SKILL.md` once appeared as a live skill
+named `skill-name`. So `SKILL.md` is a reserved file name, and only
+`skills/<skill>/SKILL.md` may carry it. Give a skill-shaped template, example or fixture
+another name (`SKILL.template.md`).
 
 ## Done means
 

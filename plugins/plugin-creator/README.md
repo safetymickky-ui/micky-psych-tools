@@ -33,8 +33,9 @@ Every plugin this toolkit scaffolds or refines is judged against:
   checks a rule-passing plugin can still fail (commands, catalog coverage, router sync,
   plugin docs).
 - `skills/plugin-creator/references/templates/` — the skeleton files `/new-plugin` fills
-  in: `plugin.json`, `marketplace-entry.json`, `SKILL.md`, `command.md`, `agent.md`,
-  `hooks.json`, `.mcp.json`, `evals.json`.
+  in: `plugin.json`, `marketplace-entry.json`, `SKILL.template.md` (becomes a skill's
+  `SKILL.md`; named otherwise so no surface loads the template as a skill), `command.md`,
+  `agent.md`, `hooks.json`, `.mcp.json`, `evals.json`.
 
 Both commands end the same way: regenerate the router (`python scripts/route.py` — never
 hand-edit `ROUTING.md`), then print the validate output and a suggested commit and stop —
