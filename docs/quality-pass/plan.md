@@ -56,22 +56,41 @@ SKILL.md body gets short pointers only (body stays near its current size; S03 ca
 ### Rewrite-plan steps done ahead of wave
 
 - S06-W1-1 (C1): all CSS edits land; its `auditInfographicResponsive` check is deferred (needs `$LEARN_HUB_DIR`, not present in the cloud session).
-- S03-W3-2, part (edited anyway by P4/P6): delete decision-brief.md's "first four … last three" sentence (H45 arithmetic) and replace "a Klaeng OPD" with "a community OPD" (K13). Remainder (slots 1/2/6 rewrite, intent-lock-pairing mirror) stays at W3.
-- Recorded in docs/rewrite/baseline.md `## Owner records`, a note under the wave in docs/plugin-rewrite/plan.md, "Partly done / Done ahead <sha>" in S03/S06, README status; `gen_coverage.py` re-run.
+- S03-W3-2, part: P6 rewrites decision-brief.md's indirectness line, so its K13 wording ("a community OPD", not "a Klaeng OPD") lands in the same edit. The rest of S03-W3-2 (H45 slot split, intent-lock-pairing mirror) stays at W3.
+- Recorded once per place: docs/rewrite/baseline.md `## Owner records`, one note under each wave in docs/plugin-rewrite/plan.md, one "Done ahead / Partly done <sha>" line in S03 and S06 (which also tells W2/W3 to keep: literal eval paths, the `evidence-checks.md` reference, `verify-infographic.mjs` as input to S06-W2-1's `check-html.mjs`, the grader tool prefix changing to `plugin_evidence_` at W3).
 
 ## Out of scope (named so nothing is silently dropped)
 
 - comprehensive-review's review-arc.md safety floor (the producer half of PR-52 for whole-topic reports) — other plugin; in deferred-findings.md.
 - Skill `description` wording — owner decision QD3, rewrite W3.
 - Mock-backed fidelity cases with planted traps (new eval case dirs) — S03-W3-6 / S06 own the case list; recorded as a follow-up.
+- Glob paths in sibling suites (comprehensive-review `output-report-contract/graders/no-inline-citation.md`, psych-paper-digest `tier-sections.md`, `no-pmid-in-digest.md`) — same defect as CI-08, other plugins.
+- The template's other deferred defects (CI-19 aside, fixed here because C4 would fail on it).
+
+Owner note: S12-W0-8's smoke baseline for these two plugins must run `--against pre-rewrite`, because this pass changes their skill text.
 
 ## Verification before push
 
 1. `git config core.hooksPath .githooks`; `bash scripts/health.sh` (full) prints `health: OK`.
-2. `node --test` on the new script's tests; run the script on the example + a planted-drift copy (must fail) + the clean example (must pass numeric trace).
+2. `node --test` on the new script's tests (run by hand — health.sh runs Python tests only; the script header says so). Tests cover: a faithful page passes (with `µg` in the source and `mcg` on the page, an ISO render date, ladder ordinals and axis ticks); a wrong number, a wrong unit, an added design label, a template leak and an ungapped `[unverified]` number each fail. Run it once on a real probe output.
 3. Render the template and example with Playwright: print page count, no stacked columns in print, no `ΜG`/`MMHG` in PDF text, no dark block (`grep -c prefers-color-scheme:dark` = 0), no font-size <12px.
-4. Every file grader's `path` has no `*`/`?`/`[`; each case's graders run by regex against a hand-made good and bad output.
+4. Every `target: {source: file}` grader path has no `*`/`?`/`[` (`file_exists` graders may keep globs); each changed regex is run against a hand-made good and bad output.
 5. SKILL.md body token change for pubmed stays small (report before/after).
 6. Bumps via `bump.py`, MEMORY.md updated; conventional commits, one logical change each; push to `claude/pubmed-clinical-infographic-quality-ei2th0`.
 
 Owner action (cannot be done from the cloud session): tag `pre-rewrite` at `fd47fba` before this branch merges.
+
+## Critique pass — repairs applied (one critic, 12 flaws)
+
+1. Numeric trace would fail correct pages → the script skips ISO dates, elements marked `data-ordinal` (ladder numbers) or `data-axis` (chart ticks), and treats µg ≡ μg ≡ mcg, en dash ≡ hyphen, Unicode minus ≡ `-`; tests cover each.
+2. The template's nested comment leaks `{{sourced values}}` and `-->` onto the page → fixed in C1 (deferred CI-19, one line).
+3. The example's source report is not in the repo → tests use inline fixtures built from the eval's `review.md` facts; no example-vs-source run is claimed.
+4. `--render` may not find Playwright; print half of CI-05 lived only in the script → the script also searches `NODE_PATH` and the global npm root and says clearly when it skips; SKILL.md Step 2.5 itself now requires an A4 print render + page count + no stacked columns.
+5. "revised YYYY-MM" alone lets an old label pass → must be the newest version on the regulator's site (an older one is cited only as superseded); supplements get the safety-communication sweep; the Sources drift tell says a label's revision date is not a publication year.
+6. Graders need literal tokens → SKILL.md and report-craft.md pin the words **Verdict** and **Confidence:**; confidence regex `Confidence\W{0,6}(?:very low|high|moderate|low)\b` (i); CI regexes tolerate rounding.
+7. Glob check scoped to file targets; sibling glob graders listed out of scope.
+8. More steps per run → the pubmed output case gets `max_turns: 80`, `timeout_seconds: 1800`.
+9. Specs would reintroduce old paths/plans → one line each in S03 and S06 (see above).
+10. C3 also edits the template's safety comments (:5, :217) and SKILL.md's failure condition, and adds scaffolds for the coverage line and the neutral "Not recommended — no benefit shown" panel.
+11. The ledger's qualifier checklist includes upstream tags (`my inference:`, `abstract only`, `calculated`); a design label never in the source blocks, a label count above the source only warns.
+12. Mechanism-prose exemption reaches every "no number" site; `as reported in` describes the review, never Author Year; the H45 deletion is cut; bookkeeping reduced to one line per place.
