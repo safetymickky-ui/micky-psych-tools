@@ -83,15 +83,22 @@ These are what you hunt for — not "evidence about the topic" in general.
   can be the whole answer — *wait*.
 - **The textbook edition** (Open Library) when the decision is what to teach. A textbook claim
   without a named edition is not a textbook claim; editions disagree.
-- **The deliberately adversarial query** on every run — search the negative or null literature
-  explicitly, or the known large trial by name. A verdict built only from the positive
-  literature is publication bias, restated.
+- **The deliberately adversarial query** on every run — against the *provisional verdict*,
+  not always toward the null: a positive verdict searches the negative and null literature;
+  a null or debunking verdict searches the meta-analyses and prospective studies that report
+  an effect. Plus a recency sweep for newer reviews. A verdict built only from the literature
+  that agrees with it is publication bias, restated — in either direction.
+  ([evidence-checks.md](evidence-checks.md) §3.)
+- **The dose-and-safety step** whenever the verdict names a dose or endorses an agent — an
+  official label opened this run (Thai FDA first), its country and revision date, and a
+  marked safety block ([evidence-checks.md](evidence-checks.md) §4).
 
 ## 6. The anti-goal — the report that satisfies the words and still fails
 
 Name the specific failure this decision invites, so the report can dodge it by design. The
 most common: efficacy in a specialist RCT population generalising silently to a community OPD
-patient with three comorbidities and no monitoring; the survey that catalogues the topic and
+patient with three comorbidities and no monitoring — or its mirror, a null in the wrong
+population taken as proof of no effect in this one; the survey that catalogues the topic and
 never answers the question; the balanced catalogue that lists both sides of a disagreement
 and adjudicates neither; the answer hollowed by compression — a verdict whose load-bearing
 trials arrive as clauses instead of studies.

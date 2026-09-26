@@ -30,10 +30,11 @@ on it. Two things are owed, and the report fails if either is missing:
    product.
 
 There is no fixed template and no fixed set of frames — and, as of this version, **no fixed
-report shape either**. What replaces them is judgment, carried by the two guides this skill
+report shape either**. What replaces them is judgment, carried by the guides this skill
 leans on: [references/decision-brief.md](references/decision-brief.md) for locking the
 question, [references/report-craft.md](references/report-craft.md) for shaping and
-deepening the report. Read both before you write.
+deepening the report, [references/evidence-checks.md](references/evidence-checks.md) for
+making it correct. Read all three before you write.
 
 ## The one commitment — shape is free, the answer is not
 
@@ -49,9 +50,10 @@ Two failures remain failures under every shape:
 
 - **The unanswered survey.** A report that catalogues the literature and never plants a
   flag. Wherever the verdict sits — leading, or closing after the evidence has built to it
-  — it must exist, be explicitly marked (a bolded verdict line or its own heading), and
-  carry an explicit confidence (high | moderate | moderate-low | low) with the one clause
-  it is not higher. A reader skimming for the answer must find it in seconds.
+  — it must exist, be explicitly marked with the word **Verdict** (a bolded verdict line or
+  its own heading), and carry `Confidence:` with one GRADE level (high | moderate | low |
+  very low) for the outcome that drives the decision, plus the clause naming why it is not
+  higher (evidence-checks.md §5). A reader skimming for the answer must find it in seconds.
 - **The hollowed answer.** A verdict resting on evidence compressed past usefulness — trial
   names with no numbers, findings with no populations, a meta-analysis reduced to its
   conclusion sentence. The depth contract below exists to prevent this.
@@ -61,14 +63,16 @@ Two failures remain failures under every shape:
 This is the half of the deal the old version underweighted, and it is now binding:
 
 - **Every load-bearing study is reported in full.** Design, population and setting, n,
-  comparator, primary endpoint, effect size with CI, the harms and dropout that matter — a
-  developed paragraph per study the verdict actually rests on, not a clause. Supporting
+  comparator, primary endpoint, effect size with CI, the harms and dropout that matter, its
+  risk of bias and whether it replicated (evidence-checks.md §2) — a developed paragraph
+  per study the verdict actually rests on, not a clause. Supporting
   studies may be grouped and summarized; the ones carrying the verdict may not.
 - **Mechanism and background are woven in wherever they illuminate.** Receptor
   pharmacology, pathophysiology, why a drug *would* work, why a trial's population makes
   its result generalize or not — these belong in the narrative (or in their own section,
   if the shape calls for one) whenever they help the reader understand the verdict rather
-  than merely accept it.
+  than merely accept it. Mechanism prose needs no number; where it goes beyond what a
+  cited source says, it opens with `my inference:`.
 - **Sources are capped by relevance, never by count.** Gather as many primary sources as
   genuinely bear on the question. Never drop a load-bearing study to keep the report
   looking lean, and never pad with abstracts that add nothing — the filter is *does this
@@ -147,15 +151,17 @@ may never be re-asked, and where `[ASSUMED]` lives in the report — is
 
 ## Where output goes
 
-The default is a three-step pipeline — **write → show → file.** Run all three every time
-unless the user opts out of one.
+The default is a four-step pipeline — **write → check → show → file.** Run all four every
+time unless the user opts out of show or file; the check is never skipped.
 
 1. **Write (default):** write the report into the working directory (or `report_dir` from
    `.pubmed-research-note.json` if present).
-2. **Show (default):** render the full report inline in the chat so the user can read it
+2. **Check (always):** run the claim check (evidence-checks.md §6) against the fetched
+   records, fix the file, and only then show it.
+3. **Show (default):** render the full report inline in the chat so the user can read it
    right here — do not merely announce the file path. The file and the inline copy are the
    same content.
-3. **File (default):** hand the finished report to the vault-keeper skill to save as an
+4. **File (default):** hand the finished report to the vault-keeper skill to save as an
    **artifact** — it owns paths, dedup, MOC wiring, and the index. Pass: a human title
    (vault-keeper derives the kebab-case artifact filename from it), body, target type
    `artifact`, suggested MOC topic, source-skill
@@ -164,7 +170,7 @@ unless the user opts out of one.
    or write into `vault/` directly from this skill. Skip this step only if the user says not
    to save (e.g. "don't vault this" / "no vault").
 
-**No filesystem:** step 2 still applies — render inline — then say explicitly that nothing
+**No filesystem:** steps 2 and 3 still apply — check, render inline — then say explicitly that nothing
 was written and nothing was filed.
 
 Filing the report as an artifact is **not** the same as **atomize**: atomic notes (distilled,
@@ -180,7 +186,8 @@ call.
 - **PubMed — the backbone.** Guidelines, meta-analyses, RCTs. Most of the answer rests
   here. Gather **as many primary sources as the question needs** — the filter is
   load-bearing relevance, never a count; a study the answer rests on is never dropped to
-  keep the report lean.
+  keep the report lean. Full text for load-bearing studies; counter-search against the
+  provisional verdict (evidence-checks.md §1, §3).
 - **ClinicalTrials.gov — the publication-bias check.** Load-bearing whenever an action is at
   stake — a treatment choice or a service/protocol decision — and high-yield on a contested
   claim. Its one job: *is there completed-but-unpublished or ongoing evidence that would
@@ -197,7 +204,9 @@ call.
   encyclopedia's section list.
 - **Firecrawl — the general-web document engine.** Load-bearing when the verdict hinges on
   a document outside PubMed and the registry — a regulator's label or safety communication,
-  a guideline body's full text on its own site, gray literature. Via the `firecrawl` plugin
+  a guideline body's full text on its own site, gray literature — and **mandatory whenever
+  the verdict names a dose or endorses an agent**: the label check, Thai FDA first
+  (evidence-checks.md §4). Via the `firecrawl` plugin
   (`firecrawl search` / `firecrawl scrape`); WebFetch is the fallback. It widens *where*
   documents come from, never *what counts as evidence* — the blog ban stands. Scraped
   documents cite exact URL + access date in `## Sources`. Firecrawl fetches; this skill
@@ -211,7 +220,7 @@ Both halves hold together: they are what keep the report readable *and* auditabl
   `PMID 12345678` mid-sentence, no superscript numerals, no `[3]`. The reader reads once;
   brackets tax every sentence for provenance he checks in maybe one.
 - **Evidence strength stays inline, always.** Study design, n, effect size, CI, NNT/NNH,
-  dose, absolute percentages. `"reduced nightmares"` is a failure. `"CAPS item B2 (0–8)
+  dose, absolute percentages, risk of bias, replication. `"reduced nightmares"` is a failure. `"CAPS item B2 (0–8)
   differed from placebo by 0.2 points at 10 weeks (95% CI −0.3 to 0.8; n=304, double-blind
   RCT)"` is the standard. A section with no number in it is decoration. For load-bearing
   studies, the full per-study detail of the depth contract applies on top of this floor.
@@ -222,12 +231,16 @@ Both halves hold together: they are what keep the report readable *and* auditabl
   no PMID. The topic phrase *is* the annotation — it names what the source carries, so the
   report stays auditable without a bibliography nobody reads. Registry entries: `NCT NNNNNNNN
   — topic, status, n, readout`. Books: `Title, edition — OLID`. Web documents fetched via
-  firecrawl: `<topic> — <URL> (accessed YYYY-MM-DD)`, DOI preferred when one exists.
+  firecrawl: `<topic> — <URL> (accessed YYYY-MM-DD)`, DOI preferred when one exists; a
+  label's topic phrase carries its regulator and revision, `(<regulator> label, revised
+  YYYY-MM)`.
 - **A request to drop the `## Sources` block is declined** — kindly, in one line, without
   moralising. A verdict you cannot re-derive in six months is not a verdict; the block stays
   even when the user asks for just the answer. The prose is already clean of inline
   citations, which is the spirit of that request honoured.
 - Anything you could not source is marked `[unverified]` in place. Never quietly assert it.
+  A number not read from a full text carries its provenance tag (`abstract only`, …) in
+  the same sentence — evidence-checks.md §1.
 
 ## The report — shaped to serve the question
 
@@ -243,11 +256,15 @@ shape:
   time pressure; it is no longer the only legal shape.
 - **Headings serve the reader.** Decision-minted, topic-shaped, or mixed — chosen per
   report, per *The one commitment*.
-- **Every section carries numbers**, and load-bearing studies get the full per-study
-  treatment — see *The depth contract*.
+- **Every evidence section carries numbers**, and load-bearing studies get the full
+  per-study treatment — see *The depth contract*.
 - **Adjudicate, don't list.** When trials disagree, say which one you believe and why
   (size, control quality, blinding, funding, population, endpoint validity), in the flow of
-  the argument. A neutral catalogue of both sides is a loss of nerve, not balance.
+  the argument. A neutral catalogue of both sides is a loss of nerve, not balance. Name the
+  strongest study or synthesis against the verdict and why it loses (evidence-checks.md §3).
+- **A marked safety block** whenever the verdict doses or endorses an agent —
+  contraindications, boxed warnings, interactions, monitoring, pregnancy, each sourced or
+  `not assessed` (evidence-checks.md §4).
 - **As deep as the evidence deserves.** Length is earned by what the literature actually
   contains — never cut depth to look decisive, never pad to look thorough.
 - **Close the loop.** Name the boundary conditions where the verdict inverts (with the
@@ -286,7 +303,8 @@ itself.
 ## Close
 
 Two lines. What was delivered, `PubMed N · trials N · books N`, the verdict's confidence
-level, and any `[unverified]` gap. Then name where it now lives — the report file, the inline
+level, the claim check's counts (checked, fixed, marked `[unverified]`), and any
+`[unverified]` gap. Then name where it now lives — the report file, the inline
 copy shown above, and the vault artifact path returned by vault-keeper (or note the vault save
 was skipped). Nothing else.
 
@@ -304,9 +322,16 @@ compression:
   keep the report short.
 - A real finding was cut, or a load-bearing source dropped, to keep the report lean.
 - Trials disagree and the report lays out both without saying which it believes and why.
-- A section contains no number, or an inline citation clutters the prose.
+- An evidence section contains no number (mechanism prose is exempt), or an inline
+  citation clutters the prose.
 - A `## Sources` entry carries an author, journal, publication year, or PMID (a firecrawl
-  web document's access date is not a publication year).
+  web document's access date, and a label's revision date inside the topic phrase, are not
+  a publication year).
+- A number with no record fetched this run behind it or without its provenance tag; a
+  heading the numbers beneath it contradict; the claim check skipped.
+- Confidence above what the evidence allows, or indirectness applied to one side only; the
+  adversarial search run in the verdict's own direction; a dose without a current label
+  and its country, or an endorsed agent without a safety block.
 - The structure was copied from a remembered template — or from Wikipedia's section list —
   instead of being chosen for this question and reader.
 - A research request went to search without first routing through intent-lock, absent an
