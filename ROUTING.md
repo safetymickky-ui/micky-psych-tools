@@ -39,6 +39,9 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Critique an existing plan, resolve every owner-held fork in a batched interview, and deliver the revised plan | plan-critique | `/critique-plan` |
 | whenever the user asks for a .docx, .pptx or .xlsx, or for a document, report, handout, summary, letter, memo, slide deck, presentation, lecture, journal club, spreadsheet, tracker, budget or model… | clinical-minimal | skill `clinical-minimal` |
 | when the user says "reconstruct this article", "reconstruct in bullets", "bulletise", "condense", "distil", "strip to essentials", "keep the figures", "as html", "ทำเป็น bullet", "ย่อเป็นข้อ ๆ", or… | bullet-reconstruct | skill `bullet-reconstruct` |
+| when the user says "screen stocks", "VI screen", "value stock screen", "หาหุ้น VI", "สกรีนหุ้น", "deep research on this stock", "research this stock", "company review", "วิเคราะห์หุ้น", "value this… | vi-stock-screen-research | skill `vi-stock-screen-research` |
+| Write a full company review and valuation model for one stock (Word report + Excel model, Clinical Minimal style) | vi-stock-screen-research | `/vi-research` |
+| Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table | vi-stock-screen-research | `/vi-screen` |
 
 ## Plugins
 
@@ -184,3 +187,13 @@ Distils a dense source (paper, chapter, review, transcript) into scannable bulle
 Keywords: bullets, distillation, paper-notes, figure-snips, html, coverage-check
 
 - **skill `bullet-reconstruct`** (skill) — Distils a dense source (paper, article, book chapter, review, transcript) into scannable bullets with measured, bounded loss under 10%, keeps its figures and tables as image snips cropped from the file, and delivers one…
+
+### vi-stock-screen-research — finance
+
+Value-investing stock screen and full company review for Thai SET and US stocks. Screen: quality at a fair price on TradingView, ranked top 10, the user picks one ticker. Deep research: TradingView first, Jitta in the user's Chrome when history is short, the 56-1 One Report or 10-K for governance; ships a multi-page Word report and an Excel valuation model in the Clinical Minimal style. intent-lock runs first in both modes. One skill + /vi-screen and /vi-research.
+
+Keywords: value-investing, stock-screener, company-analysis, valuation, tradingview, set-thailand
+
+- **skill `vi-stock-screen-research`** (skill) — Screens stocks for value investing (VI) on TradingView and writes a full company review of the one stock the user picks — business, industry, moat, management, 10 years of financials, valuation with margin of safety, ri…
+- **`/vi-research`** (command) — Write a full company review and valuation model for one stock (Word report + Excel model, Clinical Minimal style)
+- **`/vi-screen`** (command) — Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table

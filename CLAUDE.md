@@ -203,6 +203,17 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   cap is measured: units frozen from the source first, anchors checked in the output, numbers traced to
   the source (`coverage_check.py`). `snip_figures.py` crops captioned regions (vector tables included);
   `build_html.py` renders `notes.md`. One skill, no commands; script tests under the plugin's `tests/`.
+- **vi-stock-screen-research** — value-investing stock work for Thai SET and US stocks, first plugin
+  in the `finance` category. Screen: quality at a fair price on TradingView (ROIC, F-score, Altman Z,
+  debt/equity, liquidity and size floors per market), top 10 by ROIC rank + earnings-yield rank, then
+  it stops — the user picks one ticker. Deep research: a full company review, never narrowed to a
+  valuation (Verdict · Business · Industry · Moat · Management · 10-year financials · Valuation ·
+  Risks · Sell triggers), every number source-tagged, the buy/sell decision left to the user. Data
+  order: TradingView → Jitta in the user's Chrome when fewer than 8 fiscal years → 56-1 One Report /
+  10-K for governance. Output is a multi-page Word report + an Excel valuation model built through
+  clinical-minimal. Intent-lock is the mandatory Step 0 gate in both modes; TradingView MCP bundled
+  in `.mcp.json`; no vault filing. One skill + `/vi-screen` and `/vi-research`; screen criteria and
+  report contract under its `skills/vi-stock-screen-research/references/`.
 
 ## Style
 
