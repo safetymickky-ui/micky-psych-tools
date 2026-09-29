@@ -222,6 +222,20 @@
         "html",
         "coverage-check"
       ]
+    },
+    {
+      "name": "vi-stock-screen-research",
+      "source": "./plugins/vi-stock-screen-research",
+      "description": "Value-investing stock screen and full company review for Thai SET and US stocks. Screen: quality at a fair price on TradingView, ranked top 10, the user picks one ticker. Deep research: TradingView first, Jitta in the user's Chrome when history is short, the 56-1 One Report or 10-K for governance; ships a multi-page Word report and an Excel valuation model in the Clinical Minimal style. intent-lock runs first in both modes. One skill + /vi-screen and /vi-research.",
+      "category": "finance",
+      "keywords": [
+        "value-investing",
+        "stock-screener",
+        "company-analysis",
+        "valuation",
+        "tradingview",
+        "set-thailand"
+      ]
     }
   ]
 }

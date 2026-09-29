@@ -11,7 +11,7 @@ a milestone.
 - Installed to Claude Code as marketplace `micky-psych-tools` (user scope).
 - GitHub account `safetymickky-ui` (gh authed, `repo` scope).
 
-## Current versions — 2026-09-26
+## Current versions — 2026-09-29
 
 | item                  | version |
 | --------------------- | ------- |
@@ -32,6 +32,7 @@ a milestone.
 | plan-critique         | 0.1.0   |
 | clinical-minimal      | 0.1.0   |
 | bullet-reconstruct    | 0.1.0   |
+| vi-stock-screen-research | 0.1.0 |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -173,7 +174,22 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   the .md stays as the vault source. Evidence tier (hedge, species, design, population) is part of each
   unit. One skill, no commands; script tests in `plugins/bullet-reconstruct/tests/`.
 
+- **vi-stock-screen-research** — value-investing screen + full company review for SET and US
+  stocks (category `finance`). Screen on TradingView (quality at a fair price), ranked top 10,
+  stops for the user's pick; deep research runs TradingView → Jitta (user's Chrome, when fewer
+  than 8 fiscal years) → 56-1 / 10-K, and ships a multi-page Word report + Excel valuation model
+  through clinical-minimal. Intent-lock first in both modes. One skill + `/vi-screen`,
+  `/vi-research`; TradingView MCP bundled.
+
 ## Recent milestones
+
+- **2026-09-29** — Added **vi-stock-screen-research 0.1.0**, moved in from the claude.ai-saved skill
+  (`anthropic-skills:vi-stock-screen-research`) after an intent-lock interview that locked: full company
+  review (not valuation-first), Clinical Minimal Word + Excel output (the one-pager skeleton grown to a
+  multi-page report), intent-lock in both modes, screen = quality at a fair price only, the screen stops
+  for the user's pick. Size floor fixed to per-market values (the saved skill used 5,000,000,000 in local
+  currency for both SET and US). The upload is to be deleted once the marketplace copy is installed
+  (name collision).
 
 - **2026-09-26** — **plugin-creator 0.3.1**: the unfilled SKILL template
   (`skills/plugin-creator/references/templates/SKILL.md`) was listed as a live skill

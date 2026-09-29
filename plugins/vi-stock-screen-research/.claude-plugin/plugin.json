@@ -1,0 +1,18 @@
+{
+  "name": "vi-stock-screen-research",
+  "version": "0.1.0",
+  "description": "Value-investing stock screen and full company review for Thai SET and US stocks. TradingView first, Jitta when the history is short, the 56-1 One Report or 10-K for governance. Deep research ships a multi-page Word report and an Excel valuation model in the Clinical Minimal style. Runs intent-lock first in both modes.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "value-investing",
+    "stock-screener",
+    "company-analysis",
+    "valuation",
+    "tradingview",
+    "set-thailand"
+  ],
+  "mcpServers": "./.mcp.json"
+}
