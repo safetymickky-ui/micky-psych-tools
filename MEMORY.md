@@ -33,6 +33,7 @@ a milestone.
 | clinical-minimal      | 0.1.0   |
 | bullet-reconstruct    | 0.1.0   |
 | vi-stock-screen-research | 0.1.0 |
+| data-analytics-skills | 0.1.0 |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with

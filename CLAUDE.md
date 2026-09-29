@@ -235,3 +235,7 @@ Default vocabulary — each role uses its canonical name (`needs-triage`, `needs
 ### Domain docs
 
 Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+- **data-analytics-skills** — vendored unchanged from https://github.com/nimrodfisher/data-analytics-skills
+  (Nimrod Fisher, MIT): 31 on-demand analytics skills (EDA, data-quality audit, SQL validation,
+  cohort/funnel/A-B/time-series, root cause, dashboards, stakeholder communication). Category folders
+  flattened into `skills/`; changes come from upstream, not local edits. No commands.

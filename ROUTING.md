@@ -42,6 +42,37 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "screen stocks", "VI screen", "value stock screen", "หาหุ้น VI", "สกรีนหุ้น", "deep research on this stock", "research this stock", "company review", "วิเคราะห์หุ้น", "value this… | vi-stock-screen-research | skill `vi-stock-screen-research` |
 | Write a full company review and valuation model for one stock (Word report + Excel model, Clinical Minimal style) | vi-stock-screen-research | `/vi-research` |
 | Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table | vi-stock-screen-research | `/vi-screen` |
+| when analyzing experiment results, calculating statistical significance, checking for sample ratio mismatch, or validating test design before launch. | data-analytics-skills | skill `ab-test-analysis` |
+| when making analytical choices, documenting trade-offs, ensuring transparency, or creating audit trails for analytical work. | data-analytics-skills | skill `analysis-assumptions-log` |
+| when documenting analysis findings, creating analysis notebooks, ensuring reproducibility, or building analysis archives for future reference. | data-analytics-skills | skill `analysis-documentation` |
+| when receiving new analysis requests, breaking down complex questions into steps, or planning iterative analysis workflows. | data-analytics-skills | skill `analysis-planning` |
+| when reviewing analysis before sharing with stakeholders, checking for completeness, validating assumptions, or ensuring clarity of recommendations. | data-analytics-skills | skill `analysis-qa-checklist` |
+| when completing major analysis projects, documenting lessons learned, or improving team analytical practices. | data-analytics-skills | skill `analysis-retrospective` |
+| when calculating SaaS metrics (MRR, churn, LTV, CAC), e-commerce KPIs, or product analytics metrics with proper definitions. | data-analytics-skills | skill `business-metrics-calculator` |
+| Time-based cohort analysis with retention and behaviour tracking. | data-analytics-skills | skill `cohort-analysis` |
+| when preparing to work with Claude on analysis, organizing context documents, or structuring prompts for complex analytical tasks. | data-analytics-skills | skill `context-packager` |
+| when planning new dashboards, improving existing ones, or documenting dashboard requirements before development starts. | data-analytics-skills | skill `dashboard-specification` |
+| when documenting new datasets, building data catalogs, improving data discoverability, or creating data dictionaries for teams. | data-analytics-skills | skill `data-catalog-entry` |
+| when presenting analysis results, creating stakeholder reports, or transforming a set of findings into a story that drives a specific decision or action. | data-analytics-skills | skill `data-narrative-builder` |
+| Comprehensive data quality assessment against business rules, schema constraints, and freshness expectations. | data-analytics-skills | skill `data-quality-audit` |
+| when preparing board decks, executive briefings, or condensing complex analysis into decision-ready formats for senior audiences. | data-analytics-skills | skill `executive-summary-generator` |
+| when analyzing multi-step processes, identifying conversion bottlenecks, comparing segments through a funnel, or optimizing user journeys. | data-analytics-skills | skill `funnel-analysis` |
+| when sizing opportunities discovered in analysis, calculating ROI of recommended actions, or prioritizing initiatives by potential impact. | data-analytics-skills | skill `impact-quantification` |
+| when converting analysis results into actionable insights, connecting findings to business impact, or preparing insights for stakeholder communication. | data-analytics-skills | skill `insight-synthesis` |
+| when documenting 'how we did this' sections, building trust through transparency, or teaching analytical approaches to stakeholders. | data-analytics-skills | skill `methodology-explainer` |
+| Trace and resolve discrepancies when the same metric shows different values in two or more sources. | data-analytics-skills | skill `metric-reconciliation` |
+| when reviewing teammates' analysis, providing constructive feedback, or establishing analysis quality standards. | data-analytics-skills | skill `peer-review-template` |
+| Systematic exploratory data analysis. | data-analytics-skills | skill `programmatic-eda` |
+| SQL query review for correctness, performance, and best practices. | data-analytics-skills | skill `query-validation` |
+| when a metric unexpectedly changes, investigating business metric drops, explaining performance variations, or drilling into aggregated metric drivers. | data-analytics-skills | skill `root-cause-investigation` |
+| when integrating data from multiple systems, designing ETL transformations, or documenting how raw fields become analytical assets. | data-analytics-skills | skill `schema-mapper` |
+| when identifying distinct customer groups, analyzing segment-specific behavior, profiling high-value segments, or testing segmentation hypotheses. | data-analytics-skills | skill `segmentation-analysis` |
+| Build structured semantic layer documentation for metrics, dimensions, and entities. | data-analytics-skills | skill `semantic-model-builder` |
+| when documenting queries, explaining analysis to non-technical stakeholders, code reviewing for correctness, or building a query catalog. | data-analytics-skills | skill `sql-to-business-logic` |
+| when scoping new analysis projects, clarifying ambiguous business questions, or documenting analysis acceptance criteria with stakeholders. | data-analytics-skills | skill `stakeholder-requirements-gathering` |
+| when explaining statistical concepts to non-analysts, simplifying technical findings, or bridging communication between data teams and business stakeholders. | data-analytics-skills | skill `technical-to-business-translator` |
+| when analyzing trends over time, detecting seasonality, identifying anomalies in time series, or building simple forecasting models for planning. | data-analytics-skills | skill `time-series-analysis` |
+| when choosing chart types, designing presentation visuals, building dashboard charts, or applying visual design best practices to data output. | data-analytics-skills | skill `visualization-builder` |
 
 ## Plugins
 
@@ -197,3 +228,41 @@ Keywords: value-investing, stock-screener, company-analysis, valuation, tradingv
 - **skill `vi-stock-screen-research`** (skill) — Screens stocks for value investing (VI) on TradingView and writes a full company review of the one stock the user picks — business, industry, moat, management, 10 years of financials, valuation with margin of safety, ri…
 - **`/vi-research`** (command) — Write a full company review and valuation model for one stock (Word report + Excel model, Clinical Minimal style)
 - **`/vi-screen`** (command) — Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table
+
+### data-analytics-skills — data
+
+31 portable data-analytics skills (vendored from nimrodfisher/data-analytics-skills): EDA and data-quality audits, SQL validation, cohort/funnel/A-B/time-series analysis, root-cause investigation, dashboards and stakeholder communication.
+
+Keywords: data-analytics, eda, sql, ab-testing, cohort-analysis, dashboards
+
+- **skill `ab-test-analysis`** (skill) — Rigorous A/B test statistical analysis.
+- **skill `analysis-assumptions-log`** (skill) — Track and document analytical assumptions and decisions.
+- **skill `analysis-documentation`** (skill) — Structured, reproducible analysis documentation.
+- **skill `analysis-planning`** (skill) — Structure analysis approach before starting work.
+- **skill `analysis-qa-checklist`** (skill) — Pre-delivery quality assurance for analysis work.
+- **skill `analysis-retrospective`** (skill) — Post-analysis learning and process improvement.
+- **skill `business-metrics-calculator`** (skill) — Standard business metric calculation with industry benchmarks.
+- **skill `cohort-analysis`** (skill) — Time-based cohort analysis with retention and behaviour tracking.
+- **skill `context-packager`** (skill) — Efficiently package context for AI-assisted analysis.
+- **skill `dashboard-specification`** (skill) — Design specifications for effective dashboards.
+- **skill `data-catalog-entry`** (skill) — Create standardized metadata for data assets.
+- **skill `data-narrative-builder`** (skill) — Build compelling data-driven narratives.
+- **skill `data-quality-audit`** (skill) — Comprehensive data quality assessment against business rules, schema constraints, and freshness expectations.
+- **skill `executive-summary-generator`** (skill) — Create concise executive summaries from detailed analysis.
+- **skill `funnel-analysis`** (skill) — Conversion funnel analysis with drop-off investigation.
+- **skill `impact-quantification`** (skill) — Estimate and communicate business impact of insights.
+- **skill `insight-synthesis`** (skill) — Transform data findings into compelling insights.
+- **skill `methodology-explainer`** (skill) — Explain analysis methodology to diverse audiences.
+- **skill `metric-reconciliation`** (skill) — Trace and resolve discrepancies when the same metric shows different values in two or more sources.
+- **skill `peer-review-template`** (skill) — Structured peer review for analytical work.
+- **skill `programmatic-eda`** (skill) — Systematic exploratory data analysis.
+- **skill `query-validation`** (skill) — SQL query review for correctness, performance, and best practices.
+- **skill `root-cause-investigation`** (skill) — Systematic investigation of metric changes and anomalies.
+- **skill `schema-mapper`** (skill) — Document column-level mappings between source and target schemas.
+- **skill `segmentation-analysis`** (skill) — Customer/user segmentation with actionable insights.
+- **skill `semantic-model-builder`** (skill) — Build structured semantic layer documentation for metrics, dimensions, and entities.
+- **skill `sql-to-business-logic`** (skill) — Translate SQL queries into plain language business logic.
+- **skill `stakeholder-requirements-gathering`** (skill) — Structured requirements elicitation for analysis requests.
+- **skill `technical-to-business-translator`** (skill) — Translate technical analysis into business language.
+- **skill `time-series-analysis`** (skill) — Temporal pattern detection and forecasting.
+- **skill `visualization-builder`** (skill) — Create effective, publication-ready data visualizations.

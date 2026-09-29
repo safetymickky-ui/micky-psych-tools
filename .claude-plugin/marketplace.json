@@ -236,6 +236,20 @@
         "tradingview",
         "set-thailand"
       ]
+    },
+    {
+      "name": "data-analytics-skills",
+      "source": "./plugins/data-analytics-skills",
+      "description": "31 portable data-analytics skills (vendored from nimrodfisher/data-analytics-skills): EDA and data-quality audits, SQL validation, cohort/funnel/A-B/time-series analysis, root-cause investigation, dashboards and stakeholder communication.",
+      "category": "data",
+      "keywords": [
+        "data-analytics",
+        "eda",
+        "sql",
+        "ab-testing",
+        "cohort-analysis",
+        "dashboards"
+      ]
     }
   ]
 }
