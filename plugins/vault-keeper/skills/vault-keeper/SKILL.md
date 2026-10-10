@@ -59,13 +59,30 @@ type: note | artifact | moc
 source: <origin skill or "manual">
 primary-moc: <Topic>   # only for multi-topic notes
 tags: [<kebab>, <kebab>]
-links: [<Other Note title>, <Another>]   # mirror of the [[wikilinks]] in the body
+links: [<Other Note title>, <Another>]   # exactly the notes the body links inline — existing notes only
 ---
 ```
 
-Bodies link with Obsidian `[[wikilinks]]` by note title. A link to a note that does not exist
-yet is fine — it marks a note worth writing, not an error. Keep the `links:` frontmatter list
-in sync with the `[[...]]` used in the body.
+## Links — the Learn hub's rules
+
+Everything in this vault drains into the Learn hub, whose `links` table is a foreign key: a link
+must name a note that exists, or the drain refuses or drops it. So the vault follows the hub's
+rules now, not Obsidian's looser default:
+
+- **A link sits on words the note already uses.** Wrap the first mention of a concept that has
+  its own note — `the [[Lithium — Renal Monitoring|renal monitoring]] schedule`. Never write a
+  sentence, a "See also" line or a `## Related Notes` list just to carry links.
+- **Only notes that exist.** Before linking, confirm the target file is in `notes/` or
+  `artifacts/` (query). No stub links to notes worth writing later — if a note is missing, say so
+  in the save report instead.
+- **`links:` mirrors the body exactly.** Every inline note link appears in `links:` and nothing
+  else does. A link that is in `links:` but not in the body is either inlined at an existing
+  mention or removed.
+- **A MOC is not a link target.** A MOC is a chapter, not a note: wiring a note into its MOC is
+  the `## Notes` entry in the MOC, never a `links:` entry. A `> **Chapter MOCs**:` line in the
+  body may name MOCs; they never go in `links:`.
+- **Cross-topic links follow the same rule.** Link a note in another MOC only where this note
+  names that note's concept. Relatedness alone is not a reason.
 
 ## The four jobs
 
@@ -84,7 +101,8 @@ Only when the vault is not populated. **Populated means `vault/index.md` exists*
    never overwrite (see [references/vault-layout.md](references/vault-layout.md)).
 4. Write frontmatter + body. Merge producer-supplied extra frontmatter fields (e.g. `sources`,
    `board_pearls`, `review_count`) verbatim after the canonical fields; extras never override
-   the canonical keys. Add `[[wikilinks]]` to the obvious neighbours already in the vault.
+   the canonical keys. Link existing notes inline where the body already names them (see
+   **Links**), and set `links:` to exactly those targets.
 5. Wire it into its topic MOC under the section its type dictates — artifact under
    `## Artifacts`, asset under `## Assets`, note under `## Notes` (see
    [references/vault-layout.md](references/vault-layout.md)). Create the MOC if the topic is
@@ -98,8 +116,10 @@ Rebuild or repair `index.md` and the `MOCs/`. Regeneration is deterministic (rul
 [references/vault-layout.md](references/vault-layout.md)): a pure rebuild, alphabetical by
 title; multi-topic notes' `primary-moc:` frontmatter decides their one MOC and the index
 checks only the primary. Walk the vault, ensure every note is reachable from exactly one MOC
-and every MOC from `index.md`, fix stale/broken `[[links]]`, and report orphans (files no MOC
-points at) — never move or delete them. Within each MOC, entries sit under the canonical
+and every MOC from `index.md`, and report orphans (files no MOC points at) — never move or
+delete them. Repair links to the **Links** rules: a link whose target does not exist is
+unwrapped to plain text, a MOC in `links:` is removed, and `links:` is reset to exactly the
+body's inline note links. Report each repair by note. Within each MOC, entries sit under the canonical
 type-keyed sections (`## Artifacts` / `## Assets` / `## Notes`) per the layout reference.
 
 ### query — find before you duplicate
@@ -126,4 +146,6 @@ This skill has failed if:
 - A saved file is unreachable from `index.md`.
 - A duplicate note was created when an existing one should have been extended.
 - Frontmatter is missing, or `created` was fabricated.
+- A link names a note that does not exist, a MOC sits in `links:`, or `links:` differs from the
+  body's inline links.
 - A write was claimed that did not happen, or a vault path was invented.

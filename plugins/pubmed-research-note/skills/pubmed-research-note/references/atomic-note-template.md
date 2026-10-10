@@ -60,21 +60,20 @@ back to PubMed/textbook, mirroring the report's citation discipline.
 ## Body structure
 
 MOC wikilinks in the body are suggestions — vault-keeper may rewrite them when it does the
-actual MOC wiring.
+actual MOC wiring. Links to other notes follow vault-keeper's **Links** rules (the Learn hub's):
+only notes that already exist, placed on words the note already uses, never a list or a
+sentence written to carry links. There is no `## Related Notes` section.
 
 ```markdown
 > **Chapter MOCs**: [[Pediatric Psychopharmacology MOC]] · [[ADHD MOC]]
 
 ## Overview
-2–4 sentences. What it is, why it matters, the one hallmark fact. Link concepts with [[wikilinks]].
+2–4 sentences. What it is, why it matters, the one hallmark fact. Link a concept on its first
+mention when it already has a note in the vault: `[[Existing Note Title|words you used]]`.
 
 ## Mechanism            ← (section headers vary by concept: Mechanism, Dosing,
 ## <Concept sections>      Pharmacokinetics, Efficacy, Side Effects, Criteria, etc.)
 Quantified prose/tables. Effect sizes, NNT, doses, %, named trials — never vague.
-
-## Related Notes
-- [[Sibling concept]] · [[Parent disorder]] · [[Comparator drug]]
-- Link liberally; a target that doesn't exist yet is a valid stub, not an error.
 
 ## Sources
 1. Author. Title. Journal Year;vol:pages. PMID NNNNN. doi:10.xxxx/yyyy.
