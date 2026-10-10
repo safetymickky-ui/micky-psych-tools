@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.1 — 2026-10-10
+
+- Atomic-note template: the `## Related Notes` list and "a link to a missing note is a valid
+  stub" are gone. Concepts are linked on first mention, only to notes that already exist,
+  following vault-keeper's **Links** rules (the Learn hub's).
+
 ## 1.8.0 — 2026-09-26
 
 Quality pass on measured defects (three live reports: 92–95% of claims verified, errors

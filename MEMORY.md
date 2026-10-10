@@ -16,10 +16,10 @@ a milestone.
 | item                  | version |
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
-| pubmed-research-note   | 1.8.0   |
+| pubmed-research-note   | 1.8.1   |
 | intent-lock           | 0.4.2   |
 | plugin-creator        | 0.3.1   |
-| vault-keeper          | 0.4.0   |
+| vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.1   |
 | comprehensive-review  | 0.3.0   |
 | clinical-infographic  | 0.3.0   |
