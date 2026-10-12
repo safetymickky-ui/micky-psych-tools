@@ -48,6 +48,9 @@ vault/                             # shared knowledge vault — managed by vault
   CHANGELOG entry).
 - **SKILL.md description cap:** hard limit 1024 chars; aim well under. Too short (<~200) triggers
   unreliably. The description is the ONLY thing that decides when the skill fires — invest in it.
+- **Catalog description cap: 500 chars** — the plugin's entry in `marketplace.json`. The
+  claude.ai plugin sync leaves out any plugin over it (5 were dropped on 2026-10-12);
+  `validate.py` fails on it. (`plugin.json` descriptions are not held to it by the sync.)
 - **`name` is kebab-case** and must match: plugin dir name == plugin.json name == marketplace entry.
   Skill frontmatter `name` == its directory name.
 - **`source` is a relative path** (`./plugins/<name>`) in the marketplace entry.

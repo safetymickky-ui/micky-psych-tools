@@ -147,6 +147,17 @@ class ValidateTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("FAIL  skills/alpha: description 1025 chars (hard cap 1024)", out)
 
+    def test_catalog_description_over_sync_cap_fails(self):
+        make_repo(self.root, entry_extra={"description": "x" * 501})
+        code, out = run(self.root)
+        self.assertEqual(code, 1)
+        self.assertIn("FAIL  catalog description 501 chars (sync cap 500)", out)
+
+    def test_catalog_description_at_sync_cap_passes(self):
+        make_repo(self.root, entry_extra={"description": "x" * 500})
+        code, out = run(self.root)
+        self.assertEqual(code, 0, out)
+
     def test_invalid_yaml_fails_when_not_ratcheted(self):
         make_repo(self.root)
         write(self.root, "plugins/alpha/skills/alpha/SKILL.md",
