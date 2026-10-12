@@ -33,7 +33,7 @@ a milestone.
 | clinical-minimal      | 0.1.0   |
 | bullet-reconstruct    | 0.1.0   |
 | vi-stock-screen-research | 0.1.0 |
-| tutor                 | 0.2.0   |
+| tutor                 | 0.3.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -183,14 +183,18 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `/vi-research`; TradingView MCP bundled.
 
 - **tutor** — chunked teaching for fields below the owner's specialist level (category
-  `education`). Contract locked 2026-10-12: answer first; a guess picker (AskUserQuestion; one-line text
-  guess only as fallback, since 0.2.0) only before
-  why/what-if ideas; no quizzes, checks or reviews; worked code that really ran; exercises only
+  `education`). Contract locked 2026-10-12, revised in 0.3.0: a picker interview before every chunk (know,
+  why, depth; no guess); one small idea per message, "say next"; answer first; options only after
+  the last step. (0.1.0–0.2.0 had a guess before
+  why/what-if ideas); no quizzes, checks or reviews; worked code that really ran; exercises only
   on request. Lessons live on the "Tutor tracker" artifact (database collections `tracks`,
   `lessons`), not in the vault. Four domain packs (cp, py, dl, ms). One skill + `/tutor`.
 
 ## Recent milestones
 
+- **2026-10-12** — **tutor 0.3.0**: the owner said the guess misread him ("I want it to explain
+  step by step as a teacher"). Locked by picker: interview before every chunk (Know, Why, Depth),
+  then one small idea per message ending "say next"; no guess; each step saved for resume.
 - **2026-10-12** — **tutor 0.2.0**: the owner replaced the one-line text guess with an
   AskUserQuestion picker (three predictions + Just tell me + own words); never scored; text
   prompt kept only as the no-picker fallback.

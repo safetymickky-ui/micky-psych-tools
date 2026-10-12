@@ -1,7 +1,7 @@
 {
   "name": "tutor",
-  "version": "0.2.0",
-  "description": "Teaches new fields chunk by chunk: a guess picker (multiple-choice, own answer allowed) before why/what-if ideas only, an answer-first explanation anchored to what the learner already owns, a computed worked example and code that really ran, then numbered next options. No quizzes. Every lesson is saved to a phone-readable Tutor tracker page (artifact + database). Ships four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation.",
+  "version": "0.3.0",
+  "description": "Teaches new fields like a teacher: a short picker interview before each chunk (what the learner knows, why, how deep), then the chunk explained one small idea per message ('say next'), answer first, anchored to what the learner already owns, with computed examples and code that really ran, then numbered next options. No quizzes. Every lesson is saved to a phone-readable Tutor tracker page (artifact + database). Ships four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation.",
   "author": {
     "name": "Thanawat Suharit (Micky)"
   },

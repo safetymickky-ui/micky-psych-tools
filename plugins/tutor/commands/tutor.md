@@ -9,10 +9,11 @@ Run the `tutor` skill now.
   (title · next chunk id and title). He answers with a number to resume one. With no tracks
   yet, ask what he wants to learn in one picker (computational psychiatry, Python and R, neural
   networks, math and statistics notation, plus his own answer), then start intake.
-- `$ARGUMENTS` names an existing track (its id or its title) → resume it at its `next` chunk.
+- `$ARGUMENTS` names an existing track (its id or its title) → resume it at its `next` chunk (mid-way chunks resume at their next step).
 - `$ARGUMENTS` is a new topic → intake for a new track (intent-lock first), then the first chunk.
 
-The skill owns the whole procedure: route → load tracker and pack → teach one chunk (a guess
-picker only before why/what-if ideas, answer first, computed worked example, code that really
-ran) → numbered next options → save the lesson to the tracker. No quizzes. This command is only
+The skill owns the whole procedure: route → load tracker and pack → picker interview for the
+chunk (what he knows, why, how deep) → teach it one small idea per message, answer first, with
+computed examples and code that really ran; he says "next" for each step → numbered next options
+after the last step → each step saved to the tracker. No guess, no quizzes. This command is only
 the manual trigger.

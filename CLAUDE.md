@@ -216,9 +216,9 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   report contract under its `skills/vi-stock-screen-research/references/`.
 
 - **tutor** — teaches a new field chunk by chunk in the way the owner locked on 2026-10-12: a
-  guess picker (AskUserQuestion) only before why/what-if ideas (a pack chunk's `guess` field decides), an
-  answer-first explanation anchored to what he already owns, a worked example computed in code,
-  worked code that really ran, then numbered next options. No quizzes, checks or reviews;
+  picker interview before every chunk (what he knows, why, how deep; no guess), then the chunk
+  taught one small idea per message ("say next"), answer first, anchored to what he already owns,
+  examples computed in code and code that really ran, numbered options after the last step. No quizzes, checks or reviews;
   exercises only on "give me an exercise", with a scaffold that fades over four levels. Routes
   by scope: a field starts a track (intent-lock, then a self-report owns-check picker), a single
   concept gets one chunk. Every lesson is saved to the "Tutor tracker" artifact: the page reads
