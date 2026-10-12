@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 — 2026-10-12
+
+- The guess before a why/what-if idea is now an `AskUserQuestion` picker instead of a one-line
+  text prompt: header = chunk id, three short predictions (the fitting one mixed in with common
+  wrong ones, none marked), `Just tell me`, and his own words through "Other". It is never
+  scored, and the lesson follows in the same turn. The text prompt stays only as a fallback when
+  no picker exists; unattended runs skip the guess.
+- `guess.a` on a saved lesson holds the option he picked or the text he typed (`null` when he
+  skipped). The guess eval now checks that the picker was used.
+
 ## 0.1.0 — 2026-10-12
 
 - Initial release, built after a brainstorm and a three-round interview with Micky. The locked

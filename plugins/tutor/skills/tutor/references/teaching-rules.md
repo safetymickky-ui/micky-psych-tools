@@ -67,13 +67,27 @@ chunk the tutor teaches.
   that predicts a behaviour and that he can answer from what he already knows (the chunk's
   `needs`). A guess must never depend on a definition the chunk is about to teach.
 - Why it is there: guessing before the answer lifts later recall of that item.
-- Form: "Guess in one line: <question>". On a resume, put `<chunk id> <title>` on the line
-  above. Ask it and stop; do not answer it in the same message.
-- His answer is never scored. Open the next reply with what in the guess fits and what is
-  missing or wrong, in one or two lines, with no praise ("good guess" is praise), then teach.
-  When nothing in it is wrong, say what it already covers and what the chunk adds.
-- He can skip it ("just tell me"). Then teach at once.
-- Save the guess with the lesson: `guess: {q, a, note}`.
+- Form: one `AskUserQuestion` question, asked before any lesson text. `header` is the chunk id
+  (or `Guess` on a one-off); `question` is `<chunk id> <title>: <guess>` on a resume and the
+  guess alone on a one-off.
+- Options: three short predictions (1–5 words each, a one-line `description` when the label is
+  ambiguous) that he could make from the chunk's `needs`, then `Just tell me` last.
+  - Mix the fitting prediction with the common wrong ones (the misconception the chunk corrects,
+    a term collision, the answer the anchor would wrongly suggest). Do not mark, order or word
+    the fitting one so it stands out, and never add "(Recommended)".
+  - No option may use a term or symbol the chunk is about to define.
+  - "Other" lets him type his own guess; treat that text as his guess.
+- This is a prediction, not a quiz: no score, no "correct", no second question after it, and
+  no follow-up picker on the same idea.
+- His answer is never scored. When it comes back, open the lesson in the same turn with what
+  in his guess fits and what is missing or wrong, in one or two lines, with no praise ("good
+  guess" is praise), then teach. When nothing in it is wrong, say what it already covers and
+  what the chunk adds. When he picks `Just tell me` (or says it), teach at once.
+- No picker in this session (the tool is absent or the call fails): ask in text, "Guess in one
+  line: <question>", with `<chunk id> <title>` on the line above on a resume, and stop. In an
+  unattended run, skip the guess and teach.
+- Save the guess with the lesson: `guess: {q, a, note}`, where `a` is the option label he
+  picked or the text he typed. A skipped guess saves `a: null`.
 
 ## Shape and length
 

@@ -216,7 +216,7 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   report contract under its `skills/vi-stock-screen-research/references/`.
 
 - **tutor** — teaches a new field chunk by chunk in the way the owner locked on 2026-10-12: a
-  one-line guess only before why/what-if ideas (a pack chunk's `guess` field decides), an
+  guess picker (AskUserQuestion) only before why/what-if ideas (a pack chunk's `guess` field decides), an
   answer-first explanation anchored to what he already owns, a worked example computed in code,
   worked code that really ran, then numbered next options. No quizzes, checks or reviews;
   exercises only on "give me an exercise", with a scaffold that fades over four levels. Routes

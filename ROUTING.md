@@ -202,7 +202,7 @@ Keywords: value-investing, stock-screener, company-analysis, valuation, tradingv
 
 ### tutor — education
 
-Teaches new fields chunk by chunk: a one-line guess before why/what-if ideas only, an answer-first explanation anchored to what the learner already owns, a computed worked example and code that really ran, numbered next options, no quizzes. Every lesson is saved to a phone-readable Tutor tracker page. Four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation. One skill + /tutor.
+Teaches new fields chunk by chunk: a guess picker before why/what-if ideas only, an answer-first explanation anchored to what the learner already owns, a computed worked example and code that really ran, numbered next options, no quizzes. Every lesson is saved to a phone-readable Tutor tracker page. Four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation. One skill + /tutor.
 
 Keywords: tutoring, learning, computational-psychiatry, coding, chunked-lessons, study-tracker
 
