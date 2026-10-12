@@ -106,7 +106,7 @@ Keywords: psychiatry, literature-review, comprehensive, pubmed, academic-review
 
 ### clinical-infographic — research
 
-Renders a sourced clinical evidence report into a professional, print-ready medical summary infographic for clinical reference — a single self-contained HTML file with color-coded phase/theme columns, stat tiles, and a mandatory contraindications/"medications to avoid" safety banner. Ships no search engines by design: it never invents a clinical fact. Deep-integrates with comprehensive-review and pubmed-research-note (reuse an existing report or generate one first), and files the HTML as an asset via vault-keeper.
+Renders a sourced clinical evidence report into a print-ready medical summary infographic for clinical reference — one self-contained HTML file with color-coded columns, stat tiles, and a mandatory contraindications / "medications to avoid" banner. Ships no search engines: it never invents a clinical fact. Reuses or first generates a report via comprehensive-review or pubmed-research-note, then files the HTML to the vault via vault-keeper.
 
 Keywords: infographic, clinical-reference, visual-summary, html, medical, poster
 
@@ -123,7 +123,7 @@ Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
 
 ### concept-animation — education
 
-Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds the concept scene by scene with synchronized captions, player controls, and a reduced-motion fallback. Intent-lock is the mandatory Step 0 gate; any concept is in scope, but clinical facts come only from sourced reports (this session, the vault, or generated first by comprehensive-review / pubmed-research-note) — never invented. Files the finished animation to the vault as an asset via vault-keeper.
+Creates an animation that illustrates a concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds it scene by scene with synced captions, player controls, and a reduced-motion fallback. Intent-lock is the Step 0 gate. Any concept is in scope, but clinical facts come only from sourced reports (session, vault, or generated first by comprehensive-review / pubmed-research-note). Files the animation to the vault via vault-keeper.
 
 Keywords: animation, concept-explainer, html, svg, motion, visual-teaching
 
@@ -140,7 +140,7 @@ Keywords: web-design, frontend, ui-review, grid, typography, design-system
 
 ### code-explainer — education
 
-Explains given code as one self-contained, interactive HTML page — the original source on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked line by line. Ships three linked modes over one id space: hover/click line↔explanation highlighting, a debug-style step-through walkthrough in execution order, and a clickable inline SVG flow diagram. Reproduces the source verbatim, names real defects, and never invents a runtime value. Intent-lock gates only ambiguous asks; the vault is opt-in.
+Explains given code as one interactive, self-contained HTML page — the source on the left in a VS Code-styled editor (Dark+, line numbers, syntax highlighting), the explanation on the right, cross-linked line by line. Three linked modes: hover/click highlighting, a step-through walkthrough in execution order, and a clickable SVG flow diagram. Source verbatim, real defects named, no invented runtime values. Intent-lock only for ambiguous asks; vault opt-in.
 
 Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highlighting
 
@@ -149,7 +149,7 @@ Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highl
 
 ### ml-concept-lab — education
 
-Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file in which the real algorithm runs live and the learner drives it with controls, stepping, and animation (gradient descent, backprop, self-attention, k-means, sorting, Dijkstra, big-O, Q-learning). Intent-lock is the mandatory Step 0 gate; every number on screen is computed by the running model rather than hand-drawn, a live self-check panel asserts the algorithm's invariants against finite differences and closed forms, and the controls must reach the regime where the algorithm breaks. Driven and verified in a headless browser, then filed to the vault as an asset via vault-keeper.
+Builds an interactive explorable for a machine-learning, AI, or CS concept — one self-contained HTML file where the real algorithm runs live and the learner drives it (gradient descent, backprop, attention, k-means, Dijkstra, Q-learning). Intent-lock is the Step 0 gate. Every number is computed, not drawn; a self-check panel tests invariants; controls reach the regime where it breaks. Verified headless, filed to the vault via vault-keeper.
 
 Keywords: machine-learning, ai, computer-science, interactive-visualization, explorable, algorithm
 
@@ -158,7 +158,7 @@ Keywords: machine-learning, ai, computer-science, interactive-visualization, exp
 
 ### decision-interview — productivity
 
-Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, destructive or irreversible steps, missing preferences — and resolves them all in one batched option-picker interview instead of scattering one-off questions or silently guessing. Sweeps the task end to end, triages by whether the answers change the work, asks with a recommended option first, and records the resolutions in a decision ledger that governs the rest of the session. The execution-phase sibling of intent-lock, which owns pre-build alignment.
+Mid-task decision gate: collects every open decision the agent cannot make for the user — scope forks, trade-offs, irreversible steps, missing preferences — and resolves them in one batched option-picker interview instead of scattered questions or silent guesses. Sweeps the task, triages by impact, asks with a recommended option first, and records answers in a decision ledger for the session. Execution-phase sibling of intent-lock.
 
 Keywords: decisions, interview, batching, clarification, elicitation, autonomy
 
