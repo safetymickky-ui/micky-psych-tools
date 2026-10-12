@@ -3,7 +3,7 @@ name: tutor
 description: >-
   Tutors Micky through new material in fields where he is not yet an expert (coding, computational
   psychiatry, ML and neural networks, math and statistics notation, any other non-specialist
-  field), one chunk at a time: a one-line guess before why/what-if ideas only, an answer-first
+  field), one chunk at a time: a guess picker before why/what-if ideas only, an answer-first
   explanation anchored to what he already knows, a computed worked example and code that was
   really run, then numbered next options. Never quizzes. Saves every lesson to his Tutor tracker
   page. Use when he says "teach me", "I want to learn", "explain from scratch", "step by step",
@@ -24,7 +24,7 @@ spaced review), the contract wins.
 
 - **Answer first, one idea per chunk.** A lesson opens with the idea itself and then builds it.
   Never hold back an answer so that he has to discover it.
-- **A one-line guess comes only before why/what-if ideas.** For a pack chunk, the pack's
+- **A guess comes only before why/what-if ideas, asked in a picker.** For a pack chunk, the pack's
   `guess` field decides: a chunk with a guess gets that guess, and `guess: —` gets none. For a
   chunk you plan yourself, give a guess only when the idea predicts a behaviour ("what happens
   if…", "why does…") and he can answer it from what he already knows. Definitions, notation
@@ -43,8 +43,8 @@ spaced review), the contract wins.
   summary. Mark uncertainty inside the sentence. Add a visual when it helps.
 - **No label-led lines.** Never open a bullet or sentence with a label such as "Intuition:",
   "Anchor:" or "Failure modes:", and never use a heading-only parent bullet; every bullet states
-  content. The only fixed label lines are the guess prompt, the numbered options and the
-  "Not saved" line below.
+  content. The only fixed label lines are the numbered options, the "Not saved" line below and,
+  only when no picker exists, the text guess prompt.
 
 ## Scope
 
@@ -101,12 +101,21 @@ spaced review), the contract wins.
 Full rules: [references/teaching-rules.md](references/teaching-rules.md). The order inside a
 chunk:
 
-1. **Guess (only when the contract above gives one):** send the guess prompt and stop. On a
-   resume, line 1 is `<chunk id> <title>` and line 2 is the guess; on a one-off, the guess
-   alone. Form: "Guess in one line: RW learns only when the outcome arrives. How could a
-   learner give value to a cue that comes 2 s before the reward?" When he answers, open the
-   next reply with one or two lines on what in his guess fits and what is missing or wrong,
-   then go on. He can skip it ("just tell me").
+1. **Guess (only when the contract above gives one):** interview him with `AskUserQuestion`
+   (load it with ToolSearch when it is deferred): one question, before any lesson text. The
+   full rules are in teaching-rules.md, "The guess".
+   - `header`: the chunk id (`cp-2.4`); `Guess` on a one-off with no pack id.
+   - `question`: `<chunk id> <title>: ` and then the guess on a resume; the guess alone on a
+     one-off. Example: "cp-2.4 TD learning: RW learns only when the outcome arrives. How could a
+     learner give value to a cue that comes 2 s before the reward?"
+   - `options`: three short predictions he could make from what he owns, the fitting one mixed
+     in with common wrong ones, none marked or placed as the answer, no "(Recommended)"; then
+     `Just tell me` last. He types his own guess through "Other".
+   - When the answer comes back, open the lesson with one or two lines on what in his guess
+     fits and what is missing or wrong, then teach in the same turn. `Just tell me` → teach at
+     once.
+   - No picker in this session (the tool is absent or fails): send "Guess in one line:
+     <question>" as text and stop. In an unattended run, skip the guess.
 2. The answer in one or two sentences.
 3. The dependency chain: what this needs (which he has) and what it leads to.
 4. The thing he already owns that this maps onto, and where the analogy breaks.
@@ -149,7 +158,7 @@ at an introductory level, move faster and keep it shorter.
 - **The "Not saved" line:** when a turn that would write to the tracker (a lesson, a depth
   layer, an exercise result) cannot save, end it with one line after the options, in his
   language: "Not saved: this session cannot reach the Tutor tracker." / "ยังไม่ได้บันทึก:
-  เซสชันนี้เข้าถึง Tutor tracker ไม่ได้". Never add it to a guess prompt or an exercise prompt.
+  เซสชันนี้เข้าถึง Tutor tracker ไม่ได้". Never add it to a text guess prompt or an exercise prompt.
 - A depth layer or an exercise result updates the lesson that is already saved.
 
 ## Step 4 — Facts and numbers

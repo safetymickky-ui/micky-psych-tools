@@ -93,7 +93,8 @@ may use letters, digits and `_ - . ~ : @ +` only.
 - `body` is the lesson as shown in the chat, minus the parts saved in other fields: the code
   blocks and their outputs (in `code[]`) and the guess lines (in `guess`). It is markdown with
   Unicode math.
-- `guess` is `null` when the chunk had no guess.
+- `guess` is `null` when the chunk had no guess. `guess.a` is the picker option he chose or
+  the text he typed; it is `null` when he chose `Just tell me`.
 - `code[].out` holds only output that really printed. Leave it empty when the code did not run.
 - `sources` hold `http(s)` URLs only. The page drops other links.
 - Keep a lesson under about 100 KB. The hard cap is 256 KiB per document.

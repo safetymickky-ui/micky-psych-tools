@@ -12,7 +12,7 @@ Run the `tutor` skill now.
 - `$ARGUMENTS` names an existing track (its id or its title) → resume it at its `next` chunk.
 - `$ARGUMENTS` is a new topic → intake for a new track (intent-lock first), then the first chunk.
 
-The skill owns the whole procedure: route → load tracker and pack → teach one chunk (one-line
-guess only before why/what-if ideas, answer first, computed worked example, code that really
+The skill owns the whole procedure: route → load tracker and pack → teach one chunk (a guess
+picker only before why/what-if ideas, answer first, computed worked example, code that really
 ran) → numbered next options → save the lesson to the tracker. No quizzes. This command is only
 the manual trigger.

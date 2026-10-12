@@ -1,8 +1,6 @@
 ---
-# Contract: a what-if idea opens with a one-line guess prompt.
-type: regex
-target: last_message
-pattern: 'guess|เดา'
-flags: i
+# Contract: a what-if idea opens with the guess picker (AskUserQuestion), not a text prompt.
+type: tool_used
+tool: AskUserQuestion
 weight: 1
 ---

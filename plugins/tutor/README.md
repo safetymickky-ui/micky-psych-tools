@@ -13,9 +13,10 @@ neuroscience, psychotherapy) are out of scope.
 ```
 /tutor comp-psych
 → cp-2.4 TD learning
-  Guess in one line: RW learns only when the outcome arrives. How could a learner give
-  value to a cue that comes 2 s before the reward?
-→ (his guess) → what fits, what is missing → the answer first, in words he owns
+  [picker] cp-2.4 TD learning: RW learns only when the outcome arrives. How could a
+  learner give value to a cue that comes 2 s before the reward?
+    · 3 short predictions (the fitting one mixed in, none marked) · Just tell me · Other
+→ (his pick or his own words) → what fits, what is missing → the answer first, in words he owns
 → dependency chain → anchor (Rescorla-Wagner) and where it breaks
 → every symbol named, a worked example computed in code, a table beside it
 → failure modes and term collisions → one resource line
@@ -30,7 +31,7 @@ neuroscience, psychotherapy) are out of scope.
 | Rule | What it means |
 | --- | --- |
 | Answer first | The lesson opens with the idea itself; nothing is held back for him to discover. |
-| Guess only before why/what-if ideas | One line, then stop. The pack's `guess` field decides; notation and procedures are explained first. |
+| Guess only before why/what-if ideas | One `AskUserQuestion` picker: three predictions, `Just tell me`, or his own words. Never scored. The pack's `guess` field decides; notation and procedures are explained first. Text prompt only when no picker exists. |
 | No quizzes, checks or reviews | A chunk ends when he picks the next option. A quiz happens only if he asks in the moment. |
 | Code that really ran | Every snippet runs in the session first; only real output is shown. |
 | He writes code only on request | "give me an exercise" → a scaffold that fades over four levels. |
