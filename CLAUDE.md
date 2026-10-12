@@ -215,6 +215,19 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   in `.mcp.json`; no vault filing. One skill + `/vi-screen` and `/vi-research`; screen criteria and
   report contract under its `skills/vi-stock-screen-research/references/`.
 
+- **tutor** — teaches a new field chunk by chunk in the way the owner locked on 2026-10-12: a
+  one-line guess only before why/what-if ideas (a pack chunk's `guess` field decides), an
+  answer-first explanation anchored to what he already owns, a worked example computed in code,
+  worked code that really ran, then numbered next options. No quizzes, checks or reviews;
+  exercises only on "give me an exercise", with a scaffold that fades over four levels. Routes
+  by scope: a field starts a track (intent-lock, then a self-report owns-check picker), a single
+  concept gets one chunk. Every lesson is saved to the "Tutor tracker" artifact: the page reads
+  `tracks/` and `lessons/` from its own database, the skill writes through ArtifactData with
+  version pins, finds the page by its title and recreates it from `assets/tracker.html`. Four
+  domain packs under `skills/tutor/references/packs/` (comp-psych `cp`, python-r `py`, ml-dl
+  `dl`, math-stats `ms`; seeds computed in Python, resources opened 2026-10-12). Not filed to
+  the vault. One skill + `/tutor [track or topic]`.
+
 ## Style
 
 Follow the user's global CLAUDE.md. Keep plugins simple — solve the real task, no premature

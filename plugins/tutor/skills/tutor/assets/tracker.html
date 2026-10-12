@@ -1,0 +1,587 @@
+<title>Tutor tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap">
+<style>
+/* Layout: a study notebook in three panes (tracks, chunk map, lesson). Phone: one pane at a time with a back control. Wide: the chunk map sits beside the lesson. Palette: Clinical Minimal (white page, one clinical-teal accent). */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F5F7F8;
+  --sunken: #ECEFF2;
+  --line: #DCE2E6;
+  --line-strong: #C3CCD3;
+  --ink: #1B232B;
+  --ink-2: #4A5561;
+  --ink-3: #636E7A;
+  --accent: #0E7C86;
+  --accent-ink: #0B6A73;
+  --accent-tint: #E8F4F5;
+  --accent-100: #CDE7EA;
+  --warn: #A15C07;
+  --warn-tint: #FBF1E1;
+  --font-ui: "Leelawadee UI", "Atkinson Hyperlegible", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.4375rem;
+  --step-3: 1.75rem;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+    --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+    --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C; --accent-100: #1E4347;
+    --warn: #E0A458; --warn-tint: #2E2414;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+  --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+  --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C; --accent-100: #1E4347;
+  --warn: #E0A458; --warn-tint: #2E2414;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  padding-inline: 16px;
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1180px; margin-inline: auto; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.25; }
+p { margin: 0; }
+a { color: var(--accent-ink); text-underline-offset: 2px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: var(--font-mono); font-size: 0.875em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+
+.top {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px;
+  padding-block: 20px 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px;
+}
+.top h1 { font-size: var(--step-2); font-weight: 700; letter-spacing: -0.01em; }
+.top h1 .tick { color: var(--accent); }
+.top .sub { color: var(--ink-3); font-size: var(--step--1); }
+
+main { display: block; }
+main[data-view="tracks"] #view-track, main[data-view="tracks"] #view-lesson { display: none; }
+main[data-view="track"] #view-tracks, main[data-view="track"] #view-lesson { display: none; }
+main[data-view="lesson"] #view-tracks, main[data-view="lesson"] #view-track { display: none; }
+
+.back {
+  display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 6px 0;
+  color: var(--accent-ink); cursor: pointer; font-size: var(--step--1); font-weight: 700;
+}
+.back:hover { text-decoration: underline; }
+
+/* Track list */
+.group-label { margin: 8px 0 10px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; margin-bottom: 28px; }
+.card {
+  display: flex; flex-direction: column; gap: 10px; text-align: left; width: 100%;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px; cursor: pointer; min-width: 0;
+}
+.card:hover { border-color: var(--line-strong); }
+.card h2 { font-size: var(--step-1); font-weight: 700; }
+.card .goal { color: var(--ink-2); font-size: 0.9375rem; overflow-wrap: anywhere; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px;
+  font-size: var(--step--1); line-height: 1.6; background: var(--panel); color: var(--ink-2); border: 1px solid var(--line);
+}
+.chip.accent { background: var(--accent-tint); color: var(--accent-ink); border-color: var(--accent-100); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); border-color: transparent; }
+.bar { display: flex; gap: 3px; height: 8px; }
+.seg { flex: 1 1 0; background: var(--sunken); border-radius: 2px; overflow: hidden; }
+.seg > i { display: block; height: 100%; background: var(--accent); }
+.meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: var(--step--1); color: var(--ink-3); }
+.next-line { font-size: 0.9375rem; color: var(--ink); overflow-wrap: anywhere; }
+.next-line b { color: var(--accent-ink); font-weight: 700; }
+
+.empty {
+  border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 20px; display: grid; gap: 10px; max-width: 640px;
+}
+.empty h2 { font-size: var(--step-1); }
+.empty p { color: var(--ink-2); }
+.cmd {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-family: var(--font-mono); font-size: 0.875rem; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 4px 6px 4px 10px; max-width: 100%;
+}
+.cmd code { overflow-wrap: anywhere; }
+.copy {
+  border: 1px solid var(--line-strong); background: var(--bg); border-radius: 4px; padding: 0 8px;
+  font-family: var(--font-ui); font-size: var(--step--1); cursor: pointer; color: var(--accent-ink);
+}
+.example { opacity: 0.85; pointer-events: none; }
+.example .eyebrow { color: var(--warn); }
+
+/* Track view: chunk map */
+.track-head { display: grid; gap: 8px; margin-bottom: 18px; }
+.track-head h2 { font-size: var(--step-3); font-weight: 700; letter-spacing: -0.01em; }
+.track-head .goal { color: var(--ink-2); }
+.ms { margin-block: 18px 6px; display: grid; gap: 2px; }
+.ms h3 { font-size: 0.9375rem; font-weight: 700; color: var(--ink); }
+.ms .count { font-size: var(--step--1); color: var(--ink-3); }
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.row { border-bottom: 1px solid var(--line); }
+.row > .rbtn, .row > .rstatic {
+  display: grid; grid-template-columns: 4.6em minmax(0, 1fr) auto; align-items: baseline; gap: 10px;
+  width: 100%; padding: 9px 4px; background: none; border: 0; text-align: left;
+}
+.row > .rbtn { cursor: pointer; }
+.row > .rbtn:hover { background: var(--panel); }
+.row.open > .rbtn { background: var(--accent-tint); }
+.row .cid { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--ink-3); }
+.row .t { min-width: 0; overflow-wrap: anywhere; }
+.row.todo .t { color: var(--ink-2); }
+.row.owned .t { color: var(--ink-3); }
+.state { font-size: var(--step--1); color: var(--ink-3); white-space: nowrap; }
+.state.next { color: var(--accent-ink); font-weight: 700; }
+
+/* Lesson view */
+.lesson { min-width: 0; }
+.placeholder { color: var(--ink-3); border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 20px; }
+.lesson-head { display: grid; gap: 6px; margin-bottom: 16px; }
+.lesson-head h2 { font-size: var(--step-2); font-weight: 700; }
+.lesson-head h2 .cid { font-family: var(--font-mono); font-weight: 600; font-size: 0.8em; color: var(--accent-ink); margin-right: 8px; }
+.crumb { font-size: var(--step--1); color: var(--ink-3); overflow-wrap: anywhere; }
+.guess { background: var(--accent-tint); border: 1px solid var(--accent-100); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; margin-bottom: 18px; }
+.guess .q { font-weight: 700; }
+.guess b { color: var(--accent-ink); }
+.prose { max-width: 70ch; overflow-wrap: anywhere; }
+.prose > * + * { margin-top: 0.7em; }
+.prose h1, .prose h2, .prose h3, .prose h4 { font-size: var(--step-1); margin-top: 1.2em; }
+.prose ul, .prose ol { padding-left: 1.3em; margin-block: 0.4em; }
+.prose li + li { margin-top: 0.25em; }
+.prose li > ul, .prose li > ol { margin-top: 0.25em; }
+.prose code { font-family: var(--font-mono); font-size: 0.875em; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.prose pre { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.prose pre code { background: none; border: 0; padding: 0; font-size: 0.8125rem; line-height: 1.5; }
+.prose table { border-collapse: collapse; display: block; overflow-x: auto; max-width: 100%; font-variant-numeric: tabular-nums; }
+.prose th, .prose td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; vertical-align: top; }
+.prose th { background: var(--panel); }
+.prose blockquote { margin: 0; padding-left: 12px; border-left: 3px solid var(--line-strong); color: var(--ink-2); }
+.prose img { max-width: 100%; height: auto; }
+.section-label { margin: 26px 0 8px; }
+.run { margin: 0 0 14px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; max-width: 78ch; }
+.run figcaption { display: flex; justify-content: space-between; gap: 8px; padding: 6px 12px; background: var(--panel); border-bottom: 1px solid var(--line); font-size: var(--step--1); color: var(--ink-3); }
+.run pre { margin: 0; padding: 12px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.5; }
+.run .out-label { padding: 4px 12px; font-size: var(--step--1); color: var(--ink-3); border-top: 1px solid var(--line); background: var(--panel); }
+.run pre.out { background: var(--sunken); color: var(--ink); }
+.ex { margin: 0 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); max-width: 78ch; display: grid; gap: 8px; }
+.ex-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.muted { color: var(--ink-3); font-size: var(--step--1); }
+.deeper { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+.deeper h3 { font-size: var(--step-1); margin-bottom: 8px; }
+.list { padding-left: 1.2em; margin: 0; max-width: 70ch; }
+.list li + li { margin-top: 4px; }
+.notice { color: var(--ink-2); max-width: 640px; }
+
+@media (min-width: 960px) {
+  main[data-view="track"], main[data-view="lesson"] {
+    display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 36px; align-items: start;
+  }
+  main[data-view="track"] #view-lesson, main[data-view="lesson"] #view-track { display: block; }
+  #view-track { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; padding-right: 6px; }
+  .phone-only { display: none !important; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card, .row > .rbtn { transition: background-color .15s ease, border-color .15s ease; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Tutor tracker<span class="tick">.</span></h1>
+    <p class="sub" id="sub">Lessons saved by /tutor, by track and chunk</p>
+  </header>
+
+  <main id="app" data-view="tracks">
+    <section id="view-tracks" aria-label="Tracks">
+      <div id="tracks-body">
+        <p class="notice">Loading your tracks…</p>
+      </div>
+    </section>
+
+    <section id="view-track" aria-label="Chunk map">
+      <button class="back" id="back-tracks" type="button">← All tracks</button>
+      <div id="track-body"></div>
+    </section>
+
+    <section id="view-lesson" class="lesson" aria-label="Lesson">
+      <button class="back phone-only" id="back-track" type="button">← Back to the chunk map</button>
+      <div id="lesson-body">
+        <p class="placeholder">Pick a finished chunk to reread its lesson.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var LS_KEY = "tutor-tracker:last";
+  var app = document.getElementById("app");
+  var tracksBody = document.getElementById("tracks-body");
+  var trackBody = document.getElementById("track-body");
+  var lessonBody = document.getElementById("lesson-body");
+  var S = { db: null, tracks: new Map(), ready: false, open: { track: null, lesson: null }, unsubLesson: null, restored: false };
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else if (k === "on") Object.keys(attrs.on).forEach(function (ev) { n.addEventListener(ev, attrs.on[ev]); });
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function str(v) { return typeof v === "string" ? v : (v == null ? "" : String(v)); }
+  function arr(v) { return Array.isArray(v) ? v : []; }
+  function obj(v) { return v && typeof v === "object" && !Array.isArray(v) ? v : {}; }
+  function fmtDate(iso) {
+    var s = str(iso);
+    if (!/^\d{4}-\d{2}-\d{2}/.test(s)) return s;
+    var d = new Date(s.slice(0, 10) + "T00:00:00");
+    if (isNaN(d)) return s;
+    try { return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); } catch (e) { return s.slice(0, 10); }
+  }
+  function md(text) {
+    var src = str(text);
+    try {
+      if (window.marked && window.DOMPurify) {
+        var html = window.marked.parse(src, { gfm: true, breaks: false });
+        return window.DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+      }
+    } catch (e) {}
+    var p = document.createElement("div"); p.textContent = src;
+    return "<pre style=\"white-space:pre-wrap\">" + p.innerHTML + "</pre>";
+  }
+  function setProse(node, text) {
+    node.innerHTML = md(text);
+    node.querySelectorAll("a[href]").forEach(function (a) {
+      var h = a.getAttribute("href") || "";
+      if (/^https?:\/\//i.test(h)) { a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener noreferrer"); }
+      else if (!/^#[A-Za-z0-9._~-]*$/.test(h)) { a.removeAttribute("href"); }
+    });
+  }
+  function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S.open)); } catch (e) {} }
+  function load() { try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (e) { return null; } }
+  function setView(v) { app.setAttribute("data-view", v); }
+  function copyText(text, btn) {
+    function done(label) { btn.textContent = label; setTimeout(function () { btn.textContent = "Copy"; }, 1600); }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done("Copied"); }, function () { selectFallback(); });
+    } catch (e) { selectFallback(); }
+    function selectFallback() {
+      var code = btn.parentNode.querySelector("code");
+      if (code) { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+      done("Selected");
+    }
+  }
+  function cmdBox(text) {
+    var b = el("button", { class: "copy", type: "button", text: "Copy" });
+    b.addEventListener("click", function () { copyText(text, b); });
+    return el("span", { class: "cmd" }, [el("code", { text: text }), b]);
+  }
+
+  /* ---------- derived track facts ---------- */
+  function facts(t) {
+    var plan = arr(t.plan).filter(function (c) { return c && typeof c.id === "string"; });
+    var done = obj(t.done);
+    var owned = new Set(arr(t.owned).map(str));
+    var groups = [], byLabel = new Map();
+    plan.forEach(function (c) {
+      var label = str(c.m) || "Chunks";
+      if (!byLabel.has(label)) { var g = { label: label, items: [] }; byLabel.set(label, g); groups.push(g); }
+      byLabel.get(label).items.push(c);
+    });
+    var inPlan = new Set(plan.map(function (c) { return c.id; }));
+    var extra = Object.keys(done).filter(function (k) { return !inPlan.has(k); }).sort().map(function (k) {
+      var v = obj(done[k]); return { id: k, title: str(v.t) || k, m: "Other lessons" };
+    });
+    if (extra.length) groups.push({ label: "Other lessons", items: extra });
+    var finished = plan.filter(function (c) { return done[c.id] || owned.has(c.id); }).length;
+    var last = Object.keys(done).map(function (k) { return str(obj(done[k]).d); }).filter(Boolean).sort().pop() || "";
+    return { plan: plan, done: done, owned: owned, groups: groups, finished: finished, total: plan.length, lessons: Object.keys(done).length, last: last };
+  }
+  function stateOf(t, f, id) {
+    if (f.done[id]) return { k: "done", label: fmtDate(obj(f.done[id]).d) || "Done" };
+    if (str(t.next) === id) return { k: "next", label: "Next" };
+    if (f.owned.has(id)) return { k: "owned", label: "Already owned" };
+    return { k: "todo", label: "" };
+  }
+  function bar(f) {
+    var wrap = el("div", { class: "bar", role: "img", "aria-label": f.finished + " of " + f.total + " chunks done or already owned" });
+    f.groups.forEach(function (g) {
+      if (g.label === "Other lessons") return;
+      var n = g.items.length, k = g.items.filter(function (c) { return f.done[c.id] || f.owned.has(c.id); }).length;
+      var seg = el("span", { class: "seg" }, [el("i", { style: "width:" + (n ? Math.round(100 * k / n) : 0) + "%" })]);
+      seg.style.flexGrow = String(Math.max(n, 1));
+      wrap.appendChild(seg);
+    });
+    return wrap;
+  }
+  function titleOf(t, id) {
+    var c = arr(t.plan).find(function (x) { return x && x.id === id; });
+    if (c) return str(c.title);
+    var d = obj(obj(t.done)[id]); return str(d.t);
+  }
+
+  /* ---------- track list ---------- */
+  function renderTracks() {
+    tracksBody.textContent = "";
+    if (!S.ready) { tracksBody.appendChild(el("p", { class: "notice", text: "Loading your tracks…" })); return; }
+    var list = Array.from(S.tracks.entries());
+    if (!list.length) { tracksBody.appendChild(emptyState()); return; }
+    var order = { active: 0, paused: 1, done: 2 };
+    list.sort(function (a, b) {
+      var sa = order[str(a[1].status)] != null ? order[str(a[1].status)] : 0, sb = order[str(b[1].status)] != null ? order[str(b[1].status)] : 0;
+      if (sa !== sb) return sa - sb;
+      return str(b[1].updated).localeCompare(str(a[1].updated));
+    });
+    var labels = { active: "Active", paused: "Paused", done: "Finished" }, current = null, grid = null;
+    list.forEach(function (e) {
+      var id = e[0], t = e[1], st = labels[str(t.status)] ? str(t.status) : "active";
+      if (st !== current) {
+        current = st;
+        tracksBody.appendChild(el("p", { class: "eyebrow group-label", text: labels[st] }));
+        grid = el("div", { class: "cards" }); tracksBody.appendChild(grid);
+      }
+      grid.appendChild(trackCard(id, t));
+    });
+    document.getElementById("sub").textContent = list.length + (list.length === 1 ? " track" : " tracks") + " · lessons saved by /tutor";
+  }
+  function trackCard(id, t) {
+    var f = facts(t);
+    var chips = el("div", { class: "chips" });
+    if (str(t.pack)) chips.appendChild(el("span", { class: "chip accent", text: str(t.pack) + " pack" }));
+    if (str(t.level)) chips.appendChild(el("span", { class: "chip", text: str(t.level) }));
+    if (str(t.status) === "paused") chips.appendChild(el("span", { class: "chip warn", text: "paused" }));
+    var nextId = str(t.next);
+    var nextLine = nextId ? el("p", { class: "next-line" }, [el("b", { text: "Next " }), el("span", { class: "mono", text: nextId }), " " + titleOf(t, nextId)])
+                          : el("p", { class: "next-line", text: f.total && f.finished >= f.total ? "All planned chunks done." : "No next chunk set." });
+    var card = el("button", { class: "card", type: "button", "aria-label": "Open " + (str(t.title) || id) }, [
+      el("h2", { text: str(t.title) || id }),
+      str(t.goal) ? el("p", { class: "goal", text: str(t.goal) }) : null,
+      chips,
+      f.total ? bar(f) : null,
+      el("div", { class: "meta num" }, [
+        el("span", { text: f.total ? (f.finished + " of " + f.total + " chunks") : (f.lessons + (f.lessons === 1 ? " lesson" : " lessons")) }),
+        el("span", { text: f.last ? "Last lesson " + fmtDate(f.last) : "No lessons yet" })
+      ]),
+      nextLine
+    ]);
+    card.addEventListener("click", function () { openTrack(id); });
+    return card;
+  }
+  function emptyState() {
+    var box = el("div", { class: "empty" }, [
+      el("h2", { text: "No tracks yet" }),
+      el("p", { text: "Start one in chat with /tutor and a topic. Each lesson you finish lands here, under its track and chunk, so you can reread it on your phone." }),
+      cmdBox("/tutor computational psychiatry")
+    ]);
+    var ex = el("div", { class: "card example", "aria-hidden": "true" }, [
+      el("p", { class: "eyebrow", text: "Example of a track card" }),
+      el("h2", { text: "Computational psychiatry" }),
+      el("p", { class: "goal", text: "Prepare for the CPC Zurich course" }),
+      el("div", { class: "chips" }, [el("span", { class: "chip accent", text: "cp pack" }), el("span", { class: "chip", text: "developing" })]),
+      (function () { var b = el("div", { class: "bar" }); [100, 60, 0, 0, 0].forEach(function (w, i) { var s = el("span", { class: "seg" }, [el("i", { style: "width:" + w + "%" })]); s.style.flexGrow = String([4, 8, 5, 6, 5][i]); b.appendChild(s); }); return b; })(),
+      el("p", { class: "next-line" }, [el("b", { text: "Next " }), el("span", { class: "mono", text: "cp-2.4" }), " TD learning"])
+    ]);
+    var wrap = el("div", { style: "display:grid;gap:18px;max-width:640px" }, [box, ex]);
+    return wrap;
+  }
+
+  /* ---------- chunk map ---------- */
+  function openTrack(id) {
+    if (S.open.track !== id) closeLesson();
+    S.open.track = id; S.open.lesson = null; save();
+    renderTrack(id);
+    renderLessonPlaceholder();
+    setView("track");
+    window.scrollTo(0, 0);
+  }
+  function renderTrack(id) {
+    trackBody.textContent = "";
+    var t = S.tracks.get(id);
+    if (!t) { trackBody.appendChild(el("p", { class: "notice", text: "This track is no longer in the tracker." })); return; }
+    var f = facts(t);
+    var head = el("div", { class: "track-head" }, [
+      el("p", { class: "eyebrow", text: str(t.pack) ? (str(t.pack) + " pack · " + (str(t.level) || "level not set")) : (str(t.level) || "Custom track") }),
+      el("h2", { text: str(t.title) || id }),
+      str(t.goal) ? el("p", { class: "goal", text: str(t.goal) }) : null,
+      f.total ? bar(f) : null,
+      el("p", { class: "meta num" }, [el("span", { text: f.total ? (f.finished + " of " + f.total + " chunks done or already owned") : (f.lessons + " lessons") })]),
+      el("div", {}, [el("p", { class: "eyebrow", style: "margin-bottom:4px", text: "Resume in chat" }), cmdBox("/tutor " + id)])
+    ]);
+    trackBody.appendChild(head);
+    f.groups.forEach(function (g) {
+      var n = g.items.length, k = g.items.filter(function (c) { return f.done[c.id] || f.owned.has(c.id); }).length;
+      trackBody.appendChild(el("div", { class: "ms" }, [el("h3", { text: g.label }), el("span", { class: "count num", text: k + " of " + n })]));
+      var ul = el("ul", { class: "rows" });
+      g.items.forEach(function (c) {
+        var s = stateOf(t, f, c.id);
+        var inner = [el("span", { class: "cid", text: c.id }), el("span", { class: "t", text: str(c.title) || c.id }), el("span", { class: "state num" + (s.k === "next" ? " next" : ""), text: s.label })];
+        var li = el("li", { class: "row " + s.k + (S.open.lesson === c.id ? " open" : "") });
+        if (s.k === "done") {
+          var b = el("button", { class: "rbtn", type: "button", "aria-label": "Read lesson " + c.id }, inner);
+          b.addEventListener("click", function () { openLesson(id, c.id); });
+          li.appendChild(b);
+        } else {
+          li.appendChild(el("div", { class: "rstatic" }, inner));
+        }
+        ul.appendChild(li);
+      });
+      trackBody.appendChild(ul);
+    });
+    if (!f.groups.length) trackBody.appendChild(el("p", { class: "notice", text: "No chunks planned yet. The plan appears after the first /tutor session on this track." }));
+  }
+
+  /* ---------- lesson ---------- */
+  function closeLesson() { if (S.unsubLesson) { try { S.unsubLesson(); } catch (e) {} S.unsubLesson = null; } }
+  function renderLessonPlaceholder() { lessonBody.textContent = ""; lessonBody.appendChild(el("p", { class: "placeholder", text: "Pick a finished chunk to reread its lesson." })); }
+  function openLesson(trackId, chunkId) {
+    closeLesson();
+    S.open = { track: trackId, lesson: chunkId }; save();
+    renderTrack(trackId);
+    lessonBody.textContent = "";
+    lessonBody.appendChild(el("p", { class: "notice", text: "Opening " + chunkId + "…" }));
+    setView("lesson");
+    if (window.matchMedia && !window.matchMedia("(min-width: 960px)").matches) window.scrollTo(0, 0);
+    var ref;
+    try { ref = S.db.doc("lessons/" + trackId + "__" + chunkId); }
+    catch (e) { lessonBody.textContent = ""; lessonBody.appendChild(el("p", { class: "notice", text: "This chunk id cannot be opened: " + chunkId })); return; }
+    S.unsubLesson = ref.onSnapshot(function (snap) { renderLesson(trackId, chunkId, snap); }, function () {
+      lessonBody.textContent = "";
+      lessonBody.appendChild(el("p", { class: "notice", text: "The lesson could not be loaded. Reload the page to try again." }));
+    });
+  }
+  function renderLesson(trackId, chunkId, snap) {
+    lessonBody.textContent = "";
+    var t = S.tracks.get(trackId) || {};
+    if (!snap || !snap.exists) {
+      lessonBody.appendChild(el("p", { class: "notice", text: "The lesson text for " + chunkId + " is not saved yet." }));
+      return;
+    }
+    var L = snap.data() || {};
+    lessonBody.appendChild(el("div", { class: "lesson-head" }, [
+      el("p", { class: "crumb", text: (str(t.title) || trackId) + (str(L.m) ? " · " + str(L.m) : "") }),
+      el("h2", {}, [el("span", { class: "cid", text: chunkId }), str(L.title) || titleOf(t, chunkId)]),
+      el("p", { class: "meta num" }, [el("span", { text: str(L.date) ? fmtDate(L.date) : "" })])
+    ]));
+    var g = obj(L.guess);
+    if (str(g.q)) {
+      lessonBody.appendChild(el("aside", { class: "guess", "aria-label": "Your guess" }, [
+        el("p", { class: "eyebrow", text: "Guess first" }),
+        el("p", { class: "q", text: str(g.q) }),
+        str(g.a) ? el("p", {}, [el("b", { text: "You said: " }), str(g.a)]) : null,
+        str(g.note) ? el("p", {}, [el("b", { text: "What fits: " }), str(g.note)]) : null
+      ]));
+    }
+    var body = el("div", { class: "prose" }); setProse(body, L.body); lessonBody.appendChild(body);
+
+    var runs = arr(L.code).filter(function (c) { return c && str(c.src); });
+    if (runs.length) {
+      lessonBody.appendChild(el("p", { class: "eyebrow section-label", text: "Code we ran" }));
+      runs.forEach(function (c) {
+        lessonBody.appendChild(el("figure", { class: "run" }, [
+          el("figcaption", {}, [el("span", { text: str(c.lang) || "code" }), el("span", { text: str(c.out) ? "real output below" : "" })]),
+          el("pre", {}, [el("code", { text: str(c.src) })]),
+          str(c.out) ? el("div", { class: "out-label", text: "Output" }) : null,
+          str(c.out) ? el("pre", { class: "out" }, [el("code", { text: str(c.out) })]) : null
+        ]));
+      });
+    }
+    var exs = arr(L.exercises).filter(function (x) { return x && str(x.task); });
+    if (exs.length) {
+      lessonBody.appendChild(el("p", { class: "eyebrow section-label", text: "Exercises" }));
+      exs.forEach(function (x) {
+        var att = Number(x.attempts) || 0;
+        var status = x.ok === true ? "ran correctly" : (x.ok === false ? "not correct yet" : "");
+        var head = el("p", { class: "ex-head num" }, [
+          el("span", { class: "chip accent", text: "Level " + (Number(x.level) || "?") }),
+          el("span", { class: "muted", text: att + (att === 1 ? " attempt" : " attempts") + (status ? " · " + status : "") })
+        ]);
+        var task = el("div", { class: "prose" }); setProse(task, x.task);
+        lessonBody.appendChild(el("div", { class: "ex" }, [head, task]));
+      });
+    }
+    arr(L.deeper).forEach(function (d) {
+      if (!d || !str(d.body)) return;
+      var sec = el("section", { class: "deeper" }, [el("h3", { text: "Deeper: " + (str(d.title) || "more detail") })]);
+      var p = el("div", { class: "prose" }); setProse(p, d.body); sec.appendChild(p);
+      lessonBody.appendChild(sec);
+    });
+    var errs = arr(L.errors).map(str).filter(Boolean);
+    if (errs.length) {
+      lessonBody.appendChild(el("p", { class: "eyebrow section-label", text: "Errors named, with the fix" }));
+      lessonBody.appendChild(el("ul", { class: "list" }, errs.map(function (e) { return el("li", { text: e }); })));
+    }
+    var srcs = arr(L.sources).filter(function (s) { return s && /^https?:\/\//i.test(str(s.url)); });
+    if (srcs.length) {
+      lessonBody.appendChild(el("p", { class: "eyebrow section-label", text: "Sources" }));
+      lessonBody.appendChild(el("ul", { class: "list" }, srcs.map(function (s) {
+        return el("li", {}, [el("a", { href: str(s.url), target: "_blank", rel: "noopener noreferrer", text: str(s.title) || str(s.url) })]);
+      })));
+    }
+  }
+
+  /* ---------- wiring ---------- */
+  document.getElementById("back-tracks").addEventListener("click", function () {
+    closeLesson(); S.open = { track: null, lesson: null }; save(); setView("tracks"); renderTracks(); window.scrollTo(0, 0);
+  });
+  document.getElementById("back-track").addEventListener("click", function () {
+    closeLesson(); S.open.lesson = null; save(); renderTrack(S.open.track); renderLessonPlaceholder(); setView("track"); window.scrollTo(0, 0);
+  });
+
+  function unavailable() {
+    tracksBody.textContent = "";
+    tracksBody.appendChild(el("div", { class: "empty" }, [
+      el("h2", { text: "Lessons are not available in this view" }),
+      el("p", { text: "This page reads your lessons from its own database, which opens only inside Claude while you are signed in. Open the page from your artifacts on claude.ai." })
+    ]));
+  }
+
+  async function boot() {
+    var db = null;
+    try { db = (window.claude && typeof window.claude.use === "function") ? await window.claude.use("db") : null; } catch (e) { db = null; }
+    if (!db) { unavailable(); return; }
+    S.db = db;
+    db.collection("tracks").onSnapshot(function (snap) {
+      var m = new Map();
+      snap.docs.forEach(function (d) { if (d.exists) m.set(d.id, d.data() || {}); });
+      S.tracks = m; S.ready = true;
+      renderTracks();
+      if (!S.restored) {
+        S.restored = true;
+        var last = load();
+        if (last && last.track && S.tracks.has(last.track)) {
+          openTrack(last.track);
+          if (last.lesson && obj(S.tracks.get(last.track).done)[last.lesson]) openLesson(last.track, last.lesson);
+        }
+      } else if (S.open.track) {
+        renderTrack(S.open.track);
+      }
+    }, function () {
+      tracksBody.textContent = "";
+      tracksBody.appendChild(el("p", { class: "notice", text: "The tracker could not load its data. Reload the page to try again." }));
+    });
+  }
+  boot();
+})();
+</script>
