@@ -1,0 +1,17 @@
+{
+  "name": "tutor",
+  "version": "0.1.0",
+  "description": "Teaches new fields chunk by chunk: a one-line guess before why/what-if ideas only, an answer-first explanation anchored to what the learner already owns, a computed worked example and code that really ran, then numbered next options. No quizzes. Every lesson is saved to a phone-readable Tutor tracker page (artifact + database). Ships four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "tutoring",
+    "learning",
+    "computational-psychiatry",
+    "coding",
+    "chunked-lessons",
+    "study-tracker"
+  ]
+}

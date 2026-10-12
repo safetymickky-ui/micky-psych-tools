@@ -33,6 +33,7 @@ a milestone.
 | clinical-minimal      | 0.1.0   |
 | bullet-reconstruct    | 0.1.0   |
 | vi-stock-screen-research | 0.1.0 |
+| tutor                 | 0.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -181,7 +182,23 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   through clinical-minimal. Intent-lock first in both modes. One skill + `/vi-screen`,
   `/vi-research`; TradingView MCP bundled.
 
+- **tutor** — chunked teaching for fields below the owner's specialist level (category
+  `education`). Contract locked 2026-10-12: answer first; one-line guess only before
+  why/what-if ideas; no quizzes, checks or reviews; worked code that really ran; exercises only
+  on request. Lessons live on the "Tutor tracker" artifact (database collections `tracks`,
+  `lessons`), not in the vault. Four domain packs (cp, py, dl, ms). One skill + `/tutor`.
+
 ## Recent milestones
+
+- **2026-10-12** — Added **tutor 0.1.0** (category `education`) after a brainstorm and a three-round
+  picker interview. Locked: answer-first chunks; a one-line guess only before why/what-if ideas; no
+  quizzes, mastery checks or review schedule (the owner chose this over the retrieval-practice
+  evidence shown to him); worked code that really ran; exercises only on "give me an exercise"
+  (scaffold fades over 4 levels); plugin, not a personal skill; lessons saved to a "Tutor tracker"
+  artifact with a shared database (the vault was ruled out because `/empty-vault` deletes what it
+  drains); all four domain packs in v1. An independent dry run of five cases found 26 gaps (routing
+  by verb, pack guesses on notation chunks, tracker-less resume, gapped exercises that cannot run);
+  all were fixed before release, and 25 pack guesses were pruned or rephrased.
 
 - **2026-09-29** — Added **vi-stock-screen-research 0.1.0**, moved in from the claude.ai-saved skill
   (`anthropic-skills:vi-stock-screen-research`) after an intent-lock interview that locked: full company
