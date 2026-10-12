@@ -3,6 +3,7 @@
 
 What it checks, per run:
   - marketplace.json loads, has a kebab-case name, owner.name and a non-empty plugins[];
+  - each catalog entry's description is <= 500 chars (claude.ai plugin sync cap);
   - per entry: relative `source`, the directory exists, plugin.json loads, its name
     matches the entry and is kebab-case, its version is semver, declared component
     paths exist, a declared mcpServers file loads and every server is either http/sse
@@ -35,6 +36,7 @@ except ImportError:  # pragma: no cover - exercised only on a machine without Py
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KEBAB = r"[a-z0-9]+(-[a-z0-9]+)*"
 DESC_CAP = 1024
+PLUGIN_DESC_CAP = 500  # claude.ai plugin sync drops a plugin whose catalog description is longer
 DESC_WARN_BELOW = 200
 FM_RE = re.compile(r"^---\n(.*?)\n---[ \t]*(?:\n|$)", re.S)
 
@@ -234,6 +236,10 @@ def check_plugin(report, root, ratchet, entry):
     report.say(f"\nplugin: {name}")
     if not report.check(isinstance(entry, dict), "catalog entry is an object"):
         return
+    edesc = entry.get("description", "")
+    edesc = edesc if isinstance(edesc, str) else ""
+    report.check(len(edesc) <= PLUGIN_DESC_CAP,
+                 f"catalog description {len(edesc)} chars (sync cap {PLUGIN_DESC_CAP})")
     # source must resolve. relative paths only work for git/local marketplaces,
     # never for a marketplace distributed as a bare URL.
     src = entry.get("source", "")
