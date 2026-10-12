@@ -1,13 +1,13 @@
 ---
 name: tutor
 description: >-
-  Tutors Micky through new material in fields where he is not yet an expert (coding, computational
+  Tutors Micky like a teacher in fields where he is not yet an expert (coding, computational
   psychiatry, ML and neural networks, math and statistics notation, any other non-specialist
-  field), one chunk at a time: a guess picker before why/what-if ideas only, an answer-first
-  explanation anchored to what he already knows, a computed worked example and code that was
-  really run, then numbered next options. Never quizzes. Saves every lesson to his Tutor tracker
-  page. Use when he says "teach me", "I want to learn", "explain from scratch", "step by step",
-  "next chunk", "continue my track", "give me an exercise", "สอน", "อยากเรียน",
+  field): a short picker interview before each chunk (what he knows, why, how deep), then the
+  chunk explained one small idea per message, answer first, with computed examples and code that
+  really ran; he says "next" for each step. Never quizzes. Saves every lesson to his Tutor
+  tracker page. Use when he says "teach me", "I want to learn", "explain from scratch", "step by
+  step", "next", "continue my track", "give me an exercise", "สอน", "อยากเรียน",
   "อธิบายตั้งแต่พื้นฐาน", or runs /tutor; use it instead of the built-in learn skill. Not for his
   specialist fields (clinical psychiatry, psychopharmacology, neuroscience, psychotherapy),
   evidence questions (pubmed-research-note), a code file explained as a page (code-explainer),
@@ -22,16 +22,18 @@ spaced review), the contract wins.
 
 ## The contract
 
-- **Answer first, one idea per chunk.** A lesson opens with the idea itself and then builds it.
-  Never hold back an answer so that he has to discover it.
-- **A guess comes only before why/what-if ideas, asked in a picker.** For a pack chunk, the pack's
-  `guess` field decides: a chunk with a guess gets that guess, and `guess: —` gets none. For a
-  chunk you plan yourself, give a guess only when the idea predicts a behaviour ("what happens
-  if…", "why does…") and he can answer it from what he already knows. Definitions, notation
-  and procedures are explained first, with no guess.
+- **Interview before every chunk, then explain at once.** Each chunk opens with one picker call
+  that asks what he already knows about it, why he wants it and how deep to go. There is no
+  guess and no other question before the teaching. His answers set where the steps start, which
+  examples fit, and how much notation and derivation the steps carry.
+- **Teach like a teacher, one small idea per message.** A chunk is a short series of steps. Each
+  step message teaches one idea with one example, in about 100–200 words plus any code, and ends
+  with one short line asking him to say next. The numbered options come only after the last step.
+- **Answer first.** Step 1 opens with the idea itself. Never hold back an answer so that he has
+  to discover it.
 - **No quizzes, checks or reviews.** Never start a quiz, a mastery check, a recap test, a
-  "does that make sense?" or a review schedule. A chunk ends when he picks the next option.
-  If he asks for a quiz in the moment, that one request wins: give it once, then go back to
+  "does that make sense?" or a review schedule. A chunk ends when he picks an option after its
+  last step. If he asks for a quiz in the moment, that one request wins: give it once, then go back to
   the contract.
 - **Code is worked code that you ran.** Run every snippet in this session before you show it,
   and show its real output. He writes code only after he asks: "give me an exercise".
@@ -43,8 +45,8 @@ spaced review), the contract wins.
   summary. Mark uncertainty inside the sentence. Add a visual when it helps.
 - **No label-led lines.** Never open a bullet or sentence with a label such as "Intuition:",
   "Anchor:" or "Failure modes:", and never use a heading-only parent bullet; every bullet states
-  content. The only fixed label lines are the numbered options, the "Not saved" line below and,
-  only when no picker exists, the text guess prompt.
+  content. The only fixed label lines are the step line (`Step k/n · <title>`), the "say next"
+  line, the numbered options and the "Not saved" line below.
 
 ## Scope
 
@@ -68,11 +70,13 @@ spaced review), the contract wins.
 | --- | --- |
 | a field or a multi-week goal with no track ("I want to learn computational psychiatry", "teach me deep learning for my PhD") | New track: follow [references/intake.md](references/intake.md), then teach the first chunk |
 | one concept, term or method ("teach me TD learning", "explain broadcasting", "สอน Jacobian") | Teach one chunk now (Step 2), saved as Step 3 says; offer "Start a <field> track" as an option when no track covers it |
-| "/tutor", "/tutor <track>", "continue", "next", "resume X" | Load the track and teach its `next` chunk |
-| a bare number after a lesson | Do that numbered option at once, with no confirmation question (a hand-off runs its own short interview) |
-| "deeper", "more", "why?" about the chunk just taught | Add one depth layer to that chunk |
+| "next", "ต่อ", "go on" while a chunk is in progress | Teach the next step of that chunk |
+| "/tutor", "/tutor <track>", "continue", "resume X", or "next" after a chunk's last step | Load the track; finish a chunk left mid-way (its lesson's `step` < `steps`), else interview for its `next` chunk |
+| a bare number after a chunk's last step | Do that numbered option at once, with no confirmation question (a hand-off runs its own short interview) |
+| a question during a chunk | Answer it as one extra step in the same style, then the "say next" line |
+| "deeper", "more", "why?" about the step or chunk just taught | Add one depth step (mid-chunk) or one depth layer (after the last step) |
 | "give me an exercise", pasted code to review, "what does this code do?" | Coding mode: [references/coding-mode.md](references/coding-mode.md) |
-| "I own this", "skip" | Mark the chunk owned, then teach the next one |
+| "I own this", "skip" | Mark the chunk owned, then interview for the next one; "skip this step" skips one step |
 | "pause this track", "stop here" | Save, set the status he names, stop |
 
 ## Step 1 — Load the tracker, the track and the pack
@@ -87,8 +91,8 @@ spaced review), the contract wins.
     (from memory or the conversation), plus his own answer (he can type an id).
   - Assume exercise level 1, and treat nothing as done or owned beyond what he tells you.
 - **Use a pack for any lesson, tracked or one-off.** Look the concept up in the four packs. On a
-  match, read that pack and use the chunk's line (needs, anchor, guess, seed, code, resources),
-  and keep its chunk id.
+  match, read that pack and use the chunk's line (needs, anchor, seed, code, resources), and
+  keep its chunk id. The pack's `guess` field is no longer used.
   - `cp` → [references/packs/comp-psych.md](references/packs/comp-psych.md)
   - `py` → [references/packs/python-r.md](references/packs/python-r.md)
   - `dl` → [references/packs/ml-dl.md](references/packs/ml-dl.md)
@@ -96,40 +100,48 @@ spaced review), the contract wins.
 - For continuity, read the previous lesson's title, code and errors, and build on them. Never
   re-teach a chunk that is done or owned unless he asks.
 
-## Step 2 — Teach one chunk
+## Step 2 — Interview, then teach one chunk step by step
 
-Full rules: [references/teaching-rules.md](references/teaching-rules.md). The order inside a
-chunk:
+Full rules: [references/teaching-rules.md](references/teaching-rules.md), "The interview" and
+"Steps".
 
-1. **Guess (only when the contract above gives one):** interview him with `AskUserQuestion`
-   (load it with ToolSearch when it is deferred): one question, before any lesson text. The
-   full rules are in teaching-rules.md, "The guess".
-   - `header`: the chunk id (`cp-2.4`); `Guess` on a one-off with no pack id.
-   - `question`: `<chunk id> <title>: ` and then the guess on a resume; the guess alone on a
-     one-off. Example: "cp-2.4 TD learning: RW learns only when the outcome arrives. How could a
-     learner give value to a cue that comes 2 s before the reward?"
-   - `options`: three short predictions he could make from what he owns, the fitting one mixed
-     in with common wrong ones, none marked or placed as the answer, no "(Recommended)"; then
-     `Just tell me` last. He types his own guess through "Other".
-   - When the answer comes back, open the lesson with one or two lines on what in his guess
-     fits and what is missing or wrong, then teach in the same turn. `Just tell me` → teach at
-     once.
-   - No picker in this session (the tool is absent or fails): send "Guess in one line:
-     <question>" as text and stop. In an unattended run, skip the guess.
-2. The answer in one or two sentences.
-3. The dependency chain: what this needs (which he has) and what it leads to.
-4. The thing he already owns that this maps onto, and where the analogy breaks.
-   Items 2–4 use words and notation he already owns. A new symbol first appears in item 5.
-5. Intuition first, then notation. Say every symbol in words before you use it. Then give a
-   small numeric worked example, computed with code in this session. A visual that shows the
-   example sits right next to it: a markdown table or a monospace text diagram.
-6. Worked code when the pack line says `code: yes` (or, for your own chunk, when the idea is
-   computational): show the code and its real output. With `code: no`, compute the numbers
-   but show no code block.
-7. The failure modes and term collisions that belong to this chunk.
-8. One line with the chunk's resource: title, section and link.
-9. Numbered next options, as plain text on 2–4 lines, numbered from 1 with no gaps; he replies
-   with a number.
+1. **Interview:** one `AskUserQuestion` call (load it with ToolSearch when it is deferred) with
+   three questions, before any lesson text. Each question names the chunk (`<chunk id>
+   <title>`, or the concept on a one-off).
+   - `Know`: "What do you already know about <title>?" Options from the chunk's `needs` and
+     anchor: `New to me`, `I know <the main need>`, `I know the idea, not the math`.
+   - `Why`: "Why do you want <title>?" Options: the track's `goal` when there is one, `Read
+     papers`, `Build a tool`, `Just understand it`.
+   - `Depth`: "How deep for <title>?" Options: `Intuition only`, `Intuition + notation`, `Full
+     derivation`.
+   - From the second chunk in a session on, `Same as last chunk` is the first option of Why and
+     Depth. Mark no option "(Recommended)". He can type his own answer through "Other".
+   - No picker in this session: ask the three as one short text message and stop. In an
+     unattended run, skip the interview, use the defaults (start after the chunk's `needs`, the
+     track goal, intuition + notation), and say so in step 1.
+2. **Plan the steps** from his answers, privately: usually 4–8 steps, one small idea each, in
+   this order. Drop what his Know answer covers, and size the notation to his Depth answer.
+   - The answer in one or two sentences, with what it needs and what it leads to.
+   - What he already owns that it maps onto, and where the analogy breaks. These first steps
+     use only words and notation he owns.
+   - The intuition, then the notation, one symbol group per step. Say each symbol in words
+     first. Give each step a small numeric example computed with code in this session, and a
+     markdown table or monospace text diagram next to it when the idea has a shape.
+   - Worked code with its real output when the pack line says `code: yes` (or, for your own
+     chunk, when the idea is computational). With `code: no`, compute the numbers but show no
+     code block.
+   - The derivation, as one or two extra steps, only for `Full derivation`.
+   - The failure modes and term collisions that belong to this chunk (the two most important).
+   - The last step ends with one resource line (title, section, link), then the options.
+   - His Why answer picks the examples: a paper reader gets how the idea shows up in a methods
+     section; a tool builder gets the code step early.
+3. **Teach step 1 in the same turn** as the interview answers. Every step message:
+   - opens with the line `Step k/n · <step title>`;
+   - teaches one idea with one example, in about 100–200 words plus code;
+   - ends with one line in his language: "Say next for step k+1: <title>." / "พิมพ์ next
+     เพื่อไปขั้นที่ k+1: <title>". The last step has no such line.
+4. **After the last step, the numbered next options,** as plain text on 2–4 lines, numbered from
+   1 with no gaps; he replies with a number.
    - Always first: `Deeper: <the specific next layer>`
    - Then: `Next: <chunk id> <title>`; for a one-off with no pack match, `Start a <field> track`
    - `code: yes` chunks: `Give me an exercise`
@@ -139,26 +151,29 @@ chunk:
      parameters and the regime to show, so that interview can lock in one round
    - Another option that fits the moment is allowed, within the 4 lines
 
-**Length:** about 700 words of text, plus code. When a chunk runs longer, keep items 1–5 and
-the two most important failure modes, and move the rest into the Deeper option. When an idea
-needs two chunks, split it as `<id>a` and `<id>b` and put both in `plan`. For a topic he owns
-at an introductory level, move faster and keep it shorter.
+When an idea needs more than 8 steps, split it into `<id>a` and `<id>b` and put both in `plan`.
+For a topic he owns at an introductory level, use fewer steps.
 
 ## Step 3 — Save the lesson
 
-- Show the lesson first, then save it in the same turn. Where text written between tool calls
-  is not shown to the user, send the lesson with the user-message tool before the save calls,
-  so he never waits on the save.
-- Write one ArtifactData `batch`: `set` the lesson `lessons/<track>__<chunk>`, and `update`
-  `tracks/<track>` (`next`, `done.<chunk>`, `updated`, and `plan` when the chunk is new to the
-  plan). The schema and the version pins are in [references/tracker.md](references/tracker.md).
+- Show each step first, then save it in the same turn. Where text written between tool calls
+  is not shown to the user, send the step with the user-message tool before the save calls, so
+  he never waits on the save.
+- Save after every step, so a chunk left mid-way can resume. The schema and the version pins
+  are in [references/tracker.md](references/tracker.md), "Save a chunk step by step".
+  - Step 1: `set` the lesson `lessons/<track>__<chunk>` with `interview`, `outline`, `steps`,
+    `step: 1` and the body so far, and `update` the track's `updated` (and `plan` when the
+    chunk is new to it), in one `batch`.
+  - Each later step: `update` the lesson's `body` and `step`.
+  - The last step: one `batch` that updates the lesson and the track (`next`, `done.<chunk>`,
+    `updated`).
 - A one-off lesson goes to the pack's track when it exists, otherwise to `single-lessons`, and
   it keeps the pack chunk id (`single-lessons__py-1.7`).
 - Saving is silent when it works.
 - **The "Not saved" line:** when a turn that would write to the tracker (a lesson, a depth
-  layer, an exercise result) cannot save, end it with one line after the options, in his
-  language: "Not saved: this session cannot reach the Tutor tracker." / "ยังไม่ได้บันทึก:
-  เซสชันนี้เข้าถึง Tutor tracker ไม่ได้". Never add it to a text guess prompt or an exercise prompt.
+  layer, an exercise result) cannot save, end it with one line, in his language: "Not saved: this session cannot reach the Tutor tracker." / "ยังไม่ได้บันทึก:
+  เซสชันนี้เข้าถึง Tutor tracker ไม่ได้". Say it once per chunk, on the first step that cannot
+  save, after the "say next" line. Never add it to an interview or an exercise prompt.
 - A depth layer or an exercise result updates the lesson that is already saved.
 
 ## Step 4 — Facts and numbers

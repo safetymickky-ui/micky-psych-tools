@@ -42,7 +42,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "screen stocks", "VI screen", "value stock screen", "หาหุ้น VI", "สกรีนหุ้น", "deep research on this stock", "research this stock", "company review", "วิเคราะห์หุ้น", "value this… | vi-stock-screen-research | skill `vi-stock-screen-research` |
 | Write a full company review and valuation model for one stock (Word report + Excel model, Clinical Minimal style) | vi-stock-screen-research | `/vi-research` |
 | Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table | vi-stock-screen-research | `/vi-screen` |
-| when he says "teach me", "I want to learn", "explain from scratch", "step by step", "next chunk", "continue my track", "give me an exercise", "สอน", "อยากเรียน", "อธิบายตั้งแต่พื้นฐาน", or runs… | tutor | skill `tutor` |
+| when he says "teach me", "I want to learn", "explain from scratch", "step by step", "next", "continue my track", "give me an exercise", "สอน", "อยากเรียน", "อธิบายตั้งแต่พื้นฐาน", or runs /tutor; use… | tutor | skill `tutor` |
 | Start or resume a tutor track, or list your tracks with their next chunk | tutor | `/tutor` |
 
 ## Plugins
@@ -202,9 +202,9 @@ Keywords: value-investing, stock-screener, company-analysis, valuation, tradingv
 
 ### tutor — education
 
-Teaches new fields chunk by chunk: a guess picker before why/what-if ideas only, an answer-first explanation anchored to what the learner already owns, a computed worked example and code that really ran, numbered next options, no quizzes. Every lesson is saved to a phone-readable Tutor tracker page. Four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation. One skill + /tutor.
+Teaches new fields like a teacher: a short picker interview before each chunk (what you know, why, how deep), then one small idea per message ('say next'), answer first, anchored to what the learner already owns, with computed examples and code that really ran, numbered next options, no quizzes. Every lesson is saved to a phone-readable Tutor tracker page. Four domain packs: computational psychiatry, Python and R, neural-network architectures, math and statistics notation. One skill + /tutor.
 
 Keywords: tutoring, learning, computational-psychiatry, coding, chunked-lessons, study-tracker
 
-- **skill `tutor`** (skill) — Tutors Micky through new material in fields where he is not yet an expert (coding, computational psychiatry, ML and neural networks, math and statistics notation, any other non-specialist field), one chunk at a time: a…
+- **skill `tutor`** (skill) — Tutors Micky like a teacher in fields where he is not yet an expert (coding, computational psychiatry, ML and neural networks, math and statistics notation, any other non-specialist field): a short picker interview befo…
 - **`/tutor`** (command) — Start or resume a tutor track, or list your tracks with their next chunk

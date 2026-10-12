@@ -61,45 +61,52 @@ chunk the tutor teaches.
 - Treat modelling conveniences as conveniences: a clean closed form or a logistic noise
   assumption is a modelling choice, not an empirical discovery.
 
-## The guess (why/what-if ideas only)
+## The interview (before every chunk)
 
-- Which chunks get one: the pack's `guess` field decides; for your own chunks, only an idea
-  that predicts a behaviour and that he can answer from what he already knows (the chunk's
-  `needs`). A guess must never depend on a definition the chunk is about to teach.
-- Why it is there: guessing before the answer lifts later recall of that item.
-- Form: one `AskUserQuestion` question, asked before any lesson text. `header` is the chunk id
-  (or `Guess` on a one-off); `question` is `<chunk id> <title>: <guess>` on a resume and the
-  guess alone on a one-off.
-- Options: three short predictions (1–5 words each, a one-line `description` when the label is
-  ambiguous) that he could make from the chunk's `needs`, then `Just tell me` last.
-  - Mix the fitting prediction with the common wrong ones (the misconception the chunk corrects,
-    a term collision, the answer the anchor would wrongly suggest). Do not mark, order or word
-    the fitting one so it stands out, and never add "(Recommended)".
-  - No option may use a term or symbol the chunk is about to define.
-  - "Other" lets him type his own guess; treat that text as his guess.
-- This is a prediction, not a quiz: no score, no "correct", no second question after it, and
-  no follow-up picker on the same idea.
-- His answer is never scored. When it comes back, open the lesson in the same turn with what
-  in his guess fits and what is missing or wrong, in one or two lines, with no praise ("good
-  guess" is praise), then teach. When nothing in it is wrong, say what it already covers and
-  what the chunk adds. When he picks `Just tell me` (or says it), teach at once.
-- No picker in this session (the tool is absent or the call fails): ask in text, "Guess in one
-  line: <question>", with `<chunk id> <title>` on the line above on a resume, and stop. In an
-  unattended run, skip the guess and teach.
-- Save the guess with the lesson: `guess: {q, a, note}`, where `a` is the option label he
-  picked or the text he typed. A skipped guess saves `a: null`.
+- One `AskUserQuestion` call with three questions, `Know`, `Why` and `Depth`, before any lesson
+  text (options in SKILL.md, Step 2). Nothing else comes before the teaching: no guess, no
+  prediction, no check of what he knows.
+- Build the Know options from the chunk's `needs` and anchor, in words he owns. No option may
+  use a term or symbol the chunk is about to define.
+- His answers are self-report. Never test them. Use them to plan the steps:
+  - Know sets the start: skip the steps his answer covers, and add a short bridge step when he
+    picks `New to me` for a chunk whose `needs` he has not done in this track.
+  - Why picks the examples and the order: a paper reader gets how the idea appears in a methods
+    section and which parameter a paper reports; a tool builder gets the code step early; "just
+    understand it" gets the intuition steps and one example.
+  - Depth sets the notation: `Intuition only` keeps one numeric example and the main formula in
+    words; `Intuition + notation` names every symbol; `Full derivation` adds one or two
+    derivation steps, one line per step in a code block.
+- From the second chunk in a session on, `Same as last chunk` is the first option of Why and
+  Depth, so a run of chunks costs him two taps.
+- Save the answers with the lesson: `interview: {know, why, depth}`, each the option label he
+  picked or the text he typed.
 
-## Shape and length
+## Steps (one small idea per message)
+
+- Plan the steps privately after the interview: usually 4–8, in the order SKILL.md, Step 2
+  gives. Save the plan as `outline` (one title per step) so a later session can resume.
+- One step teaches one idea with one example. About 100–200 words plus code. When a step needs
+  more, split it into two steps and update `outline` and `steps`.
+- Open each step with `Step k/n · <step title>`. End it with one line, "Say next for step k+1:
+  <title>." in his language. The last step instead ends with the resource line and the
+  numbered options.
+- Build each step on the one before it. Do not repeat the earlier steps or recap them.
+- When he asks a question between steps, answer it as one extra step in the same style, then
+  give the "say next" line for the step that was due. Add it to `outline`.
+- "deeper" or "why?" between steps adds one depth step on the step just taught.
+- "skip this step" moves to the next step. "I own this" ends the chunk as owned.
+- When he says next after a long gap (a new session), open the next step with one line naming
+  the chunk and the last step taught, then teach.
+
+## Shape
 
 - Bullets with sub-bullets, two levels at most. Prose only where bullets would break a causal
   chain.
 - Never start a bullet or a sentence with a label or framing phrase ("Intuition:", "Key point:",
-  "Anchor:", "Bottom line:"). Start with the content.
+  "Anchor:", "Bottom line:"). Start with the content. The step line, the "say next" line and the
+  options are the only fixed lines.
 - No preamble, no restating his question, no closing summary, no "does that make sense?".
-- One chunk: about 700 words of text, plus code. When it runs longer, keep the guess, the answer,
-  the dependency chain, the anchor, the worked example and the two most important failure
-  modes, and move the rest into the Deeper option. Split an idea that needs more into `<id>a`
-  and `<id>b`.
 - Visuals: when the idea has a shape (a flow, a curve, a comparison), put a markdown table or a
   monospace text diagram right next to the example it shows; both read the same in the chat and
   on the tracker page. In the chat you may also draw a richer inline chart or diagram, but the
@@ -109,8 +116,8 @@ chunk the tutor teaches.
 
 ## Numbered next options
 
-- End every chunk with 2–4 numbered options in plain text, numbered from 1 with no gaps. He
-  answers with one number. The option set is in SKILL.md, Step 2, item 9.
+- End every chunk's last step with 2–4 numbered options in plain text, numbered from 1 with no
+  gaps. He answers with one number. The option set is in SKILL.md, Step 2, item 9.
 - Make the options specific: "1. Deeper: why γ < 1 keeps values finite", not "1. Go deeper".
 - After his number, act on it at once. Do not ask him to confirm. A hand-off option
   (Visualize) runs that skill's own short interview; pass it the concept, the parameters and
@@ -122,10 +129,11 @@ chunk the tutor teaches.
   the limits and where experts disagree.
 - Where the field is still disputed, give both sides without a verdict. Give a verdict only
   where the evidence has settled.
-- Save each layer to the same lesson document as `deeper[]`.
+- Save each layer to the same lesson document as `deeper[]`. A depth layer after the last step
+  is one message, in the same step size.
 
 ## Errors
 
-- When he makes an error (in a guess, in his own words, or in code), name it and give the fix
+- When he makes an error (in his own words, in a question, or in code), name it and give the fix
   in one bullet each. Judge the error, never the whole piece. No praise, no softening.
 - Record each error in the lesson's `errors[]` so later chunks can build on it.

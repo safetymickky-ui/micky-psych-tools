@@ -27,7 +27,6 @@ Let intent-lock run its own rounds. When it ends, come back here.
     models).
   - Check the spine against one or two real sources that you open: an official course syllabus
     or a standard textbook's table of contents. Record them in the track's `sources`.
-  - Mark which chunks are why/what-if ideas; those get a guess.
 
 ## 3. Bring in what memory already knows
 
@@ -52,7 +51,7 @@ concepts from the pack (or your own list for a custom spine). At most 4 options 
 
 - `set` `tracks/<id>` (schema in tracker.md), with `next` = the first chunk in `plan` that is
   not owned.
-- Teach that chunk in the same turn, following Step 2 of SKILL.md.
+- Interview him for that chunk in the same turn, then teach its first step (SKILL.md, Step 2).
 
 ## Single lessons
 

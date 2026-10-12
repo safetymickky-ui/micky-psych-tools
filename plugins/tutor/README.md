@@ -12,15 +12,15 @@ neuroscience, psychotherapy) are out of scope.
 
 ```
 /tutor comp-psych
-→ cp-2.4 TD learning
-  [picker] cp-2.4 TD learning: RW learns only when the outcome arrives. How could a
-  learner give value to a cue that comes 2 s before the reward?
-    · 3 short predictions (the fitting one mixed in, none marked) · Just tell me · Other
-→ (his pick or his own words) → what fits, what is missing → the answer first, in words he owns
-→ dependency chain → anchor (Rescorla-Wagner) and where it breaks
-→ every symbol named, a worked example computed in code, a table beside it
-→ failure modes and term collisions → one resource line
-→ 1. Deeper: why γ < 1 keeps values finite
+→ picker interview for cp-2.4 TD learning:
+    Know   New to me · I know RW and Bellman · I know the idea, not the math · Other
+    Why    <track goal> · Read papers · Build a tool · Just understand it
+    Depth  Intuition only · Intuition + notation · Full derivation
+→ Step 1/6 · The answer: value flows back to the cue
+  (one small idea, one example, ~100–200 words)
+  Say next for step 2: RW vs TD, where the analogy breaks.
+→ next → Step 2/6 … → next → Step 6/6 · resource line, then
+  1. Deeper: why γ < 1 keeps values finite
   2. Next: cp-2.5 Q-learning
   3. Show it in code
   4. Visualize: drag γ and α and watch δ move to the cue (short interview in ml-concept-lab)
@@ -30,9 +30,10 @@ neuroscience, psychotherapy) are out of scope.
 
 | Rule | What it means |
 | --- | --- |
-| Answer first | The lesson opens with the idea itself; nothing is held back for him to discover. |
-| Guess only before why/what-if ideas | One `AskUserQuestion` picker: three predictions, `Just tell me`, or his own words. Never scored. The pack's `guess` field decides; notation and procedures are explained first. Text prompt only when no picker exists. |
-| No quizzes, checks or reviews | A chunk ends when he picks the next option. A quiz happens only if he asks in the moment. |
+| Interview before every chunk | One picker: what he knows, why he wants it, how deep. Then the teaching starts at once; no guess. |
+| One small idea per message | Each step teaches one idea with one example and ends with "say next"; numbered options only after the last step. |
+| Answer first | Step 1 opens with the idea itself; nothing is held back for him to discover. |
+| No quizzes, checks or reviews | A chunk ends when he picks an option after its last step. A quiz happens only if he asks in the moment. |
 | Code that really ran | Every snippet runs in the session first; only real output is shown. |
 | He writes code only on request | "give me an exercise" → a scaffold that fades over four levels. |
 | Everything is saved | Each lesson goes to the tracker under its track and chunk. |
@@ -44,7 +45,7 @@ bullets, no praise, each error named with its fix, no closing summary.
 
 A private artifact titled "Tutor tracker" (template in `skills/tutor/assets/tracker.html`). It
 shows a card per track (progress by milestone, next chunk), a chunk map per track, and each
-saved lesson: the guess, the lesson text, the code with its real output, depth layers, the
+saved lesson: his interview answers, the steps taught so far, the code with its real output, depth layers, the
 errors named and their fixes, and sources. The page only reads. The skill writes through the
 artifact database (`tracks/<id>`, `lessons/<track>__<chunk>`); see
 `skills/tutor/references/tracker.md`. The skill finds the tracker by its title and creates it
@@ -52,7 +53,7 @@ from the template if it is missing.
 
 ## Domain packs
 
-`skills/tutor/references/packs/`, each a spine of 43–45 chunks with an anchor, a guess, a seed
+`skills/tutor/references/packs/`, each a spine of 43–45 chunks with an anchor, a seed
 computed in Python, and checked resources per chunk:
 
 - `comp-psych.md` (`cp`): RL → fitting → model comparison → DDM → Bayesian observers/HGF →

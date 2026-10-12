@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.3.0 — 2026-10-12
+
+- Micky said 0.2.0 misread him: he wants a teacher who explains step by step, not a guess.
+  Locked in a picker interview: no guess; an interview before every chunk; one small idea per
+  message.
+- Before every chunk: one `AskUserQuestion` call with three questions (Know, Why, Depth). The
+  answers set where the steps start, which examples fit and how much notation and derivation
+  the steps carry. `Same as last chunk` is offered from the second chunk on.
+- A chunk is now 4–8 steps. Each step message opens with `Step k/n · <title>`, teaches one idea
+  with one example in about 100–200 words plus code, and ends with "Say next for step k+1".
+  The numbered options come only after the last step. Questions and "deeper" between steps
+  become extra steps.
+- Each step is saved: lessons gain `interview`, `outline`, `steps` and `step`, and a chunk left
+  mid-way resumes at its next step. The pack `guess` fields are no longer used; old lessons keep
+  their `guess`, and the page still shows it.
+- Eval `guess-before-what-if` became `interview-before-chunk` (picker used, no guess, no quiz).
+
 ## 0.2.0 — 2026-10-12
 
 - The guess before a why/what-if idea is now an `AskUserQuestion` picker instead of a one-line
