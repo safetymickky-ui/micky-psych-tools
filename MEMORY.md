@@ -17,7 +17,7 @@ a milestone.
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.8.1   |
-| intent-lock           | 0.4.2   |
+| intent-lock           | 0.4.3   |
 | plugin-creator        | 0.3.1   |
 | vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.1   |
