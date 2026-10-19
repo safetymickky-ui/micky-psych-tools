@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 — 2026-10-20
+
+- Actionforge integration for the animation stage. New graph
+  `skills/blender-finish/scripts/stage4-animate.act` chains import-merge → export-check →
+  render-sheet and exits 1 on the first failing Blender step. The graph passes Actionforge's
+  `validate_graph`.
+- Bundled the `actionforge-app` MCP (Graph Builder, HTTP, no auth) in `.mcp.json` for editing
+  and validating the graph.
+- Running the graph needs the `actrun` CLI, which is optional and not bundled.
+
 ## 1.0.0 — 2026-10-19
 
 - Initial marketplace release, ported from the Antigravity `idea-to-3d` plugin.

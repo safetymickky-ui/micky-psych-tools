@@ -41,6 +41,16 @@ checkpoint waits for the user. Rules: `skills/idea-to-3d/references/pipeline-rul
   ```
   The bundled `meshy` MCP server (`scripts/run-meshy-mcp.mjs`) reads it at launch.
 
+## Actionforge (optional)
+
+The plugin also bundles Actionforge's Graph Builder MCP (`actionforge-app`, HTTP, no auth).
+It is used to edit and validate `skills/blender-finish/scripts/stage4-animate.act`. That graph
+runs Stage 4's animation pipeline (clip merge → export + quality gates → contact sheet) as one
+graph that stops on the first failing step. Running the graph needs the `actrun` CLI from
+<https://www.actionforge.dev/download>. Check its SHA256 against that page before use. The
+Windows zips served on 2026-10-20 did not match the published hashes and were not installed.
+The skills work without it.
+
 ## Notes
 
 - Built for Windows / PowerShell.

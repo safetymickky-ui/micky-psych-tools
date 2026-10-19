@@ -3,6 +3,10 @@
     "meshy": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/run-meshy-mcp.mjs"]
+    },
+    "actionforge-app": {
+      "type": "http",
+      "url": "https://app.actionforge.dev/api/v2/mcp"
     }
   }
 }
