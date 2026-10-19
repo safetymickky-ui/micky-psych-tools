@@ -34,6 +34,7 @@ a milestone.
 | bullet-reconstruct    | 0.1.0   |
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
+| design-md-generator   | 0.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -190,7 +191,15 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   on request. Lessons live on the "Tutor tracker" artifact (database collections `tracks`,
   `lessons`), not in the vault. Four domain packs (cp, py, dl, ms). One skill + `/tutor`.
 
+- **design-md-generator** — generates a spec-valid DESIGN.md (Google Stitch format: YAML tokens + ordered
+  sections, plus the Responsive / Iteration Guide / Known Gaps extensions from VoltAgent/awesome-design-md)
+  from a site URL, a brief, a codebase, or a remixed kit (awesome-design-md or the user-scope designmd MCP).
+  Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
+
 ## Recent milestones
+
+- **2026-10-19** — Added **design-md-generator 0.1.0** (branch `feat/design-md-generator`). designmd MCP is
+  installed at user scope, not bundled (stdio + personal API key).
 
 - **2026-10-12** — **tutor 0.3.0**: the owner said the guess misread him ("I want it to explain
   step by step as a teacher"). Locked by picker: interview before every chunk (Know, Why, Depth),

@@ -230,6 +230,13 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   domain packs under `skills/tutor/references/packs/` (comp-psych `cp`, python-r `py`, ml-dl
   `dl`, math-stats `ms`; seeds computed in Python, resources opened 2026-10-12). Not filed to
   the vault. One skill + `/tutor [track or topic]`.
+- **design-md-generator** — generates a spec-valid DESIGN.md (Google Stitch format: YAML token front
+  matter + ordered `##` sections) from one of four sources: a site URL (observed CSS only, never invented),
+  a brief (labelled invented), a codebase (Tailwind/`:root`/components), or a remixed kit
+  (awesome-design-md via `gh api`, or the user-scope designmd MCP, read-only unless asked). Lint with
+  `npx @google/design.md lint` is mandatory; an existing DESIGN.md is never overwritten (DESIGN.next.md +
+  diff). One skill + `/design-md [url|brief|path|kit]`; spec digest + per-mode recipes under its
+  `skills/design-md-generator/references/`.
 
 ## Style
 

@@ -1,0 +1,10 @@
+{
+  "name": "design-md-generator",
+  "version": "0.1.0",
+  "description": "Generates spec-valid DESIGN.md design-system files (Google Stitch format) from a live website, a text brief, an existing codebase, or a remixed reference kit, then lints them.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": ["design-md", "design-system", "design-tokens", "stitch", "ui-generation"]
+}

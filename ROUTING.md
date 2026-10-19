@@ -44,6 +44,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table | vi-stock-screen-research | `/vi-screen` |
 | when he says "teach me", "I want to learn", "explain from scratch", "step by step", "next", "continue my track", "give me an exercise", "สอน", "อยากเรียน", "อธิบายตั้งแต่พื้นฐาน", or runs /tutor; use… | tutor | skill `tutor` |
 | Start or resume a tutor track, or list your tracks with their next chunk | tutor | `/tutor` |
+| when the user says "make a DESIGN.md", "generate a DESIGN.md", "create a DESIGN.md for", "extract the design system from this site", "turn this site into a DESIGN.md", "DESIGN.md like Linear"… | design-md-generator | skill `design-md-generator` |
+| Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix | design-md-generator | `/design-md` |
 
 ## Plugins
 
@@ -208,3 +210,12 @@ Keywords: tutoring, learning, computational-psychiatry, coding, chunked-lessons,
 
 - **skill `tutor`** (skill) — Tutors Micky like a teacher in fields where he is not yet an expert (coding, computational psychiatry, ML and neural networks, math and statistics notation, any other non-specialist field): a short picker interview befo…
 - **`/tutor`** (command) — Start or resume a tutor track, or list your tracks with their next chunk
+
+### design-md-generator — design
+
+Generates spec-valid DESIGN.md design-system files (Google Stitch format) from a live website, a text brief, an existing codebase, or a remixed reference kit, then lints them.
+
+Keywords: design-md, design-system, design-tokens, stitch, ui-generation
+
+- **skill `design-md-generator`** (skill) — Generates a spec-valid DESIGN.md design-system file (Google Stitch format, YAML token front matter plus ordered prose sections, as in VoltAgent/awesome-design-md and getdesign.md) from one of four sources, a live websit…
+- **`/design-md`** (command) — Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix

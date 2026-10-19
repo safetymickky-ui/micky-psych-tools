@@ -250,6 +250,19 @@
         "chunked-lessons",
         "study-tracker"
       ]
+    },
+    {
+      "name": "design-md-generator",
+      "source": "./plugins/design-md-generator",
+      "description": "Generates spec-valid DESIGN.md design-system files (Google Stitch format) from a live website, a text brief, an existing codebase, or a remixed reference kit, then lints them.",
+      "category": "design",
+      "keywords": [
+        "design-md",
+        "design-system",
+        "design-tokens",
+        "stitch",
+        "ui-generation"
+      ]
     }
   ]
 }
