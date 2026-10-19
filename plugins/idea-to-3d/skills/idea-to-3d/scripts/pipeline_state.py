@@ -1,0 +1,390 @@
+#!/usr/bin/env python3
+"""
+Deterministic state manager for work/<slug>/pipeline.json.
+Ensures atomic writes, idempotent Meshy task tracking (preventing duplicate credit charges),
+and resumable checkpoint persistence across conversations.
+"""
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import os
+import re
+import sys
+from typing import Any
+
+VALID_STAGES = ("concept-art", "image-to-3d", "rig-animate", "blender-finish", "done")
+VALID_CHECKPOINTS = ("A", "B", "C")
+SUBDIRS = ("images", "meshy", "blender", "out", "preview")
+DEFAULT_TRIANGLE_BUDGET = 40_000
+DEFAULT_MAX_BYTES = 8 * 1024 * 1024
+
+
+def sanitize_slug(raw: str) -> str:
+    """Convert an arbitrary string or slug into a safe lowercase kebab-case slug."""
+    if not raw or not isinstance(raw, str):
+        raise ValueError("Slug must be a non-empty string")
+    cleaned = re.sub(r"[^a-z0-9]+", "-", raw.strip().lower()).strip("-")
+    if not cleaned:
+        raise ValueError(f"Slug '{raw}' contains no alphanumeric characters")
+    return cleaned[:64].strip("-")
+
+
+def parse_height_from_idea_md(idea_md_path: str) -> float | None:
+    """Extract target real-world height in meters from idea.md if present."""
+    if not os.path.exists(idea_md_path):
+        return None
+    with open(idea_md_path, "r", encoding="utf-8") as f:
+        text = f.read()
+    # Look for patterns like "height: 1.65 m", "Height: 0.15m", "15 cm tall"
+    m_meter = re.search(
+        r"(?:height|tall|size)\s*[:=-]?\s*(\d+(?:\.\d+)?)\s*(?:m|meters?|metres?)\b",
+        text,
+        re.IGNORECASE,
+    )
+    if m_meter:
+        val = float(m_meter.group(1))
+        if 0.02 <= val <= 20.0:
+            return val
+    m_cm = re.search(
+        r"(?:height|tall|size)\s*[:=-]?\s*(\d+(?:\.\d+)?)\s*(?:cm|centimeters?|centimetres?)\b",
+        text,
+        re.IGNORECASE,
+    )
+    if m_cm:
+        val = float(m_cm.group(1)) / 100.0
+        if 0.02 <= val <= 20.0:
+            return val
+    return None
+
+
+def get_work_dir(slug: str, work_root: str = ".") -> str:
+    safe_slug = sanitize_slug(slug)
+    return os.path.abspath(os.path.join(work_root, "work", safe_slug))
+
+
+def get_pipeline_path(slug: str, work_root: str = ".") -> str:
+    return os.path.join(get_work_dir(slug, work_root), "pipeline.json")
+
+
+def utc_now_iso() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def save_pipeline(slug: str, data: dict[str, Any], work_root: str = ".") -> str:
+    work_dir = get_work_dir(slug, work_root)
+    os.makedirs(work_dir, exist_ok=True)
+    for sub in SUBDIRS:
+        os.makedirs(os.path.join(work_dir, sub), exist_ok=True)
+    path = os.path.join(work_dir, "pipeline.json")
+    tmp_path = os.path.join(work_dir, "pipeline.tmp.json")
+    data["updated_at"] = utc_now_iso()
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+        f.write("\n")
+    os.replace(tmp_path, path)
+    return path
+
+
+def load_pipeline(slug: str, work_root: str = ".") -> dict[str, Any]:
+    path = get_pipeline_path(slug, work_root)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Pipeline state not found: {path}")
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict) or "slug" not in data:
+        raise ValueError(f"Invalid pipeline state in {path}")
+    return data
+
+
+def init_pipeline(
+    slug: str,
+    idea: str,
+    height_m: float = 1.7,
+    is_humanoid: bool = True,
+    clips: list[str] | None = None,
+    triangle_budget: int = DEFAULT_TRIANGLE_BUDGET,
+    max_bytes: int = DEFAULT_MAX_BYTES,
+    work_root: str = ".",
+) -> dict[str, Any]:
+    safe_slug = sanitize_slug(slug)
+    if not idea or not idea.strip():
+        raise ValueError("Idea description cannot be empty")
+    if height_m <= 0 or height_m > 50:
+        raise ValueError(f"Invalid target height_m: {height_m}")
+    if triangle_budget < 100 or triangle_budget > 500_000:
+        raise ValueError(f"Invalid triangle_budget: {triangle_budget}")
+    if max_bytes < 10_000:
+        raise ValueError(f"Invalid max_bytes: {max_bytes}")
+
+    expected_clips = clips if clips else (["idle", "walk", "wave"] if is_humanoid else ["idle", "wave"])
+    if "idle" not in expected_clips:
+        expected_clips = ["idle"] + expected_clips
+
+    path = get_pipeline_path(safe_slug, work_root)
+    if os.path.exists(path):
+        state = load_pipeline(safe_slug, work_root)
+        state["idea"] = idea.strip()
+        state["target_height_m"] = height_m
+        state["is_humanoid"] = is_humanoid
+        state["expected_clips"] = expected_clips
+        state["triangle_budget"] = triangle_budget
+        state["max_bytes"] = max_bytes
+        save_pipeline(safe_slug, state, work_root)
+        return state
+
+    rel_base = f"work/{safe_slug}"
+    state = {
+        "idea": idea.strip(),
+        "slug": safe_slug,
+        "stage": "concept-art",
+        "is_humanoid": bool(is_humanoid),
+        "target_height_m": float(height_m),
+        "triangle_budget": int(triangle_budget),
+        "max_bytes": int(max_bytes),
+        "expected_clips": expected_clips,
+        "tasks": {},
+        "chosen_concept": None,
+        "chosen_try": None,
+        "checkpoints": {
+            "A": {"approved": False, "choice": None, "notes": "", "timestamp": None},
+            "B": {"approved": False, "choice": None, "notes": "", "timestamp": None},
+            "C": {"approved": False, "choice": None, "notes": "", "timestamp": None},
+        },
+        "files": {
+            "idea_md": f"{rel_base}/idea.md",
+            "front_png": f"{rel_base}/images/front.png",
+            "side_png": f"{rel_base}/images/side.png",
+            "back_png": f"{rel_base}/images/back.png",
+            "meshy_glb": f"{rel_base}/meshy/{safe_slug}-meshy.glb",
+            "remeshed_glb": f"{rel_base}/meshy/{safe_slug}-remesh.glb",
+            "rigged_glb": f"{rel_base}/meshy/{safe_slug}-rigged.glb",
+            "blend": f"{rel_base}/blender/{safe_slug}.blend",
+            "out_glb": f"{rel_base}/out/{safe_slug}.glb",
+            "tries_png": f"{rel_base}/preview/tries.png",
+            "sheet_png": f"{rel_base}/preview/sheet.png",
+        },
+        "created_at": utc_now_iso(),
+        "updated_at": utc_now_iso(),
+    }
+    save_pipeline(safe_slug, state, work_root)
+    return state
+
+
+def record_task(
+    slug: str,
+    step_key: str,
+    task_id: str,
+    tool: str,
+    task_type: str,
+    credits: int = 0,
+    status: str = "PENDING",
+    settings: dict[str, Any] | None = None,
+    output_path: str | None = None,
+    work_root: str = ".",
+) -> dict[str, Any]:
+    if not step_key or not step_key.strip():
+        raise ValueError("step_key cannot be empty")
+    if not task_id or not task_id.strip():
+        raise ValueError("task_id cannot be empty")
+    if credits < 0:
+        raise ValueError(f"credits cannot be negative: {credits}")
+
+    state = load_pipeline(slug, work_root)
+    existing = state.setdefault("tasks", {}).get(step_key, {})
+    entry = {
+        "task_id": task_id.strip(),
+        "tool": tool.strip(),
+        "task_type": task_type.strip(),
+        "credits": int(credits),
+        "status": status.strip(),
+        "settings": settings if settings is not None else existing.get("settings", {}),
+        "output_path": output_path if output_path is not None else existing.get("output_path"),
+        "recorded_at": existing.get("recorded_at") or utc_now_iso(),
+        "updated_at": utc_now_iso(),
+    }
+    state["tasks"][step_key] = entry
+    save_pipeline(slug, state, work_root)
+    return entry
+
+
+def get_task(slug: str, step_key: str, work_root: str = ".") -> dict[str, Any] | None:
+    state = load_pipeline(slug, work_root)
+    return state.get("tasks", {}).get(step_key)
+
+
+def record_checkpoint(
+    slug: str,
+    checkpoint: str,
+    approved: bool,
+    choice: str | None = None,
+    notes: str = "",
+    work_root: str = ".",
+) -> dict[str, Any]:
+    cp = checkpoint.strip().upper()
+    if cp not in VALID_CHECKPOINTS:
+        raise ValueError(f"Invalid checkpoint '{checkpoint}'. Must be one of {VALID_CHECKPOINTS}")
+
+    state = load_pipeline(slug, work_root)
+    state.setdefault("checkpoints", {})[cp] = {
+        "approved": bool(approved),
+        "choice": choice,
+        "notes": notes,
+        "timestamp": utc_now_iso(),
+    }
+    if cp == "A" and approved:
+        if choice:
+            state["chosen_concept"] = choice
+        state["stage"] = "image-to-3d"
+    elif cp == "B" and approved:
+        if choice is not None:
+            try:
+                state["chosen_try"] = int(choice)
+            except ValueError:
+                state["chosen_try"] = choice
+        state["stage"] = "rig-animate"
+    elif cp == "C" and approved:
+        state["stage"] = "done"
+
+    save_pipeline(slug, state, work_root)
+    return state
+
+
+def set_stage(slug: str, stage: str, work_root: str = ".") -> dict[str, Any]:
+    if stage not in VALID_STAGES:
+        raise ValueError(f"Invalid stage '{stage}'. Must be one of {VALID_STAGES}")
+    state = load_pipeline(slug, work_root)
+    state["stage"] = stage
+    save_pipeline(slug, state, work_root)
+    return state
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Manage work/<slug>/pipeline.json state")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    p_init = sub.add_parser("init", help="Initialize or update pipeline.json")
+    p_init.add_argument("slug", help="Idea slug (kebab-case)")
+    p_init.add_argument("--idea", required=True, help="One-line idea description")
+    p_init.add_argument("--height", type=float, default=1.7, help="Target height in meters")
+    p_init.add_argument("--non-humanoid", action="store_true", help="Mark character as non-humanoid")
+    p_init.add_argument("--clips", default="", help="Comma-separated expected animation clips")
+    p_init.add_argument("--triangle-budget", type=int, default=DEFAULT_TRIANGLE_BUDGET)
+    p_init.add_argument("--work-root", default=".")
+
+    p_show = sub.add_parser("show", help="Display current pipeline.json")
+    p_show.add_argument("slug")
+    p_show.add_argument("--work-root", default=".")
+
+    p_get = sub.add_parser("get-task", help="Look up a recorded Meshy task by step key")
+    p_get.add_argument("slug")
+    p_get.add_argument("step_key")
+    p_get.add_argument("--work-root", default=".")
+
+    p_rec = sub.add_parser("record-task", help="Record or update a Meshy task")
+    p_rec.add_argument("slug")
+    p_rec.add_argument("step_key")
+    p_rec.add_argument("--task-id", required=True)
+    p_rec.add_argument("--tool", required=True)
+    p_rec.add_argument("--task-type", required=True)
+    p_rec.add_argument("--credits", type=int, default=0)
+    p_rec.add_argument("--status", default="PENDING")
+    p_rec.add_argument("--settings", default="{}")
+    p_rec.add_argument("--output", default=None)
+    p_rec.add_argument("--work-root", default=".")
+
+    p_cp = sub.add_parser("record-checkpoint", help="Record checkpoint A, B, or C decision")
+    p_cp.add_argument("slug")
+    p_cp.add_argument("checkpoint", choices=VALID_CHECKPOINTS)
+    p_cp.add_argument("--approved", choices=("true", "false"), required=True)
+    p_cp.add_argument("--choice", default=None)
+    p_cp.add_argument("--notes", default="")
+    p_cp.add_argument("--work-root", default=".")
+
+    p_stage = sub.add_parser("set-stage", help="Set current pipeline stage (and optionally record checkpoint)")
+    p_stage.add_argument("slug")
+    p_stage.add_argument("stage", choices=VALID_STAGES)
+    p_stage.add_argument("--checkpoint", choices=VALID_CHECKPOINTS, default=None)
+    p_stage.add_argument("--approved", choices=("true", "false"), default="true")
+    p_stage.add_argument("--choice", default=None)
+    p_stage.add_argument("--notes", default="")
+    p_stage.add_argument("--work-root", default=".")
+
+    args = parser.parse_args(argv)
+
+    if args.cmd == "init":
+        clips = [c.strip() for c in args.clips.split(",") if c.strip()] if args.clips else None
+        state = init_pipeline(
+            slug=args.slug,
+            idea=args.idea,
+            height_m=args.height,
+            is_humanoid=not args.non_humanoid,
+            clips=clips,
+            triangle_budget=args.triangle_budget,
+            work_root=args.work_root,
+        )
+        print(json.dumps(state, indent=2))
+        return 0
+
+    if args.cmd == "show":
+        state = load_pipeline(args.slug, args.work_root)
+        print(json.dumps(state, indent=2))
+        return 0
+
+    if args.cmd == "get-task":
+        task = get_task(args.slug, args.step_key, args.work_root)
+        if task is None:
+            print("NOT_FOUND")
+            return 1
+        print(json.dumps(task, indent=2))
+        return 0
+
+    if args.cmd == "record-task":
+        settings = json.loads(args.settings) if args.settings else {}
+        entry = record_task(
+            slug=args.slug,
+            step_key=args.step_key,
+            task_id=args.task_id,
+            tool=args.tool,
+            task_type=args.task_type,
+            credits=args.credits,
+            status=args.status,
+            settings=settings,
+            output_path=args.output,
+            work_root=args.work_root,
+        )
+        print(json.dumps(entry, indent=2))
+        return 0
+
+    if args.cmd == "record-checkpoint":
+        state = record_checkpoint(
+            slug=args.slug,
+            checkpoint=args.checkpoint,
+            approved=(args.approved == "true"),
+            choice=args.choice,
+            notes=args.notes,
+            work_root=args.work_root,
+        )
+        print(json.dumps(state["checkpoints"][args.checkpoint], indent=2))
+        return 0
+
+    if args.cmd == "set-stage":
+        if args.checkpoint:
+            record_checkpoint(
+                slug=args.slug,
+                checkpoint=args.checkpoint,
+                approved=(args.approved == "true"),
+                choice=args.choice,
+                notes=args.notes,
+                work_root=args.work_root,
+            )
+        state = set_stage(args.slug, args.stage, args.work_root)
+        print(f"Stage set to {state['stage']}")
+        return 0
+
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

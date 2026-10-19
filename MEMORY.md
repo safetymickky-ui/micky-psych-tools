@@ -35,6 +35,7 @@ a milestone.
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
+| idea-to-3d            | 1.0.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with

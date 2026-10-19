@@ -47,6 +47,11 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | whenever the user asks to "build a page", "make a landing page", "create a component", "make an artifact", "build a dashboard", "design the UI", "style this", "make it look good", "mock up a screen"… | design-md-generator | skill `design-md-apply` |
 | when the user says "make a DESIGN.md", "generate a DESIGN.md", "create a DESIGN.md for", "extract the design system from this site", "turn this site into a DESIGN.md", "DESIGN.md like Linear"… | design-md-generator | skill `design-md-generator` |
 | Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix | design-md-generator | `/design-md` |
+| Stage 4 sub-skill for the idea-to-3d pipeline. | idea-to-3d | skill `blender-finish` |
+| Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) using Nano Banana Pro. | idea-to-3d | skill `concept-art` |
+| Turn a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet (/idea-to-3d). | idea-to-3d | skill `idea-to-3d` |
+| Generate textured 3D models (.glb) from turnaround or front concept images using Meshy (meshy_multi_image_to_3d or meshy_image_to_3d), render a side-by-side comparison sheet in headless Blender, and… | idea-to-3d | skill `image-to-3d` |
+| Remesh a 3D model to animation-ready quad topology (20,000-30,000 faces), auto-rig humanoids, and generate animation clips (idle, walk, actions) using Meshy MCP tools (meshy_remesh, meshy_rig, meshy_… | idea-to-3d | skill `rig-animate` |
 
 ## Plugins
 
@@ -221,3 +226,15 @@ Keywords: design-md, design-system, design-tokens, stitch, ui-generation, artifa
 - **skill `design-md-apply`** (skill) — Applies the active DESIGN.md (the project's own, else the personal default at ~/.claude/DESIGN.md) to any visual UI being built, turning its tokens into CSS variables or a Tailwind theme, building components from its sp…
 - **skill `design-md-generator`** (skill) — Generates a spec-valid DESIGN.md design-system file (Google Stitch format, YAML token front matter plus ordered prose sections, as in VoltAgent/awesome-design-md and getdesign.md) from one of four sources, a live websit…
 - **`/design-md`** (command) — Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix
+
+### idea-to-3d — design
+
+Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet: concept art, Meshy image-to-3D, Meshy remesh/rig/animate, and headless Blender 5.2 clean-up, clip merge, quality checks and contact-sheet render. Three user checkpoints, explicit credit approval before every paid Meshy call, and idempotent task tracking.
+
+Keywords: 3d, meshy, blender, glb, rigging, animation, concept-art
+
+- **skill `blender-finish`** (skill) — Stage 4 sub-skill for the idea-to-3d pipeline.
+- **skill `concept-art`** (skill) — Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) using Nano Banana Pro.
+- **skill `idea-to-3d`** (skill) — Turn a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet (/idea-to-3d).
+- **skill `image-to-3d`** (skill) — Generate textured 3D models (.glb) from turnaround or front concept images using Meshy (meshy_multi_image_to_3d or meshy_image_to_3d), render a side-by-side comparison sheet in headless Blender, and present Checkpoint B.
+- **skill `rig-animate`** (skill) — Remesh a 3D model to animation-ready quad topology (20,000-30,000 faces), auto-rig humanoids, and generate animation clips (idle, walk, actions) using Meshy MCP tools (meshy_remesh, meshy_rig, meshy_list_animations, mes…
