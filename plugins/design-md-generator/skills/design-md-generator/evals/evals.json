@@ -5,7 +5,7 @@
       "id": 1,
       "name": "positive-trigger-site",
       "prompt": "Extract the design system from https://linear.app and make a DESIGN.md I can drop into my repo.",
-      "expected_output": "The skill fires in site mode, gathers tokens from CSS variables and computed styles (no invented hex values), writes DESIGN.md with YAML token front matter and sections in spec order (Overview through Do's and Don'ts, then Responsive Behavior, Iteration Guide, Known Gaps), runs npx @google/design.md lint until no errors, and reports path, token counts and known gaps.",
+      "expected_output": "The skill fires in site mode, gathers tokens from CSS variables and computed styles (no invented hex values), writes DESIGN.md with YAML token front matter and sections in spec order (Overview through Do's and Don'ts, then Responsive Behavior, Iteration Guide, Known Gaps), runs npx -p @google/design.md designmd lint until no errors, and reports path, token counts and known gaps.",
       "files": [],
       "assertions": []
     },
@@ -21,7 +21,7 @@
       "id": 3,
       "name": "negative-trigger",
       "prompt": "Here's our DESIGN.md — build me a pricing page that follows it.",
-      "expected_output": "Does not fire: building UI from an existing DESIGN.md is in the Not-for clause; route to a frontend skill instead.",
+      "expected_output": "Does not fire: building UI from an existing DESIGN.md is in the Not-for clause; route to design-md-apply instead.",
       "files": [],
       "assertions": []
     }

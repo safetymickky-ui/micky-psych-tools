@@ -1,0 +1,29 @@
+{
+  "skill_name": "design-md-apply",
+  "evals": [
+    {
+      "id": 1,
+      "name": "positive-trigger-artifact",
+      "prompt": "Make an artifact dashboard showing my weekly study hours.",
+      "expected_output": "The skill fires, locates DESIGN.md (project, else ~/.claude/DESIGN.md), emits its tokens as :root custom properties with dark-* tokens under the prefers-color-scheme and data-theme guards, builds cards/badges from its components, and reports no raw hex outside the token block.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "positive-trigger-component",
+      "prompt": "ทำหน้าเว็บ landing page for the clinic booking app in React + Tailwind.",
+      "expected_output": "The skill fires, writes the tokens into a Tailwind @theme or theme.extend, loads the file's Latin + Thai font stack, and follows the Do's and Don'ts (accent limits, radius rules).",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "negative-trigger",
+      "prompt": "Extract the design system from https://stripe.com into a DESIGN.md.",
+      "expected_output": "Does not fire: creating a DESIGN.md belongs to design-md-generator.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

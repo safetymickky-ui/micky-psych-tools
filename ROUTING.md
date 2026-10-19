@@ -44,6 +44,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Run a value-investing stock screen on TradingView (SET or US) and return a ranked top-10 table | vi-stock-screen-research | `/vi-screen` |
 | when he says "teach me", "I want to learn", "explain from scratch", "step by step", "next", "continue my track", "give me an exercise", "สอน", "อยากเรียน", "อธิบายตั้งแต่พื้นฐาน", or runs /tutor; use… | tutor | skill `tutor` |
 | Start or resume a tutor track, or list your tracks with their next chunk | tutor | `/tutor` |
+| whenever the user asks to "build a page", "make a landing page", "create a component", "make an artifact", "build a dashboard", "design the UI", "style this", "make it look good", "mock up a screen"… | design-md-generator | skill `design-md-apply` |
 | when the user says "make a DESIGN.md", "generate a DESIGN.md", "create a DESIGN.md for", "extract the design system from this site", "turn this site into a DESIGN.md", "DESIGN.md like Linear"… | design-md-generator | skill `design-md-generator` |
 | Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix | design-md-generator | `/design-md` |
 
@@ -213,9 +214,10 @@ Keywords: tutoring, learning, computational-psychiatry, coding, chunked-lessons,
 
 ### design-md-generator — design
 
-Generates spec-valid DESIGN.md design-system files (Google Stitch format) from a live website, a text brief, an existing codebase, or a remixed reference kit, then lints them.
+Generates spec-valid DESIGN.md design-system files (Google Stitch format) from a website, brief, codebase or remixed kit, and applies the active one to every UI and Artifact you build: a SessionStart hook finds the project or personal default DESIGN.md, and design-md-apply turns its tokens into CSS or Tailwind.
 
-Keywords: design-md, design-system, design-tokens, stitch, ui-generation
+Keywords: design-md, design-system, design-tokens, stitch, ui-generation, artifacts
 
+- **skill `design-md-apply`** (skill) — Applies the active DESIGN.md (the project's own, else the personal default at ~/.claude/DESIGN.md) to any visual UI being built, turning its tokens into CSS variables or a Tailwind theme, building components from its sp…
 - **skill `design-md-generator`** (skill) — Generates a spec-valid DESIGN.md design-system file (Google Stitch format, YAML token front matter plus ordered prose sections, as in VoltAgent/awesome-design-md and getdesign.md) from one of four sources, a live websit…
 - **`/design-md`** (command) — Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix

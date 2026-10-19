@@ -2,7 +2,7 @@
 
 A condensed version of the Google Stitch spec
 (<https://stitch.withgoogle.com/docs/design-md/specification/>, also printed by
-`npx @google/design.md spec`), plus the extended sections the VoltAgent/awesome-design-md
+`npx -p @google/design.md designmd spec`), plus the extended sections the VoltAgent/awesome-design-md
 files add. Tokens are the normative values. Prose explains how to apply them.
 
 ## Front matter (tokens)

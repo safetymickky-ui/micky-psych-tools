@@ -234,9 +234,12 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   matter + ordered `##` sections) from one of four sources: a site URL (observed CSS only, never invented),
   a brief (labelled invented), a codebase (Tailwind/`:root`/components), or a remixed kit
   (awesome-design-md via `gh api`, or the user-scope designmd MCP, read-only unless asked). Lint with
-  `npx @google/design.md lint` is mandatory; an existing DESIGN.md is never overwritten (DESIGN.next.md +
-  diff). One skill + `/design-md [url|brief|path|kit]`; spec digest + per-mode recipes under its
-  `skills/design-md-generator/references/`.
+  `npx -p @google/design.md designmd lint` is mandatory; an existing DESIGN.md is never overwritten (DESIGN.next.md +
+  diff). Applies automatically: a SessionStart hook announces the nearest project DESIGN.md (else the
+  personal default `~/.claude/DESIGN.md`), and the `design-md-apply` skill builds every UI/Artifact from it
+  (tokens → CSS vars/Tailwind with dark mode, component specs, off-system check). Two skills +
+  `/design-md [url|brief|path|kit]`; spec digest + per-mode recipes under
+  `skills/design-md-generator/references/`. Lint via the `designmd` bin (the `design.md` bin is broken on Windows).
 
 ## Style
 

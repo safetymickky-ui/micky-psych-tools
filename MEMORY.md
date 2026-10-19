@@ -34,7 +34,7 @@ a milestone.
 | bullet-reconstruct    | 0.1.0   |
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
-| design-md-generator   | 0.1.0   |
+| design-md-generator   | 0.2.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -197,6 +197,11 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
 
 ## Recent milestones
+
+- **2026-10-19** — **design-md-generator 0.2.0**: `design-md-apply` skill + SessionStart hook make every
+  UI/Artifact use the active DESIGN.md. Personal default `~/.claude/DESIGN.md` = "Clinical-Minimal-Web"
+  (Notion kit remix: warm neutrals + clinical teal + Inter/Noto Sans Thai + full dark theme), lint 0
+  errors. Lint via the `designmd` bin; the `design.md` bin is broken on Windows.
 
 - **2026-10-19** — Added **design-md-generator 0.1.0** (branch `feat/design-md-generator`). designmd MCP is
   installed at user scope, not bundled (stdio + personal API key).
