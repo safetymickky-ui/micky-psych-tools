@@ -120,7 +120,8 @@ def init_pipeline(
     if max_bytes < 10_000:
         raise ValueError(f"Invalid max_bytes: {max_bytes}")
 
-    expected_clips = clips if clips else (["idle", "walk", "wave"] if is_humanoid else ["idle", "wave"])
+    # A procedural wave bends rigid props out of shape, so a non-humanoid expects idle only.
+    expected_clips = clips if clips else (["idle", "walk", "wave"] if is_humanoid else ["idle"])
     if "idle" not in expected_clips:
         expected_clips = ["idle"] + expected_clips
 
@@ -181,35 +182,41 @@ def init_pipeline(
 def record_task(
     slug: str,
     step_key: str,
-    task_id: str,
-    tool: str,
-    task_type: str,
-    credits: int = 0,
-    status: str = "PENDING",
+    task_id: str | None = None,
+    tool: str | None = None,
+    task_type: str | None = None,
+    credits: int | None = None,
+    status: str | None = None,
     settings: dict[str, Any] | None = None,
     output_path: str | None = None,
     work_root: str = ".",
 ) -> dict[str, Any]:
+    """Record a new task or update a recorded one; a field left as None keeps its stored value."""
     if not step_key or not step_key.strip():
         raise ValueError("step_key cannot be empty")
-    if not task_id or not task_id.strip():
-        raise ValueError("task_id cannot be empty")
-    if credits < 0:
+    if credits is not None and credits < 0:
         raise ValueError(f"credits cannot be negative: {credits}")
 
     state = load_pipeline(slug, work_root)
     existing = state.setdefault("tasks", {}).get(step_key, {})
+
+    def pick(value: Any, key: str, default: Any = None) -> Any:
+        return value if value is not None else existing.get(key, default)
+
     entry = {
-        "task_id": task_id.strip(),
-        "tool": tool.strip(),
-        "task_type": task_type.strip(),
-        "credits": int(credits),
-        "status": status.strip(),
-        "settings": settings if settings is not None else existing.get("settings", {}),
-        "output_path": output_path if output_path is not None else existing.get("output_path"),
+        "task_id": (pick(task_id, "task_id") or "").strip(),
+        "tool": (pick(tool, "tool") or "").strip(),
+        "task_type": (pick(task_type, "task_type") or "").strip(),
+        "credits": int(pick(credits, "credits", 0)),
+        "status": pick(status, "status", "PENDING").strip(),
+        "settings": pick(settings, "settings", {}),
+        "output_path": pick(output_path, "output_path"),
         "recorded_at": existing.get("recorded_at") or utc_now_iso(),
         "updated_at": utc_now_iso(),
     }
+    for key in ("task_id", "tool", "task_type"):
+        if not entry[key]:
+            raise ValueError(f"{key} is required when recording a new task")
     state["tasks"][step_key] = entry
     save_pipeline(slug, state, work_root)
     return entry
@@ -336,7 +343,7 @@ def main(argv: list[str] | None = None) -> int:
     p_init.add_argument("slug", help="Idea slug (kebab-case)")
     p_init.add_argument("--idea", required=True, help="One-line idea description")
     p_init.add_argument("--height", type=float, default=1.7, help="Target height in meters")
-    p_init.add_argument("--non-humanoid", action="store_true", help="Mark character as non-humanoid")
+    p_init.add_argument("--non-humanoid", action="store_true", help="Mark character as non-humanoid (default clips: idle only)")
     p_init.add_argument("--clips", default="", help="Comma-separated expected animation clips")
     p_init.add_argument("--triangle-budget", type=int, default=DEFAULT_TRIANGLE_BUDGET)
     p_init.add_argument("--work-root", default=".")
@@ -350,15 +357,18 @@ def main(argv: list[str] | None = None) -> int:
     p_get.add_argument("step_key")
     p_get.add_argument("--work-root", default=".")
 
-    p_rec = sub.add_parser("record-task", help="Record or update a Meshy task")
+    p_rec = sub.add_parser(
+        "record-task",
+        help="Record or update a Meshy task; on an update, omitted options keep their stored values",
+    )
     p_rec.add_argument("slug")
     p_rec.add_argument("step_key")
-    p_rec.add_argument("--task-id", required=True)
-    p_rec.add_argument("--tool", required=True)
-    p_rec.add_argument("--task-type", required=True)
-    p_rec.add_argument("--credits", type=int, default=0)
-    p_rec.add_argument("--status", default="PENDING")
-    p_rec.add_argument("--settings", default="{}")
+    p_rec.add_argument("--task-id", default=None, help="Required for a new task")
+    p_rec.add_argument("--tool", default=None, help="Required for a new task")
+    p_rec.add_argument("--task-type", default=None, help="Required for a new task")
+    p_rec.add_argument("--credits", type=int, default=None, help="Default 0 for a new task")
+    p_rec.add_argument("--status", default=None, help="Default PENDING for a new task")
+    p_rec.add_argument("--settings", default=None, help="JSON object")
     p_rec.add_argument("--output", default=None)
     p_rec.add_argument("--work-root", default=".")
 
@@ -419,7 +429,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "record-task":
-        settings = json.loads(args.settings) if args.settings else {}
+        settings = json.loads(args.settings) if args.settings else None
         entry = record_task(
             slug=args.slug,
             step_key=args.step_key,

@@ -244,7 +244,9 @@ def check_glb(
     else:
         if "idle" not in clips:
             problems.append("missing required clip 'idle'")
-        if not allow_single_clip and len(clips) < 2:
+        # An expected list of one clip (a non-humanoid's ["idle"]) makes one clip correct.
+        single_expected = bool(expected_clips) and len(expected_clips) == 1
+        if not (allow_single_clip or single_expected) and len(clips) < 2:
             problems.append("expected at least 'idle' and one more animation clip")
 
     if expected_clips:

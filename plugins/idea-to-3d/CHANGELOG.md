@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.0.1 — 2026-10-20
+
+Fixes for three defects found in the 2026-10-20 paid tracer run (a brass lantern prop).
+
+- **`record-task` updates keep stored fields.** An update that left out `--settings` used to
+  overwrite the task's stored settings with `{}`, which lost a gate B try's `{"fix": …}`
+  marker. Every option is now optional on an update, and an omitted one keeps its stored
+  value. A new task still needs `--task-id`, `--tool` and `--task-type`. An explicit
+  `--settings '{}'` still clears the settings.
+- **Non-humanoids expect `idle` only.** `init --non-humanoid` now defaults `expected_clips`
+  to `["idle"]` instead of `["idle", "wave"]`, because the procedural `wave` bent a rigid
+  brass post out of shape at gate C. `check-glb.py` and `export-check.py` accept a lone clip
+  when `expected_clips` (from `pipeline.json` or `--clips`) names one clip, so no
+  `--allow-single-clip` is needed. Humanoid checks are unchanged. The blender-finish Mode B
+  command now passes `--clips "idle"` and tells the maker to copy `expected_clips`.
+- **Reviser copies `fix` exactly.** `roles/reviser.md` rule 5 now says to copy the issue's
+  `fix` string into a paid request's `change` character for character, and to put any extra
+  guidance in `why`. Once, the reviser had paraphrased it.
+
 ## 2.0.0 — 2026-10-20
 
 Every stage is now checked before the user sees it: maker → independent critic → reviser.

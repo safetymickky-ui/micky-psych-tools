@@ -134,6 +134,51 @@ class TestPipelineReviews(TempPipelineCase):
         self.assertEqual(json.loads(out.getvalue())[0]["gate"], "A1")
 
 
+class TestPipelineTasksAndClips(TempPipelineCase):
+    def record_cli(self, *args: str) -> int:
+        with redirect_stdout(io.StringIO()):
+            return pipeline_state.main(["record-task", "fox-knight", "try-3", *args, "--work-root", self.root])
+
+    def test_cli_update_without_settings_keeps_every_stored_field(self) -> None:
+        self.assertEqual(self.record_cli("--task-id", "t-1", "--tool", "meshy_multi_image_to_3d",
+                                         "--task-type", "multi-image-to-3d", "--credits", "30",
+                                         "--settings", '{"fix": "B-1"}', "--output", "meshy/try-3.glb"), 0)
+        self.assertEqual(self.record_cli("--status", "SUCCEEDED"), 0)
+        task = pipeline_state.get_task("fox-knight", "try-3", self.root)
+        self.assertEqual(task["settings"], {"fix": "B-1"})
+        self.assertEqual(task["task_id"], "t-1")
+        self.assertEqual(task["tool"], "meshy_multi_image_to_3d")
+        self.assertEqual(task["task_type"], "multi-image-to-3d")
+        self.assertEqual(task["credits"], 30)
+        self.assertEqual(task["output_path"], "meshy/try-3.glb")
+        self.assertEqual(task["status"], "SUCCEEDED")
+
+    def test_cli_explicit_empty_settings_still_clears_them(self) -> None:
+        self.record_cli("--task-id", "t-1", "--tool", "meshy_rig", "--task-type", "rigging",
+                        "--settings", '{"fix": "C-2"}')
+        self.record_cli("--settings", "{}")
+        self.assertEqual(pipeline_state.get_task("fox-knight", "try-3", self.root)["settings"], {})
+
+    def test_new_task_needs_id_tool_and_type_and_gets_defaults(self) -> None:
+        with self.assertRaises(ValueError):
+            pipeline_state.record_task("fox-knight", "rig", task_id="t-9", tool="meshy_rig", work_root=self.root)
+        entry = pipeline_state.record_task("fox-knight", "rig", task_id="t-9", tool="meshy_rig",
+                                           task_type="rigging", work_root=self.root)
+        self.assertEqual((entry["credits"], entry["status"], entry["settings"]), (0, "PENDING", {}))
+
+    def test_non_humanoid_defaults_to_idle_only_and_humanoid_is_unchanged(self) -> None:
+        prop = pipeline_state.init_pipeline("brass-lantern", "A brass lantern", height_m=0.4,
+                                            is_humanoid=False, work_root=self.root)
+        self.assertEqual(prop["expected_clips"], ["idle"])
+        self.assertEqual(pipeline_state.load_pipeline("fox-knight", self.root)["expected_clips"],
+                         ["idle", "walk", "wave"])
+        with redirect_stdout(io.StringIO()):
+            pipeline_state.main(["init", "brass-lantern", "--idea", "A brass lantern", "--height", "0.4",
+                                 "--non-humanoid", "--clips", "idle,spin", "--work-root", self.root])
+        self.assertEqual(pipeline_state.load_pipeline("brass-lantern", self.root)["expected_clips"],
+                         ["idle", "spin"])
+
+
 class TestReferenceFiles(unittest.TestCase):
     def test_schema_is_valid_json_with_expected_shape(self) -> None:
         schema = json.loads((REFERENCES / "review.schema.json").read_text(encoding="utf-8"))
@@ -161,6 +206,15 @@ def valid_review(gate: str = "B", verdict: str = "REVISE") -> dict:
     }]
     return {"gate": gate, "verdict": verdict,
             "scores": [{"criterion": c, "score": 2} for c in B_CRITERIA], "issues": issues}
+
+
+class TestReviserRole(unittest.TestCase):
+    def test_paid_request_change_is_the_fix_copied_exactly_and_guidance_goes_in_why(self) -> None:
+        text = (REFERENCES / "roles" / "reviser.md").read_text(encoding="utf-8")
+        rule5 = next(line for line in text.splitlines() if line.startswith("5. "))
+        self.assertIn("into `change` character for character", rule5)
+        self.assertIn("do not reword", rule5)
+        self.assertIn("goes in `why`", rule5)
 
 
 class TestValidateReview(unittest.TestCase):
