@@ -3,7 +3,7 @@
 Stand-in for the Antigravity CLI (`agy`) in tests. Behaviour comes from FAKE_AGY_MODE:
 ok | pass | response-only | bad | bad-then-ok | nonzero | not-success | sleep | hang-child
 for the critic, and for image generation (IDEA3D_AGY_BRAIN required):
-image | image-late | image-none | image-outside | image-outside-only.
+image | image-late | image-delayed | image-other-conv | image-none | image-outside | image-outside-only.
 When FAKE_AGY_LOG is set, each call appends its argv to it as one JSON line.
 """
 import json
@@ -39,6 +39,18 @@ def image_mode(mode: str, calls: int) -> int:
     conversation = "conv-test"
     brain_image = os.path.join(os.environ["IDEA3D_AGY_BRAIN"], conversation, f"fake_{calls}.jpg")
     reply = ""
+    if mode == "image-delayed":
+        # The file appears ~1 s after this process exits, as agy's does after its reply.
+        code = "; ".join((
+            "import os, sys, time", "from PIL import Image", "time.sleep(1)",
+            "os.makedirs(os.path.dirname(sys.argv[1]), exist_ok=True)",
+            "Image.new('RGB', (64, 64), (0, 128, 128)).save(sys.argv[1] + '.part', 'JPEG')",
+            "os.replace(sys.argv[1] + '.part', sys.argv[1])",
+        ))
+        subprocess.Popen([sys.executable, "-c", code, brain_image], stdin=subprocess.DEVNULL,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, close_fds=True)
+    if mode == "image-other-conv":
+        reply = write_jpeg(os.path.join(os.environ["IDEA3D_AGY_BRAIN"], "other-conv", "x.jpg"), (0, 128, 128)) + "\n"
     if mode in ("image", "image-late", "image-outside"):
         write_jpeg(brain_image, (0, 128, 128))
     if mode == "image":

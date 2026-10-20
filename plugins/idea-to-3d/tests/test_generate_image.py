@@ -12,6 +12,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
@@ -67,7 +68,7 @@ class GenerateImageCase(unittest.TestCase):
         self.env.start()
         self.wait = mock.patch.object(generate_image, "IMAGE_WAIT_SECONDS", 0)
         self.wait.start()
-        self.printed = ""
+        self.printed = self.stderr = ""
 
     def tearDown(self) -> None:
         self.wait.stop()
@@ -75,13 +76,13 @@ class GenerateImageCase(unittest.TestCase):
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def generate(self, *extra: str, mode: str = "image", out: str = "images/concept-1.png",
-                 prefix: list[str] | None = None) -> int:
+                 prefix: list[str] | None = None, prompt: tuple[str, ...] = ("--prompt", PROMPT)) -> int:
         os.environ["FAKE_AGY_MODE"] = mode
-        argv = ["robot", "--out", out, "--prompt", PROMPT, "--work-root", self.root, *extra]
-        stdout = io.StringIO()
-        with redirect_stdout(stdout), redirect_stderr(io.StringIO()):
+        argv = ["robot", "--out", out, *prompt, "--work-root", self.root, *extra]
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
             code = generate_image.main(argv, cmd_prefix=prefix or [sys.executable, str(FAKE_AGY)])
-        self.printed = stdout.getvalue().strip()
+        self.printed, self.stderr = stdout.getvalue().strip(), stderr.getvalue()
         return code
 
     def calls(self) -> list[list[str]]:
@@ -229,8 +230,117 @@ class TestArguments(GenerateImageCase):
             self.assertEqual(ctx.exception.code, 1, extra)
 
     def test_unexpected_exception_is_an_internal_error_not_a_traceback(self) -> None:
-        with mock.patch.object(generate_image, "find_image", side_effect=RuntimeError("boom")):
+        with mock.patch.object(generate_image.pipeline_state, "load_pipeline", side_effect=RuntimeError("boom")):
             self.assertEqual(self.generate(), 1)
+        self.assertIn("internal error: boom", self.stderr)
+
+
+class TestPromptFile(GenerateImageCase):
+    def test_prompt_file_content_reaches_the_agy_prompt(self) -> None:
+        text = 'A "quoted" robot with `backticks` and a Thai name: หุ่นยนต์'
+        prompt_file = self.tmp / "prompt.txt"
+        prompt_file.write_text(text, encoding="utf-8")
+        self.assertEqual(self.generate(prompt=("--prompt-file", str(prompt_file))), 0)
+        argv = self.calls()[0]
+        self.assertIn(text, argv[argv.index("-p") + 1])
+
+    def test_exactly_one_of_prompt_and_prompt_file_is_required(self) -> None:
+        prompt_file = self.tmp / "prompt.txt"
+        prompt_file.write_text("x", encoding="utf-8")
+        for prompt in (("--prompt", "a", "--prompt-file", str(prompt_file)), ()):
+            with self.assertRaises(SystemExit) as ctx, redirect_stderr(io.StringIO()):
+                self.generate(prompt=prompt)
+            self.assertEqual(ctx.exception.code, 1, prompt)
+        self.assertEqual(self.calls(), [])
+
+    def test_missing_or_empty_prompt_file_is_a_usage_error(self) -> None:
+        self.assertEqual(self.generate(prompt=("--prompt-file", str(self.tmp / "nope.txt"))), 1)
+        empty = self.tmp / "empty.txt"
+        empty.write_text("  \n", encoding="utf-8")
+        self.assertEqual(self.generate(prompt=("--prompt-file", str(empty))), 1)
+        self.assertEqual(self.calls(), [])
+
+
+class TestFreshness(GenerateImageCase):
+    def old_image(self, directory: Path, name: str = "old.jpg") -> Path:
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / name
+        Image.new("RGB", (8, 8), (255, 0, 0)).save(path)
+        os.utime(path, (time.time() - 600, time.time() - 600))
+        return path
+
+    def test_a_stale_image_in_the_conversation_folder_is_ignored(self) -> None:
+        self.old_image(self.brain / "conv-test")
+        self.assertEqual(self.generate(mode="image-none"), 2)
+        self.assertFalse((self.work / "images" / "concept-1.png").exists())
+
+    def test_a_fresh_image_wins_over_a_stale_one(self) -> None:
+        self.old_image(self.brain / "conv-test")
+        self.assertEqual(self.generate(mode="image-late"), 0, "the fresh image wins over the stale one")
+        with Image.open(self.work / "images" / "concept-1.png") as img:
+            self.assertLess(img.getpixel((5, 5))[0], 20)
+
+    def test_a_fresh_reply_path_in_another_conversation_under_the_brain_root_is_accepted(self) -> None:
+        self.assertEqual(self.generate(mode="image-other-conv"), 0)
+        self.assertTrue((self.work / "images" / "concept-1.png").is_file())
+
+    def test_an_image_that_appears_a_second_after_the_reply_is_waited_for(self) -> None:
+        with mock.patch.object(generate_image, "IMAGE_WAIT_SECONDS", 8):
+            self.assertEqual(self.generate(mode="image-delayed"), 0)
+        self.assertTrue((self.work / "images" / "concept-1.png").is_file())
+
+
+class TestPostAgyFailures(GenerateImageCase):
+    def test_a_corrupt_image_exits_2(self) -> None:
+        (self.brain / "conv-test").mkdir(parents=True)
+        (self.brain / "conv-test" / "broken.jpg").write_bytes(b"not an image")
+        self.assertEqual(self.generate(mode="image-none"), 2)
+
+    def test_any_failure_after_agy_succeeded_exits_2(self) -> None:
+        patches = (
+            mock.patch("PIL.Image.open", side_effect=RuntimeError("boom")),
+            mock.patch("PIL.Image.open", side_effect=Image.DecompressionBombError("huge")),
+            mock.patch.object(generate_image, "find_image", side_effect=OSError("denied")),
+        )
+        for patch in patches:
+            with patch:
+                self.assertEqual(self.generate(), 2)
+        self.assertFalse(list((self.work / "images").iterdir()))
+
+    def test_missing_pillow_exits_2(self) -> None:
+        with mock.patch.dict(sys.modules, {"PIL": None, "PIL.Image": None}):
+            self.assertEqual(self.generate(), 2)
+
+    def test_an_existing_output_is_unchanged_after_a_failed_run(self) -> None:
+        out = self.work / "images" / "concept-1.png"
+        out.write_bytes(b"previous")
+        with mock.patch("PIL.Image.open", side_effect=RuntimeError("boom")):
+            self.assertEqual(self.generate(), 2)
+        self.assertEqual(out.read_bytes(), b"previous")
+        shutil.rmtree(self.brain)
+        self.assertEqual(self.generate(mode="image-none"), 2)
+        self.assertEqual(out.read_bytes(), b"previous")
+
+
+class TestCleanupAndRefs(GenerateImageCase):
+    def test_a_temp_dir_that_cannot_be_removed_is_named_in_a_warning(self) -> None:
+        with mock.patch.object(generate_image.shutil, "rmtree"):
+            self.assertEqual(self.generate(), 0)
+        argv = self.calls()[0]
+        leftover = Path(argv[argv.index("--add-dir") + 1])
+        try:
+            self.assertIn(str(leftover), self.stderr)
+            self.assertIn("could not remove", self.stderr)
+        finally:
+            shutil.rmtree(leftover, ignore_errors=True)
+        self.generate()
+        self.assertNotIn("could not remove", self.stderr)
+
+    def test_ref_must_be_an_image_file(self) -> None:
+        notes = self.tmp / "notes.txt"
+        notes.write_text("not an image", encoding="utf-8")
+        self.assertEqual(self.generate("--ref", str(notes)), 1)
+        self.assertEqual(self.calls(), [])
 
 
 if __name__ == "__main__":

@@ -36,6 +36,7 @@ def load_module(name: str, path: Path):
 
 pipeline_state = load_module("pipeline_state_under_test", SCRIPTS / "pipeline_state.py")
 critique = load_module("critique_under_test", SCRIPTS / "critique.py")
+import agy_runner  # noqa: E402 - critique put SCRIPTS on sys.path; this is the module it raises from
 
 
 class TempPipelineCase(unittest.TestCase):
@@ -230,6 +231,10 @@ class TestValidateReview(unittest.TestCase):
         self.assertTrue(any("must match" in e for e in critique.validate_review(review, "B")))
 
 
+def parse_agy_output(stdout: str):
+    return critique.review_from_envelope(agy_runner.parse_envelope(stdout))
+
+
 class TestAgyParsing(unittest.TestCase):
     def test_last_review_object_returns_the_last_object_with_a_verdict(self) -> None:
         text = 'I will read it.\n{"verdict": "PASS", "x": {"b": 1}} then {"note": 1} trailing'
@@ -247,23 +252,23 @@ class TestAgyParsing(unittest.TestCase):
     def test_parse_prefers_structured_output_then_response(self) -> None:
         body = valid_review()
         both = json.dumps({"status": "SUCCESS", "response": "x", "structured_output": body})
-        self.assertEqual(critique.parse_agy_output(both), body)
+        self.assertEqual(parse_agy_output(both), body)
         only_text = json.dumps({"status": "SUCCESS", "response": "Reading.\n" + json.dumps(body)})
-        self.assertEqual(critique.parse_agy_output(only_text), body)
+        self.assertEqual(parse_agy_output(only_text), body)
 
     def test_parse_raises_on_failure_status_or_garbage(self) -> None:
-        with self.assertRaises(critique.CriticUnavailable):
-            critique.parse_agy_output(json.dumps({"status": "ERROR"}))
-        with self.assertRaises(critique.CriticUnavailable):
-            critique.parse_agy_output("Loaded cached credentials. Error")
+        with self.assertRaises(agy_runner.AgyUnavailable):
+            parse_agy_output(json.dumps({"status": "ERROR"}))
+        with self.assertRaises(agy_runner.AgyUnavailable):
+            parse_agy_output("Loaded cached credentials. Error")
 
     def test_agy_command_uses_env_then_path(self) -> None:
         with mock.patch.dict(os.environ, {"IDEA3D_AGY": r"C:\tools\agy.exe"}):
-            self.assertEqual(critique.agy_command(), [r"C:\tools\agy.exe"])
+            self.assertEqual(agy_runner.agy_command(), [r"C:\tools\agy.exe"])
         with mock.patch.dict(os.environ, {"IDEA3D_AGY": ""}), \
-                mock.patch.object(critique.shutil, "which", return_value=None):
-            with self.assertRaises(critique.CriticUnavailable):
-                critique.agy_command()
+                mock.patch.object(agy_runner.shutil, "which", return_value=None):
+            with self.assertRaises(agy_runner.AgyUnavailable):
+                agy_runner.agy_command()
 
 
 class TestCritiqueRun(TempPipelineCase):

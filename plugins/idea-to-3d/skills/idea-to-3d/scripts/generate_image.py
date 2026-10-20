@@ -5,11 +5,16 @@ Free image generation through the Antigravity CLI (`agy`).
 Asks agy to generate one image (optionally from reference images), finds the file agy wrote in
 its conversation folder, and saves it as a PNG under work/<slug>/.
 
-    python generate_image.py <slug> --out images/concept-1.png --prompt "<text>"
+    python generate_image.py <slug> --out images/concept-1.png (--prompt "<text>" | --prompt-file <path>)
            [--ref <path> ...] [--timeout 300] [--work-root .]
 
 Needs the user's Google consent recorded in pipeline.json (`set-critic <slug> gemini`): the
-prompt and reference images are sent to Google.
+prompt and reference images are sent to Google. Prefer --prompt-file for text built from idea.md:
+quotes and backticks break shell quoting.
+
+agy runs in its default mode, not `--mode plan`, because generating an image is a tool call. Only
+a fresh temp dir (holding copies of the --ref images) is added to its workspace; the work folder
+is never exposed to it.
 
 Exit codes: 0 image written (its absolute path is printed) · 1 usage or internal error ·
 2 route unavailable (the caller falls back to the paid image route).
@@ -34,6 +39,7 @@ DEFAULT_TIMEOUT = 300
 IMAGE_WAIT_SECONDS = 60  # the file can appear slightly after agy's reply
 MAX_REFS = 5
 IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
+FRESH_SLACK_SECONDS = 2  # clock and filesystem timestamp slack when judging "written by this run"
 DEFAULT_BRAIN = Path.home() / ".gemini" / "antigravity-cli" / "brain"
 EXIT_OK, EXIT_USAGE, EXIT_UNAVAILABLE = 0, 1, 2
 
@@ -46,16 +52,23 @@ class RouteUnavailable(Exception):
     """agy cannot supply an image; the caller should use the paid route."""
 
 
+def brain_root() -> Path:
+    return Path(os.environ.get("IDEA3D_AGY_BRAIN") or DEFAULT_BRAIN)
+
+
 def brain_conversation_dir(conversation_id: Any) -> Path | None:
     """agy keeps each conversation's generated files in <brain>/<conversation_id>/."""
     if not isinstance(conversation_id, str) or not conversation_id or Path(conversation_id).name != conversation_id:
         return None
-    brain = Path(os.environ.get("IDEA3D_AGY_BRAIN") or DEFAULT_BRAIN)
-    return brain / conversation_id
+    return brain_root() / conversation_id
 
 
 def is_image(path: Path) -> bool:
     return path.suffix.lower() in IMAGE_SUFFIXES and path.is_file()
+
+
+def is_fresh(path: Path, started: float) -> bool:
+    return path.stat().st_mtime >= started - FRESH_SLACK_SECONDS
 
 
 def inside(path: Path, folder: Path) -> bool:
@@ -66,26 +79,25 @@ def inside(path: Path, folder: Path) -> bool:
     return True
 
 
-def find_image(conversation_dir: Path | None, response: str) -> Path | None:
-    """The image path named on the last matching line of the reply, else the newest image in the folder."""
-    if conversation_dir is None:
-        return None
+def find_image(conversation_dir: Path | None, response: str, started: float) -> Path | None:
+    """An image this run wrote: the one the reply names (anywhere under the brain root), else the
+    newest in the conversation folder. Files older than the run are never returned."""
     for line in reversed(response.splitlines()):
         text = line.strip().strip("`'\"")
         if text and os.path.isabs(text) and is_image(Path(text)):
-            if inside(Path(text), conversation_dir):
+            if inside(Path(text), brain_root()) and is_fresh(Path(text), started):
                 return Path(text)
             break
-    if not conversation_dir.is_dir():
+    if conversation_dir is None or not conversation_dir.is_dir():
         return None
-    images = [p for p in conversation_dir.iterdir() if is_image(p)]
+    images = [p for p in conversation_dir.iterdir() if is_image(p) and is_fresh(p, started)]
     return max(images, key=lambda p: p.stat().st_mtime) if images else None
 
 
-def wait_for_image(conversation_dir: Path | None, response: str) -> Path | None:
+def wait_for_image(conversation_dir: Path | None, response: str, started: float) -> Path | None:
     deadline = time.monotonic() + IMAGE_WAIT_SECONDS
     while True:
-        found = find_image(conversation_dir, response)
+        found = find_image(conversation_dir, response, started)
         if found or time.monotonic() >= deadline:
             return found
         time.sleep(1)
@@ -115,19 +127,19 @@ def build_prompt(text: str, copies: list[Path]) -> str:
 
 
 def save_png(source: Path, out: Path) -> None:
-    """Convert to RGB PNG and replace the output atomically; a file Pillow cannot read is unavailable."""
-    from PIL import Image
-
+    """Convert to RGB PNG and replace the output atomically; a failure leaves any existing output alone."""
     tmp = out.with_name(f"{out.stem}.tmp.png")
     try:
+        from PIL import Image
+
         with Image.open(source) as img:
             rgb = img.convert("RGB")
         out.parent.mkdir(parents=True, exist_ok=True)
         rgb.save(tmp, "PNG")
         os.replace(tmp, out)
-    except (OSError, ValueError) as exc:
+    except Exception:
         tmp.unlink(missing_ok=True)
-        raise RouteUnavailable(f"agy returned a file that is not a readable image: {exc}") from exc
+        raise
 
 
 def resolve_out(work_dir: Path, out: str) -> Path:
@@ -145,6 +157,9 @@ def resolve_refs(refs: list[str]) -> list[Path]:
     if len(refs) > MAX_REFS:
         raise UsageError(f"at most {MAX_REFS} --ref images, got {len(refs)}")
     paths = [Path(ref) for ref in refs]
+    not_images = [str(p) for p in paths if p.suffix.lower() not in IMAGE_SUFFIXES]
+    if not_images:
+        raise UsageError(f"--ref must be an image ({', '.join(IMAGE_SUFFIXES)}): " + ", ".join(not_images))
     missing = [str(p) for p in paths if not p.is_file()]
     if missing:
         raise UsageError("reference image not found: " + ", ".join(missing))
@@ -161,11 +176,26 @@ def check_consent(state: dict[str, Any]) -> None:
         raise UsageError(f"unknown critic choice {consent!r} in pipeline.json")
 
 
+def read_prompt(args: argparse.Namespace) -> str:
+    if args.prompt_file is None:
+        text = args.prompt
+    else:
+        try:
+            text = Path(args.prompt_file).read_text(encoding="utf-8-sig")
+        except (OSError, ValueError) as exc:
+            raise UsageError(f"cannot read --prompt-file {args.prompt_file}: {exc}") from exc
+    if not text.strip():
+        raise UsageError("the prompt is empty")
+    return text.strip()
+
+
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
     p = UsageParser(prog="generate_image.py", description="Generate one image for free through agy")
     p.add_argument("slug")
     p.add_argument("--out", required=True, help="output PNG, relative to work/<slug>/ (e.g. images/concept-1.png)")
-    p.add_argument("--prompt", required=True)
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--prompt", help="the image prompt text")
+    source.add_argument("--prompt-file", help="UTF-8 text file holding the image prompt")
     p.add_argument("--ref", action="append", default=[], help="reference image (repeatable, at most 5)")
     p.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="seconds for the agy call")
     p.add_argument("--work-root", default=".")
@@ -189,21 +219,36 @@ def generate(args: argparse.Namespace, cmd_prefix: list[str] | None) -> Path:
     work_dir = Path(pipeline_state.get_work_dir(args.slug, args.work_root))
     out = resolve_out(work_dir, args.out)
     refs = resolve_refs(args.ref)
+    prompt_text = read_prompt(args)
 
     folder = Path(tempfile.mkdtemp(prefix="idea3d_image_"))
     try:
-        prompt = build_prompt(args.prompt, copy_refs(refs, folder))
+        prompt = build_prompt(prompt_text, copy_refs(refs, folder))
         prefix = cmd_prefix if cmd_prefix is not None else agy_command()
+        started = time.time()
         envelope = run_agy(prefix, ["-p", prompt, "--output-format", "json", "--disable-slash-commands",
                                     "--add-dir", str(folder)], folder, args.timeout)
+        collect_image(envelope, started, out)
+    finally:
+        shutil.rmtree(folder, ignore_errors=True)
+        if folder.exists():
+            print(f"generate_image.py: warning: could not remove temp folder {folder}", file=sys.stderr)
+    return out
+
+
+def collect_image(envelope: dict[str, Any], started: float, out: Path) -> None:
+    """Find the image agy wrote and save it; agy has succeeded by now, so any failure here means
+    this route cannot supply the image (exit 2), not a usage error."""
+    try:
         conversation = brain_conversation_dir(envelope.get("conversation_id"))
-        source = wait_for_image(conversation, str(envelope.get("response", "")))
+        source = wait_for_image(conversation, str(envelope.get("response", "")), started)
         if source is None:
             raise RouteUnavailable("agy returned no image")
         save_png(source, out)
-    finally:
-        shutil.rmtree(folder, ignore_errors=True)
-    return out
+    except RouteUnavailable:
+        raise
+    except Exception as exc:  # noqa: BLE001 - Pillow missing, unreadable or oversized file, filesystem errors
+        raise RouteUnavailable(f"could not collect the generated image: {exc}") from exc
 
 
 def main(argv: list[str] | None = None, cmd_prefix: list[str] | None = None) -> int:

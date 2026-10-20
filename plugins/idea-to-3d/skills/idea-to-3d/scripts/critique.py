@@ -32,7 +32,7 @@ RUBRICS_DIR = REFERENCES_DIR / "rubrics"
 
 sys.path.insert(0, str(SCRIPTS_DIR))
 import pipeline_state  # noqa: E402
-from agy_runner import AgyUnavailable, UsageParser, agy_command, parse_envelope, run_agy  # noqa: E402
+from agy_runner import AgyUnavailable, UsageParser, agy_command, run_agy  # noqa: E402
 
 DEFAULT_MODEL = "gemini-4-argon-medium"
 DEFAULT_TIMEOUT = 240
@@ -45,9 +45,6 @@ GATE_INPUTS = {
 SEVERITIES = ("blocker", "major", "minor")
 MAX_PROMPT_ERRORS = 20
 EXIT_OK, EXIT_USAGE, EXIT_UNAVAILABLE, EXIT_INVALID = 0, 1, 2, 3
-
-
-CriticUnavailable = AgyUnavailable
 
 
 class UsageError(Exception):
@@ -186,10 +183,6 @@ def review_from_envelope(envelope: dict[str, Any]) -> Any:
     return last_review_object(str(envelope.get("response", "")))
 
 
-def parse_agy_output(stdout: str) -> Any:
-    return review_from_envelope(parse_envelope(stdout))
-
-
 def call_agy(cmd_prefix: list[str], prompt: str, model: str, sandbox: Path, timeout: int) -> Any:
     args = [
         "-p", prompt, "--output-format", "json", "--mode", "plan",
@@ -319,7 +312,7 @@ def run(args: argparse.Namespace, cmd_prefix: list[str] | None) -> int:
             review, errors = review_with_agy(prefix, args.gate, inputs, args.model, sandbox, args.timeout)
         except UsageError as exc:
             return fail(EXIT_USAGE, str(exc))
-        except CriticUnavailable as exc:
+        except AgyUnavailable as exc:
             return fail(EXIT_UNAVAILABLE, f"critic unavailable: {exc}")
         finally:
             if sandbox is not None:
