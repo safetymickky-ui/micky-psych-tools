@@ -1058,7 +1058,7 @@ DEFAULT_MODEL = "gemini-4-argon-medium"
 DEFAULT_TIMEOUT = 240
 GATE_INPUTS = {
     "A1": ("idea.md", "preview/concepts.png"),
-    "A2": ("idea.md", "images/front.png", "images/side.png", "images/back.png"),
+    "A2": ("idea.md", "images/chosen-concept.png", "images/front.png", "images/side.png", "images/back.png"),
     "B": ("idea.md", "images/front.png", "preview/tries.png"),
     "C": ("idea.md", "images/front.png", "preview/sheet.png", "out/quality_report.json"),
 }
@@ -1415,7 +1415,7 @@ its subagent tool, as mapped in the orchestrator's Platform section.
 | Gate | Runs | Critic inputs (under `work/<slug>/`) |
 |---|---|---|
 | A1 | after the concept candidates, before Checkpoint A | `idea.md`, `preview/concepts.png` |
-| A2 | after the turnarounds, before Stage 2 spends credits | `idea.md`, `images/front.png`, `images/side.png`, `images/back.png` |
+| A2 | after the turnarounds, before Stage 2 spends credits | `idea.md`, `images/chosen-concept.png`, `images/front.png`, `images/side.png`, `images/back.png` |
 | B | after the Meshy tries, before Checkpoint B | `idea.md`, `images/front.png`, `preview/tries.png` |
 | C | after the Blender finish, before Checkpoint C (also judges Stage 3's rig and clips) | `idea.md`, `images/front.png`, `preview/sheet.png`, `out/quality_report.json` |
 
@@ -1515,7 +1515,7 @@ never ask the user.
 
 1. Read the review, the rubric, `references/rules.md`, and the stage skill.
 2. Before changing any file, copy it to `work/<slug>/reviews/backup-<gate>-r<round>/` (keep its relative path).
-3. For each issue with `credits: 0`: apply the fix with free means only — edit `idea.md` or a prompt, clean or crop images with Pillow, rerun headless Blender scripts with different options, or note that the other try should be picked. A fix starting "needs plugin change:" is out of reach: put it under `declined`.
+3. For each issue with `credits: 0`: apply the fix with free means only — edit `idea.md` or a prompt, clean or crop images with Pillow, rerun headless Blender scripts with different options, or note that the other try should be picked. A fix starting "needs plugin change:" is out of reach, and one starting "user choice:" is the user's decision (it is offered at the checkpoint): put both under `declined` with that reason.
 4. For each issue with `credits > 0`: do not fix it. Write a paid request with the exact tool, model, settings and credits. If a free fix solves the same issue, apply that instead and say so.
 5. If a fix fails (a script exits non-zero), restore the backed-up files, and list it under `failed` with the first error line.
 6. After your fixes, regenerate the gate's preview with the stage skill's command (A1 `make-concept-sheet.py`, A2 the turnaround sheet, B `render-meshy.py`, C `export-check.py` then `render-sheet.py`) so the critic sees the change.
@@ -1807,7 +1807,7 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-histor
    Record the answer with `set-critic <slug> gemini` or `set-critic <slug> claude`.
 2. Dispatch the maker for concept-art Step 2 with the approved budget. It writes `images/concept-<n>.png` and `preview/concepts.png`.
 3. Run gate A1 ([loop.md](references/loop.md)).
-4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (Platform image route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/front.png`.
+4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (Platform image route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/chosen-concept.png` (gate A2 compares the turnarounds against it).
 5. Dispatch the maker for concept-art Step 4 (turnarounds) with the approved budget.
 6. Run gate A2. Its paid fixes (regenerating a view) are asked as in loop.md.
 

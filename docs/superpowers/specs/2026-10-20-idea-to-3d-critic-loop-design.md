@@ -63,7 +63,7 @@ visible once Blender renders it, so it is judged at gate C together with Stage 4
 | Gate id | Before | Critic inputs (under `work/<slug>/`) | Rubric criteria |
 |---|---|---|---|
 | A1 | Checkpoint A | `idea.md`, `preview/concepts.png` | fidelity to brief (silhouette, hex palette, proportions, materials); Meshy-readiness (plain background, full body uncropped, A/T-pose for humanoids, low perspective); variety across candidates |
-| A2 | Stage 2 credits | `idea.md`, `images/front.png`, `images/side.png`, `images/back.png` | one view per image; turnaround consistency (side/back match front); Meshy-readiness |
+| A2 | Stage 2 credits | `idea.md`, `images/chosen-concept.png`, `images/front.png`, `images/side.png`, `images/back.png` | one view per image; turnaround consistency (side/back match front); Meshy-readiness |
 | B | Checkpoint B | `idea.md`, `images/front.png`, `preview/tries.png` | geometry fidelity to concept; texture fidelity; artifacts (holes, melted face/hands, floating fragments, fused limbs); symmetry; pose fit for rigging |
 | C | Checkpoint C | `idea.md`, `images/front.png`, `preview/sheet.png`, `out/quality_report.json` | deformation per clip (tearing, candy-wrapper, intersections); clip readability; scale/grounding/orientation; texture seams; every `check-glb` check passing |
 
@@ -81,6 +81,9 @@ id has its own rubric file.
 
 A fix that needs a code change to a plugin script is out of the reviser's reach: it is
 declined with "needs plugin change" and stays open at the checkpoint.
+A fix that is the user's decision (a procedural or scripted build that replaces the Meshy
+rig or model, a different pick) has credits 0 and starts with "user choice:"; the reviser
+declines it and the orchestrator offers it at the checkpoint.
 
 A paid request names the exact Meshy tool, model and credit cost. The orchestrator
 batches all paid requests of a round into one `AskUserQuestion` (recommended option

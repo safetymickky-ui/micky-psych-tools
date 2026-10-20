@@ -29,7 +29,7 @@ Give one score (1–5) for each:
 
 ## Fixes and their credits
 
-- Re-run `import-merge.py` with different options, then `export-check.py` and `render-sheet.py` with the same `--height`/`--max-triangles`/clip list: 0. Name the option: `--height <m>`, `--max-triangles <n>`, `--clip <name>=<glb>` (drop or swap a Meshy clip; pass the matching `--clips` to `export-check.py`), `--clips <list>` (procedural rigs only).
+- Re-run `import-merge.py` with different options, then `export-check.py` (same `--height`, `--max-triangles`, `--clips`) and `render-sheet.py` (same `--clips`): 0. Name the option: `--height <m>`, `--max-triangles <n>`, `--clip <name>=<glb>` (drop or swap a Meshy clip; pass the matching `--clips` to `export-check.py`), `--clips <list>` (procedural rigs only).
 - Switch to a procedural rig (`--mesh <remesh.glb> --procedural-rig`) or a scripted build (`--scripted-robot`): 0, `fix` starts with "user choice:" — it replaces the Meshy rig (no leg bones) or the whole model, so it is offered at the checkpoint, never applied automatically.
 - Re-rig with `meshy_rig`: 5 + 3 per `meshy_animate` clip that must be redone on the new rig. Name what changes (e.g. `height_meters`, a new remesh first: +5); an unchanged re-run gives the same rig.
 - Animate a different action with `meshy_animate`: 3. Name the replacement `action_id` from `meshy_list_animations`; repeating the same action on the same rig gives the same motion.
