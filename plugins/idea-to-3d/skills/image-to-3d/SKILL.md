@@ -5,6 +5,8 @@ description: Generate textured 3D models (.glb) from turnaround or front concept
 
 # Stage 2: Image to 3D (`image-to-3d`)
 
+`<plugin_root>` is this plugin's directory: two levels above this skill's base directory. Use it as an absolute path in every command.
+
 Generates textured 3D model tries from Stage 1's images using the Meshy MCP server, renders them side by side with headless Blender 5.2, and stops at **Checkpoint B** for the user to choose the best try.
 
 ## Step 1: Pre-Flight Check (`pipeline.json`, Upload Consent & Credit Confirmation)
@@ -75,17 +77,20 @@ Run headless Blender 5.2 with [`render-meshy.py`](./scripts/render-meshy.py) to 
 & "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/image-to-3d/scripts/render-meshy.py" -- "work/<slug>/preview/tries.png" "work/<slug>/images/front.png" "work/<slug>/meshy/<slug>-try-1.glb=Try 1 (Meshy 7.1 4K)" "work/<slug>/meshy/<slug>-try-2.glb=Try 2 (Meshy 7.1 4K)"
 ```
 
-## Step 4: Checkpoint B (MUST Call `ask_question` and Wait for User)
+> **Critic loop:** under the orchestrator, gate B (`../idea-to-3d/references/loop.md`) runs before this checkpoint, and Step 1's consent and credit question was already asked at Checkpoint A. A maker subagent stops here.
 
-1. Call `view_file` on `work/<slug>/preview/tries.png` to inspect both tries across all 4 angles.
-2. Call the **`ask_question`** tool (with your recommended try first, prefixed with `(Recommended)`):
+## Step 4: Checkpoint B (MUST Call `AskUserQuestion` and Wait for User)
+
+1. Call `Read` on `work/<slug>/preview/tries.png` to inspect both tries across all 4 angles.
+2. Show the PNG to the user first (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
+3. Call the **`AskUserQuestion`** tool (recommended try first, its label ending with "(Recommended)"):
    - Note that Meshy's automatic UVs give the face a small share of the texture map, so judge geometry sharpness on the close-up column.
    - Include the Stage 3 credit approval in the options:
      - `meshy_remesh` (to 20k–30k quads): **5 credits**
      - `meshy_rig` (for humanoids, includes walk & run free): **5 credits**
      - `meshy_animate` (for humanoids, e.g. `idle` + actions): **3 credits per action**
      - Or **30 credits** if the user wants an additional `meshy-7.1` try.
-3. Once approved, copy the chosen try to `work/<slug>/meshy/<slug>-meshy.glb` and record Checkpoint B:
+4. Once approved, copy the chosen try to `work/<slug>/meshy/<slug>-meshy.glb` and record Checkpoint B:
    ```powershell
    Copy-Item -LiteralPath "work/<slug>/meshy/<slug>-try-<n>.glb" -Destination "work/<slug>/meshy/<slug>-meshy.glb" -Force
    python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-checkpoint <slug> B --approved true --choice <n>

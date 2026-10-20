@@ -48,10 +48,13 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "make a DESIGN.md", "generate a DESIGN.md", "create a DESIGN.md for", "extract the design system from this site", "turn this site into a DESIGN.md", "DESIGN.md like Linear"… | design-md-generator | skill `design-md-generator` |
 | Generate a spec-valid DESIGN.md from a website URL, a text brief, a codebase path, or a reference kit to remix | design-md-generator | `/design-md` |
 | Stage 4 sub-skill for the idea-to-3d pipeline. | idea-to-3d | skill `blender-finish` |
-| Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) using Nano Banana Pro. | idea-to-3d | skill `concept-art` |
-| Turn a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet (/idea-to-3d). | idea-to-3d | skill `idea-to-3d` |
+| Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) free through Antigravity (agy), or Meshy Nano Banana Pro as a paid fallback. | idea-to-3d | skill `concept-art` |
+| when the user wants a 3D character, prop, mascot or figure made from an idea or a concept image, says "make this a 3D model", "idea to 3D", "rig and animate it", or resumes a work/<slug> pipeline. | idea-to-3d | skill `idea-to-3d` |
 | Generate textured 3D models (.glb) from turnaround or front concept images using Meshy (meshy_multi_image_to_3d or meshy_image_to_3d), render a side-by-side comparison sheet in headless Blender, and… | idea-to-3d | skill `image-to-3d` |
 | Remesh a 3D model to animation-ready quad topology (20,000-30,000 faces), auto-rig humanoids, and generate animation clips (idle, walk, actions) using Meshy MCP tools (meshy_remesh, meshy_rig, meshy_… | idea-to-3d | skill `rig-animate` |
+| Fallback critic for an idea-to-3d gate when the Gemini critic (critique.py via the Antigravity CLI) is unavailable or the user declined Gemini. | idea-to-3d | agent `idea3d-critic` |
+| Runs one idea-to-3d stage (concept art, image-to-3D, rig and animate, or Blender finish) inside a Meshy credit budget the user already approved, and returns the artifact paths as JSON. | idea-to-3d | agent `idea3d-maker` |
+| Applies the free fixes from an idea-to-3d critic review (brief and prompt edits, Pillow image cleanup, headless Blender re-runs), re-renders the gate preview, and returns paid fixes as requests for t… | idea-to-3d | agent `idea3d-reviser` |
 
 ## Plugins
 
@@ -229,12 +232,15 @@ Keywords: design-md, design-system, design-tokens, stitch, ui-generation, artifa
 
 ### idea-to-3d — design
 
-Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet: concept art, Meshy image-to-3D, Meshy remesh/rig/animate, and headless Blender 5.2 clean-up, clip merge, quality checks and contact-sheet render. Three user checkpoints, explicit credit approval before every paid Meshy call, and idempotent task tracking.
+Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) with a preview sheet: concepts, image-to-3D, rigging and clips on Meshy, finishing in headless Blender 5.2. Before each checkpoint an independent Gemini critic (Antigravity CLI, Claude fallback) reviews the stage and a reviser applies free fixes; fixes that spend credits run only after approval. Five skills, three agents. Needs Windows, Blender 5.2 and agy; bundles the meshy MCP.
 
 Keywords: 3d, meshy, blender, glb, rigging, animation, concept-art
 
 - **skill `blender-finish`** (skill) — Stage 4 sub-skill for the idea-to-3d pipeline.
-- **skill `concept-art`** (skill) — Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) using Nano Banana Pro.
-- **skill `idea-to-3d`** (skill) — Turn a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet (/idea-to-3d).
+- **skill `concept-art`** (skill) — Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) free through Antigravity (agy), or Meshy Nano Banana Pro as a paid fallback.
+- **skill `idea-to-3d`** (skill) — Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) plus a preview sheet (/idea-to-3d).
 - **skill `image-to-3d`** (skill) — Generate textured 3D models (.glb) from turnaround or front concept images using Meshy (meshy_multi_image_to_3d or meshy_image_to_3d), render a side-by-side comparison sheet in headless Blender, and present Checkpoint B.
 - **skill `rig-animate`** (skill) — Remesh a 3D model to animation-ready quad topology (20,000-30,000 faces), auto-rig humanoids, and generate animation clips (idle, walk, actions) using Meshy MCP tools (meshy_remesh, meshy_rig, meshy_list_animations, mes…
+- **agent `idea3d-critic`** (agent) — Fallback critic for an idea-to-3d gate when the Gemini critic (critique.py via the Antigravity CLI) is unavailable or the user declined Gemini.
+- **agent `idea3d-maker`** (agent) — Runs one idea-to-3d stage (concept art, image-to-3D, rig and animate, or Blender finish) inside a Meshy credit budget the user already approved, and returns the artifact paths as JSON.
+- **agent `idea3d-reviser`** (agent) — Applies the free fixes from an idea-to-3d critic review (brief and prompt edits, Pillow image cleanup, headless Blender re-runs), re-renders the gate preview, and returns paid fixes as requests for the user to approve.

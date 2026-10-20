@@ -5,6 +5,8 @@ description: Remesh a 3D model to animation-ready quad topology (20,000-30,000 f
 
 # Stage 3: Remesh, Rig, and Animate (`rig-animate`)
 
+`<plugin_root>` is this plugin's directory: two levels above this skill's base directory. Use it as an absolute path in every command.
+
 Converts the raw ~300,000-face image-to-3D mesh into an animation-friendly quad mesh (20,000–30,000 faces), and for humanoid characters auto-rigs and generates animation clips in Meshy. For non-humanoid characters (such as round hovering robots or creatures Meshy cannot auto-rig), remeshes the model and hands off to Stage 4 (`blender-finish`) to rig and animate by script in headless Blender.
 
 ## Step 1: Select Animations & Confirm Cost
@@ -96,3 +98,4 @@ For each chosen preset action (e.g., `idle` [`action_id: 0`], `wave` [`action_id
    ```
 5. Update each task's status to `SUCCEEDED` and advance stage to `blender-finish`.
 
+> **Critic loop:** Stage 3 has no gate of its own. Its rig and clips are judged at gate C (`../idea-to-3d/references/loop.md`) once Blender renders them; re-rig and re-animate fixes come back from there as paid requests.

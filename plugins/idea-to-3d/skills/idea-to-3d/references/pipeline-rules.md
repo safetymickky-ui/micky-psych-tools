@@ -1,8 +1,3 @@
----
-trigger: model_decision
-description: Credit confirmation, task idempotency, checkpoint gating, external upload consent, and headless Blender discipline for /idea-to-3d and 3D character generation.
----
-
 # Idea-to-3D Pipeline Rules
 
 These rules apply whenever running `/idea-to-3d` or any of its stage skills (`concept-art`, `image-to-3d`, `rig-animate`, `blender-finish`).
@@ -17,7 +12,7 @@ These rules apply whenever running `/idea-to-3d` or any of its stage skills (`co
   - `meshy_rig`: **5 credits** (includes walking and running animations free).
   - `meshy_animate`: **3 credits** per action.
   - `meshy_text_to_image` / `meshy_image_to_image` with `nano-banana-pro`: **9 credits** each.
-  - A full standard run with 2 tries and 3 clips costs approximately **80 credits**.
+  - A full standard run with free images (3 concepts, 2 tries and 3 clips) costs approximately **79 credits** (60 tries + 5 remesh + 5 rig + 9 clips); a tracer run (1 `meshy-6-lite` try, remesh only) about **20 credits** (15 + 5). On the Meshy image route add 9 credits per image (27 concepts + 27 turnarounds): about **133 credits** and **74 credits**.
 - **Never double-charge on timeouts or errors:**
   - Record every Meshy `task_id` in `work/<slug>/pipeline.json` the moment it is created.
   - Before any Meshy create call, read `work/<slug>/pipeline.json`: if a task is already recorded for that step, poll it with `meshy_get_task_status` — **never create it again**.
@@ -25,17 +20,17 @@ These rules apply whenever running `/idea-to-3d` or any of its stage skills (`co
   - A `meshy_get_task_status` wait that returns `TIMEOUT` leaves the task running on Meshy; poll the **same** `task_id` again.
 - **Secret hygiene:** Never write `MESHY_API_KEY` into any file, script, log, or chat reply.
 
-## 2. Checkpoints, Interactive `ask_question` Tool & External Uploads
+## 2. Checkpoints, Interactive `AskUserQuestion` Tool & External Uploads
 
-- **Always use the `ask_question` tool for every checkpoint and credit confirmation:**
-  - Never stop with plain text alone when asking the user to pick a concept, pick a 3D try, approve credits/uploads, or approve the final GLB. Always invoke the `ask_question` modal tool with the recommended option listed first (`(Recommended) ...`).
-  - Combine the checkpoint choice and the next stage's credit/upload confirmation into the `ask_question` options so the user can approve both in a single click.
+- **Always use the `AskUserQuestion` tool for every checkpoint and credit confirmation:**
+  - Never stop with plain text alone when asking the user to pick a concept, pick a 3D try, approve credits/uploads, or approve the final GLB. Always invoke the `AskUserQuestion` modal tool with the recommended option listed first and its label ending with "(Recommended)".
+  - Combine the checkpoint choice and the next stage's credit/upload confirmation into the `AskUserQuestion` options so the user can approve both in a single click.
 - **Stop at every checkpoint until the user answers:**
-  - **Checkpoint A (after concept images):** View `work/<slug>/preview/concepts.png` with `view_file`, then call `ask_question` presenting `concepts.png`, stating whether a scripted/procedural Blender build is recommended, stating the Stage 2 upload notice & credit cost (`2 × meshy-7.1` 4K = 60 credits, or 15 credits for 1 `meshy-6-lite` tracer try), and waiting for the user's pick.
-  - **Checkpoint B (after image-to-3D tries):** View `work/<slug>/preview/tries.png` with `view_file`, then call `ask_question` presenting `tries.png` (front, three-quarter, side, and face close-up), stating the exact Stage 3 credit cost (`meshy_remesh` 5 cr + `meshy_rig` 5 cr + `meshy_animate` 3 cr/action, or 5 cr remesh-only for non-humanoids), and waiting for the user's pick.
-  - **Checkpoint C (after Blender finish & validation):** View `work/<slug>/preview/sheet.png` with `view_file`, then call `ask_question` presenting `sheet.png` (Concept column + 4 views × 3 frames per clip) and the passing `check-glb.py` report, and waiting for the user's approval.
+  - **Checkpoint A (after concept images):** View `work/<slug>/preview/concepts.png` with `Read`, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text, then call `AskUserQuestion` presenting `concepts.png`, stating whether a scripted/procedural Blender build is recommended, stating the turnaround views (0 credits on the free route, 27 on the Meshy route via `meshy_image_to_image`) and the Stage 2 upload notice & credit cost (`2 × meshy-7.1` 4K = 60 credits, or 15 credits for 1 `meshy-6-lite` tracer try), and waiting for the user's pick.
+  - **Checkpoint B (after image-to-3D tries):** View `work/<slug>/preview/tries.png` with `Read`, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text, then call `AskUserQuestion` presenting `tries.png` (front, three-quarter, side, and face close-up), stating the exact Stage 3 credit cost (`meshy_remesh` 5 cr + `meshy_rig` 5 cr + `meshy_animate` 3 cr/action, or 5 cr remesh-only for non-humanoids), and waiting for the user's pick.
+  - **Checkpoint C (after Blender finish & validation):** View `work/<slug>/preview/sheet.png` with `Read`, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text, then call `AskUserQuestion` presenting `sheet.png` (Concept column + 4 views × 3 frames per clip) and the passing `check-glb.py` report, and waiting for the user's approval.
 - **Record every checkpoint decision in `work/<slug>/pipeline.json`.**
-- **External upload consent:** Uploading an image to Meshy sends it to an external service (`meshy.ai`). Before the **first upload of each idea**, inform the user that the image will be uploaded to Meshy and get an explicit **yes** via `ask_question`. Images of real people require explicit permission.
+- **External upload consent:** Uploading an image to Meshy sends it to an external service (`meshy.ai`). Before the **first upload of each idea**, inform the user that images and the brief go to Gemini (Google, through the Antigravity CLI) for image generation and review, and that the images go to Meshy (`meshy.ai`) for the 3D steps, and get an explicit **yes** via `AskUserQuestion`. Images of real people require explicit permission.
 
 ## 3. Meshy MCP Exact Parameter Schema & Polling Discipline
 
@@ -59,9 +54,7 @@ These rules apply whenever running `/idea-to-3d` or any of its stage skills (`co
 ## 5. Git & Plugin Sync Hygiene
 
 - **In the `idea-to-3d` plugin repository:** Commit only the plugin files, **never `work/`** or `meshy_output/`.
-- **Updating the installed plugin on Windows:** When `idea-to-3d_meshy` is running in an active session, `agy plugin install --force` can fail mid-copy due to Windows file locks on `run-meshy-mcp.ps1`. Run `powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\User\Desktop\repo\idea-to-3d\scripts\sync-plugin.ps1"` to sync, validate, and enable the plugin safely.
 - **In user projects tracking 3D assets in Git:** Track `.blend` and the chosen `<slug>-meshy.glb` in Git LFS; ignore raw tries (`*-try-*`) and Blender backups (`*.blend1`). Commit `.blend` files only at the end of a stage.
-
 
 ## 6. Claude Code Adaptation
 
@@ -70,6 +63,12 @@ These skills were first written for Antigravity. When running them in Claude Cod
 - **`<plugin_root>`** = this plugin's install directory (two levels above any skill folder, `${CLAUDE_PLUGIN_ROOT}`). Scripts live at `<plugin_root>/skills/<skill>/scripts/`.
 - **`ask_question`** → `AskUserQuestion` (recommended option first, label ending "(Recommended)").
 - **`view_file`** → `Read` on the PNG.
-- **`image-generator` subagent / `generate_image`** and the Antigravity `save-image.ps1` PostToolUse hook do not exist in Claude Code. Use the documented fallback — `meshy_text_to_image` / `meshy_image_to_image` (`nano-banana-pro`, 9 credits per image) after explicit approval, downloaded into `work/<slug>/images/` under the expected filenames — or ask the user for concept images.
+- **`image-generator` subagent / `generate_image`** and the Antigravity `save-image.ps1` PostToolUse hook do not exist in Claude Code. Images go through the free route first: `skills/idea-to-3d/scripts/generate_image.py`, which drives Gemini through the Antigravity CLI (`agy`, 0 credits) and runs only after the user agreed to Google (`pipeline_state.py set-critic <slug> gemini`). If it exits 2, or the user declined Google, use Meshy `nano-banana-pro` (`meshy_text_to_image` / `meshy_image_to_image`, 9 credits per image) after explicit approval, downloaded into `work/<slug>/images/` under the expected filenames — or ask the user for concept images.
 - **Meshy MCP** ships in this plugin's `.mcp.json` (`scripts/run-meshy-mcp.mjs`), which reads `MESHY_API_KEY` from the environment or `HKCU\Environment` at launch. Check the live tool names and schemas before the first call; they can differ by server version.
-- **§5 Plugin Sync** (`agy`, `sync-plugin.ps1`) is Antigravity-only; update this plugin through the marketplace instead.
+- **Plugin sync:** the Antigravity `agy plugin install` / `sync-plugin.ps1` step does not apply; update this plugin through the marketplace instead.
+
+## 7. Critic loop
+
+- Every gate (A1, A2, B, C) follows [loop.md](loop.md): critic, then reviser, then paid fixes only after a yes, then the critic again; it ends on PASS or after 2 revise rounds.
+- The critic sees only files. Never pass it the maker's or reviser's messages, and never judge a gate yourself.
+- Record the Gemini answer with `pipeline_state.py set-critic <slug> gemini|claude` before the first gate; `critique.py` refuses to run until it is recorded.

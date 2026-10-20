@@ -35,7 +35,7 @@ a milestone.
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
-| idea-to-3d            | 1.1.0   |
+| idea-to-3d            | 2.0.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -198,6 +198,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
 
 ## Recent milestones
+
+- **2026-10-20** — **idea-to-3d 2.0.0**: ported from the Antigravity plugin with a maker → Gemini critic → reviser loop at gates A1/A2/B/C. Gemini CLI personal OAuth is retired (`IneligibleTierError`); the critic runs through `agy` with `gemini-4-argon-medium`, and images are generated free through `agy` too.
 
 - **2026-10-19** — **design-md-generator 0.2.0**: `design-md-apply` skill + SessionStart hook make every
   UI/Artifact use the active DESIGN.md. Personal default `~/.claude/DESIGN.md` = "Clinical-Minimal-Web"
@@ -1253,6 +1255,7 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
 
 ## Open threads
 
+- idea-to-3d: once the plugin is installed, remove the user-scope copies (`~/.claude/skills/{idea-to-3d,concept-art,image-to-3d,rig-animate,blender-finish}` and `~/.claude/rules/idea-to-3d.md`) — the skill names collide; needs the user's OK. First live acceptance run still pending.
 - plugin-creator 0.3.1: after updating the plugin, confirm `skill-name` is gone from the
   surface that listed it; if it stays, that surface holds a cached copy — remove it there.
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.

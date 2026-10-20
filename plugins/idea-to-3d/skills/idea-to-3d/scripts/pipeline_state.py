@@ -16,7 +16,9 @@ from typing import Any
 
 VALID_STAGES = ("concept-art", "image-to-3d", "rig-animate", "blender-finish", "done")
 VALID_CHECKPOINTS = ("A", "B", "C")
-SUBDIRS = ("images", "meshy", "blender", "out", "preview")
+VALID_GATES = ("A1", "A2", "B", "C")
+VALID_CRITICS = ("gemini", "claude")
+SUBDIRS = ("images", "meshy", "blender", "out", "preview", "reviews")
 DEFAULT_TRIANGLE_BUDGET = 40_000
 DEFAULT_MAX_BYTES = 8 * 1024 * 1024
 
@@ -131,6 +133,8 @@ def init_pipeline(
         state["expected_clips"] = expected_clips
         state["triangle_budget"] = triangle_budget
         state["max_bytes"] = max_bytes
+        state.setdefault("critic", None)
+        state.setdefault("reviews", [])
         save_pipeline(safe_slug, state, work_root)
         return state
 
@@ -147,6 +151,8 @@ def init_pipeline(
         "tasks": {},
         "chosen_concept": None,
         "chosen_try": None,
+        "critic": None,
+        "reviews": [],
         "checkpoints": {
             "A": {"approved": False, "choice": None, "notes": "", "timestamp": None},
             "B": {"approved": False, "choice": None, "notes": "", "timestamp": None},
@@ -260,6 +266,68 @@ def set_stage(slug: str, stage: str, work_root: str = ".") -> dict[str, Any]:
     return state
 
 
+def set_critic(slug: str, critic: str, work_root: str = ".") -> dict[str, Any]:
+    """Store the user's answer to the Gemini review question (gemini or claude)."""
+    if critic not in VALID_CRITICS:
+        raise ValueError(f"Invalid critic '{critic}'. Must be one of {VALID_CRITICS}")
+    state = load_pipeline(slug, work_root)
+    state["critic"] = critic
+    save_pipeline(slug, state, work_root)
+    return state
+
+
+def record_review(
+    slug: str,
+    gate: str,
+    round_no: int,
+    critic: str,
+    model: str,
+    verdict: str,
+    path: str,
+    open_issues: int,
+    reason: str = "",
+    work_root: str = ".",
+) -> dict[str, Any]:
+    """Log one critic review; a second review for the same gate and round replaces the first."""
+    if gate not in VALID_GATES:
+        raise ValueError(f"Invalid gate '{gate}'. Must be one of {VALID_GATES}")
+    if round_no < 0:
+        raise ValueError(f"round cannot be negative: {round_no}")
+    state = load_pipeline(slug, work_root)
+    reviews = [
+        r for r in state.get("reviews", []) if not (r["gate"] == gate and r["round"] == round_no)
+    ]
+    entry = {
+        "gate": gate,
+        "round": int(round_no),
+        "critic": critic,
+        "model": model,
+        "verdict": verdict,
+        "open_issues": int(open_issues),
+        "path": path,
+        "reason": reason,
+        "recorded_at": utc_now_iso(),
+    }
+    reviews.append(entry)
+    state["reviews"] = sorted(reviews, key=lambda r: (r["gate"], r["round"]))
+    save_pipeline(slug, state, work_root)
+    return entry
+
+
+def review_history(slug: str, gate: str | None = None, work_root: str = ".") -> list[dict[str, Any]]:
+    if gate is not None and gate not in VALID_GATES:
+        raise ValueError(f"Invalid gate '{gate}'. Must be one of {VALID_GATES}")
+    state = load_pipeline(slug, work_root)
+    return [r for r in state.get("reviews", []) if gate is None or r["gate"] == gate]
+
+
+def next_review_round(slug: str, gate: str, work_root: str = ".") -> int:
+    if gate not in VALID_GATES:
+        raise ValueError(f"Invalid gate '{gate}'. Must be one of {VALID_GATES}")
+    rounds = [r["round"] for r in review_history(slug, gate, work_root)]
+    return max(rounds) + 1 if rounds else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Manage work/<slug>/pipeline.json state")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -310,6 +378,16 @@ def main(argv: list[str] | None = None) -> int:
     p_stage.add_argument("--choice", default=None)
     p_stage.add_argument("--notes", default="")
     p_stage.add_argument("--work-root", default=".")
+
+    p_critic = sub.add_parser("set-critic", help="Record the Gemini review answer (gemini or claude)")
+    p_critic.add_argument("slug")
+    p_critic.add_argument("critic", choices=VALID_CRITICS)
+    p_critic.add_argument("--work-root", default=".")
+
+    p_hist = sub.add_parser("review-history", help="List critic reviews, optionally for one gate")
+    p_hist.add_argument("slug")
+    p_hist.add_argument("--gate", choices=VALID_GATES, default=None)
+    p_hist.add_argument("--work-root", default=".")
 
     args = parser.parse_args(argv)
 
@@ -381,6 +459,15 @@ def main(argv: list[str] | None = None) -> int:
             )
         state = set_stage(args.slug, args.stage, args.work_root)
         print(f"Stage set to {state['stage']}")
+        return 0
+
+    if args.cmd == "set-critic":
+        state = set_critic(args.slug, args.critic, args.work_root)
+        print(f"Critic set to {state['critic']}")
+        return 0
+
+    if args.cmd == "review-history":
+        print(json.dumps(review_history(args.slug, args.gate, args.work_root), indent=2))
         return 0
 
     return 1

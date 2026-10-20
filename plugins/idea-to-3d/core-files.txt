@@ -1,0 +1,18 @@
+# Shared critic-loop core. Owned by micky-psych-tools/plugins/idea-to-3d (source of truth).
+# The Antigravity repo pulls these with scripts/sync-core.ps1; never edit them there.
+skills/idea-to-3d/references/loop.md
+skills/idea-to-3d/references/review.schema.json
+skills/idea-to-3d/references/roles/maker.md
+skills/idea-to-3d/references/roles/reviser.md
+skills/idea-to-3d/references/roles/critic.md
+skills/idea-to-3d/references/rubrics/A1.md
+skills/idea-to-3d/references/rubrics/A2.md
+skills/idea-to-3d/references/rubrics/B.md
+skills/idea-to-3d/references/rubrics/C.md
+skills/idea-to-3d/scripts/agy_runner.py
+skills/idea-to-3d/scripts/critique.py
+skills/idea-to-3d/scripts/generate_image.py
+skills/idea-to-3d/scripts/pipeline_state.py
+tests/test_critic.py
+tests/test_generate_image.py
+tests/fake_agy.py
