@@ -418,5 +418,17 @@ class TestCritiqueRun(TempPipelineCase):
         self.assertEqual(ctx.exception.code, 1)
 
 
+class TestCoreIsPlatformNeutral(unittest.TestCase):
+    PLATFORM_TOOLS = ("AskUserQuestion", "ask_question", "view_file", "image-generator", "send_message")
+
+    def test_loop_and_roles_exist_and_name_no_platform_tool(self) -> None:
+        files = [REFERENCES / "loop.md"] + [REFERENCES / "roles" / f"{r}.md" for r in ("maker", "reviser", "critic")]
+        files += sorted((REFERENCES / "rubrics").glob("*.md"))
+        for path in files:
+            text = path.read_text(encoding="utf-8")
+            for tool in self.PLATFORM_TOOLS:
+                self.assertNotIn(tool, text, f"{path.name} names {tool}")
+
+
 if __name__ == "__main__":
     unittest.main()
