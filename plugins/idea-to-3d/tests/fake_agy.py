@@ -3,7 +3,7 @@
 Stand-in for the Antigravity CLI (`agy`) in tests. Behaviour comes from FAKE_AGY_MODE:
 ok | pass | response-only | bad | bad-then-ok | nonzero | not-success | sleep | hang-child
 for the critic, and for image generation (IDEA3D_AGY_BRAIN required):
-image | image-late | image-delayed | image-other-conv | image-none | image-outside | image-outside-only.
+image | image-late | image-delayed | image-other-conv | image-hidden-ref | image-hidden-and-real | image-none | image-outside | image-outside-only.
 When FAKE_AGY_LOG is set, each call appends its argv to it as one JSON line.
 """
 import json
@@ -51,7 +51,10 @@ def image_mode(mode: str, calls: int) -> int:
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, close_fds=True)
     if mode == "image-other-conv":
         reply = write_jpeg(os.path.join(os.environ["IDEA3D_AGY_BRAIN"], "other-conv", "x.jpg"), (0, 128, 128)) + "\n"
-    if mode in ("image", "image-late", "image-outside"):
+    if mode in ("image-hidden-ref", "image-hidden-and-real"):
+        # agy copies reference images into a hidden folder of the conversation during the run.
+        reply = write_jpeg(os.path.join(os.path.dirname(brain_image), ".tempmediaStorage", "ref.jpg"), (255, 0, 0)) + "\n"
+    if mode in ("image", "image-late", "image-outside", "image-hidden-and-real"):
         write_jpeg(brain_image, (0, 128, 128))
     if mode == "image":
         reply = f"Generating the image now...\n{brain_image}\n"

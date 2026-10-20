@@ -79,13 +79,24 @@ def inside(path: Path, folder: Path) -> bool:
     return True
 
 
+def in_visible_part_of(path: Path, folder: Path) -> bool:
+    """Inside folder, and no part of the path below it starts with a dot: agy keeps copies of the
+    reference images in hidden folders (.tempmediaStorage) that are not the generated image."""
+    try:
+        parts = path.resolve().relative_to(folder.resolve()).parts
+    except (OSError, ValueError):
+        return False
+    return not any(part.startswith(".") for part in parts)
+
+
 def find_image(conversation_dir: Path | None, response: str, started: float) -> Path | None:
-    """An image this run wrote: the one the reply names (anywhere under the brain root), else the
-    newest in the conversation folder. Files older than the run are never returned."""
+    """An image this run wrote: the one the reply names (anywhere under the brain root, outside hidden
+    folders), else the newest directly in the conversation folder. Files older than the run are
+    never returned."""
     for line in reversed(response.splitlines()):
         text = line.strip().strip("`'\"")
         if text and os.path.isabs(text) and is_image(Path(text)):
-            if inside(Path(text), brain_root()) and is_fresh(Path(text), started):
+            if in_visible_part_of(Path(text), brain_root()) and is_fresh(Path(text), started):
                 return Path(text)
             break
     if conversation_dir is None or not conversation_dir.is_dir():

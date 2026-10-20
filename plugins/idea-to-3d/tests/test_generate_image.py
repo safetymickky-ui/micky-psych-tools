@@ -284,6 +284,15 @@ class TestFreshness(GenerateImageCase):
         self.assertEqual(self.generate(mode="image-other-conv"), 0)
         self.assertTrue((self.work / "images" / "concept-1.png").is_file())
 
+    def test_a_reply_path_into_a_hidden_folder_is_never_returned(self) -> None:
+        self.assertEqual(self.generate(mode="image-hidden-ref"), 2)
+        self.assertFalse((self.work / "images" / "concept-1.png").exists())
+
+    def test_a_hidden_reference_copy_named_in_the_reply_loses_to_the_real_top_level_image(self) -> None:
+        self.assertEqual(self.generate(mode="image-hidden-and-real"), 0)
+        with Image.open(self.work / "images" / "concept-1.png") as img:
+            self.assertLess(img.getpixel((5, 5))[0], 20)
+
     def test_an_image_that_appears_a_second_after_the_reply_is_waited_for(self) -> None:
         with mock.patch.object(generate_image, "IMAGE_WAIT_SECONDS", 8):
             self.assertEqual(self.generate(mode="image-delayed"), 0)
