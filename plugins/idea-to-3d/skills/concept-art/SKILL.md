@@ -25,7 +25,7 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 
 ## Step 2: Generate 3 or 4 Concept Candidates
 
-1. **Image route (Claude Code): Meshy `nano-banana-pro`, 9 credits per image.** The credits must be approved first (the orchestrator asks; run on its own, ask with `AskUserQuestion`). Call `meshy_text_to_image` once per concept with `ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"` and a prompt built from `idea.md`, and record each `task_id` with `pipeline_state.py record-task <slug> concept-<n> ...` the moment it is created.
+1. **Image route (Claude Code): Meshy `nano-banana-pro`, 9 credits per image.** Get credit approval first: the orchestrator asks; when this skill runs on its own, ask with `AskUserQuestion`. Call `meshy_text_to_image` once per concept with `ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"` and a prompt built from `idea.md`, and record each `task_id` with `pipeline_state.py record-task <slug> concept-<n> ...` the moment it is created.
 2. Poll each task with `meshy_get_task_status` (`wait: true`, `timeout_seconds: 150`) and download it with `meshy_download_model` (`save_to: "work/<slug>/images/concept-<n>.png"`). If the file is a JPEG, convert it to PNG with Pillow before building the sheet.
 3. Build the comparison sheet `work/<slug>/preview/concepts.png` (supports `path=Label`, `Label=path`, or `--images` / `--labels`):
    ```powershell
@@ -35,20 +35,21 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 ## Step 3: Checkpoint A (MUST Call `AskUserQuestion` and Wait for User)
 
 1. Call `Read` on `work/<slug>/preview/concepts.png` to inspect the candidates.
-2. Call the **`AskUserQuestion`** tool (with your recommended concept first, prefixed with `(Recommended)`) stating:
+2. Before asking, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
+3. Call the **`AskUserQuestion`** tool (recommended concept first, its label ending with "(Recommended)") stating:
    - Which concept you recommend and why (plus the scripted Blender option if hard-surface/symmetric).
    - What it costs to continue (combine the concept choice and Stage 2 credit/upload approval in the options):
      - Turnaround generation (`front.png`, `side.png`, `back.png`) via `meshy_image_to_image` (`nano-banana-pro`): **27 credits** (3 × 9).
      - Uploading turnaround images to `meshy.ai` for Stage 2 Image-to-3D: **60 credits** for 2 tries with `meshy-7.1` at 4K texture (30 credits each), or **15 credits** for a single `meshy-6-lite` tracer try.
-3. Record the decision with `pipeline_state.py record-checkpoint <slug> A --approved true --choice concept-<n>`.
+4. Record the decision with `pipeline_state.py record-checkpoint <slug> A --approved true --choice concept-<n>`.
 
 
 ## Step 4: Generate Meshy Turnaround Views (`front.png`, `side.png`, `back.png`)
 
-From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), pass that file path in `reference_file_paths` of `meshy_image_to_image` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view; download each result with `meshy_download_model` and `save_to`) so the character stays identical across views:
+From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), pass that file path in `reference_file_paths` of `meshy_image_to_image` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view; download each result with `meshy_download_model` and `save_to`) so the character stays identical across views. `front.png` is regenerated (not just copied) so it meets the Meshy framing rules below; if the chosen concept already meets them, copy it to `front.png` instead and skip that image (saves 9 credits):
 
 1. **`front.png` (saved as `work/<slug>/images/front.png`):**
-   - **Strict Meshy prompt rules (§4 Stage 1 & §7.1):**
+   - **Strict Meshy prompt rules:**
      - **Exactly ONE view per image** (never a multi-panel grid — multi-panel sheets produce muddled meshes).
      - Full body (or head-and-shoulders if a bust), centered in frame with margin around it, nothing cut off, nothing occluding it in front.
      - Plain solid light grey background (`#D8D8DC`), soft even studio lighting, **no cast shadows on the ground or background**.

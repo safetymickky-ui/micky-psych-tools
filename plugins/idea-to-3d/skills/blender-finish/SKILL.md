@@ -1,6 +1,6 @@
 ---
 name: blender-finish
-description: Stage 4 sub-skill for the idea-to-3d pipeline. Runs headless Blender 5.2 to clean topology, normalize scale and grounding (Z=0 in Blender, Y=0 in glTF), merge Meshy or procedural animation clips onto a single armature, atomically export and verify work/<slug>/out/<slug>.glb against all §6 quality gates, and render work/<slug>/preview/sheet.png for Checkpoint C.
+description: Stage 4 sub-skill for the idea-to-3d pipeline. Runs headless Blender 5.2 to clean topology, normalize scale and grounding (Z=0 in Blender, Y=0 in glTF), merge Meshy or procedural animation clips onto a single armature, atomically export and verify work/<slug>/out/<slug>.glb against the quality gates, and render work/<slug>/preview/sheet.png for Checkpoint C.
 ---
 
 # Stage 4: Headless Blender 5.2 Clean-up, Merge & Contact Sheet (`blender-finish`)
@@ -11,7 +11,7 @@ Use this skill for **Stage 4** of the `/idea-to-3d` pipeline (after Stage 3 comp
 
 ## 1. Blender Executable & Invocation Rules
 
-Always run Blender 5.2 headless with `--factory-startup` and `--python-exit-code 1` so anyopen GUI Blender session is untouched and Python errors fail loudly:
+Always run Blender 5.2 headless with `--factory-startup` and `--python-exit-code 1` so any open GUI Blender session is untouched and Python errors fail loudly:
 
 ```powershell
 & "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P <script.py> -- <args>
@@ -49,7 +49,7 @@ Run `export-check.py` inside headless Blender 5.2. It opens `work/<slug>/blender
 & "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/blender-finish/scripts/export-check.py" -- --blend "work/<slug>/blender/<slug>.blend" --out "work/<slug>/out/<slug>.glb" --report "work/<slug>/out/quality_report.json"
 ```
 
-#### Quality Gates Enforced (§6):
+#### Quality Gates Enforced:
 1. File size `<= 8 MB` (or `max_bytes` in `pipeline.json`).
 2. Triangle count `<= triangle_budget` in `pipeline.json` (default `40,000`).
 3. Rigged with a skeleton skin (`skins` and `joints` present).
@@ -74,8 +74,9 @@ Render the 4 views (`Front`, `3/4`, `Side`, `Back`) × 3 frames (`start`, `mid`,
 ### Step 4: Inspection Gate & Checkpoint C (MUST Call `AskUserQuestion`)
 
 1. Call `Read` on `work/<slug>/preview/sheet.png` to visually inspect the dedicated left `Concept` column and all 4 views × 3 frames per clip (verifying zero mesh tearing on procedural rigs and clear limb motion on humanoid rigs).
-2. Call the **`AskUserQuestion`** tool presenting `work/<slug>/preview/sheet.png`, `work/<slug>/out/<slug>.glb`, `work/<slug>/blender/<slug>.blend`, and the passing `export-check.py` / `check-glb.py` report, and wait for **Checkpoint C** approval.
-3. Once approved, record Checkpoint C in `work/<slug>/pipeline.json`:
+2. Before asking, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
+3. Call the **`AskUserQuestion`** tool presenting `work/<slug>/preview/sheet.png`, `work/<slug>/out/<slug>.glb`, `work/<slug>/blender/<slug>.blend`, and the passing `export-check.py` / `check-glb.py` report, and wait for **Checkpoint C** approval.
+4. Once approved, record Checkpoint C in `work/<slug>/pipeline.json`:
    ```powershell
    python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-checkpoint <slug> C --approved true --notes "Final GLB and preview sheet approved"
    ```

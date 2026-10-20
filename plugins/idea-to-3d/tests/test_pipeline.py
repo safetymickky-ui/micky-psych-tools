@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Automated Unit, Integration, and Headless Blender 5.2 End-to-End Test Suite
-for the `idea-to-3d` Antigravity plugin (0 Meshy credits spent).
+for the `idea-to-3d` plugin (0 Meshy credits spent).
 """
 from __future__ import annotations
 
