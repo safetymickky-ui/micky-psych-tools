@@ -1259,9 +1259,12 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
   (5 skills + `rules/idea-to-3d.md`) moved to `~/.claude/_backup/idea-to-3d-v1/` and the
   user-scope `meshy` MCP removed (restore command saved there). Free dry check passed
   2026-10-20 (0 credits): A1 REVISE→reviser free-route fixes→maker→REVISE with only
-  user-choice issues→checkpoint; A2 REVISE (back view at 3/4)→fix→PASS. Still open: a paid
-  run through gates B and C (tracer ≈20 credits); the reviser once paraphrased `change`
-  instead of copying the issue's `fix` verbatim (reviser.md rule 5).
+  user-choice issues→checkpoint; A2 REVISE (back view at 3/4)→fix→PASS. Paid tracer run
+  2026-10-20 (20 credits: meshy-6-lite try 15 + remesh 5): B PASS r0; C REVISE (procedural
+  `wave` warps a prop) → reviser rebuilt with `--clips idle --allow-single-clip` → PASS r1.
+  Bugs found, unfixed: `record-task` without `--settings` wipes stored settings to `{}`;
+  `init --non-humanoid` defaults clips to `idle,wave` (wave deforms rigid props); the
+  reviser once paraphrased `change` instead of copying `fix` verbatim (reviser.md rule 5).
 - plugin-creator 0.3.1: after updating the plugin, confirm `skill-name` is gone from the
   surface that listed it; if it stays, that surface holds a cached copy — remove it there.
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
