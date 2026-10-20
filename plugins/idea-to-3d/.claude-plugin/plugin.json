@@ -1,6 +1,6 @@
 {
   "name": "idea-to-3d",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Turn a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) plus preview sheet: concept art, Meshy image-to-3D, Meshy remesh/rig/animate, and headless Blender 5.2 clean-up, clip merge, quality checks and contact-sheet render, gated by three user checkpoints and explicit credit approval.",
   "author": {
     "name": "Thanawat Suharit (Micky)"
@@ -13,7 +13,8 @@
     "glb",
     "rigging",
     "animation",
-    "concept-art"
+    "concept-art",
+    "actionforge"
   ],
   "mcpServers": "./.mcp.json"
 }

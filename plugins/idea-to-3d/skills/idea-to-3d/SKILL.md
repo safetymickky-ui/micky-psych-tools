@@ -87,6 +87,7 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" set-stage <sl
    - Run `import-merge.py` in headless Blender 5.2 to merge all clips onto one armature (or build the procedural Blender armature and `idle` + action clips for non-humanoids), clean up scale/origin/grounding/orientation/seam vertices, and save `work/<slug>/blender/<slug>.blend`.
    - Run `export-check.py` in headless Blender 5.2 to export `work/<slug>/out/<slug>.tmp.glb`, run `check-glb.py`, and atomically replace `work/<slug>/out/<slug>.glb`.
    - Run `render-sheet.py` in headless Blender 5.2 to render `work/<slug>/preview/sheet.png` (concept image in dedicated left column beside 4 views × 3 frames per clip).
+   - When `actrun` is on PATH, these three steps can run as one Actionforge graph instead (`blender-finish/scripts/stage4-animate.act`, which stops on the first failing step). See the blender-finish skill for its env vars and args.
    - **STOP at Checkpoint C (MUST call `ask_question`):** View `work/<slug>/preview/sheet.png` with `view_file`, then call `ask_question` presenting `sheet.png` and the `check-glb.py` verification output, and wait for the user's approval.
    - Once approved, record Checkpoint C in `pipeline.json`.
 
