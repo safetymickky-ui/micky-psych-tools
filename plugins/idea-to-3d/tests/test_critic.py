@@ -131,5 +131,21 @@ class TestPipelineReviews(TempPipelineCase):
         self.assertEqual(json.loads(out.getvalue())[0]["gate"], "A1")
 
 
+class TestReferenceFiles(unittest.TestCase):
+    def test_schema_is_valid_json_with_expected_shape(self) -> None:
+        schema = json.loads((REFERENCES / "review.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(schema["required"]), {"gate", "verdict", "scores", "issues"})
+        self.assertEqual(schema["properties"]["gate"]["enum"], list(pipeline_state.VALID_GATES))
+        issue = schema["properties"]["issues"]["items"]
+        self.assertEqual(set(issue["required"]), {"id", "severity", "criterion", "evidence", "fix", "credits"})
+        self.assertEqual(issue["properties"]["severity"]["enum"], ["blocker", "major", "minor"])
+
+    def test_every_gate_has_a_rubric_with_criteria_severity_and_fixes(self) -> None:
+        for gate in pipeline_state.VALID_GATES:
+            text = (REFERENCES / "rubrics" / f"{gate}.md").read_text(encoding="utf-8")
+            for heading in ("## Criteria", "## Severity", "## Fixes and their credits"):
+                self.assertIn(heading, text, f"{gate}.md lacks {heading}")
+
+
 if __name__ == "__main__":
     unittest.main()
