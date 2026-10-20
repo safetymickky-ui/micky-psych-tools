@@ -88,7 +88,8 @@ Run headless Blender 5.2 with [`render-meshy.py`](./scripts/render-meshy.py) to 
    - Include the Stage 3 credit approval in the options:
      - `meshy_remesh` (to 20k–30k quads): **5 credits**
      - `meshy_rig` (for humanoids, includes walk & run free): **5 credits**
-     - `meshy_animate` (for humanoids, e.g. `idle` + actions): **3 credits per action**
+     - `meshy_animate` (for humanoids, e.g. `idle` + actions, in one bundle call): **3 credits per action**
+     - Custom clip that no preset fits (bipeds only; Meshy keeps the motion 3 days): `meshy_text_to_motion` **10 credits** (`prime`) or **3** (`swift`), plus **3** to apply it with `meshy_animate`
      - Or **30 credits** if the user wants an additional `meshy-7.1` try.
 4. Once approved, copy the chosen try to `work/<slug>/meshy/<slug>-meshy.glb` and record Checkpoint B:
    ```powershell

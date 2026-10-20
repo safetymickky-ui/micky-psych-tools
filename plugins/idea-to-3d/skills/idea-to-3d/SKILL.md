@@ -100,11 +100,11 @@ Without `--clips`, `init` sets `expected_clips` to `idle,walk,wave` for a humano
 
 1. Dispatch the maker for image-to-3d Steps 2–3 with the Stage 2 budget approved at Checkpoint A. It writes the tries and `preview/tries.png`.
 2. Run gate B.
-3. **Checkpoint B** — look at `preview/tries.png` and show it to the user, then ask in one question: which try (recommended first, with the gate B summary; add a "None — stop here" option that records the answer like the others, with `--notes`, and ends the run), together with the Stage 3 cost (`meshy_remesh` 5 + `meshy_rig` 5 + `meshy_animate` 3 per action, naming the clips from `idea.md`, or remesh only, 5, for non-humanoids). Record with `record-checkpoint <slug> B` and copy the chosen try to `meshy/<slug>-meshy.glb`.
+3. **Checkpoint B** — look at `preview/tries.png` and show it to the user, then ask in one question: which try (recommended first, with the gate B summary; add a "None — stop here" option that records the answer like the others, with `--notes`, and ends the run), together with the Stage 3 cost (`meshy_remesh` 5 + `meshy_rig` 5 + one `meshy_animate` bundle at 3 per action, naming the clips from `idea.md`; for each motion no preset fits, a custom clip at 13 with `meshy_text_to_motion` `prime` or 6 with `swift` (10 or 3, plus 3 to apply it), biped only, and Meshy keeps the motion 3 days; or remesh only, 5, for non-humanoids). Record with `record-checkpoint <slug> B` and copy the chosen try to `meshy/<slug>-meshy.glb`.
 
 ### 3. Stage 3 — remesh, rig, clips
 
-Dispatch the maker for rig-animate Steps 2–4 (Step 2 only for non-humanoids) with the Stage 3 budget: the remesh, the rig and one `meshy_animate` call per approved clip named in the budget. The maker looks up each `action_id` with the free `meshy_list_animations` (rig-animate Step 1.2). No gate here: the rig and clips
+Dispatch the maker for rig-animate Steps 2–5 (Step 5 only for approved custom clips; Step 2 only for non-humanoids) with the Stage 3 budget: the remesh, the rig, one `meshy_animate` call with `action_ids` for all the approved preset clips (rig-animate Step 4), and each approved custom clip (Step 5), named in the budget. The maker looks up each `action_id` with the free `meshy_list_animations` (rig-animate Step 1.2). No gate here: the rig and clips
 are judged at gate C once Blender renders them.
 
 ### 4. Stage 4 — Blender finish, gate C, Checkpoint C

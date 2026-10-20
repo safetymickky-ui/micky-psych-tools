@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.1.0 — 2026-10-21
+
+Meshy does more of the humanoid animation work.
+
+- **One bundled animate call.** rig-animate Step 4 now makes one `meshy_animate` call with
+  `action_ids` (1–10 preset ids) instead of one call per action. It returns one GLB with a
+  clip per action, recorded as a single `anim-bundle` task whose settings hold the
+  `action_ids` and the clip names in order. The charge is unchanged: 3 credits per action.
+  The free walk and run from `meshy_rig` stay separate files and are never put in the bundle.
+- **Custom motions.** New rig-animate Step 5: when `idea.md` asks for a motion no preset
+  fits, `meshy_text_to_motion` (10 credits `prime`, 3 `swift`; biped rigs only; Meshy keeps
+  the motion 3 days) followed by `meshy_animate` with `motion_task_id` (3), so 13 or 6 per
+  clip. The cost tables, the Checkpoint B question and the consent wording (the prompt goes
+  to Meshy) name it.
+- **Less merging in Blender.** `import-merge.py` takes `--bundle-clips <names>`: the bundle
+  is the base GLB (skinned mesh, armature and every preset clip), and its animations are
+  named in file order, failing loudly when the count does not match. `--clip` is now only
+  for separate files (the free walk, a custom motion, or a single-clip fix, which replaces a
+  bundle clip of the same name). Runs recorded before 2.1.0 still merge one clip per file.
+  The non-humanoid procedural rig, the gate C sheet and the `check-glb.py` /
+  `export-check.py` gates are unchanged, and `stage4-animate.act` passes the new option
+  through as is.
+- **Test.** The headless Blender test merges a two-clip GLB with reversed names plus a
+  separate clip, checks that the names follow file order by clip length, and checks that a
+  count mismatch fails.
+
 ## 2.0.1 — 2026-10-20
 
 Fixes for three defects found in the 2026-10-20 paid tracer run (a brass lantern prop).

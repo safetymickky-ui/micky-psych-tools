@@ -510,6 +510,64 @@ class TestBlenderEndToEndPipeline(unittest.TestCase):
         )
         self.assertTrue(merged_glb.exists())
 
+        # 7. Merge one multi-clip GLB (a meshy_animate action_ids bundle) plus a separate free clip.
+        # The robot GLB holds idle (4.0 s) and wave (2.4 s); naming them in reverse proves
+        # --bundle-clips follows file order rather than the animation names.
+        bundle_glb = str(glb_out)
+        file_order = [a["name"] for a in check_glb_mod.read_glb(bundle_glb)[0]["animations"]]
+        self.assertEqual(file_order, ["idle", "wave"])
+        bundle_blend = self.tmpdir / "work" / "test-bundle" / "blender" / "test-bundle.blend"
+        bundle_out = self.tmpdir / "work" / "test-bundle" / "out" / "test-bundle.glb"
+
+        def run_bundle_merge(bundle_clips: str) -> subprocess.CompletedProcess:
+            return subprocess.run(
+                [
+                    BLENDER_EXE, "-b", "--factory-startup", "--python-exit-code", "1",
+                    "-P", str(import_merge_script), "--",
+                    "--out", str(bundle_blend),
+                    "--rigged", bundle_glb,
+                    "--bundle-clips", bundle_clips,
+                    "--clip", f"walk={bundle_glb}",
+                    "--height", "1.7",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=90,
+            )
+
+        proc_bad = run_bundle_merge("idle")
+        self.assertNotEqual(proc_bad.returncode, 0, "A clip-count mismatch must fail")
+        self.assertIn("--bundle-clips names 1 clips", proc_bad.stdout + proc_bad.stderr)
+
+        proc_bundle = run_bundle_merge("wave,idle")
+        self.assertEqual(proc_bundle.returncode, 0, f"Bundle merge failed: {proc_bundle.stderr}")
+        proc_bundle_check = subprocess.run(
+            [
+                BLENDER_EXE, "-b", "--factory-startup", "--python-exit-code", "1",
+                "-P", str(export_check_script), "--",
+                "--blend", str(bundle_blend),
+                "--out", str(bundle_out),
+                "--clips", "wave,idle,walk",
+                "--height", "1.7",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=90,
+        )
+        self.assertEqual(
+            proc_bundle_check.returncode,
+            0,
+            f"Bundle export-check failed:\nstdout={proc_bundle_check.stdout}\nstderr={proc_bundle_check.stderr}",
+        )
+        gltf = check_glb_mod.read_glb(str(bundle_out))[0]
+
+        def duration(anim: dict) -> float:
+            return max(gltf["accessors"][s["input"]]["max"][0] for s in anim["samplers"])
+
+        durations = {a["name"]: duration(a) for a in gltf["animations"]}
+        self.assertEqual(sorted(durations), ["idle", "walk", "wave"])
+        self.assertGreater(durations["wave"], durations["idle"], "wave must hold the file's first (4 s) clip")
+
 
 if __name__ == "__main__":
     unittest.main()

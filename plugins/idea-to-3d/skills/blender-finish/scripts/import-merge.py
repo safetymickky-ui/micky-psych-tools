@@ -1,7 +1,8 @@
 # Stage 4 headless Blender assembly script:
 # Mode 1 (Meshy rigged + animated clips):
-#   Imports the rigged GLB and each animated clip GLB, moves every action onto the single
-#   armature named for the clip (idle, walk, wave, ...), removes duplicate meshes/armatures
+#   Imports the rigged GLB (or the multi-clip GLB from one meshy_animate action_ids call, whose
+#   clips --bundle-clips names in file order) and each separate clip GLB, moves every action
+#   onto the single armature named for the clip (idle, walk, wave, ...), removes duplicate meshes/armatures
 #   and stray actions, welds UV-seam doubles, decimates if above budget, scales to real-world
 #   height from idea.md/pipeline.json, grounds at the origin (Z=0 in Blender, Y=0 in glTF)
 #   facing -Y (+Z in glTF), and saves work/<slug>/blender/<slug>.blend.
@@ -15,10 +16,12 @@
 #   antenna, procedural emissive/pearl materials, armature, and clips.
 #
 # Run:
-#   "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P import-merge.py -- --out <slug.blend> [--rigged <rigged.glb>] [--clip idle=<idle.glb> ...] [--mesh <mesh.glb> --procedural-rig] [--scripted-robot] [--height 1.7] [--max-triangles 40000] [--clips idle,wave]
+#   "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P import-merge.py -- --out <slug.blend> [--rigged <rigged.glb> [--bundle-clips idle,wave]] [--clip walk=<walk.glb> ...] [--mesh <mesh.glb> --procedural-rig] [--scripted-robot] [--height 1.7] [--max-triangles 40000] [--clips idle,wave]
 import argparse
+import json
 import math
 import os
+import struct
 import sys
 
 import bmesh
@@ -31,6 +34,11 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Import, merge clips, clean up, or rig in headless Blender")
     parser.add_argument("--out", required=True, help="Output .blend file path")
     parser.add_argument("--rigged", default="", help="Path to rigged base .glb")
+    parser.add_argument(
+        "--bundle-clips",
+        default="",
+        help="Comma-separated clip names for the --rigged GLB's animations, in file order (the meshy_animate action_ids order)",
+    )
     parser.add_argument(
         "--clip",
         action="append",
@@ -203,6 +211,46 @@ def extract_actions_from_import(before_objs: set, before_acts: set):
     return new_objs, new_acts
 
 
+def glb_animation_names(path: str) -> list[str]:
+    """Read the glTF animation names, in file order, from a .glb's JSON chunk."""
+    with open(path, "rb") as f:
+        data = f.read()
+    if len(data) < 20 or data[:4] != b"glTF":
+        raise ValueError(f"Not a GLB file: {path}")
+    chunk_len = struct.unpack_from("<I", data, 12)[0]
+    gltf = json.loads(data[20 : 20 + chunk_len].decode("utf-8"))
+    return [a.get("name", "") for a in gltf.get("animations", [])]
+
+
+def name_bundle_clips(rigged_path: str, base_acts: list, clip_names: list[str]) -> dict:
+    """Map each animation of a multi-clip GLB to its clip name, in file order."""
+    anim_names = glb_animation_names(rigged_path)
+    if len(anim_names) != len(clip_names):
+        raise RuntimeError(
+            f"--bundle-clips names {len(clip_names)} clips but {rigged_path} has "
+            f"{len(anim_names)} animations: {anim_names}"
+        )
+    if len(set(clip_names)) != len(clip_names):
+        raise ValueError(f"--bundle-clips has duplicate names: {clip_names}")
+    # Blender 5.2 names each imported action exactly after its glTF animation.
+    by_name = {a.name: a for a in base_acts}
+    missing = [n for n in anim_names if n not in by_name]
+    if missing:
+        raise RuntimeError(
+            f"No imported action for animations {missing} in {rigged_path}; actions: {sorted(by_name)}"
+        )
+    picked = [by_name[n] for n in anim_names]
+    # Rename in two passes so swapped names (idle <-> wave) never collide into ".001".
+    for i, act in enumerate(picked):
+        act.name = f"__bundle_clip_{i}"
+    clips = {}
+    for clip_name, act in zip(clip_names, picked):
+        act.name = clip_name
+        act.use_fake_user = True
+        clips[clip_name] = act
+    return clips
+
+
 def assign_action_to_armature(arm, act) -> None:
     arm.animation_data_create()
     arm.animation_data.action = act
@@ -251,9 +299,13 @@ def run_meshy_merge(args) -> None:
         if o not in [main_arm] + meshes:
             bpy.data.objects.remove(o, do_unlink=True)
 
-    wanted_clips: dict[str, bpy.types.Action] = {}
+    bundle_names = [c.strip() for c in args.bundle_clips.split(",") if c.strip()]
+    wanted_clips: dict[str, bpy.types.Action] = (
+        name_bundle_clips(args.rigged, base_acts, bundle_names) if bundle_names else {}
+    )
 
-    # Import each clip GLB and transfer its action onto main_arm
+    # Import each separate clip GLB and transfer its action onto main_arm;
+    # a clip name already in the bundle replaces that bundle clip.
     for clip_spec in args.clip:
         if "=" not in clip_spec:
             raise ValueError(f"Invalid --clip spec '{clip_spec}', expected name=path.glb")

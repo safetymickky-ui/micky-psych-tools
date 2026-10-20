@@ -54,7 +54,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Remesh a 3D model to animation-ready quad topology (20,000-30,000 faces), auto-rig humanoids, and generate animation clips (idle, walk, actions) using Meshy MCP tools (meshy_remesh, meshy_rig, meshy_… | idea-to-3d | skill `rig-animate` |
 | Fallback critic for an idea-to-3d gate when the Gemini critic (critique.py via the Antigravity CLI) is unavailable or the user declined Gemini. | idea-to-3d | agent `idea3d-critic` |
 | Runs one idea-to-3d stage (concept art, image-to-3D, rig and animate, or Blender finish) inside a Meshy credit budget the user already approved, and returns the artifact paths as JSON. | idea-to-3d | agent `idea3d-maker` |
-| Applies the free fixes from an idea-to-3d critic review (brief and prompt edits, Pillow image cleanup, headless Blender re-runs), re-renders the gate preview, and returns paid fixes as requests for t… | idea-to-3d | agent `idea3d-reviser` |
+| Applies the free fixes from an idea-to-3d critic review (Pillow image cleanup, headless Blender re-runs; prompt changes travel as requests), re-renders the gate preview, and returns paid fixes as req… | idea-to-3d | agent `idea3d-reviser` |
 
 ## Plugins
 
@@ -243,4 +243,4 @@ Keywords: 3d, meshy, blender, glb, rigging, animation, concept-art
 - **skill `rig-animate`** (skill) — Remesh a 3D model to animation-ready quad topology (20,000-30,000 faces), auto-rig humanoids, and generate animation clips (idle, walk, actions) using Meshy MCP tools (meshy_remesh, meshy_rig, meshy_list_animations, mes…
 - **agent `idea3d-critic`** (agent) — Fallback critic for an idea-to-3d gate when the Gemini critic (critique.py via the Antigravity CLI) is unavailable or the user declined Gemini.
 - **agent `idea3d-maker`** (agent) — Runs one idea-to-3d stage (concept art, image-to-3D, rig and animate, or Blender finish) inside a Meshy credit budget the user already approved, and returns the artifact paths as JSON.
-- **agent `idea3d-reviser`** (agent) — Applies the free fixes from an idea-to-3d critic review (brief and prompt edits, Pillow image cleanup, headless Blender re-runs), re-renders the gate preview, and returns paid fixes as requests for the user to approve.
+- **agent `idea3d-reviser`** (agent) — Applies the free fixes from an idea-to-3d critic review (Pillow image cleanup, headless Blender re-runs; prompt changes travel as requests), re-renders the gate preview, and returns paid fixes as requests for the user t…

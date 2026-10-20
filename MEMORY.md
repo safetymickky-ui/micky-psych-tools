@@ -35,7 +35,7 @@ a milestone.
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
-| idea-to-3d            | 2.0.1   |
+| idea-to-3d            | 2.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -198,6 +198,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
 
 ## Recent milestones
+
+- **2026-10-21** — **idea-to-3d 2.1.0**: humanoid presets animate in one `meshy_animate` `action_ids` call (one multi-clip GLB, one `anim-bundle` task, still 3 credits per action); optional custom clips via `meshy_text_to_motion` (prime 10 / swift 3, + 3 to apply; biped only; 3-day expiry). `import-merge.py --bundle-clips` names the bundle's clips in file order, so `--clip` is only for the free walk, custom motions and single-clip fixes. Core files (`core-files.txt`) untouched. Built and tested without spending credits; the bundle path is not yet proven on a paid run.
 
 - **2026-10-20** — **idea-to-3d 2.0.1**: fixes the three bugs from the paid tracer run. `record-task` updates keep the stored fields they leave out (`--settings` included). `init --non-humanoid` expects `idle` only, and check-glb/export-check accept a lone clip when `expected_clips` names one, so no `--allow-single-clip` is needed. Reviser rule 5 copies `fix` into `change` character for character, with extra guidance in `why`.
 

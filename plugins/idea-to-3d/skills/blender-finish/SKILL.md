@@ -22,10 +22,12 @@ Always run Blender 5.2 headless with `--factory-startup` and `--python-exit-code
 
 ### Step 1: Import, Clean, Merge Clips & Save `.blend` (`import-merge.py`)
 
-#### Mode A: Merge Meshy Rigged + Animated GLBs (Standard Humanoid Flow)
+#### Mode A: Meshy Bundle + Free Clips (Standard Humanoid Flow)
+The Stage 3 bundle (`<slug>-anim-bundle.glb`) already holds the skinned mesh, the armature and every preset clip, so it is the base (`--rigged`). Set `--bundle-clips` to the `clips` list in the `anim-bundle` task's settings in `pipeline.json` (the `action_ids` order; the count must match the file's animations). Add a `--clip` only for clips that come as separate files: the free `walk` (and `run`) from `meshy_rig`, a Step 5 custom motion, or a single-clip fix (a `--clip` with a bundle clip's name replaces that clip):
 ```powershell
-& "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/blender-finish/scripts/import-merge.py" -- --out "work/<slug>/blender/<slug>.blend" --rigged "work/<slug>/meshy/<slug>-rigged.glb" --clip "idle=work/<slug>/meshy/<slug>-clip-idle.glb" --clip "walk=work/<slug>/meshy/<slug>-clip-walk.glb" --clip "wave=work/<slug>/meshy/<slug>-clip-wave.glb" --height 1.7 --max-triangles 40000
+& "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/blender-finish/scripts/import-merge.py" -- --out "work/<slug>/blender/<slug>.blend" --rigged "work/<slug>/meshy/<slug>-anim-bundle.glb" --bundle-clips "idle,wave" --clip "walk=work/<slug>/meshy/<slug>-clip-walk.glb" --height 1.7 --max-triangles 40000
 ```
+A run without a bundle (an older `pipeline.json` with one `anim-<name>` task per clip) uses `--rigged "work/<slug>/meshy/<slug>-rigged.glb"` and one `--clip "<name>=work/<slug>/meshy/<slug>-clip-<name>.glb"` per clip instead of `--bundle-clips`.
 
 #### Mode B: Procedural Rig & Keyframed Clips Fallback (Non-Humanoid / Auto-Rig Failure)
 If the character is non-humanoid (or `meshy_rig` failed), pass the remeshed mesh (`--mesh`) and `--procedural-rig`. Set `--clips` to `expected_clips` from `pipeline.json`, comma-joined. A non-humanoid defaults to `idle` alone, because the procedural `wave` bends rigid props out of shape:

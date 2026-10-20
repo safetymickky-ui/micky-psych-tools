@@ -25,7 +25,7 @@ idea → Stage 1: concept images            ─ A1 ─ [Checkpoint A]
 | `idea-to-3d` | orchestrator — `/idea-to-3d <idea>` runs all four stages |
 | `concept-art` | 1 — character brief, 3–4 concepts, front/side/back turnaround |
 | `image-to-3d` | 2 — Meshy multi-image-to-3D tries + comparison render |
-| `rig-animate` | 3 — Meshy remesh, auto-rig, animation clips |
+| `rig-animate` | 3 — Meshy remesh, auto-rig, preset clips in one bundled GLB, optional text-to-motion clips |
 | `blender-finish` | 4 — Blender clean-up, clip merge, quality gates, contact sheet |
 
 Every paid Meshy call is confirmed first (tool, model, credit cost), every task id is
