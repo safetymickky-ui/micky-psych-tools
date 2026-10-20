@@ -133,6 +133,8 @@ def init_pipeline(
         state["expected_clips"] = expected_clips
         state["triangle_budget"] = triangle_budget
         state["max_bytes"] = max_bytes
+        state.setdefault("critic", None)
+        state.setdefault("reviews", [])
         save_pipeline(safe_slug, state, work_root)
         return state
 
@@ -307,17 +309,21 @@ def record_review(
         "recorded_at": utc_now_iso(),
     }
     reviews.append(entry)
-    state["reviews"] = reviews
+    state["reviews"] = sorted(reviews, key=lambda r: (r["gate"], r["round"]))
     save_pipeline(slug, state, work_root)
     return entry
 
 
 def review_history(slug: str, gate: str | None = None, work_root: str = ".") -> list[dict[str, Any]]:
+    if gate is not None and gate not in VALID_GATES:
+        raise ValueError(f"Invalid gate '{gate}'. Must be one of {VALID_GATES}")
     state = load_pipeline(slug, work_root)
     return [r for r in state.get("reviews", []) if gate is None or r["gate"] == gate]
 
 
 def next_review_round(slug: str, gate: str, work_root: str = ".") -> int:
+    if gate not in VALID_GATES:
+        raise ValueError(f"Invalid gate '{gate}'. Must be one of {VALID_GATES}")
     rounds = [r["round"] for r in review_history(slug, gate, work_root)]
     return max(rounds) + 1 if rounds else 0
 

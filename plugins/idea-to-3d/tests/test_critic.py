@@ -75,12 +75,15 @@ class TestPipelineReviews(TempPipelineCase):
 
     def test_record_review_same_round_replaces_and_next_round_counts(self) -> None:
         self.assertEqual(pipeline_state.next_review_round("fox-knight", "B", self.root), 0)
-        for verdict in ("REVISE", "PASS"):
-            pipeline_state.record_review("fox-knight", "B", 0, critic="gemini", model="m", verdict=verdict,
-                                         path="p", open_issues=0, work_root=self.root)
+        pipeline_state.record_review("fox-knight", "B", 0, critic="gemini", model="m", verdict="REVISE",
+                                     path="p", open_issues=1, work_root=self.root)
+        pipeline_state.record_review("fox-knight", "B", 1, critic="gemini", model="m", verdict="REVISE",
+                                     path="p", open_issues=1, work_root=self.root)
+        pipeline_state.record_review("fox-knight", "B", 0, critic="gemini", model="m", verdict="PASS",
+                                     path="p", open_issues=0, work_root=self.root)
         history = pipeline_state.review_history("fox-knight", "B", work_root=self.root)
-        self.assertEqual([r["verdict"] for r in history], ["PASS"])
-        self.assertEqual(pipeline_state.next_review_round("fox-knight", "B", self.root), 1)
+        self.assertEqual([(r["round"], r["verdict"]) for r in history], [(0, "PASS"), (1, "REVISE")])
+        self.assertEqual(pipeline_state.next_review_round("fox-knight", "B", self.root), 2)
 
     def test_record_review_rejects_bad_gate_and_negative_round(self) -> None:
         with self.assertRaises(ValueError):
@@ -89,9 +92,36 @@ class TestPipelineReviews(TempPipelineCase):
         with self.assertRaises(ValueError):
             pipeline_state.record_review("fox-knight", "B", -1, critic="gemini", model="m", verdict="PASS",
                                          path="p", open_issues=0, work_root=self.root)
+        self.assertEqual(pipeline_state.review_history("fox-knight", work_root=self.root), [])
+        with self.assertRaises(ValueError):
+            pipeline_state.next_review_round("fox-knight", "D", self.root)
+        with self.assertRaises(ValueError):
+            pipeline_state.review_history("fox-knight", "D", work_root=self.root)
+
+    def test_v1_pipeline_without_review_keys_still_works_and_init_backfills(self) -> None:
+        state = pipeline_state.load_pipeline("fox-knight", self.root)
+        state.pop("reviews")
+        state.pop("critic")
+        pipeline_state.save_pipeline("fox-knight", state, self.root)
+        self.assertEqual(pipeline_state.review_history("fox-knight", work_root=self.root), [])
+        self.assertEqual(pipeline_state.next_review_round("fox-knight", "B", self.root), 0)
+        pipeline_state.record_review("fox-knight", "B", 0, critic="gemini", model="m", verdict="PASS",
+                                     path="p", open_issues=0, work_root=self.root)
+        self.assertEqual(pipeline_state.set_critic("fox-knight", "gemini", work_root=self.root)["critic"], "gemini")
+
+        state = pipeline_state.load_pipeline("fox-knight", self.root)
+        state.pop("reviews")
+        state.pop("critic")
+        pipeline_state.save_pipeline("fox-knight", state, self.root)
+        resumed = pipeline_state.init_pipeline(
+            slug="fox-knight", idea="A fox knight with a lantern", height_m=1.2, work_root=self.root
+        )
+        self.assertEqual(resumed["reviews"], [])
+        self.assertIsNone(resumed["critic"])
 
     def test_cli_set_critic_and_review_history(self) -> None:
         self.assertEqual(pipeline_state.main(["set-critic", "fox-knight", "gemini", "--work-root", self.root]), 0)
+        self.assertEqual(pipeline_state.load_pipeline("fox-knight", self.root)["critic"], "gemini")
         pipeline_state.record_review("fox-knight", "A1", 0, critic="gemini", model="m", verdict="PASS",
                                      path="p", open_issues=0, work_root=self.root)
         out = io.StringIO()
