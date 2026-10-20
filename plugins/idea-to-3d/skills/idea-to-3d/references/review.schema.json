@@ -1,9 +1,8 @@
 {
   "type": "object",
-  "required": ["gate", "verdict", "scores", "issues"],
+  "required": ["gate", "scores", "issues", "verdict"],
   "properties": {
     "gate": { "type": "string", "enum": ["A1", "A2", "B", "C"] },
-    "verdict": { "type": "string", "enum": ["PASS", "REVISE"] },
     "scores": {
       "type": "array",
       "items": {
@@ -19,16 +18,17 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "severity", "criterion", "evidence", "fix", "credits"],
+        "required": ["id", "criterion", "evidence", "severity", "fix", "credits"],
         "properties": {
           "id": { "type": "string" },
-          "severity": { "type": "string", "enum": ["blocker", "major", "minor"] },
           "criterion": { "type": "string" },
           "evidence": { "type": "string" },
+          "severity": { "type": "string", "enum": ["blocker", "major", "minor"] },
           "fix": { "type": "string" },
           "credits": { "type": "integer", "minimum": 0 }
         }
       }
-    }
+    },
+    "verdict": { "type": "string", "enum": ["PASS", "REVISE"] }
   }
 }
