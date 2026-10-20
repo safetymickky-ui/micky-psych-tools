@@ -240,6 +240,16 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   (tokens → CSS vars/Tailwind with dark mode, component specs, off-system check). Two skills +
   `/design-md [url|brief|path|kit]`; spec digest + per-mode recipes under
   `skills/design-md-generator/references/`. Lint via the `designmd` bin (the `design.md` bin is broken on Windows).
+- **idea-to-3d** — one-line idea → textured, rigged, animated `.glb` + preview sheet: concept
+  art, image-to-3D, remesh/rig/clips on Meshy (bundled `meshy` MCP; Actionforge graph for Stage 4), finishing in headless
+  Blender 5.2, three user checkpoints. Each stage passes a maker → critic → reviser loop first:
+  free concept/turnaround images through `agy` (`generate_image.py`; Meshy `nano-banana-pro`
+  as paid fallback) and an independent Gemini critic (`critique.py` via the Antigravity CLI `agy`; the
+  `idea3d-critic` Claude agent as fallback) at gates A1/A2/B/C, free fixes applied by the
+  `idea3d-reviser` agent (no Meshy tools), credit-spending fixes only on approval, PASS or 2
+  revise rounds. Five skills + three agents, no commands. Shares its critic core
+  (`core-files.txt`) with the Antigravity repo `Desktop/repo/idea-to-3d`, which pulls it via
+  `scripts/sync-core.ps1` — this copy is the source of truth.
 
 ## Style
 

@@ -232,7 +232,7 @@ Keywords: design-md, design-system, design-tokens, stitch, ui-generation, artifa
 
 ### idea-to-3d — design
 
-Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet: concept art, Meshy image-to-3D, Meshy remesh/rig/animate, and headless Blender 5.2 clean-up, clip merge, quality checks and contact-sheet render. Three user checkpoints, explicit credit approval before every paid Meshy call, and idempotent task tracking.
+Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) with a preview sheet: concepts, image-to-3D, rigging and clips on Meshy, finishing in headless Blender 5.2. Before each checkpoint an independent Gemini critic (Antigravity CLI, Claude fallback) reviews the stage and a reviser applies free fixes; fixes that spend credits run only after approval. Five skills, three agents. Needs Windows, Blender 5.2 and agy; bundles the meshy MCP.
 
 Keywords: 3d, meshy, blender, glb, rigging, animation, concept-art
 
