@@ -98,3 +98,4 @@ For each chosen preset action (e.g., `idle` [`action_id: 0`], `wave` [`action_id
    ```
 5. Update each task's status to `SUCCEEDED` and advance stage to `blender-finish`.
 
+> **Critic loop:** Stage 3 has no gate of its own. Its rig and clips are judged at gate C (`../idea-to-3d/references/loop.md`) once Blender renders them; re-rig and re-animate fixes come back from there as paid requests.

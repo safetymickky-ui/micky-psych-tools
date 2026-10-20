@@ -71,6 +71,8 @@ Render the 4 views (`Front`, `3/4`, `Side`, `Back`) × 3 frames (`start`, `mid`,
 
 ---
 
+> **Critic loop:** under the orchestrator, gate C (`../idea-to-3d/references/loop.md`) runs before this checkpoint; it also judges Stage 3's rig and clips. A maker subagent stops here.
+
 ### Step 4: Inspection Gate & Checkpoint C (MUST Call `AskUserQuestion`)
 
 1. Call `Read` on `work/<slug>/preview/sheet.png` to visually inspect the dedicated left `Concept` column and all 4 views × 3 frames per clip (verifying zero mesh tearing on procedural rigs and clear limb motion on humanoid rigs).

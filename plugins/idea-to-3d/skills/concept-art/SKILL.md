@@ -32,6 +32,8 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
    python "<plugin_root>/skills/concept-art/scripts/make-concept-sheet.py" --out "work/<slug>/preview/concepts.png" --title "<slug>: Concept Candidates (Checkpoint A)" "work/<slug>/images/concept-1.png=Concept 1" "work/<slug>/images/concept-2.png=Concept 2" "work/<slug>/images/concept-3.png=Concept 3"
    ```
 
+> **Critic loop:** under the orchestrator, gate A1 (`../idea-to-3d/references/loop.md`) runs before this checkpoint and gate A2 runs after Step 4. A maker subagent stops here and hands back to the orchestrator.
+
 ## Step 3: Checkpoint A (MUST Call `AskUserQuestion` and Wait for User)
 
 1. Call `Read` on `work/<slug>/preview/concepts.png` to inspect the candidates.

@@ -77,6 +77,8 @@ Run headless Blender 5.2 with [`render-meshy.py`](./scripts/render-meshy.py) to 
 & "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/image-to-3d/scripts/render-meshy.py" -- "work/<slug>/preview/tries.png" "work/<slug>/images/front.png" "work/<slug>/meshy/<slug>-try-1.glb=Try 1 (Meshy 7.1 4K)" "work/<slug>/meshy/<slug>-try-2.glb=Try 2 (Meshy 7.1 4K)"
 ```
 
+> **Critic loop:** under the orchestrator, gate B (`../idea-to-3d/references/loop.md`) runs before this checkpoint, and Step 1's consent and credit question was already asked at Checkpoint A. A maker subagent stops here.
+
 ## Step 4: Checkpoint B (MUST Call `AskUserQuestion` and Wait for User)
 
 1. Call `Read` on `work/<slug>/preview/tries.png` to inspect both tries across all 4 angles.
