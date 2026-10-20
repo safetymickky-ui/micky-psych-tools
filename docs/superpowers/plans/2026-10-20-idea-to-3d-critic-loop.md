@@ -1748,7 +1748,8 @@ consent, Blender discipline — binding at every stage) and
 
 - `<plugin_root>` is this plugin's directory: two levels above this skill's base directory. Use absolute paths in every command.
 - **Ask the user** = `AskUserQuestion`, recommended option first with a label ending in "(Recommended)". Only you (the main thread) ask; subagents cannot.
-- **Look at a PNG** = `Read` on the file.
+- **Look at a PNG** = `Read` on the file. That shows it to you only.
+- **Show the user a PNG** = `SendUserFile` with `display: "render"` when the session has it; otherwise give its absolute path. Do this before every checkpoint question, and put the absolute path in the question text.
 - **Image route** (concepts, turnarounds, image fixes): Meshy `nano-banana-pro` at 9 credits per image — `meshy_text_to_image` for concepts, `meshy_image_to_image` with `reference_file_paths` for turnarounds and fixes. A turnaround set is 3 images = 27 credits. Every image costs credits, so every image fix is a paid request.
 - **Roles:**
 
@@ -1806,7 +1807,7 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-histor
    Record the answer with `set-critic <slug> gemini` or `set-critic <slug> claude`.
 2. Dispatch the maker for concept-art Step 2 with the approved budget. It writes `images/concept-<n>.png` and `preview/concepts.png`.
 3. Run gate A1 ([loop.md](references/loop.md)).
-4. **Checkpoint A** — look at `preview/concepts.png`, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (Platform image route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/front.png`.
+4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (Platform image route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/front.png`.
 5. Dispatch the maker for concept-art Step 4 (turnarounds) with the approved budget.
 6. Run gate A2. Its paid fixes (regenerating a view) are asked as in loop.md.
 
@@ -1814,7 +1815,7 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-histor
 
 1. Dispatch the maker for image-to-3d Steps 2–3 with the Stage 2 budget approved at Checkpoint A. It writes the tries and `preview/tries.png`.
 2. Run gate B.
-3. **Checkpoint B** — look at `preview/tries.png`, then ask in one question: which try (recommended first, with the gate B summary), together with the Stage 3 cost (`meshy_remesh` 5 + `meshy_rig` 5 + `meshy_animate` 3 per action, or remesh only, 5, for non-humanoids). Record with `record-checkpoint <slug> B` and copy the chosen try to `meshy/<slug>-meshy.glb`.
+3. **Checkpoint B** — look at `preview/tries.png` and show it to the user, then ask in one question: which try (recommended first, with the gate B summary), together with the Stage 3 cost (`meshy_remesh` 5 + `meshy_rig` 5 + `meshy_animate` 3 per action, or remesh only, 5, for non-humanoids). Record with `record-checkpoint <slug> B` and copy the chosen try to `meshy/<slug>-meshy.glb`.
 
 ### 3. Stage 3 — remesh, rig, clips
 
@@ -1825,7 +1826,7 @@ are judged at gate C once Blender renders them.
 
 1. Dispatch the maker for blender-finish Steps 1–3 (free). `export-check.py` must be run with `--report "work/<slug>/out/quality_report.json"`.
 2. Run gate C. Re-rig (5) and re-animate (3 per action) fixes come back as paid requests.
-3. **Checkpoint C** — look at `preview/sheet.png`, then ask: approve, or request changes. Show the `check-glb.py` result and the gate C summary. Record with `record-checkpoint <slug> C`.
+3. **Checkpoint C** — look at `preview/sheet.png` and show it to the user, then ask: approve, or request changes. Show the `check-glb.py` result and the gate C summary. Record with `record-checkpoint <slug> C`.
 
 ## Guardrails
 
@@ -2164,6 +2165,7 @@ AG_BLOCK = """<!-- platform:begin -->
 - `<plugin_root>` is the installed plugin directory (`%USERPROFILE%\\.gemini\\config\\plugins\\idea-to-3d`). Use absolute paths in every command.
 - **Ask the user** = the `ask_question` tool, recommended option first with "(Recommended)". Only you ask; subagents cannot.
 - **Look at a PNG** = `view_file`.
+- **Show the user a PNG** = `view_file` puts it in the conversation; also put its absolute path in the question text.
 - **Image route** (concepts, turnarounds, image fixes): the `image-generator` subagent (`generate_image`), 0 Meshy credits. The `save-image.ps1` hook writes `work/<slug>/images/*.png` (`ImageName` `<slug>_concept_<n>`, `<slug>_front`, `<slug>_side`, `<slug>_back`). Reuse the same image-generator conversation with `send_message` and the chosen concept in `ImagePaths` so side and back views match the front. Image fixes are therefore free and need no approval. If the image-generator is unavailable, fall back to Meshy `nano-banana-pro` at 9 credits per image after approval.
 - **Roles:** dispatch a fresh subagent per role, briefed with the role file plus the inputs it lists:
 
