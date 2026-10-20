@@ -1255,7 +1255,13 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
 
 ## Open threads
 
-- idea-to-3d: once the plugin is installed, remove the user-scope copies (`~/.claude/skills/{idea-to-3d,concept-art,image-to-3d,rig-animate,blender-finish}` and `~/.claude/rules/idea-to-3d.md`) — the skill names collide; needs the user's OK. First live acceptance run still pending.
+- idea-to-3d 2.0.0: installed from the marketplace 2026-10-20; the v1 user-scope copies
+  (5 skills + `rules/idea-to-3d.md`) moved to `~/.claude/_backup/idea-to-3d-v1/` and the
+  user-scope `meshy` MCP removed (restore command saved there). Free dry check passed
+  2026-10-20 (0 credits): A1 REVISE→reviser free-route fixes→maker→REVISE with only
+  user-choice issues→checkpoint; A2 REVISE (back view at 3/4)→fix→PASS. Still open: a paid
+  run through gates B and C (tracer ≈20 credits); the reviser once paraphrased `change`
+  instead of copying the issue's `fix` verbatim (reviser.md rule 5).
 - plugin-creator 0.3.1: after updating the plugin, confirm `skill-name` is gone from the
   surface that listed it; if it stays, that surface holds a cached copy — remove it there.
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.
