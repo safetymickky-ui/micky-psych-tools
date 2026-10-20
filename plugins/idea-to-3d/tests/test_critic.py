@@ -12,6 +12,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -148,6 +149,9 @@ class TestReferenceFiles(unittest.TestCase):
                 self.assertIn(heading, text, f"{gate}.md lacks {heading}")
 
 
+B_CRITERIA = ("geometry", "artifacts", "texture", "symmetry", "rig-readiness")
+
+
 def valid_review(gate: str = "B", verdict: str = "REVISE") -> dict:
     issues = [] if verdict == "PASS" else [{
         "id": f"{gate}-1", "severity": "major", "criterion": "geometry",
@@ -155,7 +159,7 @@ def valid_review(gate: str = "B", verdict: str = "REVISE") -> dict:
         "fix": "new try with pose_mode a-pose", "credits": 30,
     }]
     return {"gate": gate, "verdict": verdict,
-            "scores": [{"criterion": "geometry", "score": 2}], "issues": issues}
+            "scores": [{"criterion": c, "score": 2} for c in B_CRITERIA], "issues": issues}
 
 
 class TestValidateReview(unittest.TestCase):
@@ -183,15 +187,62 @@ class TestValidateReview(unittest.TestCase):
         self.assertTrue(any('"gate" must be "C"' in e for e in errors))
         self.assertEqual(critique.validate_review(["not", "an", "object"], "B"), ["review must be a JSON object"])
 
+    def test_credits_message_states_the_range(self) -> None:
+        review = valid_review()
+        review["issues"][0]["credits"] = -5
+        self.assertTrue(any("integer from 0 to 1000" in e for e in critique.validate_review(review, "B")))
+
     def test_gate_lists_match_pipeline_state(self) -> None:
         self.assertEqual(tuple(critique.GATE_INPUTS), pipeline_state.VALID_GATES)
 
+    def test_rubric_criteria_are_read_from_the_rubric_files(self) -> None:
+        self.assertEqual(critique.rubric_criteria("B"), set(B_CRITERIA))
+        for gate in pipeline_state.VALID_GATES:
+            self.assertGreaterEqual(len(critique.rubric_criteria(gate)), 4, gate)
+
+    def test_unknown_criterion_in_a_score_or_an_issue_is_rejected(self) -> None:
+        review = valid_review()
+        review["scores"][0]["criterion"] = "vibes"
+        errors = critique.validate_review(review, "B")
+        self.assertTrue(any("scores[0]" in e and "vibes" in e for e in errors))
+        review = valid_review()
+        review["issues"][0]["criterion"] = "vibes"
+        self.assertTrue(any("issues[0].criterion" in e for e in critique.validate_review(review, "B")))
+
+    def test_criterion_scored_twice_is_rejected(self) -> None:
+        review = valid_review()
+        review["scores"][1]["criterion"] = "geometry"
+        self.assertTrue(any("scored twice" in e and "geometry" in e for e in critique.validate_review(review, "B")))
+
+    def test_criterion_never_scored_is_rejected(self) -> None:
+        review = valid_review()
+        review["scores"] = review["scores"][:-1]
+        self.assertTrue(any("not scored" in e and "rig-readiness" in e for e in critique.validate_review(review, "B")))
+
+    def test_duplicate_issue_id_is_rejected(self) -> None:
+        review = valid_review()
+        review["issues"].append(dict(review["issues"][0]))
+        self.assertTrue(any("duplicate issue id" in e for e in critique.validate_review(review, "B")))
+
+    def test_issue_id_must_start_with_the_gate(self) -> None:
+        review = valid_review()
+        review["issues"][0]["id"] = "A1-1"
+        self.assertTrue(any("must match" in e for e in critique.validate_review(review, "B")))
+
 
 class TestAgyParsing(unittest.TestCase):
-    def test_last_json_object_returns_the_outer_object(self) -> None:
-        text = 'I will read it.\n{"a": {"b": 1}} trailing'
-        self.assertEqual(critique.last_json_object(text), {"a": {"b": 1}})
-        self.assertIsNone(critique.last_json_object("no json here"))
+    def test_last_review_object_returns_the_last_object_with_a_verdict(self) -> None:
+        text = 'I will read it.\n{"verdict": "PASS", "x": {"b": 1}} then {"note": 1} trailing'
+        self.assertEqual(critique.last_review_object(text), {"verdict": "PASS", "x": {"b": 1}})
+        self.assertIsNone(critique.last_review_object("no json here"))
+        self.assertIsNone(critique.last_review_object('{"a": 1}'))
+
+    def test_retry_prompt_lists_at_most_twenty_errors(self) -> None:
+        errors = [f"problem {i}" for i in range(25)]
+        prompt = critique.build_prompt("B", [Path("x.png")], errors)
+        self.assertIn("- problem 19", prompt)
+        self.assertNotIn("- problem 20", prompt)
+        self.assertIn("- and 5 more", prompt)
 
     def test_parse_prefers_structured_output_then_response(self) -> None:
         body = valid_review()
@@ -252,13 +303,26 @@ class TestCritiqueRun(TempPipelineCase):
         self.run_critic("ok")
         argv = self.calls()[0]
         for flag, value in (("--mode", "plan"), ("--output-format", "json"),
-                            ("--model", "gemini-4-argon-medium"), ("--add-dir", str(self.work))):
+                            ("--model", "gemini-4-argon-medium")):
             self.assertEqual(argv[argv.index(flag) + 1], value)
         self.assertIn("--disable-slash-commands", argv)
         self.assertTrue(argv[argv.index("--json-schema") + 1].endswith("review.schema.json"))
         prompt = argv[argv.index("-p") + 1]
-        self.assertIn(str(self.work / "preview" / "tries.png"), prompt)
         self.assertIn("Gate B", prompt)
+        self.assertIn('"gate" must be "B"', prompt)
+
+    def test_agy_sees_only_a_temp_copy_of_the_gate_inputs(self) -> None:
+        (self.work / "reviews" / "B-r0.json").write_text("{}", encoding="utf-8")
+        self.run_critic("ok")
+        argv = self.calls()[0]
+        sandbox = Path(argv[argv.index("--add-dir") + 1])
+        self.assertNotEqual(sandbox.resolve(), self.work.resolve())
+        self.assertFalse(sandbox.exists(), "the temp copy is removed after the run")
+        prompt = argv[argv.index("-p") + 1]
+        for rel in ("idea.md", "images/front.png", "preview/tries.png"):
+            self.assertIn(str(sandbox / rel), prompt)
+        self.assertNotIn(str(self.work), prompt)
+        self.assertNotIn("reviews", prompt)
 
     def test_round_defaults_to_the_next_round(self) -> None:
         self.run_critic("ok")
@@ -283,6 +347,41 @@ class TestCritiqueRun(TempPipelineCase):
         self.assertEqual(self.run_critic("not-success"), 2)
         self.assertEqual(self.run_critic("sleep", "--timeout", "1"), 2)
         self.assertEqual(self.run_critic("ok", prefix=[str(self.tmp / "no-such-agy.exe")]), 2)
+
+    def test_timeout_holds_when_agy_leaves_a_child_holding_the_pipe(self) -> None:
+        started = time.monotonic()
+        self.assertEqual(self.run_critic("hang-child", "--timeout", "2"), 2)
+        self.assertLess(time.monotonic() - started, 15)
+
+    def test_explicit_round_is_used_for_the_file_name(self) -> None:
+        self.assertEqual(self.run_critic("ok", "--round", "5"), 0)
+        self.assertTrue((self.work / "reviews" / "B-r5.json").is_file())
+
+    def test_unexpected_exception_is_a_usage_error_not_a_traceback(self) -> None:
+        with mock.patch.object(critique.pipeline_state, "next_review_round", side_effect=RuntimeError("boom")):
+            self.assertEqual(self.run_critic("ok"), 1)
+
+    def test_unknown_consent_value_is_a_usage_error(self) -> None:
+        state = pipeline_state.load_pipeline("fox-knight", self.root)
+        state["critic"] = "gpt"
+        pipeline_state.save_pipeline("fox-knight", state, self.root)
+        self.assertEqual(self.run_critic("ok"), 1)
+        self.assertEqual(self.calls(), [])
+
+    def test_critic_label_and_from_file_must_go_together(self) -> None:
+        raw = self.tmp / "raw.json"
+        raw.write_text(json.dumps(valid_review(verdict="PASS")), encoding="utf-8")
+        for extra in (("--critic", "claude-fallback"), ("--from-file", str(raw))):
+            with self.assertRaises(SystemExit) as ctx, mock.patch("sys.stderr", io.StringIO()):
+                self.run_critic("ok", *extra)
+            self.assertEqual(ctx.exception.code, 1)
+        self.assertEqual(self.calls(), [])
+
+    def test_non_positive_timeout_is_a_usage_error(self) -> None:
+        for value in ("0", "-3"):
+            with self.assertRaises(SystemExit) as ctx, mock.patch("sys.stderr", io.StringIO()):
+                self.run_critic("ok", "--timeout", value)
+            self.assertEqual(ctx.exception.code, 1)
 
     def test_missing_input_or_consent_is_a_usage_error(self) -> None:
         (self.work / "preview" / "tries.png").unlink()
