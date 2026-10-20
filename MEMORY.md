@@ -17,7 +17,7 @@ a milestone.
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.8.1   |
-| intent-lock           | 0.4.2   |
+| intent-lock           | 0.4.3   |
 | plugin-creator        | 0.3.1   |
 | vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.1   |
@@ -35,6 +35,7 @@ a milestone.
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
+| idea-to-3d            | 1.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with

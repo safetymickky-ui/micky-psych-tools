@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3 — 2026-10-19
+
+- **Frontmatter parses again.** The `intent-lock` skill description is now a YAML folded
+  block scalar (`description: >-`); unquoted, its `: ` sequences broke the YAML parse and
+  the skill loaded with empty metadata. Wording unchanged (1020 chars).
+
 ## 0.4.2 — 2026-08-06
 
 - **Reciprocal boundary with plan-critique.** The skill description's Not-for clause now

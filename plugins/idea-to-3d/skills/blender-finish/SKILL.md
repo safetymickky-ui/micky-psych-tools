@@ -71,6 +71,19 @@ Render the 4 views (`Front`, `3/4`, `Side`, `Back`) × 3 frames (`start`, `mid`,
 
 ---
 
+### Optional: Run Steps 1–3 as One Actionforge Graph (`stage4-animate.act`)
+
+[`stage4-animate.act`](./scripts/stage4-animate.act) is an Actionforge graph that chains Steps 1–3: `import-merge` → `export-check` → `render-sheet`. If any Blender step exits non-zero, the graph prints the failure and exits 1. Steps 1–3 above stay the reference behaviour. Use the graph for repeatable re-runs (for example, re-merging after swapping a clip). You can also open it in the Actionforge editor to see the pipeline, or step through it.
+
+- **Env:** `IDEA3D_SLUG` (required), `IDEA3D_PLUGIN_ROOT` = `<plugin_root>` (required), `IDEA3D_BLENDER` (optional; defaults to the Blender 5.2 path above).
+- **Args after `--`:** the Step 1 mode args (Mode A, B or C) without `--out`. The graph builds `--out`, and every Step 2–3 path, from the slug.
+- **Run** from the workspace that holds `work/<slug>/`. This needs the `actrun` CLI on PATH (see the README):
+  ```powershell
+  $env:IDEA3D_SLUG = "<slug>"; $env:IDEA3D_PLUGIN_ROOT = "<plugin_root>"
+  actrun "<plugin_root>/skills/blender-finish/scripts/stage4-animate.act" -- --scripted-robot --clips "idle,wave" --height 0.35 --max-triangles 40000
+  ```
+- **Editing the graph:** use the bundled `actionforge-app` MCP. Call `search_nodes` / `describe_node` to find nodes. Then call `validate_graph` on the full YAML before saving: it must return `Graph is valid.` `.act` files are YAML, and the schema rejects unknown top-level keys, so keep notes in `#` comments. When you modify an existing `.act`, follow the server's lock protocol: put `locked_by: claude` on the first line while editing, and remove it once the graph validates.
+
 > **Critic loop:** under the orchestrator, gate C (`../idea-to-3d/references/loop.md`) runs before this checkpoint; it also judges Stage 3's rig and clips. A maker subagent stops here.
 
 ### Step 4: Inspection Gate & Checkpoint C (MUST Call `AskUserQuestion`)

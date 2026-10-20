@@ -56,7 +56,18 @@ These rules apply whenever running `/idea-to-3d` or any of its stage skills (`co
 - **In the `idea-to-3d` plugin repository:** Commit only the plugin files, **never `work/`** or `meshy_output/`.
 - **In user projects tracking 3D assets in Git:** Track `.blend` and the chosen `<slug>-meshy.glb` in Git LFS; ignore raw tries (`*-try-*`) and Blender backups (`*.blend1`). Commit `.blend` files only at the end of a stage.
 
-## 6. Critic loop
+## 6. Claude Code Adaptation
+
+These skills were first written for Antigravity. When running them in Claude Code:
+
+- **`<plugin_root>`** = this plugin's install directory (two levels above any skill folder, `${CLAUDE_PLUGIN_ROOT}`). Scripts live at `<plugin_root>/skills/<skill>/scripts/`.
+- **`ask_question`** → `AskUserQuestion` (recommended option first, label ending "(Recommended)").
+- **`view_file`** → `Read` on the PNG.
+- **`image-generator` subagent / `generate_image`** and the Antigravity `save-image.ps1` PostToolUse hook do not exist in Claude Code. Images go through the free route first: `skills/idea-to-3d/scripts/generate_image.py`, which drives Gemini through the Antigravity CLI (`agy`, 0 credits) and runs only after the user agreed to Google (`pipeline_state.py set-critic <slug> gemini`). If it exits 2, or the user declined Google, use Meshy `nano-banana-pro` (`meshy_text_to_image` / `meshy_image_to_image`, 9 credits per image) after explicit approval, downloaded into `work/<slug>/images/` under the expected filenames — or ask the user for concept images.
+- **Meshy MCP** ships in this plugin's `.mcp.json` (`scripts/run-meshy-mcp.mjs`), which reads `MESHY_API_KEY` from the environment or `HKCU\Environment` at launch. Check the live tool names and schemas before the first call; they can differ by server version.
+- **Plugin sync:** the Antigravity `agy plugin install` / `sync-plugin.ps1` step does not apply; update this plugin through the marketplace instead.
+
+## 7. Critic loop
 
 - Every gate (A1, A2, B, C) follows [loop.md](loop.md): critic, then reviser, then paid fixes only after a yes, then the critic again; it ends on PASS or after 2 revise rounds.
 - The critic sees only files. Never pass it the maker's or reviser's messages, and never judge a gate yourself.

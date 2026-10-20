@@ -1,0 +1,151 @@
+# idea-to-3d Stage 4 animation pipeline (Actionforge graph). Runs headless Blender three
+# times in order: import-merge.py (merge Meshy clips or build procedural clips onto one
+# armature), export-check.py (atomic GLB export + check-glb.py gates), render-sheet.py
+# (Checkpoint C sheet). Any non-zero exit stops the graph with exit code 1.
+# Env: IDEA3D_SLUG (required), IDEA3D_PLUGIN_ROOT (required), IDEA3D_BLENDER (optional).
+# Graph args after "--" are the import-merge mode args (Mode A/B/C); --out comes from the
+# slug. Run from the workspace that holds work/<slug>/.
+editor:
+  version:
+    created: v1.34.0
+entry: start
+type: generic
+nodes:
+  - id: start
+    type: core/start@v1
+    position:
+      x: 0
+      y: 0
+  - id: import-merge
+    type: core/run@v1
+    position:
+      x: 300
+      y: 0
+    inputs:
+      shell: python
+      script: |
+        import os, subprocess, sys
+        e = os.environ
+        slug = e["IDEA3D_SLUG"]
+        blender = e.get("IDEA3D_BLENDER") or r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+        script = os.path.join(e["IDEA3D_PLUGIN_ROOT"], "skills", "blender-finish", "scripts", "import-merge.py")
+        out = os.path.join("work", slug, "blender", slug + ".blend")
+        sys.exit(subprocess.call([blender, "-b", "--factory-startup", "--python-exit-code", "1",
+                                  "-P", script, "--", "--out", out, *sys.argv[1:]]))
+  - id: export-check
+    type: core/run@v1
+    position:
+      x: 600
+      y: 0
+    inputs:
+      shell: python
+      script: |
+        import os, subprocess, sys
+        e = os.environ
+        slug = e["IDEA3D_SLUG"]
+        blender = e.get("IDEA3D_BLENDER") or r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+        script = os.path.join(e["IDEA3D_PLUGIN_ROOT"], "skills", "blender-finish", "scripts", "export-check.py")
+        w = os.path.join("work", slug)
+        sys.exit(subprocess.call([blender, "-b", "--factory-startup", "--python-exit-code", "1",
+                                  "-P", script, "--",
+                                  "--blend", os.path.join(w, "blender", slug + ".blend"),
+                                  "--out", os.path.join(w, "out", slug + ".glb"),
+                                  "--report", os.path.join(w, "out", "quality_report.json")]))
+  - id: render-sheet
+    type: core/run@v1
+    position:
+      x: 900
+      y: 0
+    inputs:
+      shell: python
+      script: |
+        import os, subprocess, sys
+        e = os.environ
+        slug = e["IDEA3D_SLUG"]
+        blender = e.get("IDEA3D_BLENDER") or r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+        script = os.path.join(e["IDEA3D_PLUGIN_ROOT"], "skills", "blender-finish", "scripts", "render-sheet.py")
+        w = os.path.join("work", slug)
+        sys.exit(subprocess.call([blender, "-b", "--factory-startup", "--python-exit-code", "1",
+                                  "-P", script, "--",
+                                  "--blend", os.path.join(w, "blender", slug + ".blend"),
+                                  "--out", os.path.join(w, "preview", "sheet.png"),
+                                  "--concept", os.path.join(w, "images", "front.png")]))
+  - id: done
+    type: core/print@v1
+    position:
+      x: 1200
+      y: 0
+    inputs:
+      color: fg_green
+      values[0]: "stage4-animate: GLB exported, checks passed, sheet rendered"
+  - id: failed
+    type: core/print@v1
+    position:
+      x: 900
+      y: 250
+    inputs:
+      color: fg_red
+      values[0]: "stage4-animate: a Blender step failed; see its output above"
+  - id: exit-fail
+    type: core/process-exit@v1
+    position:
+      x: 1200
+      y: 250
+    inputs:
+      code: 1
+connections:
+  - src:
+      node: start
+      port: args
+    dst:
+      node: import-merge
+      port: args
+executions:
+  - src:
+      node: start
+      port: exec
+    dst:
+      node: import-merge
+      port: exec
+  - src:
+      node: import-merge
+      port: exec-success
+    dst:
+      node: export-check
+      port: exec
+  - src:
+      node: export-check
+      port: exec-success
+    dst:
+      node: render-sheet
+      port: exec
+  - src:
+      node: render-sheet
+      port: exec-success
+    dst:
+      node: done
+      port: exec
+  - src:
+      node: import-merge
+      port: exec-err
+    dst:
+      node: failed
+      port: exec
+  - src:
+      node: export-check
+      port: exec-err
+    dst:
+      node: failed
+      port: exec
+  - src:
+      node: render-sheet
+      port: exec-err
+    dst:
+      node: failed
+      port: exec
+  - src:
+      node: failed
+      port: exec
+    dst:
+      node: exit-fail
+      port: exec

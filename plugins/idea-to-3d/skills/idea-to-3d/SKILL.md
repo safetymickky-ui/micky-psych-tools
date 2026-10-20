@@ -18,8 +18,9 @@ gate = critique.py (Gemini) → reviser (free fixes) → paid fixes only after a
        → critique again; ends on PASS or after 2 revise rounds
 ```
 
-Before starting, read [references/rules.md](references/rules.md) (credits, idempotency,
-consent, Blender discipline — binding at every stage) and
+Before starting, read [references/pipeline-rules.md](references/pipeline-rules.md) (credits,
+idempotency, consent, Meshy schema notes, Blender discipline, the Claude Code tool mapping in
+§6 — binding at every stage) and
 [references/loop.md](references/loop.md) (the gate protocol).
 
 <!-- platform:begin -->
@@ -35,10 +36,10 @@ consent, Blender discipline — binding at every stage) and
 
 | Role | Run it as | Credits |
 |---|---|---|
-| maker | `Agent` with `subagent_type: "idea-to-3d:idea3d-maker"`; the prompt gives the role file `<plugin_root>/skills/idea-to-3d/references/roles/maker.md`, slug, work root, plugin root, the stage `SKILL.md` path and steps, and the approved budget; for a fix also the request, its `change` text and the step key ([loop.md](references/loop.md)); for a `"route": "free"` fix, budget "none" and the `generate_image.py` command form from the Image route line | approved budget only |
+| maker | `Agent` with `subagent_type: "idea-to-3d:idea3d-maker"`; the prompt gives the role file `<plugin_root>/skills/idea-to-3d/references/roles/maker.md`, the rules file `<plugin_root>/skills/idea-to-3d/references/pipeline-rules.md`, slug, work root, plugin root, the stage `SKILL.md` path and steps, and the approved budget; for a fix also the request, its `change` text and the step key ([loop.md](references/loop.md)); for a `"route": "free"` fix, budget "none" and the `generate_image.py` command form from the Image route line | approved budget only |
 | critic | `Bash`: `python "<plugin_root>/skills/idea-to-3d/scripts/critique.py" <slug> <gate> --work-root <root>` with `timeout: 600000` | none |
 | critic fallback | `Agent` with `subagent_type: "idea-to-3d:idea3d-critic"`; the prompt gives `references/roles/critic.md`, gate, rubric, inputs, and the absolute out path `<root>/work/<slug>/critic-tmp/<gate>-r<r>.raw.json` | none |
-| reviser | `Agent` with `subagent_type: "idea-to-3d:idea3d-reviser"`; the prompt gives `references/roles/reviser.md`, slug, work root, plugin root, gate, round, the review path `critique.py` printed, rubric, stage skill, `maker_commands` (the `commands` from the stage's last maker report), and `free_image_route` (when the user agreed to Google) | none (it has no Meshy tools) |
+| reviser | `Agent` with `subagent_type: "idea-to-3d:idea3d-reviser"`; the prompt gives `references/roles/reviser.md`, the rules file `references/pipeline-rules.md`, slug, work root, plugin root, gate, round, the review path `critique.py` printed, rubric, stage skill, `maker_commands` (the `commands` from the stage's last maker report), and `free_image_route` (when the user agreed to Google) | none (it has no Meshy tools) |
 
 - Never judge a gate yourself: the critic is the script or the critic agent.
 <!-- platform:end -->
@@ -107,6 +108,7 @@ are judged at gate C once Blender renders them.
 ### 4. Stage 4 — Blender finish, gate C, Checkpoint C
 
 1. Dispatch the maker for blender-finish Steps 1–3 (free). `export-check.py` must be run with `--report "work/<slug>/out/quality_report.json"`.
+   When `actrun` is on PATH, Steps 1–3 can run as one Actionforge graph instead (`blender-finish/scripts/stage4-animate.act`, which stops on the first failing step); the blender-finish skill gives its env vars and args.
 2. Run gate C. Re-rig (5) and re-animate (3 per action) fixes come back as paid requests.
 3. **Checkpoint C** — look at `preview/sheet.png` and show it to the user, then ask: approve, or request changes. Show the `check-glb.py` result and the gate C summary. Record with `record-checkpoint <slug> C`.
 
