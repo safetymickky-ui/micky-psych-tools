@@ -44,7 +44,7 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 2. Show the PNG to the user first (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
 3. Call the **`AskUserQuestion`** tool (recommended concept first, its label ending with "(Recommended)") stating:
    - Which concept you recommend and why (plus the scripted Blender option if hard-surface/symmetric).
-   - What it costs to continue (combine the concept choice and Stage 2 credit/upload approval in the options):
+   - What it costs to continue (combine the concept choice and Stage 2 credit/upload approval in the options; under the orchestrator these are two questions in one call, see its Checkpoint A step):
      - Turnaround generation (`front.png`, `side.png`, `back.png`): **0 credits** on the free route (`generate_image.py`), **27 credits** (3 × 9) on the Meshy route (`meshy_image_to_image`, `nano-banana-pro`).
      - Uploading turnaround images to `meshy.ai` for Stage 2 Image-to-3D: **60 credits** for 2 tries with `meshy-7.1` at 4K texture (30 credits each), or **15 credits** for a single `meshy-6-lite` tracer try.
 4. Record the decision with `pipeline_state.py record-checkpoint <slug> A --approved true --choice concept-<n>`.
