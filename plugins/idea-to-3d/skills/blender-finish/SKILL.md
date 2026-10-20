@@ -28,9 +28,9 @@ Always run Blender 5.2 headless with `--factory-startup` and `--python-exit-code
 ```
 
 #### Mode B: Procedural Rig & Keyframed Clips Fallback (Non-Humanoid / Auto-Rig Failure)
-If the character is non-humanoid (or `meshy_rig` failed), pass the remeshed mesh (`--mesh`) and `--procedural-rig`:
+If the character is non-humanoid (or `meshy_rig` failed), pass the remeshed mesh (`--mesh`) and `--procedural-rig`. Set `--clips` to `expected_clips` from `pipeline.json`, comma-joined. A non-humanoid defaults to `idle` alone, because the procedural `wave` bends rigid props out of shape:
 ```powershell
-& "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/blender-finish/scripts/import-merge.py" -- --out "work/<slug>/blender/<slug>.blend" --mesh "work/<slug>/meshy/<slug>-remesh.glb" --procedural-rig --clips "idle,wave" --height 1.7 --max-triangles 40000
+& "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" -b --factory-startup --python-exit-code 1 -P "<plugin_root>/skills/blender-finish/scripts/import-merge.py" -- --out "work/<slug>/blender/<slug>.blend" --mesh "work/<slug>/meshy/<slug>-remesh.glb" --procedural-rig --clips "idle" --height 1.7 --max-triangles 40000
 ```
 
 #### Mode C: Pure Scripted Robot Character + Rig (`--scripted-robot`)
@@ -53,7 +53,7 @@ Run `export-check.py` inside headless Blender 5.2. It opens `work/<slug>/blender
 1. File size `<= 8 MB` (or `max_bytes` in `pipeline.json`).
 2. Triangle count `<= triangle_budget` in `pipeline.json` (default `40,000`).
 3. Rigged with a skeleton skin (`skins` and `joints` present).
-4. Expected animation clips exist (`idle` plus at least 1 action clip), spelled exactly with no `.001` duplicate suffixes.
+4. Expected animation clips exist (`idle` plus at least 1 action clip), spelled exactly with no `.001` duplicate suffixes. When `expected_clips` in `pipeline.json` (or `--clips`) names one clip, as a non-humanoid's `["idle"]` does, that one clip passes without `--allow-single-clip`.
 5. Every animation channel targets only skin joints (never morph target weights or non-joint nodes) and moves bones across its frame range.
 6. Every mesh has `UVMap` and a `Principled BSDF` material (`mean RGB > 0.02`, not solid black), and all embedded GLB textures are `image/webp` or `image/png`.
 7. No cameras or punctual lights (`KHR_lights_punctual`) in the exported `.glb`.

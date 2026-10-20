@@ -18,7 +18,7 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 - **Materials:** Surface finishes (matte cloth, brushed metal, glossy ceramic, emissive cyan screen).
 - **Mood & Personality:** 1–2 sentences describing attitude and rest expression.
 - **Style:** `"polished 3D render, soft studio lighting, smooth rounded shapes, Pixar-like charm, clean silhouette"`.
-- **Target Animation Clips:** `idle` plus 2–3 fitting actions (e.g., `walk`, `wave`, `cheer`).
+- **Target Animation Clips:** `idle` plus 2–3 fitting actions (e.g., `walk`, `wave`, `cheer`); a rigid non-humanoid prop gets `idle` only.
 
 > [!TIP]
 > **Procedural Blender Option:** Round, hard-surface, symmetric characters (such as a hovering spherical robot lab assistant) often come out cleaner when built directly by Blender script than from image-to-3D. If the idea fits that shape, note it in `idea.md` and offer a pure scripted Blender build as an option at **Checkpoint A**.

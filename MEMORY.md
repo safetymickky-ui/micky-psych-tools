@@ -35,7 +35,7 @@ a milestone.
 | vi-stock-screen-research | 0.1.0 |
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
-| idea-to-3d            | 2.0.0   |
+| idea-to-3d            | 2.0.1   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -198,6 +198,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
 
 ## Recent milestones
+
+- **2026-10-20** — **idea-to-3d 2.0.1**: fixes the three bugs from the paid tracer run. `record-task` updates keep the stored fields they leave out (`--settings` included). `init --non-humanoid` expects `idle` only, and check-glb/export-check accept a lone clip when `expected_clips` names one, so no `--allow-single-clip` is needed. Reviser rule 5 copies `fix` into `change` character for character, with extra guidance in `why`.
 
 - **2026-10-20** — **idea-to-3d 2.0.0**: ported from the Antigravity plugin with a maker → Gemini critic → reviser loop at gates A1/A2/B/C. Gemini CLI personal OAuth is retired (`IneligibleTierError`); the critic runs through `agy` with `gemini-4-argon-medium`, and images are generated free through `agy` too.
 
@@ -1262,9 +1264,7 @@ All plugin/skill dependencies on this machine are satisfied; don't re-audit or s
   user-choice issues→checkpoint; A2 REVISE (back view at 3/4)→fix→PASS. Paid tracer run
   2026-10-20 (20 credits: meshy-6-lite try 15 + remesh 5): B PASS r0; C REVISE (procedural
   `wave` warps a prop) → reviser rebuilt with `--clips idle --allow-single-clip` → PASS r1.
-  Bugs found, unfixed: `record-task` without `--settings` wipes stored settings to `{}`;
-  `init --non-humanoid` defaults clips to `idle,wave` (wave deforms rigid props); the
-  reviser once paraphrased `change` instead of copying `fix` verbatim (reviser.md rule 5).
+  The three bugs it found are fixed in 2.0.1 (see Recent milestones).
 - plugin-creator 0.3.1: after updating the plugin, confirm `skill-name` is gone from the
   surface that listed it; if it stays, that surface holds a cached copy — remove it there.
 - Local branch `improve-all-plugins` still present — delete once its merge into `master` is confirmed.

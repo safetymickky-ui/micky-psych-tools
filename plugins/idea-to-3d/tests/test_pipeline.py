@@ -5,7 +5,9 @@ for the `idea-to-3d` plugin (0 Meshy credits spent).
 """
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import json
 import os
 import shutil
@@ -217,6 +219,45 @@ class TestCheckGlbUnit(unittest.TestCase):
         )
         self.assertTrue(ok, f"Expected valid GLB to pass, got problems: {problems}")
         self.assertEqual(summary["clips"], ["idle", "wave"])
+
+    def _idle_only_glb(self) -> Path:
+        gltf_dict = {
+            "asset": {"version": "2.0"},
+            "nodes": [{"name": "RootJoint"}, {"name": "BodyMesh", "mesh": 0, "skin": 0}],
+            "meshes": [{"name": "Body", "primitives": [{"attributes": {"POSITION": 0}, "indices": 1, "mode": 4}]}],
+            "accessors": [
+                {"count": 300, "min": [-0.1, 0.0, -0.1], "max": [0.1, 0.4, 0.1]},
+                {"count": 600},
+            ],
+            "skins": [{"joints": [0]}],
+            "animations": [
+                {"name": "idle", "channels": [{"target": {"node": 0, "path": "rotation"}}], "samplers": [{}]},
+            ],
+        }
+        return self._build_minimal_glb(gltf_dict, bin_size=2048)
+
+    def test_single_idle_clip_passes_when_idle_is_the_only_expected_clip(self) -> None:
+        glb_path = self._idle_only_glb()
+        ok, problems, _ = check_glb_mod.check_glb(str(glb_path), expected_clips=["idle"], target_height_m=0.4)
+        self.assertTrue(ok, problems)
+
+        # Humanoid behaviour unchanged: a lone idle still fails without an idle-only expectation.
+        for expected in (None, ["idle", "walk", "wave"]):
+            ok, problems, _ = check_glb_mod.check_glb(str(glb_path), expected_clips=expected, target_height_m=0.4)
+            self.assertFalse(ok)
+            self.assertIn("expected at least 'idle' and one more animation clip", problems)
+
+    def test_cli_reads_idle_only_expected_clips_from_pipeline_json(self) -> None:
+        out_dir = self.tmpdir / "out"
+        out_dir.mkdir()
+        glb_path = self._idle_only_glb().replace(out_dir / "lantern.glb")
+        pipeline = {"expected_clips": ["idle"], "target_height_m": 0.4}
+        (self.tmpdir / "pipeline.json").write_text(json.dumps(pipeline), encoding="utf-8")
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(check_glb_mod.main([str(glb_path)]), 0)
+            pipeline["expected_clips"] = ["idle", "wave"]
+            (self.tmpdir / "pipeline.json").write_text(json.dumps(pipeline), encoding="utf-8")
+            self.assertEqual(check_glb_mod.main([str(glb_path)]), 1)
 
     def test_invalid_magic_or_missing_skin_fails(self) -> None:
         bad_path = self.tmpdir / "bad.glb"

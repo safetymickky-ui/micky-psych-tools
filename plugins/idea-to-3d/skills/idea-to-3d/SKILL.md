@@ -63,7 +63,7 @@ work/<slug>/
 Manage state with `pipeline_state.py`:
 
 ```powershell
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" init <slug> --idea "<idea>" --height <meters> [--non-humanoid] --clips "idle,walk,wave" --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" init <slug> --idea "<idea>" --height <meters> [--non-humanoid] [--clips "idle,walk,wave"] --work-root <root>
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" show <slug> --work-root <root>
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" get-task <slug> <step_key> --work-root <root>
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-task <slug> <step_key> --task-id <id> --tool <tool> --task-type <type> --credits <n> --status <status> --work-root <root>
@@ -71,6 +71,8 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-checkp
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" set-critic <slug> gemini|claude --work-root <root>
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-history <slug> [--gate A1|A2|B|C] --work-root <root>
 ```
+
+Without `--clips`, `init` sets `expected_clips` to `idle,walk,wave` for a humanoid and to `idle` alone for `--non-humanoid`, because the procedural `wave` bends rigid props out of shape. Blender-finish reads `expected_clips` from `pipeline.json`, so an `idle`-only run passes `check-glb.py` and `export-check.py` without `--allow-single-clip`. To update a recorded task, `record-task` needs only the step key and the options that change, such as `--status SUCCEEDED --output <path>`. Options left out keep their stored values, `--settings` included.
 
 ## Execution Protocol
 
