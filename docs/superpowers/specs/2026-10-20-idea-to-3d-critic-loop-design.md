@@ -133,22 +133,28 @@ python critique.py <slug> <gate> --from-file <raw.json> --critic claude-fallback
 ```
 
 1. Resolves the gate's input files; a missing input is a usage error (exit 1).
-2. Builds the prompt: rubric `references/rubrics/<gate>.md` + text inputs inline
-   (`idea.md`, `quality_report.json`) + absolute paths of the PNGs + "judge only what you
-   see; output only the JSON object".
+2. Copies them into a fresh temp directory (relative paths kept) so the critic cannot see
+   `reviews/`, `pipeline.json` or anything else in the work folder, and builds the prompt:
+   rubric `references/rubrics/<gate>.md` + the absolute paths of the copies + "judge only
+   what you see; output only the JSON object".
 3. Runs `agy -p <prompt> --output-format json --mode plan --disable-slash-commands
-   --model <model> --json-schema references/review.schema.json --add-dir <work dir>`
-   with the timeout. Model: `--model`, else `IDEA3D_CRITIC_MODEL`, else
-   `gemini-4-argon-medium`. Binary: `IDEA3D_AGY`, else `agy` on `PATH`.
-4. Takes `structured_output` (else the last JSON object in `response`), validates it,
-   and on failure retries once with the errors appended.
+   --model <model> --json-schema references/review.schema.json --add-dir <temp dir>`
+   with the temp dir as working directory and a timeout that kills the whole process
+   tree. Model: `--model`, else `IDEA3D_CRITIC_MODEL`, else `gemini-4-argon-medium`.
+   Binary: `IDEA3D_AGY`, else `agy` on `PATH`.
+4. Takes `structured_output` (else the last JSON object with a `verdict` in `response`),
+   validates it, and on failure retries once with up to 20 errors appended. Besides the
+   shape and PASS/REVISE rules, the validator checks the review against the gate's
+   rubric: every criterion scored exactly once, no unknown criterion, unique issue ids
+   of the form `<gate>-<n>`.
 5. Writes the review file, records it in `pipeline.json`, prints the path.
 
 `--round` defaults to the number of reviews already recorded for that gate.
-`--from-file` skips step 3–4's call and validates a review the Claude critic wrote, so
-both critics go through one validator.
+`--from-file` skips the agy call and validates a review the Claude critic wrote, so both
+critics go through one validator. `--from-file` and `--critic claude-fallback` must be
+given together; either alone is a usage error, so the log never names the wrong critic.
 
-Exit codes: `0` review written · `1` usage error · `2` critic unavailable (binary
+Exit codes: `0` review written · `1` usage or internal error · `2` critic unavailable (binary
 missing, non-zero exit, status ≠ SUCCESS, timeout) · `3` invalid review twice. On `2` or
 `3` the orchestrator dispatches the Claude critic, then records its review with
 `--from-file --critic claude-fallback --reason "<exit code + message>"`.
