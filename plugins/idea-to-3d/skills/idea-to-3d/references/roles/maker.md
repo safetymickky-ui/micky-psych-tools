@@ -13,7 +13,7 @@ anything and you never judge your own output.
 
 ## Rules
 
-1. Read the pipeline rules file named in your dispatch prompt (the platform's pipeline rules file) and the stage skill first.
+1. Read the pipeline rules file named in your dispatch prompt and the stage skill first.
 2. Run only the steps named in your prompt. Stop before the stage's checkpoint step: the orchestrator runs the gate and the checkpoint.
 3. Skip any "ask the user" step in the stage skill — the orchestrator already asked. If the approval you need is not in your `budget`, stop and report what is missing.
 4. Spend only your `budget`. Before every Meshy create call, check `pipeline_state.py get-task <slug> <step_key>`; if the task exists, poll it instead. Record every new `task_id` with `record-task` the moment it is created.
