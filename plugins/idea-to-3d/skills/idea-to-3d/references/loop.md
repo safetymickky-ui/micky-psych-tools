@@ -36,10 +36,10 @@ On entering a gate, set `start` = the next round from `pipeline_state.py review-
    - For each approved request, one at a time (never in parallel — `pipeline.json` writes are not locked), dispatch the maker with that request as its budget, the request's `change` text, and these steps:
      - A1 → concept-art Step 2 (concept generation) for the named concept, then rebuild `preview/concepts.png` (Step 2.3).
      - A2 → concept-art Step 4 (turnaround) for the named view, then the `--normalize` turnaround command (Step 4.3).
-     - B → image-to-3d Step 2 (create) for one new try under the next free key `try-<n>`, then Step 3 (comparison render) listing every try.
+     - B → image-to-3d Step 2 (create) for one new try: if a `try-<n>` task recorded with settings `{"fix": "<issue id>"}` exists, poll it; otherwise use the next free `try-<n>` and record it with `--settings '{"fix": "<issue id>"}'`, then Step 3 (comparison render) listing every try.
      - C → rig-animate Steps 2–4 (remesh, rig, animate) for what the request names, then blender-finish Steps 1–3 (import-merge, export-check, render-sheet).
      - A paid fix that redoes a recorded step uses the step key `<step_key>-<issue id>` (for example `rig-C-2`, `anim-wave-C-3`, `concept-3-A1-1`).
-   - After the makers finish, the gate's preview is current; continue with the next critique.
+   - After the makers finish, the gate's preview is current.
    - If the reviser's `inputs_changed` is false and no maker run wrote a gate input, go to the checkpoint — critiquing unchanged files again wastes a round.
    - Otherwise go back to step 1.
 4. **REVISE and `r − start = 2`** → go to the checkpoint with the open issues.
@@ -58,6 +58,6 @@ List every open issue with severity, evidence and the suggested fix with its cre
 ## Rules
 
 - **Independence.** The critic receives files only — never the maker's or reviser's messages, never `pipeline.json` notes. The orchestrator never judges a gate itself. `critique.py` stages the gate's files in a temporary folder, so Gemini cannot open `reviews/` or `pipeline.json` either.
-- **Credits.** `credits` in a review are Meshy list prices. If the platform has a free route for the same fix (a free image generator), the orchestrator says so in the reviser's dispatch prompt and the reviser applies the fix itself; it then needs no approval. Every other credit-spending fix needs the user's yes in this run, and the maker may spend only what was approved.
+- **Credits.** `credits` in a review are Meshy list prices. If the platform has a free route for the same fix (a free image generator), the orchestrator names it in the reviser's dispatch prompt and the reviser writes the fix as a request with `credits: 0` and `"route": "free"`. A request with `credits: 0` needs no approval: the orchestrator dispatches the maker for it with the platform's free route. Every other credit-spending fix needs the user's yes in this run, and the maker may spend only what was approved.
 - **Idempotency.** Paid fixes follow the pipeline rules: read `pipeline.json` before any Meshy create call and record every `task_id` the moment it exists.
-- **Resume.** Read `pipeline_state.py review-history <slug> --gate <gate>`. If the last review of the gate is REVISE and `reviews/backup-<gate>-r<r>/` does not exist, dispatch the reviser for it; otherwise run the critic again. Use the same `start` rule as on entry.
+- **Resume.** First finish any recorded Meshy task that is not SUCCEEDED (poll it, download it, rerun the gate's preview step). Then read `pipeline_state.py review-history <slug> --gate <gate>`. If the last review of the gate is REVISE and `reviews/backup-<gate>-r<r>/` does not exist, dispatch the reviser for it; otherwise run the critic again. Use the same `start` rule as on entry.

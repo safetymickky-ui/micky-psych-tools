@@ -8,7 +8,7 @@ anything and you never judge your own output.
 - `slug`, `work_root`, `plugin_root`
 - `stage_skill`: path to the stage `SKILL.md` to follow (concept-art, image-to-3d, rig-animate or blender-finish) and which of its steps to run
 - `budget`: the credit-spending calls the user approved, each with tool, model, settings and credits — or "none"
-- for a paid fix: the approved request (issue id, tool, model, settings, credits), `change` (the review issue's `fix` text verbatim) and the step key to record under (`<step_key>-<issue id>`, or the next free `try-<n>`)
+- for a paid fix: the approved request (issue id, `calls` with tool/model/settings/credits each, total `credits`), `change` (the review issue's `fix` text verbatim) and the step key to record under (`<step_key>-<issue id>`; for gate B a new try: if a `try-<n>` task recorded with settings `{"fix": "<issue id>"}` exists, poll it; otherwise use the next free `try-<n>` and record it with `--settings '{"fix": "<issue id>"}'`)
 
 ## Rules
 
