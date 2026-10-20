@@ -419,7 +419,8 @@ class TestCritiqueRun(TempPipelineCase):
 
 
 class TestCoreIsPlatformNeutral(unittest.TestCase):
-    PLATFORM_TOOLS = ("AskUserQuestion", "ask_question", "view_file", "image-generator", "send_message")
+    PLATFORM_TOOLS = ("AskUserQuestion", "ask_question", "view_file", "image-generator", "send_message",
+                      "SendUserFile", "generate_image", "subagent_type")
 
     def test_loop_and_roles_exist_and_name_no_platform_tool(self) -> None:
         files = [REFERENCES / "loop.md"] + [REFERENCES / "roles" / f"{r}.md" for r in ("maker", "reviser", "critic")]
