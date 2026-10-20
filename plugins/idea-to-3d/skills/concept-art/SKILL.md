@@ -58,7 +58,7 @@ From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), generate 
 python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/front.png --prompt-file "<abs path of work/<slug>/prompts/front.txt>" --ref "<abs path of work/<slug>/images/concept-<n>.png>" --work-root <root>
 ```
 
-Only when `generate_image.py` exits 2 or the user declined Google, use Meshy instead: `meshy_image_to_image` with the concept path in `reference_file_paths` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view, approval first; download each result with `meshy_download_model` and `save_to`). The framing rules below go into the prompt text on either route.
+Only when `generate_image.py` exits 2 or the user declined Google, use Meshy instead: `meshy_image_to_image` with the concept path in `reference_file_paths` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view, approval first; record each task with `pipeline_state.py record-task <slug> view-<front|side|back> ...` the moment it is created; download each result with `meshy_download_model` and `save_to`). The framing rules below go into the prompt text on either route.
 
 `front.png` is regenerated (not just copied) so it meets the framing rules; on either route, if the chosen concept already meets them, copy it to `front.png` instead and skip that image (saves one image generation).
 

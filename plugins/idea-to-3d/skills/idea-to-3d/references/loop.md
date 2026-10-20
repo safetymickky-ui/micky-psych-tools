@@ -38,7 +38,7 @@ On entering a gate, set `start` = the next round from `pipeline_state.py review-
      - A2 → concept-art Step 4 (turnaround) for the named view, then the `--normalize` turnaround command (Step 4.3).
      - B → image-to-3d Step 2 (create) for one new try: if a `try-<n>` task recorded with settings `{"fix": "<issue id>"}` exists, poll it; otherwise use the next free `try-<n>` and record it with `--settings '{"fix": "<issue id>"}'`, then Step 3 (comparison render) listing every try.
      - C → rig-animate Steps 2–4 (remesh, rig, animate) for what the request names, then blender-finish Steps 1–3 (import-merge, export-check, render-sheet).
-     - A paid fix that redoes a recorded step uses the step key `<step_key>-<issue id>` (for example `rig-C-2`, `anim-wave-C-3`, `concept-3-A1-1`).
+     - A paid fix that redoes a recorded step uses the step key `<step_key>-<issue id>` (for example `rig-C-2`, `anim-wave-C-3`, `concept-3-A1-1`, `view-side-A2-1`).
    - After the makers finish, the gate's preview is current.
    - If the reviser's `inputs_changed` is false and no maker run wrote a gate input, go to the checkpoint — critiquing unchanged files again wastes a round.
    - Otherwise go back to step 1.
