@@ -1,92 +1,116 @@
 ---
 name: idea-to-3d
-description: Turn a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) and preview sheet (/idea-to-3d). Orchestrates concept art (Nano Banana), image-to-3D (Meshy), remeshing/rigging/animation (Meshy), and headless Blender cleanup, clip merging, validation, and preview rendering across three user checkpoints.
+description: Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) plus a preview sheet (/idea-to-3d). Use when the user wants a 3D character, prop, mascot or figure made from an idea or a concept image, says "make this a 3D model", "idea to 3D", "rig and animate it", or resumes a work/<slug> pipeline. Runs concept art, image-to-3D, remesh/rig/animation on Meshy and headless Blender finishing across three user checkpoints; before each one an independent Gemini critic (Antigravity CLI, Claude fallback) reviews the stage and a reviser fixes it. Spends Meshy credits only after explicit approval. Not for 3D-printing prep or hand-editing an open Blender scene.
 ---
 
 # Idea to 3D Orchestrator (`/idea-to-3d`)
 
-`<plugin_root>` is this plugin's directory: two levels above this skill's base directory. Use it as an absolute path in every command.
-
-This skill orchestrates the full 4-stage pipeline that turns a one-line idea into an animated `.glb` model (`work/<slug>/out/<slug>.glb`) and preview sheet (`work/<slug>/preview/sheet.png`).
+Turns a one-line idea into an animated `.glb` (`work/<slug>/out/<slug>.glb`) and a preview
+sheet (`work/<slug>/preview/sheet.png`). Every stage's output is judged by an independent
+critic and revised before the user sees it.
 
 ```text
-idea → Stage 1: concept images (Nano Banana) → [Checkpoint A]
-     → Stage 2: image-to-3D (Meshy)          → [Checkpoint B]
-     → Stage 3: remesh, rig & clips (Meshy)
-     → Stage 4: clean-up, merge, check & sheet (Blender) → [Checkpoint C]
+idea → Stage 1 concepts ─ gate A1 ─ [Checkpoint A] ─ turnarounds ─ gate A2
+     → Stage 2 image-to-3D ─ gate B ─ [Checkpoint B]
+     → Stage 3 remesh, rig, clips → Stage 4 Blender finish ─ gate C ─ [Checkpoint C]
+
+gate = critique.py (Gemini) → reviser (free fixes) → paid fixes only after a yes
+       → critique again; ends on PASS or after 2 revise rounds
 ```
+
+Before starting, read [references/rules.md](references/rules.md) (credits, idempotency,
+consent, Blender discipline — binding at every stage) and
+[references/loop.md](references/loop.md) (the gate protocol).
+
+<!-- platform:begin -->
+## Platform: Claude Code
+
+- `<plugin_root>` is this plugin's directory: two levels above this skill's base directory. Use absolute paths in every command.
+- **Ask the user** = `AskUserQuestion`, recommended option first with a label ending in "(Recommended)". Only you (the main thread) ask; subagents cannot.
+- **Look at a PNG** = `Read` on the file. That shows it to you only.
+- **Show the user a PNG** = `SendUserFile` with `display: "render"` when the session has it; otherwise give its absolute path. Do this before every checkpoint question, and put the absolute path in the question text.
+- **Image route** (concepts, turnarounds, image fixes): Meshy `nano-banana-pro` at 9 credits per image — `meshy_text_to_image` for concepts, `meshy_image_to_image` with `reference_file_paths` for turnarounds and fixes. A turnaround set is 3 images = 27 credits. Every image costs credits, so every image fix is a paid request.
+- **Roles:**
+
+| Role | Run it as | Credits |
+|---|---|---|
+| maker | `Agent` with `subagent_type: "idea-to-3d:idea3d-maker"`; the prompt gives the role file `<plugin_root>/skills/idea-to-3d/references/roles/maker.md`, slug, work root, plugin root, the stage `SKILL.md` path and steps, and the approved budget | approved budget only |
+| critic | `Bash`: `python "<plugin_root>/skills/idea-to-3d/scripts/critique.py" <slug> <gate> --work-root <root>` with `timeout: 600000` | none |
+| critic fallback | `Agent` with `subagent_type: "idea-to-3d:idea3d-critic"`; the prompt gives `references/roles/critic.md`, gate, rubric, inputs, and the absolute out path `<root>/work/<slug>/critic-tmp/<gate>-r<r>.raw.json` | none |
+| reviser | `Agent` with `subagent_type: "idea-to-3d:idea3d-reviser"`; the prompt gives `references/roles/reviser.md`, slug, work root, plugin root, gate, round, the review path `critique.py` printed, rubric, stage skill, and `maker_commands` (the `commands` from the stage's last maker report) | none (it has no Meshy tools) |
+
+- Never judge a gate yourself: the critic is the script or the critic agent.
+<!-- platform:end -->
 
 ## Workspace & State (`work/<slug>/pipeline.json`)
 
-All generated files for an idea live in the current workspace under `work/<slug>/`:
-
 ```text
 work/<slug>/
-├── pipeline.json     idea, slug, stage, every Meshy task id with settings & credits, chosen try,
-│                     checkpoint answers, file paths
-├── idea.md           the idea expanded into a character brief (look, hex colours, pose, height, style)
-├── images/           concept-1.png..concept-4.png; chosen copied to front.png, plus side.png & back.png
+├── pipeline.json     idea, slug, stage, Meshy task ids with settings & credits, chosen try,
+│                     checkpoint answers, critic consent, review log, file paths
+├── idea.md           the idea expanded into a brief (look, hex colours, pose, height, style)
+├── images/           concept-1.png..concept-4.png, chosen-concept.png (copy of the chosen one),
+│                     front.png, side.png, back.png
 ├── meshy/            <slug>-try-<n>.glb, chosen as <slug>-meshy.glb, <slug>-remesh.glb, rigged & clip GLBs
 ├── blender/          <slug>.blend
-├── out/              <slug>.glb
-└── preview/          concepts.png, tries.png, sheet.png, per-view renders
+├── out/              <slug>.glb, quality_report.json
+├── preview/          concepts.png, turnaround.png, tries.png, sheet.png
+└── reviews/          <gate>-r<n>.json critic reviews, reviser backups
 ```
 
-Manage `work/<slug>/pipeline.json` with [`pipeline_state.py`](./scripts/pipeline_state.py):
+Manage state with `pipeline_state.py`:
 
 ```powershell
-# Initialize or resume a pipeline run:
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" init <slug> --idea "<idea>" --height <meters> [--non-humanoid] --clips "idle,walk,wave"
-
-# Inspect existing state when resuming in a new conversation:
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" show <slug>
-
-# Look up whether a Meshy task was already created (NEVER recreate a recorded task):
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" get-task <slug> <step_key>
-
-# Record a newly created Meshy task immediately:
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-task <slug> <step_key> --task-id <id> --tool <tool> --task-type <type> --credits <n> --status <status>
-
-# Record a checkpoint decision (or combine with set-stage):
 python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-checkpoint <slug> <A|B|C> --approved true --choice "<choice>"
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" set-stage <slug> <stage> --checkpoint <A|B|C> --approved true --choice "<choice>"
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" set-critic <slug> gemini|claude
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-history <slug> [--gate A1|A2|B|C]
 ```
 
 ## Execution Protocol
 
-1. **Check for existing state first:**
-   - Derive `<slug>` (lowercase kebab-case, e.g. `teacup-robot`, `fox-knight`).
-   - If `work/<slug>/pipeline.json` exists, read it first and resume from the current `stage` and any unapproved checkpoint or in-progress Meshy `task_id`.
-   - If starting fresh, run `pipeline_state.py init` and expand the brief into `work/<slug>/idea.md`.
+### 0. Start or resume
 
-2. **Stage 1 — Concept Images (`concept-art` skill):**
-   - Follow [`../concept-art/SKILL.md`](../concept-art/SKILL.md).
-   - Write `work/<slug>/idea.md` specifying shape, hex colours, materials, real-world height in meters (`Height: <X> m`), whether humanoid or non-humanoid, mood, and style (`"polished 3D render, soft studio lighting, Pixar-like"`).
-   - Generate 3–4 distinct concept images (`<slug>_concept_1` .. `<slug>_concept_4`) via the `image-generator` subagent and lay out `work/<slug>/preview/concepts.png`.
-   - If the character is round, hard-surface, and symmetric (like a hovering spherical robot), also offer a **pure scripted Blender build** as an option at Checkpoint A.
-   - **STOP at Checkpoint A (MUST call `AskUserQuestion`):** View `work/<slug>/preview/concepts.png` with `Read`, then call `AskUserQuestion` presenting `concepts.png` and combining the concept choice with Stage 2 upload & credit approval (`2 × meshy-7.1` 4K tries = 60 credits, or 15 credits for 1 `meshy-6-lite` tracer try).
-   - Once the user picks a concept, record Checkpoint A in `pipeline.json`, copy the chosen concept to `work/<slug>/images/front.png`, and send a message (`send_message`) to the existing `image-generator` subagent with the chosen concept in `ImagePaths` to generate `side.png` and `back.png`.
+- Derive `<slug>` (lowercase kebab-case, e.g. `fox-knight`).
+- If `work/<slug>/pipeline.json` exists, run `show` and `review-history` and resume from the current stage, any unapproved checkpoint, any in-progress Meshy `task_id`, or the last gate round.
+- Otherwise run `init` and write `work/<slug>/idea.md` yourself (concept-art Step 1).
 
-3. **Stage 2 — Image to 3D (`image-to-3d` skill):**
-   - Follow [`../image-to-3d/SKILL.md`](../image-to-3d/SKILL.md).
-   - Verify upload consent & credit approval (60 credits for 2 `meshy-7.1` 4K tries) was obtained via `AskUserQuestion`.
-   - Create the 2 tries using `meshy_multi_image_to_3d` with `file_paths: [".../front.png", ".../side.png", ".../back.png"]` (recording each `task_id` immediately in `pipeline.json`), poll to completion with `timeout_seconds: 150`, and download via `meshy_download_model` (`save_to`) as `work/<slug>/meshy/<slug>-try-1.glb` and `<slug>-try-2.glb`.
-   - Render the side-by-side comparison sheet `work/<slug>/preview/tries.png` using `render-meshy.py`.
-   - **STOP at Checkpoint B (MUST call `AskUserQuestion`):** View `work/<slug>/preview/tries.png` with `Read`, then call `AskUserQuestion` presenting `tries.png` and combining the try selection with Stage 3 credit confirmation (`5 credits remesh + 5 credits rig + 3 credits × N actions`, or `5 credits remesh` only for non-humanoids).
-   - Copy the chosen try to `work/<slug>/meshy/<slug>-meshy.glb` and record Checkpoint B in `pipeline.json`.
+### 1. Stage 1 — concepts, gate A1, Checkpoint A, turnarounds, gate A2
 
-4. **Stage 3 — Remesh, Rig, Animate (`rig-animate` skill):**
-   - Follow [`../rig-animate/SKILL.md`](../rig-animate/SKILL.md).
-   - Call `meshy_list_animations` (free) to look up the exact `action_id` for `idle` (`0`) and any custom actions (e.g., `wave` = `28`) — never guess `action_id`.
-   - Run `meshy_remesh` and download `work/<slug>/meshy/<slug>-remesh.glb`.
-   - For humanoids in A/T-pose: run `meshy_rig`, download `work/<slug>/meshy/<slug>-rigged.glb` and the free `walk` GLB using `download-asset.py`, then run `meshy_animate` (`{ "rig_task_id": "<id>", "action_id": <int> }`, no `fps` key) for the chosen actions and download each clip GLB into `work/<slug>/meshy/`.
-   - For non-humanoids (or characters Meshy cannot auto-rig): skip `meshy_rig`/`meshy_animate` and proceed to Stage 4 where `import-merge.py --procedural-rig` rigs and animates the remeshed model in headless Blender.
+1. Ask the user, in one question, to approve concept generation and the outside services. Say that the images and brief go to Meshy (`meshy.ai`) and, for review, to Gemini (Google, through the Antigravity CLI). Give the cost from the Platform image route. Options:
+   - (Recommended) 3 concepts, review by Gemini.
+   - 4 concepts, review by Gemini.
+   - 3 concepts, review by the Claude critic only (nothing goes to Gemini).
+   Record the answer with `set-critic <slug> gemini` or `set-critic <slug> claude`.
+2. Dispatch the maker for concept-art Step 2 with the approved budget. It writes `images/concept-<n>.png` and `preview/concepts.png`.
+3. Run gate A1 ([loop.md](references/loop.md)).
+4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (Platform image route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/chosen-concept.png` (gate A2 compares the turnarounds against it).
+5. Dispatch the maker for concept-art Step 4 (turnarounds), naming the chosen concept (`concept-<n>`), with the approved budget.
+6. Run gate A2. Its paid fixes (regenerating a view) are asked as in loop.md.
 
-5. **Stage 4 — Finish in Blender (`blender-finish` skill):**
-   - Follow [`../blender-finish/SKILL.md`](../blender-finish/SKILL.md).
-   - Run `import-merge.py` in headless Blender 5.2 to merge all clips onto one armature (or build the procedural Blender armature and `idle` + action clips for non-humanoids), clean up scale/origin/grounding/orientation/seam vertices, and save `work/<slug>/blender/<slug>.blend`.
-   - Run `export-check.py` in headless Blender 5.2 to export `work/<slug>/out/<slug>.tmp.glb`, run `check-glb.py`, and atomically replace `work/<slug>/out/<slug>.glb`.
-   - Run `render-sheet.py` in headless Blender 5.2 to render `work/<slug>/preview/sheet.png` (concept image in dedicated left column beside 4 views × 3 frames per clip).
-   - **STOP at Checkpoint C (MUST call `AskUserQuestion`):** View `work/<slug>/preview/sheet.png` with `Read`, then call `AskUserQuestion` presenting `sheet.png` and the `check-glb.py` verification output, and wait for the user's approval.
-   - Once approved, record Checkpoint C in `pipeline.json`.
+### 2. Stage 2 — image-to-3D, gate B, Checkpoint B
 
+1. Dispatch the maker for image-to-3d Steps 2–3 with the Stage 2 budget approved at Checkpoint A. It writes the tries and `preview/tries.png`.
+2. Run gate B.
+3. **Checkpoint B** — look at `preview/tries.png` and show it to the user, then ask in one question: which try (recommended first, with the gate B summary), together with the Stage 3 cost (`meshy_remesh` 5 + `meshy_rig` 5 + `meshy_animate` 3 per action, naming the clips from `idea.md`, or remesh only, 5, for non-humanoids). Record with `record-checkpoint <slug> B` and copy the chosen try to `meshy/<slug>-meshy.glb`.
+
+### 3. Stage 3 — remesh, rig, clips
+
+Dispatch the maker for rig-animate Steps 2–4 (Step 2 only for non-humanoids) with the Stage 3 budget: the remesh, the rig and one `meshy_animate` call per approved clip named in the budget. The maker looks up each `action_id` with the free `meshy_list_animations` (rig-animate Step 1.2). No gate here: the rig and clips
+are judged at gate C once Blender renders them.
+
+### 4. Stage 4 — Blender finish, gate C, Checkpoint C
+
+1. Dispatch the maker for blender-finish Steps 1–3 (free). `export-check.py` must be run with `--report "work/<slug>/out/quality_report.json"`.
+2. Run gate C. Re-rig (5) and re-animate (3 per action) fixes come back as paid requests.
+3. **Checkpoint C** — look at `preview/sheet.png` and show it to the user, then ask: approve, or request changes. Show the `check-glb.py` result and the gate C summary. Record with `record-checkpoint <slug> C`.
+
+## Guardrails
+
+- Every credit-spending call needs the user's yes in this run, with tool, model and credits named.
+- Never re-create a Meshy task recorded in `pipeline.json`; poll it.
+- The critic never sees the maker's or reviser's messages.
+- Stop at every checkpoint until the user answers.
