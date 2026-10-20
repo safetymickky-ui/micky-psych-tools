@@ -29,7 +29,7 @@ consent, Blender discipline — binding at every stage) and
 - **Ask the user** = `AskUserQuestion`, recommended option first with a label ending in "(Recommended)". Only you (the main thread) ask; subagents cannot.
 - **Look at a PNG** = `Read` on the file. That shows it to you only.
 - **Show the user a PNG** = `SendUserFile` with `display: "render"` when the session has it; otherwise give its absolute path. Do this before every checkpoint question, and put the absolute path in the question text.
-- **Image route** (concepts, turnarounds, image fixes): Meshy `nano-banana-pro` at 9 credits per image — `meshy_text_to_image` for concepts, `meshy_image_to_image` with `reference_file_paths` for turnarounds and fixes. A turnaround set is 3 images = 27 credits. Every image costs credits, so every image fix is a paid request.
+- **Image route** (concepts, turnarounds, image fixes) — free first: `python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out <path under work/<slug>/, e.g. images/concept-1.png> --prompt "<prompt from idea.md>" [--ref <abs path> ...] --work-root <root>` via `Bash` with `timeout: 600000` (about 70–90 s per image, 0 credits). Turnarounds pass the chosen concept as `--ref`, and `images/front.png` as well for side and back. It runs only when the user agreed to Google (`critic` is `gemini`). If it exits 2, or the user chose not to send anything to Google, use Meshy `nano-banana-pro` at 9 credits per image after approval — `meshy_text_to_image` for concepts, `meshy_image_to_image` with `reference_file_paths` for turnarounds and fixes (a turnaround set is 27 credits). Image fixes on the free route are free-route requests (credits 0, `"route": "free"`): pass the reviser `free_image_route` = the `generate_image.py` command form above; on the Meshy route every image fix is a paid request.
 - **Roles:**
 
 | Role | Run it as | Credits |
@@ -37,7 +37,7 @@ consent, Blender discipline — binding at every stage) and
 | maker | `Agent` with `subagent_type: "idea-to-3d:idea3d-maker"`; the prompt gives the role file `<plugin_root>/skills/idea-to-3d/references/roles/maker.md`, slug, work root, plugin root, the stage `SKILL.md` path and steps, and the approved budget | approved budget only |
 | critic | `Bash`: `python "<plugin_root>/skills/idea-to-3d/scripts/critique.py" <slug> <gate> --work-root <root>` with `timeout: 600000` | none |
 | critic fallback | `Agent` with `subagent_type: "idea-to-3d:idea3d-critic"`; the prompt gives `references/roles/critic.md`, gate, rubric, inputs, and the absolute out path `<root>/work/<slug>/critic-tmp/<gate>-r<r>.raw.json` | none |
-| reviser | `Agent` with `subagent_type: "idea-to-3d:idea3d-reviser"`; the prompt gives `references/roles/reviser.md`, slug, work root, plugin root, gate, round, the review path `critique.py` printed, rubric, stage skill, and `maker_commands` (the `commands` from the stage's last maker report) | none (it has no Meshy tools) |
+| reviser | `Agent` with `subagent_type: "idea-to-3d:idea3d-reviser"`; the prompt gives `references/roles/reviser.md`, slug, work root, plugin root, gate, round, the review path `critique.py` printed, rubric, stage skill, `maker_commands` (the `commands` from the stage's last maker report), and `free_image_route` (when the user agreed to Google) | none (it has no Meshy tools) |
 
 - Never judge a gate yourself: the critic is the script or the critic agent.
 <!-- platform:end -->
@@ -80,14 +80,14 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-histor
 
 ### 1. Stage 1 — concepts, gate A1, Checkpoint A, turnarounds, gate A2
 
-1. Ask the user, in one question, to approve concept generation and the outside services. Say that the images and brief go to Meshy (`meshy.ai`) and, for review, to Gemini (Google, through the Antigravity CLI). Give the cost from the Platform image route. Options:
-   - (Recommended) 3 concepts, review by Gemini.
-   - 4 concepts, review by Gemini.
-   - 3 concepts, review by the Claude critic only (nothing goes to Gemini).
+1. Ask the user, in one question, to approve concept generation and the outside services. Say that the images and brief go to Gemini (Google, through the Antigravity CLI) for image generation and review, and that later the 3D inputs go to Meshy (`meshy.ai`). Give the cost from the Platform image route. Options:
+   - (Recommended) 3 concepts, free through Antigravity; Gemini reviews each stage (images and brief go to Google, later the 3D inputs go to Meshy).
+   - 4 concepts, same.
+   - 3 concepts, nothing to Google: images through Meshy (27 credits) and the Claude critic.
    Record the answer with `set-critic <slug> gemini` or `set-critic <slug> claude`.
 2. Dispatch the maker for concept-art Step 2 with the approved budget. It writes `images/concept-<n>.png` and `preview/concepts.png`.
 3. Run gate A1 ([loop.md](references/loop.md)).
-4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (Platform image route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/chosen-concept.png` (gate A2 compares the turnarounds against it).
+4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (0 credits on the free route, 27 on the Meshy route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/chosen-concept.png` (gate A2 compares the turnarounds against it).
 5. Dispatch the maker for concept-art Step 4 (turnarounds), naming the chosen concept (`concept-<n>`), with the approved budget.
 6. Run gate A2. Its paid fixes (regenerating a view) are asked as in loop.md.
 

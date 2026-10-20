@@ -25,8 +25,12 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 
 ## Step 2: Generate 3 or 4 Concept Candidates
 
-1. **Image route (Claude Code): Meshy `nano-banana-pro`, 9 credits per image.** Get credit approval first: the orchestrator asks; when this skill runs on its own, ask with `AskUserQuestion`. Call `meshy_text_to_image` once per concept with `ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"` and a prompt built from `idea.md`, and record each `task_id` with `pipeline_state.py record-task <slug> concept-<n> ...` the moment it is created.
-2. Poll each task with `meshy_get_task_status` (`wait: true`, `timeout_seconds: 150`) and download it with `meshy_download_model` (`save_to: "work/<slug>/images/concept-<n>.png"`). If the file is a JPEG, convert it to PNG with Pillow before building the sheet.
+1. **Image route (Claude Code), free first.** Run one call per concept (about 70–90 s each, 0 credits; Bash `timeout: 600000`). It runs only when the user agreed to Google (`pipeline_state.py set-critic <slug> gemini`); the prompt, built from `idea.md`, goes to Google:
+   ```powershell
+   python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/concept-<n>.png --prompt "<prompt from idea.md>" --work-root <root>
+   ```
+   Exit 0 means the image is written; exit 2 means the route is unavailable.
+2. **Paid fallback, only when `generate_image.py` exits 2 or the user declined Google:** Meshy `nano-banana-pro`, 9 credits per image. Get credit approval first: the orchestrator asks; when this skill runs on its own, ask with `AskUserQuestion`. Call `meshy_text_to_image` once per concept with `ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"` and the same prompt, and record each `task_id` with `pipeline_state.py record-task <slug> concept-<n> ...` the moment it is created. Poll each task with `meshy_get_task_status` (`wait: true`, `timeout_seconds: 150`) and download it with `meshy_download_model` (`save_to: "work/<slug>/images/concept-<n>.png"`). If a file is a JPEG, convert it to PNG with Pillow before building the sheet.
 3. Build the comparison sheet `work/<slug>/preview/concepts.png` (supports `path=Label`, `Label=path`, or `--images` / `--labels`):
    ```powershell
    python "<plugin_root>/skills/concept-art/scripts/make-concept-sheet.py" --out "work/<slug>/preview/concepts.png" --title "<slug>: Concept Candidates (Checkpoint A)" "work/<slug>/images/concept-1.png=Concept 1" "work/<slug>/images/concept-2.png=Concept 2" "work/<slug>/images/concept-3.png=Concept 3"
@@ -41,14 +45,20 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 3. Call the **`AskUserQuestion`** tool (recommended concept first, its label ending with "(Recommended)") stating:
    - Which concept you recommend and why (plus the scripted Blender option if hard-surface/symmetric).
    - What it costs to continue (combine the concept choice and Stage 2 credit/upload approval in the options):
-     - Turnaround generation (`front.png`, `side.png`, `back.png`) via `meshy_image_to_image` (`nano-banana-pro`): **27 credits** (3 × 9).
+     - Turnaround generation (`front.png`, `side.png`, `back.png`): **0 credits** on the free route (`generate_image.py`), **27 credits** (3 × 9) on the Meshy route (`meshy_image_to_image`, `nano-banana-pro`).
      - Uploading turnaround images to `meshy.ai` for Stage 2 Image-to-3D: **60 credits** for 2 tries with `meshy-7.1` at 4K texture (30 credits each), or **15 credits** for a single `meshy-6-lite` tracer try.
 4. Record the decision with `pipeline_state.py record-checkpoint <slug> A --approved true --choice concept-<n>`.
 
 
 ## Step 4: Generate Meshy Turnaround Views (`front.png`, `side.png`, `back.png`)
 
-From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), pass that file path in `reference_file_paths` of `meshy_image_to_image` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view; download each result with `meshy_download_model` and `save_to`) so the character stays identical across views. `front.png` is regenerated (not just copied) so it meets the Meshy framing rules below; if the chosen concept already meets them, copy it to `front.png` instead and skip that image (saves 9 credits):
+From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), generate each view with the free route first, passing the concept as `--ref` so the character stays identical across views (Bash `timeout: 600000`):
+
+```powershell
+python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/front.png --prompt "<framing rules below + view>" --ref "<abs path of work/<slug>/images/concept-<n>.png>" --work-root <root>
+```
+
+Only when `generate_image.py` exits 2 or the user declined Google, use Meshy instead: `meshy_image_to_image` with the concept path in `reference_file_paths` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view, approval first; download each result with `meshy_download_model` and `save_to`). `front.png` is regenerated (not just copied) so it meets the Meshy framing rules below, which go into the prompt text; if the chosen concept already meets them, copy it to `front.png` instead and skip that image (saves one image generation):
 
 1. **`front.png` (saved as `work/<slug>/images/front.png`):**
    - **Strict Meshy prompt rules:**
@@ -58,7 +68,7 @@ From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), pass that
      - Square `1:1`, at least `1024x1024` px.
      - **Humanoids:** Stand in a clean **A-pose** (or T-pose) with arms held away from the torso and fingers separated so `meshy_rig` can auto-rig cleanly.
 2. **`side.png` (saved as `images/side.png`) and `back.png` (saved as `images/back.png`):**
-   - Pass both the chosen concept and `work/<slug>/images/front.png` in `reference_file_paths`.
+   - Pass both the chosen concept and `work/<slug>/images/front.png` as `--ref` (free route) or in `reference_file_paths` (Meshy route).
    - Same exact character, proportions, colours, lighting, plain light grey background, and scale:
      - `side.png`: Orthogonal 90° profile view, full body centered.
      - `back.png`: Orthogonal 180° rear view, full body centered.
