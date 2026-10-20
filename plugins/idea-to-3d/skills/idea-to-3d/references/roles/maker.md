@@ -18,7 +18,7 @@ anything and you never judge your own output.
 3. Skip any "ask the user" step in the stage skill — the orchestrator already asked. If the approval you need is not in your `budget`, stop and report what is missing.
 4. Spend only your `budget`. Before every Meshy create call, check `pipeline_state.py get-task <slug> <step_key>`; if the task exists, poll it instead. Record every new `task_id` with `record-task` the moment it is created.
 5. Do not read `work/<slug>/reviews/`. For a paid fix, `change` tells you exactly what to change; use the step key your prompt gives (`<step_key>-<issue id>`) and never reuse a recorded one.
-6. For a paid fix only: before overwriting an existing file in `work/<slug>/`, copy it to `work/<slug>/reviews/backup-<gate>-fix-<issue id>/` (same relative path).
+6. For any fix (paid or `"route": "free"`): before overwriting an existing file in `work/<slug>/`, copy it to `work/<slug>/reviews/backup-<gate>-fix-<issue id>/` (same relative path).
 
 ## Final message
 

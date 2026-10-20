@@ -1,6 +1,6 @@
 ---
 name: concept-art
-description: Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) using Nano Banana Pro. Trigger when the user asks to make concept art for a 3D model, expand a character brief into turnaround sheets, or run Stage 1 of /idea-to-3d.
+description: Generate 3D character or prop concept art and Meshy-ready turnaround views (front, side, back) free through Antigravity (agy), or Meshy Nano Banana Pro as a paid fallback. Trigger when the user asks to make concept art for a 3D model, expand a character brief into turnaround sheets, or run Stage 1 of /idea-to-3d.
 ---
 
 # Stage 1: Concept Images (`concept-art`)
@@ -25,9 +25,9 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 
 ## Step 2: Generate 3 or 4 Concept Candidates
 
-1. **Image route (Claude Code), free first.** Run one call per concept (about 70–90 s each, 0 credits; Bash `timeout: 600000`). It runs only when the user agreed to Google (`pipeline_state.py set-critic <slug> gemini`); the prompt, built from `idea.md`, goes to Google:
+1. **Image route (Claude Code), free first.** Run one call per concept (about 70–90 s each, 0 credits; Bash `timeout: 600000`). It runs only when the user agreed to Google (`pipeline_state.py set-critic <slug> gemini`); the prompt, built from `idea.md`, goes to Google. Write it to `work/<slug>/prompts/concept-<n>.txt` first (prompts hold quotes and backticks that break shell quoting), then:
    ```powershell
-   python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/concept-<n>.png --prompt "<prompt from idea.md>" --work-root <root>
+   python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/concept-<n>.png --prompt-file "<abs path of work/<slug>/prompts/concept-<n>.txt>" --work-root <root>
    ```
    Exit 0 means the image is written; exit 2 means the route is unavailable.
 2. **Paid fallback, only when `generate_image.py` exits 2 or the user declined Google:** Meshy `nano-banana-pro`, 9 credits per image. Get credit approval first: the orchestrator asks; when this skill runs on its own, ask with `AskUserQuestion`. Call `meshy_text_to_image` once per concept with `ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"` and the same prompt, and record each `task_id` with `pipeline_state.py record-task <slug> concept-<n> ...` the moment it is created. Poll each task with `meshy_get_task_status` (`wait: true`, `timeout_seconds: 150`) and download it with `meshy_download_model` (`save_to: "work/<slug>/images/concept-<n>.png"`). If a file is a JPEG, convert it to PNG with Pillow before building the sheet.
@@ -52,13 +52,15 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 
 ## Step 4: Generate Meshy Turnaround Views (`front.png`, `side.png`, `back.png`)
 
-From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), generate each view with the free route first, passing the concept as `--ref` so the character stays identical across views (Bash `timeout: 600000`):
+From the user's chosen concept (`work/<slug>/images/concept-<n>.png`), generate each view with the free route first, passing the concept as `--ref` so the character stays identical across views (Bash `timeout: 600000`). Write each view's prompt (the framing rules below + the view) to `work/<slug>/prompts/<view>.txt` first, then:
 
 ```powershell
-python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/front.png --prompt "<framing rules below + view>" --ref "<abs path of work/<slug>/images/concept-<n>.png>" --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out images/front.png --prompt-file "<abs path of work/<slug>/prompts/front.txt>" --ref "<abs path of work/<slug>/images/concept-<n>.png>" --work-root <root>
 ```
 
-Only when `generate_image.py` exits 2 or the user declined Google, use Meshy instead: `meshy_image_to_image` with the concept path in `reference_file_paths` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view, approval first; download each result with `meshy_download_model` and `save_to`). `front.png` is regenerated (not just copied) so it meets the Meshy framing rules below, which go into the prompt text; if the chosen concept already meets them, copy it to `front.png` instead and skip that image (saves one image generation):
+Only when `generate_image.py` exits 2 or the user declined Google, use Meshy instead: `meshy_image_to_image` with the concept path in `reference_file_paths` (`ai_model: "nano-banana-pro"`, `aspect_ratio: "1:1"`, 9 credits per view, approval first; download each result with `meshy_download_model` and `save_to`). The framing rules below go into the prompt text on either route.
+
+`front.png` is regenerated (not just copied) so it meets the framing rules; on either route, if the chosen concept already meets them, copy it to `front.png` instead and skip that image (saves one image generation).
 
 1. **`front.png` (saved as `work/<slug>/images/front.png`):**
    - **Strict Meshy prompt rules:**

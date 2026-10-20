@@ -26,15 +26,16 @@ consent, Blender discipline — binding at every stage) and
 ## Platform: Claude Code
 
 - `<plugin_root>` is this plugin's directory: two levels above this skill's base directory. Use absolute paths in every command.
+- `<root>` is the absolute path of the project folder that holds `work/` (the session's working directory unless the user names another). Run every command from it.
 - **Ask the user** = `AskUserQuestion`, recommended option first with a label ending in "(Recommended)". Only you (the main thread) ask; subagents cannot.
 - **Look at a PNG** = `Read` on the file. That shows it to you only.
 - **Show the user a PNG** = `SendUserFile` with `display: "render"` when the session has it; otherwise give its absolute path. Do this before every checkpoint question, and put the absolute path in the question text.
-- **Image route** (concepts, turnarounds, image fixes) — free first: `python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out <path under work/<slug>/, e.g. images/concept-1.png> --prompt "<prompt from idea.md>" [--ref <abs path> ...] --work-root <root>` via `Bash` with `timeout: 600000` (about 70–90 s per image, 0 credits). Turnarounds pass the chosen concept as `--ref`, and `images/front.png` as well for side and back. It runs only when the user agreed to Google (`critic` is `gemini`). If it exits 2, or the user chose not to send anything to Google, use Meshy `nano-banana-pro` at 9 credits per image after approval — `meshy_text_to_image` for concepts, `meshy_image_to_image` with `reference_file_paths` for turnarounds and fixes (a turnaround set is 27 credits). Image fixes on the free route are free-route requests (credits 0, `"route": "free"`): pass the reviser `free_image_route` = the `generate_image.py` command form above; on the Meshy route every image fix is a paid request.
+- **Image route** (concepts, turnarounds, image fixes) — free first: `python "<plugin_root>/skills/idea-to-3d/scripts/generate_image.py" <slug> --out <path under work/<slug>/, e.g. images/concept-1.png> --prompt-file <abs path of the prompt file> [--ref <abs path> ...] --work-root <root>` via `Bash` with `timeout: 600000` (about 70–90 s per image, 0 credits). Write the prompt to `work/<slug>/prompts/<name>.txt` with the Write tool, then pass `--prompt-file <abs path>`: prompts built from `idea.md` contain quotes and backticks that break shell quoting. Turnarounds pass the chosen concept as `--ref`, and `images/front.png` as well for side and back. It runs only when the user agreed to Google (`critic` is `gemini`). If it exits 2, or the user chose not to send anything to Google, use Meshy `nano-banana-pro` at 9 credits per image after approval — `meshy_text_to_image` for concepts, `meshy_image_to_image` with `reference_file_paths` for turnarounds and fixes (a turnaround set is 27 credits). Image fixes on the free route are free-route requests (credits 0, `"route": "free"`): pass the reviser `free_image_route` = the `generate_image.py` command form above (with `--prompt-file`); on the Meshy route every image fix is a paid request. When a maker reports that `generate_image.py` exited 2, rerun the free route once for the missing images only. If it fails again, ask for Meshy `nano-banana-pro` for exactly the missing images (9 each) and re-dispatch the maker with that budget. A `"route": "free"` fix that hits exit 2 becomes a paid request (9 credits per image) in the next question; never re-dispatch it on the free route.
 - **Roles:**
 
 | Role | Run it as | Credits |
 |---|---|---|
-| maker | `Agent` with `subagent_type: "idea-to-3d:idea3d-maker"`; the prompt gives the role file `<plugin_root>/skills/idea-to-3d/references/roles/maker.md`, slug, work root, plugin root, the stage `SKILL.md` path and steps, and the approved budget | approved budget only |
+| maker | `Agent` with `subagent_type: "idea-to-3d:idea3d-maker"`; the prompt gives the role file `<plugin_root>/skills/idea-to-3d/references/roles/maker.md`, slug, work root, plugin root, the stage `SKILL.md` path and steps, and the approved budget; for a fix also the request, its `change` text and the step key ([loop.md](references/loop.md)); for a `"route": "free"` fix, budget "none" and the `generate_image.py` command form from the Image route line | approved budget only |
 | critic | `Bash`: `python "<plugin_root>/skills/idea-to-3d/scripts/critique.py" <slug> <gate> --work-root <root>` with `timeout: 600000` | none |
 | critic fallback | `Agent` with `subagent_type: "idea-to-3d:idea3d-critic"`; the prompt gives `references/roles/critic.md`, gate, rubric, inputs, and the absolute out path `<root>/work/<slug>/critic-tmp/<gate>-r<r>.raw.json` | none |
 | reviser | `Agent` with `subagent_type: "idea-to-3d:idea3d-reviser"`; the prompt gives `references/roles/reviser.md`, slug, work root, plugin root, gate, round, the review path `critique.py` printed, rubric, stage skill, `maker_commands` (the `commands` from the stage's last maker report), and `free_image_route` (when the user agreed to Google) | none (it has no Meshy tools) |
@@ -61,13 +62,13 @@ work/<slug>/
 Manage state with `pipeline_state.py`:
 
 ```powershell
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" init <slug> --idea "<idea>" --height <meters> [--non-humanoid] --clips "idle,walk,wave"
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" show <slug>
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" get-task <slug> <step_key>
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-task <slug> <step_key> --task-id <id> --tool <tool> --task-type <type> --credits <n> --status <status>
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-checkpoint <slug> <A|B|C> --approved true --choice "<choice>"
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" set-critic <slug> gemini|claude
-python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-history <slug> [--gate A1|A2|B|C]
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" init <slug> --idea "<idea>" --height <meters> [--non-humanoid] --clips "idle,walk,wave" --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" show <slug> --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" get-task <slug> <step_key> --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-task <slug> <step_key> --task-id <id> --tool <tool> --task-type <type> --credits <n> --status <status> --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" record-checkpoint <slug> <A|B|C> --approved true --choice "<choice>" --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" set-critic <slug> gemini|claude --work-root <root>
+python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-history <slug> [--gate A1|A2|B|C] --work-root <root>
 ```
 
 ## Execution Protocol
@@ -76,7 +77,7 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-histor
 
 - Derive `<slug>` (lowercase kebab-case, e.g. `fox-knight`).
 - If `work/<slug>/pipeline.json` exists, run `show` and `review-history` and resume from the current stage, any unapproved checkpoint, any in-progress Meshy `task_id`, or the last gate round.
-- Otherwise run `init` and write `work/<slug>/idea.md` yourself (concept-art Step 1).
+- Otherwise run `init` and write `work/<slug>/idea.md` yourself (concept-art Step 1). `init` can be rerun after `idea.md` is written to set `--height`, `--clips` and `--non-humanoid`.
 
 ### 1. Stage 1 — concepts, gate A1, Checkpoint A, turnarounds, gate A2
 
@@ -87,9 +88,10 @@ python "<plugin_root>/skills/idea-to-3d/scripts/pipeline_state.py" review-histor
    Record the answer with `set-critic <slug> gemini` or `set-critic <slug> claude`.
 2. Dispatch the maker for concept-art Step 2 with the approved budget. It writes `images/concept-<n>.png` and `preview/concepts.png`.
 3. Run gate A1 ([loop.md](references/loop.md)).
-4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then ask in one question: which concept (recommended first, with the reason and the gate A1 summary), together with what continuing costs — the turnarounds (0 credits on the free route, 27 on the Meshy route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Offer the scripted Blender build when `idea.md` flags it. Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/chosen-concept.png` (gate A2 compares the turnarounds against it).
-5. Dispatch the maker for concept-art Step 4 (turnarounds), naming the chosen concept (`concept-<n>`), with the approved budget.
+4. **Checkpoint A** — look at `preview/concepts.png` and show it to the user, then make one question call with two questions (the question tool allows at most 4 options per question): the concept (recommended first, with the reason and the gate A1 summary; add the scripted Blender build option when `idea.md` flags it, within 4 options), and the Stage 2 tier, together with what continuing costs — the turnarounds (0 credits on the free route, 27 on the Meshy route) and Stage 2 (`2 × meshy-7.1` 4K = 60 credits, or `1 × meshy-6-lite` = 15). Record with `record-checkpoint <slug> A`, and copy the chosen concept to `images/chosen-concept.png` (gate A2 compares the turnarounds against it).
+5. Dispatch the maker for concept-art Step 4 (turnarounds), naming the chosen concept (`concept-<n>`), with the approved budget. It must also build the turnaround sheet `preview/turnaround.png` (Step 4.3, the `--normalize` command), which the after-A2 question shows.
 6. Run gate A2. Its paid fixes (regenerating a view) are asked as in loop.md.
+7. **After gate A2** — if it ended PASS, go to Stage 2. Otherwise (open issues at the cap, failed or declined fixes, unapproved paid fixes, or an unreviewed gate), look at `preview/turnaround.png` and show it to the user, then ask in one question, with the gate A2 summary and the open issues: (Recommended) continue to Stage 2 with the budget approved at Checkpoint A / stop here / any `user choice:` fix. Record the answer with `record-checkpoint <slug> A --approved true|false --choice "<choice>" --notes "A2: <answer>" --work-root <root>`.
 
 ### 2. Stage 2 — image-to-3D, gate B, Checkpoint B
 
