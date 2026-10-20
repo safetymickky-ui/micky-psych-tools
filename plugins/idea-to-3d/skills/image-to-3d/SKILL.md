@@ -80,7 +80,7 @@ Run headless Blender 5.2 with [`render-meshy.py`](./scripts/render-meshy.py) to 
 ## Step 4: Checkpoint B (MUST Call `AskUserQuestion` and Wait for User)
 
 1. Call `Read` on `work/<slug>/preview/tries.png` to inspect both tries across all 4 angles.
-2. Before asking, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
+2. Show the PNG to the user first (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
 3. Call the **`AskUserQuestion`** tool (recommended try first, its label ending with "(Recommended)"):
    - Note that Meshy's automatic UVs give the face a small share of the texture map, so judge geometry sharpness on the close-up column.
    - Include the Stage 3 credit approval in the options:

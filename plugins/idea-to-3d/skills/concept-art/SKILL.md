@@ -35,7 +35,7 @@ Initialize `work/<slug>/pipeline.json` (if not already present) and write `work/
 ## Step 3: Checkpoint A (MUST Call `AskUserQuestion` and Wait for User)
 
 1. Call `Read` on `work/<slug>/preview/concepts.png` to inspect the candidates.
-2. Before asking, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
+2. Show the PNG to the user first (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
 3. Call the **`AskUserQuestion`** tool (recommended concept first, its label ending with "(Recommended)") stating:
    - Which concept you recommend and why (plus the scripted Blender option if hard-surface/symmetric).
    - What it costs to continue (combine the concept choice and Stage 2 credit/upload approval in the options):

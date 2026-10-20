@@ -74,7 +74,7 @@ Render the 4 views (`Front`, `3/4`, `Side`, `Back`) × 3 frames (`start`, `mid`,
 ### Step 4: Inspection Gate & Checkpoint C (MUST Call `AskUserQuestion`)
 
 1. Call `Read` on `work/<slug>/preview/sheet.png` to visually inspect the dedicated left `Concept` column and all 4 views × 3 frames per clip (verifying zero mesh tearing on procedural rigs and clear limb motion on humanoid rigs).
-2. Before asking, show the PNG to the user before asking (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
+2. Show the PNG to the user first (send it with the session's file-sending tool, e.g. `SendUserFile` with `display: "render"`, when one exists; otherwise give its absolute path) and put the absolute path in the question text.
 3. Call the **`AskUserQuestion`** tool presenting `work/<slug>/preview/sheet.png`, `work/<slug>/out/<slug>.glb`, `work/<slug>/blender/<slug>.blend`, and the passing `export-check.py` / `check-glb.py` report, and wait for **Checkpoint C** approval.
 4. Once approved, record Checkpoint C in `work/<slug>/pipeline.json`:
    ```powershell
