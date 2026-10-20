@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 Stand-in for the Antigravity CLI (`agy`) in tests. Behaviour comes from FAKE_AGY_MODE:
-ok | pass | response-only | bad | bad-then-ok | nonzero | not-success | sleep | hang-child.
+ok | pass | response-only | bad | bad-then-ok | nonzero | not-success | sleep | hang-child
+for the critic, and for image generation (IDEA3D_AGY_BRAIN required):
+image | image-late | image-none | image-outside | image-outside-only.
 When FAKE_AGY_LOG is set, each call appends its argv to it as one JSON line.
 """
 import json
@@ -24,6 +26,31 @@ def review(gate: str, verdict: str) -> dict:
             "scores": [{"criterion": c, "score": 2} for c in CRITERIA], "issues": issues}
 
 
+def write_jpeg(path: str, colour: tuple[int, int, int]) -> str:
+    from PIL import Image
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    Image.new("RGB", (64, 64), colour).save(path, "JPEG")
+    return path
+
+
+def image_mode(mode: str, calls: int) -> int:
+    """Image generation: the brain image is teal, a file outside the brain dir is red."""
+    conversation = "conv-test"
+    brain_image = os.path.join(os.environ["IDEA3D_AGY_BRAIN"], conversation, f"fake_{calls}.jpg")
+    reply = ""
+    if mode in ("image", "image-late", "image-outside"):
+        write_jpeg(brain_image, (0, 128, 128))
+    if mode == "image":
+        reply = f"Generating the image now...\n{brain_image}\n"
+    elif mode == "image-late":
+        reply = "The image is ready in the conversation folder."
+    elif mode in ("image-outside", "image-outside-only"):
+        reply = write_jpeg(os.path.join(os.getcwd(), "outside.jpg"), (255, 0, 0)) + "\n"
+    print(json.dumps({"conversation_id": conversation, "status": "SUCCESS", "response": reply}))
+    return 0
+
+
 def main() -> int:
     argv = sys.argv[1:]
     prompt = argv[argv.index("-p") + 1]
@@ -35,6 +62,8 @@ def main() -> int:
             f.write(json.dumps(argv) + "\n")
         with open(log, encoding="utf-8") as f:
             calls = sum(1 for _ in f)
+    if mode.startswith("image"):
+        return image_mode(mode, calls)
     match = re.search(r'"gate" must be "(\w+)"', prompt)
     gate = match.group(1) if match else "?"
 

@@ -20,7 +20,6 @@ import json
 import os
 import re
 import shutil
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -33,6 +32,7 @@ RUBRICS_DIR = REFERENCES_DIR / "rubrics"
 
 sys.path.insert(0, str(SCRIPTS_DIR))
 import pipeline_state  # noqa: E402
+from agy_runner import AgyUnavailable, UsageParser, agy_command, parse_envelope, run_agy  # noqa: E402
 
 DEFAULT_MODEL = "gemini-4-argon-medium"
 DEFAULT_TIMEOUT = 240
@@ -47,8 +47,7 @@ MAX_PROMPT_ERRORS = 20
 EXIT_OK, EXIT_USAGE, EXIT_UNAVAILABLE, EXIT_INVALID = 0, 1, 2, 3
 
 
-class CriticUnavailable(Exception):
-    """agy produced no usable answer: missing, failed, timed out, or not logged in."""
+CriticUnavailable = AgyUnavailable
 
 
 class UsageError(Exception):
@@ -180,59 +179,24 @@ def last_review_object(text: str) -> Any:
     return found
 
 
-def parse_agy_output(stdout: str) -> Any:
-    try:
-        envelope = json.loads(stdout.strip())
-    except json.JSONDecodeError as exc:
-        raise CriticUnavailable(f"agy printed non-JSON output: {exc}") from exc
-    if not isinstance(envelope, dict) or envelope.get("status") != "SUCCESS":
-        status = envelope.get("status") if isinstance(envelope, dict) else None
-        raise CriticUnavailable(f"agy status {status!r}")
+def review_from_envelope(envelope: dict[str, Any]) -> Any:
     structured = envelope.get("structured_output")
     if isinstance(structured, dict):
         return structured
     return last_review_object(str(envelope.get("response", "")))
 
 
-def agy_command() -> list[str]:
-    exe = os.environ.get("IDEA3D_AGY") or shutil.which("agy")
-    if not exe:
-        raise CriticUnavailable("agy not found on PATH (or set IDEA3D_AGY)")
-    return [exe]
-
-
-def kill_tree(proc: subprocess.Popen) -> None:
-    """Kill agy and any children; children holding the pipes would otherwise block communicate()."""
-    if os.name == "nt":
-        subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
-    else:
-        proc.kill()
+def parse_agy_output(stdout: str) -> Any:
+    return review_from_envelope(parse_envelope(stdout))
 
 
 def call_agy(cmd_prefix: list[str], prompt: str, model: str, sandbox: Path, timeout: int) -> Any:
-    argv = [
-        *cmd_prefix, "-p", prompt, "--output-format", "json", "--mode", "plan",
+    args = [
+        "-p", prompt, "--output-format", "json", "--mode", "plan",
         "--disable-slash-commands", "--model", model,
         "--json-schema", str(SCHEMA_PATH), "--add-dir", str(sandbox),
     ]
-    try:
-        proc = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                                encoding="utf-8", errors="replace", cwd=sandbox)
-    except OSError as exc:
-        raise CriticUnavailable(f"cannot run agy: {exc}") from exc
-    try:
-        stdout, stderr = proc.communicate(timeout=timeout)
-    except subprocess.TimeoutExpired as exc:
-        kill_tree(proc)
-        try:
-            proc.communicate(timeout=5)
-        except subprocess.TimeoutExpired:
-            pass
-        raise CriticUnavailable(f"agy timed out after {timeout}s") from exc
-    if proc.returncode != 0:
-        detail = (stderr or stdout or "").strip().splitlines()
-        raise CriticUnavailable(f"agy exited {proc.returncode}: {detail[0] if detail else 'no output'}")
-    return parse_agy_output(stdout)
+    return review_from_envelope(run_agy(cmd_prefix, args, sandbox, timeout))
 
 
 def stage_inputs(work_dir: Path, gate: str) -> tuple[Path, list[Path]]:
@@ -290,15 +254,8 @@ def write_review(slug: str, gate: str, round_no: int, review: dict, critic: str,
     return out
 
 
-class _Parser(argparse.ArgumentParser):
-    def error(self, message: str) -> None:
-        # argparse exits 2 by default, which here would mean "critic unavailable".
-        self.print_usage(sys.stderr)
-        self.exit(EXIT_USAGE, f"{self.prog}: error: {message}\n")
-
-
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
-    p = _Parser(prog="critique.py", description="Independent critic for one idea-to-3d gate")
+    p = UsageParser(prog="critique.py", description="Independent critic for one idea-to-3d gate")
     p.add_argument("slug")
     p.add_argument("gate", choices=tuple(GATE_INPUTS))
     p.add_argument("--round", dest="round_no", type=int, default=None,
