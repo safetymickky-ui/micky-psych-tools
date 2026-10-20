@@ -18,7 +18,8 @@ reviewer.
 | 2 | Which stages loop | All 4 stages; free fixes auto-apply, any fix that spends Meshy credits asks the user first |
 | 3 | Stop rule | Stop on PASS or after 2 revise rounds, then go to the checkpoint with remaining issues listed |
 | 4 | Gemini fails | Fall back to a Claude critic subagent with the same rubric and schema; record which critic ran |
-| 5 | Gemini wiring | Script wrapper `critique.py` calling headless `gemini -p` (not an MCP server, not an agent shelling out) |
+| 5 | Gemini wiring | Script wrapper `critique.py` (not an MCP server, not an agent shelling out) |
+| 6 | Gemini route | Antigravity CLI `agy -p` with `gemini-4-argon-medium` — Gemini CLI personal OAuth is retired (see Current state) |
 
 ## Current state
 
@@ -28,8 +29,15 @@ reviewer.
   `~/.claude/skills/` adapted by `~/.claude/rules/idea-to-3d.md` §6.
 - Not in the marketplace catalog. `plugins/idea-to-3d/` holds only a git-ignored
   `__pycache__` — delete it when the port lands.
-- Gemini CLI 0.33.1 is installed (`oauth-personal`); headless `-p`, `--approval-mode plan`
-  (read-only), `-o json`, images attached with `@path`.
+- Gemini CLI 0.33.1 is installed but its `oauth-personal` login now fails with
+  `IneligibleTierError` ("migrate to the Antigravity suite"). Probed 2026-10-20:
+  `agy -p <prompt> --output-format json --mode plan --model gemini-4-argon-medium
+  --json-schema <file> --add-dir <dir>` read a PNG named by absolute path in the prompt and
+  returned `{"status":"SUCCESS","response":...,"structured_output":{...}}` in ~50 s.
+- The Meshy MCP server is already registered at user scope as `meshy`; the plugin does not
+  bundle a second copy (two servers would duplicate every Meshy tool).
+- v1 `export-check.py --report` writes `work/<slug>/out/quality_report.json` (the
+  `check-glb` result) — gate C reads it.
 - Antigravity plugins ship no agent definitions (`agy agents` lists none); subagents are
   dispatched at runtime with a brief.
 
@@ -52,22 +60,27 @@ orchestrator (main thread — the only place that can ask the user or approve cr
 Three critique gates cover all four stages. Stage 3 output (rig, clips) only becomes
 visible once Blender renders it, so it is judged at gate C together with Stage 4.
 
-| Gate | Before | Critic inputs | Rubric criteria |
+| Gate id | Before | Critic inputs (under `work/<slug>/`) | Rubric criteria |
 |---|---|---|---|
-| A | Checkpoint A | `idea.md`, `preview/concepts.png`; after the pick, `images/front.png`, `side.png`, `back.png` | fidelity to brief (silhouette, hex palette, proportions, materials); Meshy-readiness (plain background, full body uncropped, A/T-pose for humanoids, low perspective); turnaround consistency (side/back match front) |
+| A1 | Checkpoint A | `idea.md`, `preview/concepts.png` | fidelity to brief (silhouette, hex palette, proportions, materials); Meshy-readiness (plain background, full body uncropped, A/T-pose for humanoids, low perspective); variety across candidates |
+| A2 | Stage 2 credits | `idea.md`, `images/front.png`, `images/side.png`, `images/back.png` | one view per image; turnaround consistency (side/back match front); Meshy-readiness |
 | B | Checkpoint B | `idea.md`, `images/front.png`, `preview/tries.png` | geometry fidelity to concept; texture fidelity; artifacts (holes, melted face/hands, floating fragments, fused limbs); symmetry; pose fit for rigging |
-| C | Checkpoint C | `idea.md`, `images/front.png`, `preview/sheet.png`, `check-glb.py` report | deformation per clip (tearing, candy-wrapper, intersections); clip readability; scale/grounding/orientation; texture seams; every `check-glb` check passing |
+| C | Checkpoint C | `idea.md`, `images/front.png`, `preview/sheet.png`, `out/quality_report.json` | deformation per clip (tearing, candy-wrapper, intersections); clip readability; scale/grounding/orientation; texture seams; every `check-glb` check passing |
 
-Gate A runs twice: once on the concept set before the pick, once on the turnarounds after
-it (turnarounds feed Meshy, so they are checked before credits are spent at gate B).
+Gate A is split: A1 judges the concept set before the pick, A2 the turnarounds after it
+(turnarounds feed Meshy, so they are checked before credits are spent at gate B). Each gate
+id has its own rubric file.
 
 ### Fix catalogue (free vs paid)
 
 | Gate | Free (reviser applies) | Paid (reviser requests, user approves) |
 |---|---|---|
-| A | rewrite `idea.md` / image prompts | regenerate an image: 9 cr each (`nano-banana-pro`) |
+| A1, A2 | rewrite `idea.md` / image prompts | regenerate an image: 9 cr each (`nano-banana-pro`; in Antigravity the `image-generator` path is free, so the fix is free there) |
 | B | clean or crop input images (background, framing); choose the other try | new try: 15 cr (`meshy-6-lite`) or 30 cr (`meshy-7.1` 4K) |
-| C | Blender script parameters: scale, origin, grounding, weight falloff, procedural-rig parameters, clip trimming | re-rig 5 cr; re-animate 3 cr per action |
+| C | re-run Blender with `import-merge.py` options (`--height`, `--max-triangles`, `--clips`, `--procedural-rig`, `--scripted-robot`), then `export-check.py` and `render-sheet.py` | re-rig 5 cr; re-animate 3 cr per action |
+
+A fix that needs a code change to a plugin script is out of the reviser's reach: it is
+declined with "needs plugin change" and stays open at the checkpoint.
 
 A paid request names the exact Meshy tool, model and credit cost. The orchestrator
 batches all paid requests of a round into one `AskUserQuestion` (recommended option
@@ -85,49 +98,60 @@ created, never re-create a recorded task.
 
 ### Review JSON (`references/review.schema.json`)
 
+The critic produces four fields; `critique.py` validates them and adds `round`, `critic`,
+`model` and `reason` before writing the canonical file.
+
 ```json
 {
-  "gate": "A|B|C",
-  "round": 0,
-  "critic": "gemini|claude-fallback",
-  "model": "<model id>",
+  "gate": "A1|A2|B|C",
   "verdict": "PASS|REVISE",
-  "scores": { "<criterion>": 1 },
+  "scores": [ { "criterion": "<criterion>", "score": 1 } ],
   "issues": [
     { "id": "B-1", "severity": "blocker|major|minor", "criterion": "<criterion>",
-      "evidence": "<what in which image>", "fix": "<concrete change>",
-      "cost": "free" }
+      "evidence": "<what in which image>", "fix": "<concrete change>", "credits": 0 }
   ]
 }
 ```
 
-`scores` are 1–5. `cost` is `"free"` or an integer credit count. Verdict is PASS when no
-blocker or major issue remains (the critic may not PASS with a blocker open; `critique.py`
-enforces it).
+Shapes are kept to what Gemini structured output handles reliably: a list instead of a
+score map, and one integer `credits` (`0` = free fix, else Meshy list price) instead of a
+union type. `score` is 1–5. PASS is invalid while any blocker or major issue is listed;
+REVISE needs at least one issue. `critique.py` enforces both.
 
-Reviews are written to `work/<slug>/reviews/<gate>-r<round>.json` and recorded in
-`pipeline.json` via new `pipeline_state.py` subcommands `record-review` and
-`review-history`.
+Reviews are written to `work/<slug>/reviews/<gate>-r<round>.json` and appended to
+`pipeline.json["reviews"]`. Round 0 judges the maker's output; rounds 1 and 2 follow each
+revise round. `pipeline_state.py review-history <slug> [--gate <id>]` prints the log.
 
 ## `critique.py`
 
 ```
-python critique.py <slug> <gate> --round <n> [--model <id>] [--timeout 150]
+python critique.py <slug> <gate> [--round <n>] [--model <id>] [--timeout 240] [--work-root .]
+python critique.py <slug> <gate> --from-file <raw.json> --critic claude-fallback --reason "<why>"
 ```
 
-1. Loads `references/rubrics/<gate>.md`, `idea.md` and the gate's images.
-2. Builds the prompt: rubric + brief + `@path` image references + the schema + "output only JSON".
-3. Runs `gemini -p <prompt> --approval-mode plan -o json -m <model>` with the timeout.
-   Model defaults to the Gemini CLI default; overridden by `--model` or `IDEA3D_CRITIC_MODEL`.
-4. Extracts the response, validates it against the schema, enforces the PASS rule.
-   On invalid JSON, retries once with the validation error appended.
-5. Writes the review file and prints its path.
+1. Resolves the gate's input files; a missing input is a usage error (exit 1).
+2. Builds the prompt: rubric `references/rubrics/<gate>.md` + text inputs inline
+   (`idea.md`, `quality_report.json`) + absolute paths of the PNGs + "judge only what you
+   see; output only the JSON object".
+3. Runs `agy -p <prompt> --output-format json --mode plan --disable-slash-commands
+   --model <model> --json-schema references/review.schema.json --add-dir <work dir>`
+   with the timeout. Model: `--model`, else `IDEA3D_CRITIC_MODEL`, else
+   `gemini-4-argon-medium`. Binary: `IDEA3D_AGY`, else `agy` on `PATH`.
+4. Takes `structured_output` (else the last JSON object in `response`), validates it,
+   and on failure retries once with the errors appended.
+5. Writes the review file, records it in `pipeline.json`, prints the path.
 
-Exit codes: `0` valid review written · `2` Gemini unavailable (missing binary, auth,
-quota, timeout) · `3` schema failed twice. On `2` or `3` the orchestrator dispatches the
-Claude critic and records `critic: "claude-fallback"` with the reason.
+`--round` defaults to the number of reviews already recorded for that gate.
+`--from-file` skips step 3–4's call and validates a review the Claude critic wrote, so
+both critics go through one validator.
 
-Never passes any API key on the command line or writes one to disk.
+Exit codes: `0` review written · `1` usage error · `2` critic unavailable (binary
+missing, non-zero exit, status ≠ SUCCESS, timeout) · `3` invalid review twice. On `2` or
+`3` the orchestrator dispatches the Claude critic, then records its review with
+`--from-file --critic claude-fallback --reason "<exit code + message>"`.
+
+Default timeout 240 s (a one-image probe took ~50 s); the calling shell gets a 10-minute
+limit. No key is involved: `agy` uses the user's own Antigravity login.
 
 ## Layout
 
@@ -136,14 +160,19 @@ Never passes any API key on the command line or writes one to disk.
 ```
 skills/idea-to-3d/
   references/loop.md             loop protocol: gates, rounds, PASS/REVISE, free vs paid, logging
-  references/roles/maker.md      maker brief template
-  references/roles/reviser.md    reviser rules
+  references/roles/maker.md      maker brief
+  references/roles/reviser.md    reviser rules + output format
   references/roles/critic.md     Claude-fallback critic instructions
-  references/rubrics/A.md B.md C.md
+  references/rubrics/A1.md A2.md B.md C.md
   references/review.schema.json
   scripts/critique.py
-  scripts/pipeline_state.py      + record-review, review-history
+  scripts/pipeline_state.py      + reviews log, review-history
+tests/test_critic.py, tests/fake_agy.py
 ```
+
+Core files never name a platform tool (`AskUserQuestion`, `ask_question`, `Read`,
+`view_file`); they say "ask the user with the question tool" and let each orchestrator
+`SKILL.md` map it.
 
 ### Claude Code — `plugins/idea-to-3d/` in this marketplace (source of truth)
 
@@ -153,14 +182,21 @@ skills/idea-to-3d/
   orchestrator `SKILL.md`, so the plugin does not depend on a user-scope rules file.
 - `agents/idea3d-maker.md`, `agents/idea3d-reviser.md`, `agents/idea3d-critic.md` — thin
   wrappers: frontmatter + "follow `references/roles/<role>.md`".
-- `.claude-plugin/plugin.json` (v2.0.0), `.mcp.json` (meshy), `README.md`, `CHANGELOG.md`,
+- `.claude-plugin/plugin.json` (ported at 1.0.0, then `bump.py major` → 2.0.0), no
+  `.mcp.json` (uses the user-scope `meshy` server), `README.md`, `CHANGELOG.md`,
   `LICENSE` (MIT), catalog entry in `.claude-plugin/marketplace.json` (≤ 500 chars),
   a `CLAUDE.md` plugins-list entry, `ROUTING.md` regenerated.
 - Version set through `scripts/bump.py`, never by hand.
+- Agents receive the absolute path of their role file in the dispatch prompt (the
+  orchestrator knows its own base directory); `<plugin_root>` in the skills means the
+  plugin directory two levels above the skill's base directory.
+- The reviser agent is given no Meshy tools, so it cannot spend credits even by mistake.
 
 ### Antigravity — `C:\Users\User\Desktop\repo\idea-to-3d`
 
 - Orchestrator dispatches its generic subagent with `references/roles/<role>.md` as the brief.
+  The critic still runs as `critique.py` (it calls `agy` itself), so both platforms use
+  the same Gemini route.
 - `scripts/sync-core.ps1` copies the shared-core file list from the marketplace copy;
   the Antigravity repo never edits core files directly.
 - `plugin.json` 2.0.0; `rules/idea-to-3d.md` gains the loop and Gemini-consent rules;
@@ -175,6 +211,9 @@ Gemini receives the brief and preview images. The first-upload consent at Checkp
 changes from "Meshy" to "Meshy and Gemini (Google)". Images of real people still need
 explicit permission. If the user declines Gemini, the run uses the Claude critic for every
 gate and records why.
+The answer is stored with `pipeline_state.py set-critic <slug> gemini|claude`;
+`critique.py` refuses to call Gemini (exit 1) until it is recorded, and exits 2 when it
+is `claude`, which sends the gate to the Claude critic.
 
 ## Error handling
 
@@ -187,9 +226,9 @@ gate and records why.
 
 ## Testing
 
-- `critique.py` with a fake `gemini` executable on `PATH`: valid review; malformed then
-  valid (retry); malformed twice (exit 3); timeout and missing binary (exit 2); PASS with a
-  blocker rejected.
+- `critique.py` with a fake `agy` (`tests/fake_agy.py`): valid review; malformed then
+  valid (retry); malformed twice (exit 3); timeout, non-zero exit, status ≠ SUCCESS and
+  missing binary (exit 2); PASS with a blocker rejected; `--from-file` path.
 - Schema validated against fixture reviews (valid and invalid).
 - `pipeline_state.py` `record-review` / `review-history` round-trip.
 - Core parity: test hashes the shared-core files in both copies (Antigravity side).
