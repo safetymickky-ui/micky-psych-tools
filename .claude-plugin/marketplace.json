@@ -264,6 +264,21 @@
         "ui-generation",
         "artifacts"
       ]
+    },
+    {
+      "name": "idea-to-3d",
+      "source": "./plugins/idea-to-3d",
+      "description": "Turns a one-line character or prop idea into a textured, rigged, animated 3D model (.glb) with a preview sheet. Concept art and image-to-3D, remesh, rigging and clips run on Meshy (credits spent only after explicit approval); headless Blender 5.2 cleans up, merges clips, validates and renders the sheet. Three user checkpoints. Ported from the Antigravity plugin. Needs Windows, Blender 5.2 and the user-scope meshy MCP server.",
+      "category": "design",
+      "keywords": [
+        "3d",
+        "meshy",
+        "blender",
+        "glb",
+        "rigging",
+        "animation",
+        "concept-art"
+      ]
     }
   ]
 }
