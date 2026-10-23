@@ -120,3 +120,7 @@ Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/ma
 - **bullet-reconstruct** — turns a dense paper, chapter or transcript into tight bullets with
   measured loss under 10% (units frozen first, anchors and numbers checked against the output),
   keeps its figures and tables as image snips, and delivers one self-contained HTML file.
+- **learning-map** — turns one material into a learning map: the prerequisite knowledge as a
+  dependency ladder (foundations, core, what the material assumes), learning pearls anchored to
+  the material with numbers checked against its text, and an ordered path of concepts to
+  explore next. Every map is saved to one phone-readable "Learn" page.

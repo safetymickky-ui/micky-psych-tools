@@ -1,0 +1,811 @@
+<title>Learn</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="learning-map" content="learn-page">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap">
+<style>
+/* Layout: a study map. Phone: the map list, then one map at a time with a back control. Wide: the list sits in a narrow column beside the open map. Each map reads top to bottom as before (the ladder), inside (pearls) and after (the path). Palette: Clinical Minimal (white page, one clinical-teal accent); the three ladder levels deepen the accent tint from foundations to what the material assumes. */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F5F7F8;
+  --sunken: #ECEFF2;
+  --line: #DCE2E6;
+  --line-strong: #C3CCD3;
+  --ink: #1B232B;
+  --ink-2: #4A5561;
+  --ink-3: #636E7A;
+  --accent: #0E7C86;
+  --accent-ink: #0B6A73;
+  --accent-tint: #E8F4F5;
+  --accent-100: #CDE7EA;
+  --on-accent: #FFFFFF;
+  --warn: #A15C07;
+  --warn-tint: #FBF1E1;
+  --lvl0: #F1F3F5;
+  --lvl1: #E8F4F5;
+  --lvl2: #D3EBEE;
+  --edge: #B8C3CB;
+  --font-ui: "Leelawadee UI", "Atkinson Hyperlegible", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.4375rem;
+  --step-3: 1.75rem;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+    --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+    --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C; --accent-100: #1E4347; --on-accent: #0F1519;
+    --warn: #E0A458; --warn-tint: #2E2414;
+    --lvl0: #172026; --lvl1: #13292C; --lvl2: #1B3A3E; --edge: #3A4955;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+  --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+  --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C; --accent-100: #1E4347; --on-accent: #0F1519;
+  --warn: #E0A458; --warn-tint: #2E2414;
+  --lvl0: #172026; --lvl1: #13292C; --lvl2: #1B3A3E; --edge: #3A4955;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 56px;
+}
+.wrap { max-width: 1240px; margin-inline: auto; }
+[hidden] { display: none !important; }
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; line-height: 1.25; }
+p { margin: 0; }
+a { color: var(--accent-ink); text-underline-offset: 2px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: var(--font-mono); font-size: 0.875em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.muted { color: var(--ink-3); font-size: var(--step--1); }
+
+.top {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px;
+  padding-block: 20px 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px;
+}
+.top h1 { font-size: var(--step-2); font-weight: 700; letter-spacing: -0.01em; }
+.top h1 .tick { color: var(--accent); }
+.top .sub { color: var(--ink-3); font-size: var(--step--1); }
+
+main[data-view="index"] #view-map { display: none; }
+main[data-view="map"] #view-index { display: none; }
+
+.back {
+  display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 6px 0; margin-bottom: 8px;
+  color: var(--accent-ink); cursor: pointer; font-size: var(--step--1); font-weight: 700;
+}
+.back:hover { text-decoration: underline; }
+
+/* ---------- index ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.card {
+  display: grid; gap: 8px; text-align: left; width: 100%; min-width: 0;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; cursor: pointer;
+}
+.card:hover { border-color: var(--line-strong); }
+.card.open { border-color: var(--accent); background: var(--accent-tint); }
+.card h2 { font-size: var(--step-1); font-weight: 700; overflow-wrap: anywhere; }
+.card .cite { color: var(--ink-2); font-size: 0.9375rem; overflow-wrap: anywhere; }
+.counts { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--step--1); color: var(--ink-3); }
+.counts b { color: var(--ink); font-weight: 700; }
+.counts .new b { color: var(--accent-ink); }
+.empty { border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 20px; display: grid; gap: 10px; max-width: 640px; }
+.empty h2 { font-size: var(--step-1); }
+.empty p { color: var(--ink-2); }
+.cmd {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-self: start;
+  font-family: var(--font-mono); font-size: 0.875rem; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 4px 6px 4px 10px; max-width: 100%;
+}
+.cmd code { overflow-wrap: anywhere; }
+.copy {
+  border: 1px solid var(--line-strong); background: var(--bg); border-radius: 4px; padding: 0 8px;
+  font-family: var(--font-ui); font-size: var(--step--1); cursor: pointer; color: var(--accent-ink);
+}
+.example { opacity: 0.85; pointer-events: none; cursor: default; }
+.example .eyebrow { color: var(--warn); }
+.notice { color: var(--ink-2); max-width: 640px; }
+
+/* ---------- chips ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px;
+  font-size: var(--step--1); line-height: 1.6; background: var(--panel); color: var(--ink-2); border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.chip.accent { background: var(--accent-tint); color: var(--accent-ink); border-color: var(--accent-100); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); border-color: transparent; }
+.chip.solid { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+button.chip { cursor: pointer; white-space: normal; text-align: left; }
+button.chip:hover { border-color: var(--accent); color: var(--accent-ink); }
+.you-new { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.you-brush { background: var(--warn-tint); color: var(--warn); border-color: transparent; }
+.you-own { background: transparent; color: var(--ink-3); border-color: var(--line-strong); }
+
+/* ---------- map ---------- */
+.map-head { display: grid; gap: 8px; margin-bottom: 14px; }
+.map-head h2 { font-size: var(--step-3); font-weight: 700; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.map-head .cite { color: var(--ink-2); overflow-wrap: anywhere; }
+.gist { max-width: 68ch; font-size: 1.0625rem; color: var(--ink); border-left: 3px solid var(--accent); padding-left: 12px; }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+.jump button {
+  border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 3px 12px; cursor: pointer;
+  font-size: 0.9375rem; color: var(--ink-2);
+}
+.jump button:hover { border-color: var(--accent); color: var(--accent-ink); }
+.jump b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.part { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); scroll-margin-top: 12px; }
+.part-head { display: grid; gap: 4px; margin-bottom: 14px; }
+.part-head h3 { font-size: var(--step-2); font-weight: 700; }
+.part-head p { color: var(--ink-2); max-width: 68ch; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 12px; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 0.9375rem; color: var(--ink-2); cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+
+.diagram { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); margin-bottom: 18px; }
+.diagram svg { display: block; }
+.diagram .colhead { font-family: var(--font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; fill: var(--ink-3); }
+.diagram .node rect { stroke-width: 1; }
+.diagram .node text { font-family: var(--font-ui); font-size: 12.5px; fill: var(--ink); }
+.diagram .node { cursor: pointer; }
+.diagram .n0 rect { fill: var(--lvl0); stroke: var(--line-strong); }
+.diagram .n1 rect { fill: var(--lvl1); stroke: var(--accent-100); }
+.diagram .n2 rect { fill: var(--lvl2); stroke: var(--accent); }
+.diagram .nm rect { fill: var(--accent); stroke: var(--accent); }
+.diagram .nm text { fill: var(--on-accent); font-weight: 700; }
+.diagram .dot-new { fill: var(--accent); }
+.diagram .dot-brush { fill: var(--warn); }
+.diagram .dot-own { fill: none; stroke: var(--ink-3); stroke-width: 1.25; }
+.diagram .edge { fill: none; stroke: var(--edge); stroke-width: 1.4; }
+.diagram.selecting .node, .diagram.selecting .edge { opacity: 0.22; }
+.diagram.selecting .node.on, .diagram.selecting .node.chain, .diagram.selecting .edge.chain { opacity: 1; }
+.diagram .edge.chain { stroke: var(--accent); stroke-width: 2; }
+.diagram .node.on rect { stroke-width: 2.5; }
+.diagram .node.hidden-own { opacity: 0.35; }
+
+.ladder { display: grid; gap: 6px; }
+.band { border-radius: var(--radius); padding: 14px; display: grid; gap: 12px; }
+.band.b0 { background: var(--lvl0); }
+.band.b1 { background: var(--lvl1); }
+.band.b2 { background: var(--lvl2); }
+.band-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.band-head h4 { font-size: var(--step-1); font-weight: 700; }
+.band-head p { color: var(--ink-2); font-size: 0.9375rem; }
+.rise { display: flex; justify-content: center; color: var(--ink-3); font-size: var(--step--1); line-height: 1; }
+.cap {
+  display: flex; align-items: center; gap: 10px; border-radius: var(--radius); padding: 12px 14px;
+  background: var(--accent); color: var(--on-accent); font-weight: 700;
+}
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 10px; }
+.item {
+  display: grid; gap: 8px; align-content: start; min-width: 0;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; cursor: pointer;
+}
+.item:hover { border-color: var(--line-strong); }
+.item.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.ladder.selecting .item:not(.on):not(.chain) { opacity: 0.4; }
+.item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.item h5 { font-size: 1.0625rem; font-weight: 700; margin: 0; line-height: 1.3; overflow-wrap: anywhere; }
+.item .field { font-size: var(--step--1); color: var(--ink-3); }
+.mini { font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.why { display: grid; gap: 2px; padding-top: 8px; border-top: 1px solid var(--line); }
+.why .loc { color: var(--accent-ink); text-transform: none; letter-spacing: 0; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; }
+.links { display: grid; gap: 4px; }
+.links .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.prose { overflow-wrap: anywhere; }
+.prose code { font-family: var(--font-mono); font-size: 0.875em; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.hidden-note { font-size: var(--step--1); color: var(--ink-3); }
+
+.pearls { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: none; }
+.pearl {
+  display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 4px 12px; align-items: start;
+  padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg);
+}
+.pearl.flash { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.pearl .n { font-size: var(--step-2); font-weight: 700; color: var(--accent-ink); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pearl .body { display: grid; gap: 8px; min-width: 0; }
+.pearl .txt { max-width: 70ch; }
+.pearl .loc { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
+
+.route { list-style: none; margin: 0; padding: 0; display: grid; }
+.stop { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0 12px; }
+.stop .rail { display: grid; grid-template-rows: auto 1fr; justify-items: center; }
+.stop .dot {
+  width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.stop .line { width: 2px; background: var(--accent-100); margin-block: 4px; }
+.stop:last-child .line { display: none; }
+.stop .body { display: grid; gap: 8px; padding-bottom: 22px; min-width: 0; }
+.stop h4 { font-size: var(--step-1); font-weight: 700; padding-top: 3px; overflow-wrap: anywhere; }
+.stop .q { border-left: 3px solid var(--accent-100); padding: 6px 0 6px 12px; background: var(--accent-tint); border-radius: 0 6px 6px 0; max-width: 68ch; }
+.stop .q p { font-weight: 700; color: var(--ink); }
+.stop .why-next { max-width: 68ch; color: var(--ink-2); }
+.foot { margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+
+@media (min-width: 1040px) {
+  main[data-view="map"] { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 36px; align-items: start; }
+  main[data-view="map"] #view-index { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; padding-right: 4px; }
+  main[data-view="map"] .cards { grid-template-columns: 1fr; gap: 8px; }
+  main[data-view="map"] .card { padding: 12px; gap: 6px; }
+  main[data-view="map"] .card h2 { font-size: 1rem; }
+  main[data-view="map"] .card .cite, main[data-view="map"] .card .counts { display: none; }
+  .phone-only { display: none !important; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card, .item, .pearl, .diagram .node, .diagram .edge { transition: opacity .15s ease, border-color .15s ease, background-color .15s ease; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Learn<span class="tick">.</span></h1>
+    <p class="sub" id="sub">Learning maps: what to know before a material, what to keep from it, where to go next</p>
+  </header>
+
+  <main id="app" data-view="index">
+    <section id="view-index" aria-label="Maps">
+      <div id="index-body"><p class="notice">Loading your maps…</p></div>
+    </section>
+    <section id="view-map" aria-label="Map">
+      <button class="back phone-only" id="back" type="button">← All maps</button>
+      <div id="map-body"></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var LS_LAST = "learn:last", LS_OWN = "learn:hide-owned";
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var app = document.getElementById("app");
+  var indexBody = document.getElementById("index-body");
+  var mapBody = document.getElementById("map-body");
+  var S = { snaps: new Map(), ready: false, open: null, sel: null, view: null, restored: false, hideOwned: lsGet(LS_OWN) === "1" };
+
+  var LEVELS = {
+    0: { name: "Level 0 · Foundations", note: "The base layer. Start here if the field is new." },
+    1: { name: "Level 1 · Core", note: "Ideas the material's assumptions stand on." },
+    2: { name: "Level 2 · Assumed here", note: "Used by the material without teaching them." }
+  };
+  var YOU = { "new": "New to you", brush: "Brush up", own: "Likely owned" };
+  var PEARL_TYPE = { finding: "Finding", method: "Method", caveat: "Caveat", concept: "Concept", practice: "Practice" };
+  var STEP_KIND = { deeper: "Deeper", wider: "Wider", apply: "Apply", challenge: "Challenge" };
+
+  /* ---------- helpers ---------- */
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else if (k === "on") Object.keys(attrs.on).forEach(function (ev) { n.addEventListener(ev, attrs.on[ev]); });
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function sv(tag, attrs, kids) {
+    var n = document.createElementNS(SVGNS, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function str(v) { return typeof v === "string" ? v : (v == null ? "" : String(v)); }
+  function arr(v) { return Array.isArray(v) ? v : []; }
+  function obj(v) { return v && typeof v === "object" && !Array.isArray(v) ? v : {}; }
+  function fmtDate(iso) {
+    var s = str(iso);
+    if (!/^\d{4}-\d{2}-\d{2}/.test(s)) return s;
+    var d = new Date(s.slice(0, 10) + "T00:00:00");
+    if (isNaN(d)) return s;
+    try { return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); } catch (e) { return s.slice(0, 10); }
+  }
+  function inline(text) {
+    var src = str(text);
+    try {
+      if (window.marked && window.DOMPurify) {
+        return window.DOMPurify.sanitize(window.marked.parseInline(src, { gfm: true }), { USE_PROFILES: { html: true } });
+      }
+    } catch (e) {}
+    var p = document.createElement("span"); p.textContent = src; return p.innerHTML;
+  }
+  function prose(tag, cls, text) {
+    var n = el(tag, { class: "prose" + (cls ? " " + cls : "") });
+    n.innerHTML = inline(text);
+    n.querySelectorAll("a[href]").forEach(function (a) {
+      if (/^https?:\/\//i.test(a.getAttribute("href") || "")) { a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener noreferrer"); }
+      else a.removeAttribute("href");
+    });
+    return n;
+  }
+  function copyText(text, btn) {
+    function done(label) { btn.textContent = label; setTimeout(function () { btn.textContent = "Copy"; }, 1600); }
+    function selectFallback() {
+      var code = btn.parentNode.querySelector("code");
+      if (code) { var r = document.createRange(); r.selectNodeContents(code); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+      done("Selected");
+    }
+    try { navigator.clipboard.writeText(text).then(function () { done("Copied"); }, selectFallback); } catch (e) { selectFallback(); }
+  }
+  function cmdBox(text) {
+    var b = el("button", { class: "copy", type: "button", text: "Copy" });
+    b.addEventListener("click", function () { copyText(text, b); });
+    return el("span", { class: "cmd" }, [el("code", { text: text }), b]);
+  }
+  function setView(v) { app.setAttribute("data-view", v); }
+  function wide() { return !!(window.matchMedia && window.matchMedia("(min-width: 1040px)").matches); }
+
+  /* ---------- the map model ---------- */
+  function model(raw) {
+    var m = obj(raw), byId = new Map(), items = [];
+    arr(m.ladder).forEach(function (it) {
+      it = obj(it);
+      var id = str(it.id), lv = Number(it.level);
+      if (!id || byId.has(id) || [0, 1, 2].indexOf(lv) < 0) return;
+      var x = { id: id, level: lv, name: str(it.name) || id, field: str(it.field), primer: str(it.primer), why: str(it.why),
+                where: str(it.where), you: YOU[str(it.you)] ? str(it.you) : "", needs: arr(it.needs).map(str), neededBy: [] };
+      byId.set(id, x); items.push(x);
+    });
+    items.forEach(function (x) {
+      x.needs = x.needs.filter(function (n) { var y = byId.get(n); return y && y.level < x.level; });
+      x.needs.forEach(function (n) { byId.get(n).neededBy.push(x.id); });
+    });
+    var pearls = arr(m.pearls).map(obj).filter(function (p) { return str(p.text); });
+    var path = arr(m.path).map(obj).filter(function (s) { return str(s.topic); });
+    var src = obj(m.source);
+    return {
+      title: str(m.title) || "Untitled material", kind: str(m.kind), field: str(m.field), date: str(m.date), gist: str(m.gist),
+      cite: str(src.cite), url: /^https?:\/\//i.test(str(src.url)) ? str(src.url) : "", read: str(src.read),
+      items: items, byId: byId, pearls: pearls, path: path,
+      hasYou: items.some(function (x) { return x.you; }),
+      newCount: items.filter(function (x) { return x.you === "new"; }).length
+    };
+  }
+  function chainOf(M, id) {
+    var out = new Set([id]);
+    (function up(i) { M.byId.get(i).needs.forEach(function (n) { if (!out.has(n)) { out.add(n); up(n); } }); })(id);
+    (function down(i) { M.byId.get(i).neededBy.forEach(function (n) { if (!out.has(n)) { out.add(n); down(n); } }); })(id);
+    return out;
+  }
+
+  /* ---------- index ---------- */
+  function sortedIds() {
+    return Array.from(S.snaps.keys()).sort(function (a, b) {
+      var A = obj(S.snaps.get(a).data()), B = obj(S.snaps.get(b).data());
+      var c = str(B.date).localeCompare(str(A.date));
+      return c || str(A.title).localeCompare(str(B.title));
+    });
+  }
+  function renderIndex() {
+    indexBody.textContent = "";
+    if (!S.ready) { indexBody.appendChild(el("p", { class: "notice", text: "Loading your maps…" })); return; }
+    var ids = sortedIds();
+    document.getElementById("sub").textContent = ids.length
+      ? ids.length + (ids.length === 1 ? " map" : " maps") + " · what to know before, what to keep, where to go next"
+      : "Learning maps: what to know before a material, what to keep from it, where to go next";
+    if (!ids.length) { indexBody.appendChild(emptyState()); return; }
+    var grid = el("div", { class: "cards" });
+    ids.forEach(function (id) { grid.appendChild(mapCard(id, model(S.snaps.get(id).data()))); });
+    indexBody.appendChild(grid);
+  }
+  function mapCard(id, M) {
+    var counts = el("div", { class: "counts num" }, [
+      el("span", {}, [el("b", { text: String(M.items.length) }), " prerequisites"]),
+      M.hasYou ? el("span", { class: "new" }, [el("b", { text: String(M.newCount) }), " new to you"]) : null,
+      el("span", {}, [el("b", { text: String(M.pearls.length) }), " pearls"]),
+      el("span", {}, [el("b", { text: String(M.path.length) }), " next steps"])
+    ]);
+    var card = el("button", { class: "card" + (S.open === id ? " open" : ""), type: "button", "aria-label": "Open the map of " + M.title }, [
+      el("p", { class: "eyebrow", text: [M.kind, M.field, fmtDate(M.date)].filter(Boolean).join(" · ") }),
+      el("h2", { text: M.title }),
+      M.cite ? el("p", { class: "cite", text: M.cite }) : null,
+      counts
+    ]);
+    card.addEventListener("click", function () { openMap(id, true); });
+    return card;
+  }
+  function emptyState() {
+    var box = el("div", { class: "empty" }, [
+      el("h2", { text: "No maps yet" }),
+      el("p", { text: "Give /learning-map a paper, a chapter, a lecture, a URL or a PDF. Each map lands here: the prerequisite knowledge as a ladder from foundations up, the pearls to keep, and an ordered path of what to explore next." }),
+      cmdBox("/learning-map https://doi.org/…")
+    ]);
+    var ex = el("div", { class: "card example", "aria-hidden": "true" }, [
+      el("p", { class: "eyebrow", text: "Example of a map card" }),
+      el("h2", { text: "A reinforcement-learning paper on anhedonia" }),
+      el("p", { class: "cite", text: "Authors, year, journal" }),
+      el("div", { class: "counts num" }, [
+        el("span", {}, [el("b", { text: "12" }), " prerequisites"]),
+        el("span", { class: "new" }, [el("b", { text: "5" }), " new to you"]),
+        el("span", {}, [el("b", { text: "8" }), " pearls"]),
+        el("span", {}, [el("b", { text: "5" }), " next steps"])
+      ])
+    ]);
+    return el("div", { style: "display:grid;gap:18px;max-width:640px" }, [box, ex]);
+  }
+
+  /* ---------- one map ---------- */
+  function openMap(id, user) {
+    if (!S.snaps.has(id)) return;
+    if (S.open !== id) S.sel = null;
+    S.open = id; lsSet(LS_LAST, id);
+    renderMap();
+    renderIndex();
+    setView("map");
+    if (user) window.scrollTo(0, 0);
+  }
+  function closeMap() {
+    S.open = null; S.sel = null; S.view = null; lsSet(LS_LAST, null);
+    setView("index"); renderIndex(); window.scrollTo(0, 0);
+  }
+  function renderMap() {
+    mapBody.textContent = "";
+    var snap = S.snaps.get(S.open);
+    if (!snap) { mapBody.appendChild(el("p", { class: "notice", text: "This map is no longer in Learn." })); return; }
+    var M = model(snap.data());
+    S.view = { M: M, snap: snap, cards: new Map(), nodes: new Map(), edges: [], pearls: [], ladderEl: null, diagramEl: null };
+
+    var readChip = M.read ? el("span", { class: "chip " + (/full/i.test(M.read) ? "" : "warn"), text: /full/i.test(M.read) ? "Read: " + M.read : "Mapped from " + M.read + " only" }) : null;
+    var cite = M.cite ? el("p", { class: "cite" }, [M.url ? el("a", { href: M.url, target: "_blank", rel: "noopener noreferrer", text: M.cite }) : M.cite]) : null;
+    mapBody.appendChild(el("div", { class: "map-head" }, [
+      el("p", { class: "eyebrow", text: [M.kind, M.field, fmtDate(M.date)].filter(Boolean).join(" · ") }),
+      el("h2", { text: M.title }),
+      cite,
+      readChip ? el("div", { class: "chips" }, [readChip]) : null,
+      M.gist ? prose("p", "gist", M.gist) : null
+    ]));
+
+    var parts = [
+      { id: "part-before", label: "Before you read", n: M.items.length },
+      { id: "part-pearls", label: "Pearls", n: M.pearls.length },
+      { id: "part-next", label: "Explore next", n: M.path.length }
+    ];
+    mapBody.appendChild(el("nav", { class: "jump", "aria-label": "Parts of this map" }, parts.map(function (p) {
+      var b = el("button", { type: "button" }, [p.label + " ", el("b", { text: String(p.n) })]);
+      b.addEventListener("click", function () { var t = document.getElementById(p.id); if (t) t.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" }); });
+      return b;
+    })));
+
+    mapBody.appendChild(renderLadder(M));
+    mapBody.appendChild(renderPearls(M));
+    mapBody.appendChild(renderPath(M));
+    mapBody.appendChild(el("div", { class: "foot" }, [
+      el("p", { class: "muted", text: "Prerequisite primers and the path come from general knowledge. Pearls come from the material itself." }),
+      el("div", { class: "chips" }, [el("span", { class: "muted", text: "Map it again in chat" }), cmdBox("/learning-map " + (M.url || M.cite || M.title))])
+    ]));
+    applySel();
+    requestAnimationFrame(fitLabels);
+  }
+  function reduced() { return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+
+  /* ---------- part 1: the ladder ---------- */
+  function renderLadder(M) {
+    var sec = el("section", { class: "part", id: "part-before", "aria-labelledby": "h-before" });
+    sec.appendChild(el("div", { class: "part-head" }, [
+      el("h3", { id: "h-before", text: "Before you read" }),
+      el("p", { text: "The prerequisite knowledge as a ladder: foundations first, then the core, then what this material assumes. Tap an item to trace what it builds on and what needs it." })
+    ]));
+    if (!M.items.length) { sec.appendChild(el("p", { class: "notice", text: "This map has no prerequisites saved." })); return sec; }
+
+    var bar = el("div", { class: "toolbar" });
+    if (M.hasYou) {
+      var cb = el("input", { type: "checkbox", id: "hide-owned" });
+      cb.checked = S.hideOwned;
+      cb.addEventListener("change", function () { S.hideOwned = cb.checked; lsSet(LS_OWN, cb.checked ? "1" : "0"); applySel(); });
+      bar.appendChild(el("label", { class: "toggle", for: "hide-owned" }, [cb, "Hide what I likely own"]));
+      bar.appendChild(el("div", { class: "chips" }, [
+        el("span", { class: "chip you-new", text: YOU["new"] }), el("span", { class: "chip you-brush", text: YOU.brush }),
+        el("span", { class: "chip you-own", text: YOU.own }), el("span", { class: "muted", text: "estimated from your level map" })
+      ]));
+      sec.appendChild(bar);
+    }
+
+    sec.appendChild(renderDiagram(M));
+
+    var ladder = el("div", { class: "ladder" });
+    S.view.ladderEl = ladder;
+    [0, 1, 2].forEach(function (lv) {
+      var list = M.items.filter(function (x) { return x.level === lv; });
+      if (!list.length) return;
+      if (lv > 0) ladder.appendChild(el("div", { class: "rise", "aria-hidden": "true", text: "↓ builds toward" }));
+      var grid = el("div", { class: "items" });
+      list.forEach(function (x) { grid.appendChild(itemCard(M, x)); });
+      var hiddenNote = el("p", { class: "hidden-note", "data-level": String(lv) });
+      ladder.appendChild(el("div", { class: "band b" + lv }, [
+        el("div", { class: "band-head" }, [el("h4", { text: LEVELS[lv].name }), el("p", { text: LEVELS[lv].note }), el("span", { class: "muted num", text: list.length + (list.length === 1 ? " item" : " items") })]),
+        grid, hiddenNote
+      ]));
+    });
+    ladder.appendChild(el("div", { class: "rise", "aria-hidden": "true", text: "↓ lets you read" }));
+    ladder.appendChild(el("div", { class: "cap" }, [el("span", { text: "This material" })]));
+    sec.appendChild(ladder);
+    return sec;
+  }
+  function itemCard(M, x) {
+    var top = el("div", { class: "item-top" }, [el("h5", { text: x.name }), x.you ? el("span", { class: "chip you-" + x.you, text: YOU[x.you] }) : null]);
+    var card = el("article", { class: "item", tabindex: "0", role: "button", "aria-pressed": "false", id: "item-" + x.id, "data-id": x.id }, [
+      top,
+      x.field ? el("p", { class: "field", text: x.field }) : null,
+      x.primer ? prose("div", "primer", x.primer) : null,
+      x.why ? el("div", { class: "why" }, [
+        el("p", { class: "mini" }, ["Why this material needs it", x.where ? el("span", { class: "loc", text: " · " + x.where }) : null]),
+        prose("p", "", x.why)
+      ]) : null,
+      linkRows(M, x)
+    ]);
+    card.addEventListener("click", function (e) { if (e.target.closest("button, a")) return; select(x.id); });
+    card.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target === card) { e.preventDefault(); select(x.id); } });
+    S.view.cards.set(x.id, card);
+    return card;
+  }
+  function itemChip(M, id) {
+    var y = M.byId.get(id);
+    var b = el("button", { class: "chip", type: "button", text: y ? y.name : id });
+    b.addEventListener("click", function () { select(id, true); });
+    return b;
+  }
+  function linkRows(M, x) {
+    if (!x.needs.length && !x.neededBy.length) return null;
+    return el("div", { class: "links" }, [
+      x.needs.length ? el("div", { class: "row" }, [el("span", { class: "mini", text: "Builds on" })].concat(x.needs.map(function (n) { return itemChip(M, n); }))) : null,
+      x.neededBy.length ? el("div", { class: "row" }, [el("span", { class: "mini", text: "Needed for" })].concat(x.neededBy.map(function (n) { return itemChip(M, n); }))) : null
+    ]);
+  }
+
+  /* the dependency diagram: columns L0 | L1 | L2 | the material, edges point up the ladder */
+  function renderDiagram(M) {
+    var colW = 218, nodeW = 190, matW = 130, nodeH = 34, gap = 10, top = 34, padX = 14, padB = 14;
+    var cols = [0, 1, 2].map(function (lv) { return M.items.filter(function (x) { return x.level === lv; }); });
+    var pos = new Map();
+    var H = Math.max(1, Math.max.apply(null, cols.map(function (c) { return c.length; }))) * (nodeH + gap) - gap;
+    function place(lv) {
+      var n = cols[lv].length, off = top + (H - (n * (nodeH + gap) - gap)) / 2;
+      cols[lv].forEach(function (x, i) { pos.set(x.id, { lv: lv, c: off + i * (nodeH + gap) + nodeH / 2 }); });
+    }
+    // level 2 keeps the material's order; each lower item sits level with the mean of the items that need it
+    place(2);
+    [1, 0].forEach(function (lv) {
+      cols[lv] = cols[lv].map(function (x, k) {
+        var ys = x.neededBy.map(function (n) { return pos.has(n) ? pos.get(n).c : null; }).filter(function (v) { return v != null; });
+        return { x: x, key: ys.length ? ys.reduce(function (a, b) { return a + b; }, 0) / ys.length : 1e9 + k };
+      }).sort(function (a, b) { return a.key - b.key; }).map(function (o) { return o.x; });
+      place(lv);
+    });
+    var width = padX * 2 + colW * 3 + matW, height = top + H + padB;
+    var svg = sv("svg", { width: width, height: height, viewBox: "0 0 " + width + " " + height, role: "img",
+      "aria-label": "Dependency ladder: " + cols[0].length + " foundations, " + cols[1].length + " core items and " + cols[2].length + " items the material assumes" });
+    ["LEVEL 0 · FOUNDATIONS", "LEVEL 1 · CORE", "LEVEL 2 · ASSUMED", "THE MATERIAL"].forEach(function (t, i) {
+      svg.appendChild(sv("text", { class: "colhead", x: padX + i * colW, y: 20 }, [t]));
+    });
+    var gEdges = sv("g"), gNodes = sv("g");
+    svg.appendChild(gEdges); svg.appendChild(gNodes);
+    function xOf(lv) { return padX + lv * colW; }
+    function curve(x1, y1, x2, y2) { var mx = (x1 + x2) / 2; return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2; }
+    var mat = { x: xOf(3), y: top + H / 2 - 22, h: 44 };
+    M.items.forEach(function (x) {
+      var p = pos.get(x.id);
+      x.needs.forEach(function (n) {
+        var q = pos.get(n);
+        var path = sv("path", { class: "edge", d: curve(xOf(q.lv) + nodeW, q.c, xOf(p.lv), p.c) });
+        gEdges.appendChild(path); S.view.edges.push({ a: n, b: x.id, el: path });
+      });
+      if (x.level === 2) {
+        var path2 = sv("path", { class: "edge", d: curve(xOf(2) + nodeW, p.c, mat.x, mat.y + mat.h / 2) });
+        gEdges.appendChild(path2); S.view.edges.push({ a: x.id, b: "", el: path2 });
+      }
+      var g = sv("g", { class: "node n" + x.level, transform: "translate(" + xOf(p.lv) + "," + (p.c - nodeH / 2) + ")" }, [
+        sv("title", {}, [x.name + (x.you ? " · " + YOU[x.you] : "")]),
+        sv("rect", { width: nodeW, height: nodeH, rx: 6, ry: 6 }),
+        x.you ? sv("circle", { class: "dot-" + x.you, cx: 12, cy: nodeH / 2, r: 4 }) : null,
+        sv("text", { x: x.you ? 22 : 10, y: nodeH / 2 + 4, "data-full": x.name, "data-max": String(nodeW - (x.you ? 30 : 18)) }, [x.name])
+      ]);
+      g.addEventListener("click", function () { select(x.id, true); });
+      gNodes.appendChild(g); S.view.nodes.set(x.id, g);
+    });
+    gNodes.appendChild(sv("g", { class: "node nm", transform: "translate(" + mat.x + "," + mat.y + ")" }, [
+      sv("rect", { width: matW, height: mat.h, rx: 8, ry: 8 }),
+      sv("text", { x: 12, y: mat.h / 2 + 4 }, ["This material"])
+    ]));
+    var box = el("div", { class: "diagram" }, [svg]);
+    S.view.diagramEl = box;
+    return box;
+  }
+  /* shorten node labels to their box, measured once the diagram is on screen */
+  function fitLabels() {
+    var box = S.view && S.view.diagramEl; if (!box) return;
+    box.querySelectorAll("text[data-full]").forEach(function (t) {
+      var full = t.getAttribute("data-full"), max = Number(t.getAttribute("data-max"));
+      t.textContent = full;
+      try {
+        if (!t.getComputedTextLength() || t.getComputedTextLength() <= max) return;
+        var lo = 1, hi = full.length;
+        while (lo < hi) {
+          var mid = (lo + hi + 1) >> 1;
+          t.textContent = full.slice(0, mid).trimEnd() + "…";
+          if (t.getComputedTextLength() <= max) lo = mid; else hi = mid - 1;
+        }
+        t.textContent = full.slice(0, lo).trimEnd() + "…";
+      } catch (e) { t.textContent = full.length > 24 ? full.slice(0, 23) + "…" : full; }
+    });
+  }
+
+  /* ---------- selection ---------- */
+  function select(id, scroll) {
+    S.sel = S.sel === id && !scroll ? null : id;
+    applySel();
+    if (S.sel && scroll) {
+      var c = S.view.cards.get(S.sel);
+      if (c && !c.hidden) c.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" });
+    }
+  }
+  function applySel() {
+    var V = S.view; if (!V) return;
+    var M = V.M, chain = S.sel && M.byId.has(S.sel) ? chainOf(M, S.sel) : null;
+    if (!chain) S.sel = null;
+    var hidden = { 0: 0, 1: 0, 2: 0 };
+    V.cards.forEach(function (c, id) {
+      var x = M.byId.get(id);
+      var hide = S.hideOwned && x.you === "own" && !(chain && chain.has(id));
+      c.hidden = hide; if (hide) hidden[x.level]++;
+      c.classList.toggle("on", S.sel === id);
+      c.classList.toggle("chain", !!chain && chain.has(id) && S.sel !== id);
+      c.setAttribute("aria-pressed", S.sel === id ? "true" : "false");
+    });
+    if (V.ladderEl) {
+      V.ladderEl.classList.toggle("selecting", !!chain);
+      V.ladderEl.querySelectorAll(".hidden-note").forEach(function (n) {
+        var k = hidden[Number(n.getAttribute("data-level"))] || 0;
+        n.textContent = k ? k + (k === 1 ? " item you likely own is hidden." : " items you likely own are hidden.") : "";
+        n.hidden = !k;
+      });
+    }
+    V.nodes.forEach(function (g, id) {
+      var x = M.byId.get(id);
+      g.classList.toggle("on", S.sel === id);
+      g.classList.toggle("chain", !!chain && chain.has(id));
+      g.classList.toggle("hidden-own", S.hideOwned && x.you === "own" && !(chain && chain.has(id)));
+    });
+    V.edges.forEach(function (e) {
+      var on = !!chain && chain.has(e.a) && (e.b ? chain.has(e.b) : M.byId.get(e.a).level === 2);
+      e.el.classList.toggle("chain", on);
+    });
+    if (V.diagramEl) V.diagramEl.classList.toggle("selecting", !!chain);
+  }
+
+  /* ---------- part 2: pearls ---------- */
+  function renderPearls(M) {
+    var sec = el("section", { class: "part", id: "part-pearls", "aria-labelledby": "h-pearls" });
+    sec.appendChild(el("div", { class: "part-head" }, [
+      el("h3", { id: "h-pearls", text: "Pearls" }),
+      el("p", { text: "What to keep from this material, the highest-yield first. Each names where it comes from." })
+    ]));
+    if (!M.pearls.length) { sec.appendChild(el("p", { class: "notice", text: "This map has no pearls saved." })); return sec; }
+    var ol = el("ol", { class: "pearls" });
+    M.pearls.forEach(function (p, i) {
+      var chips = el("div", { class: "chips" }, [
+        PEARL_TYPE[str(p.type)] ? el("span", { class: "chip accent", text: PEARL_TYPE[str(p.type)] }) : null,
+        str(p.basis) === "inference" ? el("span", { class: "chip warn", text: "Inference, not stated in the material" }) : null,
+        str(p.where) ? el("span", { class: "loc", text: str(p.where) }) : null
+      ]);
+      var uses = arr(p.uses).map(str).filter(function (u) { return M.byId.has(u); });
+      var li = el("li", { class: "pearl", id: "pearl-" + (i + 1) }, [
+        el("span", { class: "n", "aria-hidden": "true", text: String(i + 1) }),
+        el("div", { class: "body" }, [
+          prose("p", "txt", p.text),
+          chips,
+          uses.length ? el("div", { class: "chips" }, [el("span", { class: "mini", text: "Needs" })].concat(uses.map(function (u) { return itemChip(M, u); }))) : null
+        ])
+      ]);
+      S.view.pearls.push(li);
+      ol.appendChild(li);
+    });
+    sec.appendChild(ol);
+    return sec;
+  }
+  function flashPearl(n) {
+    var li = S.view && S.view.pearls[n - 1]; if (!li) return;
+    li.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" });
+    li.classList.add("flash"); setTimeout(function () { li.classList.remove("flash"); }, 1600);
+  }
+
+  /* ---------- part 3: the path ---------- */
+  function renderPath(M) {
+    var sec = el("section", { class: "part", id: "part-next", "aria-labelledby": "h-next" });
+    sec.appendChild(el("div", { class: "part-head" }, [
+      el("h3", { id: "h-next", text: "Explore next" }),
+      el("p", { text: "An ordered route of concepts, starting where this material ends. Each stop has a question to carry into it." })
+    ]));
+    if (!M.path.length) { sec.appendChild(el("p", { class: "notice", text: "This map has no path saved." })); return sec; }
+    var ol = el("ol", { class: "route" });
+    M.path.forEach(function (s, i) {
+      var ladderIds = arr(s.ladder).map(str).filter(function (u) { return M.byId.has(u); });
+      var pearlNs = arr(s.pearls).map(Number).filter(function (n) { return n >= 1 && n <= M.pearls.length; });
+      var builds = ladderIds.map(function (u) { return itemChip(M, u); }).concat(pearlNs.map(function (n) {
+        var b = el("button", { class: "chip", type: "button", text: "Pearl " + n });
+        b.addEventListener("click", function () { flashPearl(n); });
+        return b;
+      }));
+      ol.appendChild(el("li", { class: "stop" }, [
+        el("div", { class: "rail", "aria-hidden": "true" }, [el("span", { class: "dot", text: String(i + 1) }), el("span", { class: "line" })]),
+        el("div", { class: "body" }, [
+          el("div", { class: "chips" }, [STEP_KIND[str(s.kind)] ? el("span", { class: "chip accent", text: STEP_KIND[str(s.kind)] }) : null]),
+          el("h4", { text: str(s.topic) }),
+          str(s.why) ? prose("p", "why-next", s.why) : null,
+          str(s.question) ? el("div", { class: "q" }, [el("p", { class: "mini", text: "Carry this question" }), prose("p", "", s.question)]) : null,
+          builds.length ? el("div", { class: "chips" }, [el("span", { class: "mini", text: "Builds on" })].concat(builds)) : null
+        ])
+      ]));
+    });
+    sec.appendChild(ol);
+    return sec;
+  }
+
+  /* ---------- wiring ---------- */
+  document.getElementById("back").addEventListener("click", closeMap);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && S.sel) { S.sel = null; applySel(); } });
+  window.addEventListener("hashchange", function () {
+    var h = decodeURIComponent((location.hash || "").slice(1));
+    if (h && S.snaps.has(h)) openMap(h, true);
+  });
+
+  function unavailable() {
+    indexBody.textContent = "";
+    indexBody.appendChild(el("div", { class: "empty" }, [
+      el("h2", { text: "Maps are not available in this view" }),
+      el("p", { text: "This page reads your maps from its own database, which opens only inside Claude while you are signed in. Open the page from your artifacts on claude.ai." })
+    ]));
+  }
+
+  async function boot() {
+    var db = null;
+    try { db = (window.claude && typeof window.claude.use === "function") ? await window.claude.use("db") : null; } catch (e) { db = null; }
+    if (!db) { unavailable(); return; }
+    db.collection("maps").onSnapshot(function (snap) {
+      var m = new Map();
+      snap.docs.forEach(function (d) { if (d.exists) m.set(d.id, d); });
+      var before = S.open ? S.snaps.get(S.open) : null;
+      S.snaps = m; S.ready = true;
+      if (!S.restored) {
+        S.restored = true;
+        var h = decodeURIComponent((location.hash || "").slice(1));
+        var last = lsGet(LS_LAST);
+        var pick = h && m.has(h) ? h : (last && m.has(last) && wide() ? last : null);
+        renderIndex();
+        if (pick) openMap(pick, false);
+        return;
+      }
+      if (S.open && !m.has(S.open)) { closeMap(); return; }
+      renderIndex();
+      if (S.open && m.get(S.open) !== before) renderMap();
+    }, function () {
+      indexBody.textContent = "";
+      indexBody.appendChild(el("p", { class: "notice", text: "Learn could not load its maps. Reload the page to try again." }));
+    });
+  }
+  try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitLabels); } catch (e) {}
+  boot();
+})();
+</script>
