@@ -279,6 +279,19 @@
         "animation",
         "concept-art"
       ]
+    },
+    {
+      "name": "learning-map",
+      "source": "./plugins/learning-map",
+      "description": "Turns one material (paper, chapter, lecture, URL, PDF, pasted text) into a learning map: the prerequisite knowledge as a dependency ladder (Level 0 foundations, Level 1 core, Level 2 what the material assumes), learning pearls anchored to the material with numbers checked against its text, and an ordered path of concepts to explore next. Every map is saved to one phone-readable \"Learn\" artifact.",
+      "category": "education",
+      "keywords": [
+        "prerequisites",
+        "learning-pearls",
+        "learning-path",
+        "dependency-ladder",
+        "study-map"
+      ]
     }
   ]
 }

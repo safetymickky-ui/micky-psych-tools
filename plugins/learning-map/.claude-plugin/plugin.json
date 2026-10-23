@@ -1,0 +1,16 @@
+{
+  "name": "learning-map",
+  "version": "0.1.0",
+  "description": "Turns one material (paper, chapter, lecture, URL, PDF or pasted text) into a learning map: the prerequisite knowledge as a dependency ladder (Level 0 foundations, Level 1 core, Level 2 what the material assumes), the learning pearls of the material with their numbers checked against the text, and an ordered path of concepts to explore next. Every map is saved to one phone-readable \"Learn\" artifact.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "prerequisites",
+    "learning-pearls",
+    "learning-path",
+    "dependency-ladder",
+    "study-map"
+  ]
+}

@@ -250,6 +250,16 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   revise rounds. Five skills + three agents, no commands. Shares its critic core
   (`core-files.txt`) with the Antigravity repo `Desktop/repo/idea-to-3d`, which pulls it via
   `scripts/sync-core.ps1` — this copy is the source of truth.
+- **learning-map** — one material (paper, chapter, lecture, URL, PDF, pasted text) in, one
+  learning map out: the prerequisite knowledge as a dependency ladder (Level 0 foundations →
+  Level 1 core → Level 2 what the material assumes), 5–12 learning pearls anchored to the
+  material, and a 3–7 step concepts-only path to explore next (no sources, by the owner's
+  choice). `check_map.py` gates every save (ladder shape, counts, no links in ladder or path,
+  pearl numbers found in the material's text). Every map is saved to the "Learn" artifact
+  (database collection `maps`; found by exact title + `learning-map` meta marker, created from
+  `assets/learn.html`), not to the vault. Hand-offs (tutor, pubmed-research-note,
+  bullet-reconstruct, ml-concept-lab) are numbered options, never run unasked. One skill +
+  `/learning-map [material]`.
 
 ## Style
 

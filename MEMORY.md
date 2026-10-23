@@ -36,6 +36,7 @@ a milestone.
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
 | idea-to-3d            | 2.1.0   |
+| learning-map          | 0.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -197,7 +198,24 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   from a site URL, a brief, a codebase, or a remixed kit (awesome-design-md or the user-scope designmd MCP).
   Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
 
+- **learning-map** — one material in, one learning map out (category `education`): the prerequisite
+  knowledge as a dependency ladder (Level 0 foundations → Level 1 core → Level 2 what the material
+  assumes; edges only point down a level, no orphans), 5–12 pearls anchored to the material (numbers
+  checked against its text by `check_map.py --source`), and a 3–7 step concepts-only path (deeper,
+  wider, apply, challenge). Maps live on the "Learn" artifact (database collection `maps`), not in
+  the vault; the skill finds it by exact title and a `learning-map` meta marker. One skill +
+  `/learning-map`.
+
 ## Recent milestones
+
+- **2026-10-23** — Added **learning-map 0.1.0** (category `education`). The owner picked, in one
+  picker round: a dependency ladder for "multilevel" prerequisites, a dedicated "Learn" artifact as
+  the output, and a concepts-only explore-next path (no sources). Dogfooded on Huys et al. 2013
+  (anhedonia × RL meta-analysis, PMC full text): the map passed `check_map.py` with numbers checked
+  against the text, and the page rendered headless with a mock db (phone and desktop, light and
+  dark, no overflow, chain tracing and the owned filter driven). The "Learn" artifact was then
+  created by the skill's own steps (template publish, `get` → `set` of `maps/huys-2013-anhedonia-rl`,
+  read back identical), so the first map in Learn is that paper.
 
 - **2026-10-21** — **idea-to-3d 2.1.0**: humanoid presets animate in one `meshy_animate` `action_ids` call (one multi-clip GLB, one `anim-bundle` task, still 3 credits per action); optional custom clips via `meshy_text_to_motion` (prime 10 / swift 3, + 3 to apply; biped only; 3-day expiry). `import-merge.py --bundle-clips` names the bundle's clips in file order, so `--clip` is only for the free walk, custom motions and single-clip fixes. Core files (`core-files.txt`) untouched. Built and tested without spending credits; the bundle path is not yet proven on a paid run.
 

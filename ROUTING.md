@@ -55,6 +55,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Fallback critic for an idea-to-3d gate when the Gemini critic (critique.py via the Antigravity CLI) is unavailable or the user declined Gemini. | idea-to-3d | agent `idea3d-critic` |
 | Runs one idea-to-3d stage (concept art, image-to-3D, rig and animate, or Blender finish) inside a Meshy credit budget the user already approved, and returns the artifact paths as JSON. | idea-to-3d | agent `idea3d-maker` |
 | Applies the free fixes from an idea-to-3d critic review (Pillow image cleanup, headless Blender re-runs; prompt changes travel as requests), re-renders the gate preview, and returns paid fixes as req… | idea-to-3d | agent `idea3d-reviser` |
+| when the user says "what do I need to know before reading this", "prerequisites for this paper", "prerequisite knowledge", "learning map", "learning pearls", "pearls of this paper", "what should I… | learning-map | skill `learning-map` |
+| Map a material's prerequisite knowledge (dependency ladder), its learning pearls and what to explore next, saved to Learn | learning-map | `/learning-map` |
 
 ## Plugins
 
@@ -244,3 +246,12 @@ Keywords: 3d, meshy, blender, glb, rigging, animation, concept-art
 - **agent `idea3d-critic`** (agent) — Fallback critic for an idea-to-3d gate when the Gemini critic (critique.py via the Antigravity CLI) is unavailable or the user declined Gemini.
 - **agent `idea3d-maker`** (agent) — Runs one idea-to-3d stage (concept art, image-to-3D, rig and animate, or Blender finish) inside a Meshy credit budget the user already approved, and returns the artifact paths as JSON.
 - **agent `idea3d-reviser`** (agent) — Applies the free fixes from an idea-to-3d critic review (Pillow image cleanup, headless Blender re-runs; prompt changes travel as requests), re-renders the gate preview, and returns paid fixes as requests for the user t…
+
+### learning-map — education
+
+Turns one material (paper, chapter, lecture, URL, PDF, pasted text) into a learning map: the prerequisite knowledge as a dependency ladder (Level 0 foundations, Level 1 core, Level 2 what the material assumes), learning pearls anchored to the material with numbers checked against its text, and an ordered path of concepts to explore next. Every map is saved to one phone-readable "Learn" artifact.
+
+Keywords: prerequisites, learning-pearls, learning-path, dependency-ladder, study-map
+
+- **skill `learning-map`** (skill) — Maps what a reader needs before, inside and after one piece of material (a paper, chapter, article, lecture, slides, transcript, PDF, URL or pasted text): the prerequisite knowledge as a dependency ladder (Level 0 found…
+- **`/learning-map`** (command) — Map a material's prerequisite knowledge (dependency ladder), its learning pearls and what to explore next, saved to Learn
