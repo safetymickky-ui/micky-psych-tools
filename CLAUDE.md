@@ -250,6 +250,14 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   revise rounds. Five skills + three agents, no commands. Shares its critic core
   (`core-files.txt`) with the Antigravity repo `Desktop/repo/idea-to-3d`, which pulls it via
   `scripts/sync-core.ps1` — this copy is the source of truth.
+- **egm-conductor** — master controller for Google's Elephant-Goldfish Model (`egm@egm`, a
+  separate upstream plugin it depends on, never vendored): preflight → optional bootstrap →
+  brainstorm → draft → Goldfish review + resolve → human approval gate → implement against the
+  approved design doc → drift report, with progress in the project's `.egm-conductor/state.json`.
+  EGM skills refuse the Skill tool (`disable-model-invocation`), so the conductor reads each EGM
+  `SKILL.md` from the install path in `installed_plugins.json` (`scripts/egm_status.py`) and
+  follows it, spawning the registered `egm:egm-*` agents. `--auto` skips only its own
+  confirmations. Two skills (`conduct`, `status`), no commands.
 
 ## Style
 

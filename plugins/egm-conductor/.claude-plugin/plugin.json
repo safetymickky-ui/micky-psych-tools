@@ -1,0 +1,10 @@
+{
+  "name": "egm-conductor",
+  "version": "0.1.0",
+  "description": "Master controller for Google's Elephant-Goldfish Model (egm@egm): runs brainstorm, draft, Goldfish review and resolve, a human approval gate, implementation against the approved spec, and drift report end to end, with resumable state.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": ["egm", "elephant-goldfish", "spec-driven-development", "design-docs", "orchestration", "review"]
+}

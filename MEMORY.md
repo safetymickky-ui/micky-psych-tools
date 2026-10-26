@@ -36,6 +36,7 @@ a milestone.
 | tutor                 | 0.3.0   |
 | design-md-generator   | 0.2.0   |
 | idea-to-3d            | 2.1.0   |
+| egm-conductor         | 0.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -196,8 +197,14 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   sections, plus the Responsive / Iteration Guide / Known Gaps extensions from VoltAgent/awesome-design-md)
   from a site URL, a brief, a codebase, or a remixed kit (awesome-design-md or the user-scope designmd MCP).
   Mandatory `@google/design.md` lint; never overwrites an existing DESIGN.md. One skill + `/design-md`.
+- **egm-conductor** — master controller for Google's Elephant-Goldfish Model (`egm@egm`, installed
+  user scope from marketplace `egm` = google/elephant-goldfish-model). Runs brainstorm → draft →
+  Goldfish review/resolve → human gate → implement → drift end to end, state in the project's
+  `.egm-conductor/state.json`. Two skills (`conduct`, `status`) + `scripts/egm_status.py`.
 
 ## Recent milestones
+
+- **2026-10-26** — **egm-conductor 0.1.0** added. EGM skills set `disable-model-invocation: true`, so the conductor reads each EGM `SKILL.md` from the install path in `installed_plugins.json` and follows it, substituting EGM's root for `${CLAUDE_PLUGIN_ROOT}`. Status script tested on empty / design-doc / saved-state projects; no full end-to-end EGM run yet.
 
 - **2026-10-21** — **idea-to-3d 2.1.0**: humanoid presets animate in one `meshy_animate` `action_ids` call (one multi-clip GLB, one `anim-bundle` task, still 3 credits per action); optional custom clips via `meshy_text_to_motion` (prime 10 / swift 3, + 3 to apply; biped only; 3-day expiry). `import-merge.py --bundle-clips` names the bundle's clips in file order, so `--clip` is only for the free walk, custom motions and single-clip fixes. Core files (`core-files.txt`) untouched. Built and tested without spending credits; the bundle path is not yet proven on a paid run.
 

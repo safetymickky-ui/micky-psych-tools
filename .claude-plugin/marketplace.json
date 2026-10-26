@@ -279,6 +279,19 @@
         "animation",
         "concept-art"
       ]
+    },
+    {
+      "name": "egm-conductor",
+      "source": "./plugins/egm-conductor",
+      "description": "Runs Google's Elephant-Goldfish Model (egm@egm) end to end from one command: brainstorm, draft, zero-context Goldfish review and resolve, a human approval gate, implementation against the approved design doc, and drift report. Saves progress per project so a run resumes; --auto skips only its own confirmations. Two skills (/egm-conductor:conduct, /egm-conductor:status). Requires egm@egm and Claude Code 2.1.271+.",
+      "category": "productivity",
+      "keywords": [
+        "egm",
+        "spec-driven-development",
+        "design-docs",
+        "goldfish-review",
+        "orchestration"
+      ]
     }
   ]
 }
