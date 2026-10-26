@@ -260,6 +260,14 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   `assets/learn.html`), not to the vault. Hand-offs (tutor, pubmed-research-note,
   bullet-reconstruct, ml-concept-lab) are numbered options, never run unasked. One skill +
   `/learning-map [material]`.
+- **egm-conductor** — master controller for Google's Elephant-Goldfish Model (`egm@egm`, a
+  separate upstream plugin it depends on, never vendored): preflight → optional bootstrap →
+  brainstorm → draft → Goldfish review + resolve → human approval gate → implement against the
+  approved design doc → drift report, with progress in the project's `.egm-conductor/state.json`.
+  EGM skills refuse the Skill tool (`disable-model-invocation`), so the conductor reads each EGM
+  `SKILL.md` from the install path in `installed_plugins.json` (`scripts/egm_status.py`) and
+  follows it, spawning the registered `egm:egm-*` agents. `--auto` skips only its own
+  confirmations. Two skills (`conduct`, `status`), no commands.
 
 ## Style
 

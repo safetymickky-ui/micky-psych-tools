@@ -57,6 +57,8 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Applies the free fixes from an idea-to-3d critic review (Pillow image cleanup, headless Blender re-runs; prompt changes travel as requests), re-renders the gate preview, and returns paid fixes as req… | idea-to-3d | agent `idea3d-reviser` |
 | when the user says "what do I need to know before reading this", "prerequisites for this paper", "prerequisite knowledge", "learning map", "learning pearls", "pearls of this paper", "what should I… | learning-map | skill `learning-map` |
 | Map a material's prerequisite knowledge (dependency ladder), its learning pearls and what to explore next, saved to Learn | learning-map | `/learning-map` |
+| when the user says "run EGM end to end", "take this idea through EGM", "egm pipeline", "spec-driven this feature", "continue the EGM flow", "next EGM step", or runs /egm-conductor:conduct. | egm-conductor | skill `conduct` |
+| when the user asks "EGM status", "where am I in EGM", "what's the next EGM step", or runs /egm-conductor:status. | egm-conductor | skill `status` |
 
 ## Plugins
 
@@ -255,3 +257,12 @@ Keywords: prerequisites, learning-pearls, learning-path, dependency-ladder, stud
 
 - **skill `learning-map`** (skill) — Maps what a reader needs before, inside and after one piece of material (a paper, chapter, article, lecture, slides, transcript, PDF, URL or pasted text): the prerequisite knowledge as a dependency ladder (Level 0 found…
 - **`/learning-map`** (command) — Map a material's prerequisite knowledge (dependency ladder), its learning pearls and what to explore next, saved to Learn
+
+### egm-conductor — productivity
+
+Runs Google's Elephant-Goldfish Model (egm@egm) end to end from one command: brainstorm, draft, zero-context Goldfish review and resolve, a human approval gate, implementation against the approved design doc, and drift report. Saves progress per project so a run resumes; --auto skips only its own confirmations. Two skills (/egm-conductor:conduct, /egm-conductor:status). Requires egm@egm and Claude Code 2.1.271+.
+
+Keywords: egm, spec-driven-development, design-docs, goldfish-review, orchestration
+
+- **skill `conduct`** (skill) — Drives the whole Elephant-Goldfish Model (EGM) spec-driven workflow end to end from one entry point: preflight, optional codebase bootstrap, brainstorm, draft, Goldfish review and resolve, human PR gate, implementation…
+- **skill `status`** (skill) — Shows where the current project stands in the Elephant-Goldfish Model (EGM) workflow: whether egm@egm is installed and enabled, which EGM artifacts exist (concepts brief, design draft, design docs, review and drift repo…
