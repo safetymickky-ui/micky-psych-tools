@@ -20,7 +20,7 @@
     {
       "name": "intent-lock",
       "source": "./plugins/intent-lock",
-      "description": "Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.",
+      "description": "Lock what you want before expensive work: picker questions on kind of output, use, and depth in at most 3 rounds, then work. The finished work is checked against the lock before delivery, and misreads are logged to a ledger page that survives between chats.",
       "category": "productivity",
       "keywords": [
         "prompting",

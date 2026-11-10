@@ -1,7 +1,7 @@
 {
   "name": "intent-lock",
-  "version": "0.4.3",
-  "description": "A pre-build alignment gate. Interrogates a request until it has exactly one reading, then executes it as written. Ships intent-lock (the interview) and misread-capture (the compounding ledger).",
+  "version": "1.0.0",
+  "description": "Locks what the user wants before expensive work, checks the finished work against that lock before delivery, and logs misreads to a ledger that survives between chats. Ships intent-lock (interview, lock, check) and misread-capture (corrections after delivery).",
   "author": {
     "name": "Thanawat Suharit (Micky)"
   },

@@ -5,63 +5,71 @@
       "id": 1,
       "name": "explicit-interview-me-trigger",
       "prompt": "Interview me before you build this — I want the dashboard redesign spec locked down first.",
-      "expected_output": "Triggers intent-lock. Phase 0 runs silently (cold read, prediction v0, divergent readings, admission-threshold defaults) with nothing but the eventual option-picker reaching the user. No GOAL UNIFIED marker, no convergence-gate text, no per-round price is printed. Round 1 opens with a single option-picker call (max 3 hypotheses + escape) whose preamble states the open question verbatim.",
+      "expected_output": "Triggers intent-lock. Reads the active checks from the Misread Ledger first. Round 1 is one picker call with at most 3 questions that settle kind of output, use, and depth and breadth; each option describes a concrete output. No narration of steps, no draft reading, no checklist is printed.",
       "files": [],
       "assertions": []
     },
     {
       "id": 2,
-      "name": "lock-the-goal-trigger",
+      "name": "round-cap-then-work",
       "prompt": "Lock the goal before we start: I need a migration script from the old schema to the new one.",
-      "expected_output": "Triggers intent-lock. Interview proceeds via option-picker rounds only, uncapped in count but capped at 3 questions per round. Ends only on saturation, LOCK/stop-asking, or the degenerate-loop guard — never on a round-count ceiling.",
+      "expected_output": "Triggers intent-lock. Asks at most 3 rounds, then writes the lock and starts work in the same turn without asking permission. Slots still open after the last round are stated as assumptions in the lock lines.",
       "files": [],
       "assertions": []
     },
     {
       "id": 3,
-      "name": "thai-trigger-lock-pao-mai",
+      "name": "thai-trigger",
       "prompt": "ล็อคเป้าหมายก่อนนะ ผมอยากได้ระบบแจ้งเตือนสำหรับแอปคลินิก",
-      "expected_output": "Triggers on the Thai phrase ล็อคเป้าหมาย. Runs the same silent Phase 0 / picker-round protocol as the English triggers. Response register matches the user's Thai (or Thai-English code-switch) rather than switching to English prose.",
+      "expected_output": "Triggers on ล็อคเป้าหมาย. Questions and lock lines are in Thai with technical terms in English.",
       "files": [],
       "assertions": []
     },
     {
       "id": 4,
-      "name": "unprompted-offer-expensive-ambiguous-request",
+      "name": "unprompted-expensive-ambiguous-request",
       "prompt": "Build me the full reporting pipeline — pull from all our data sources, clean it, and generate the exec summary however makes sense.",
-      "expected_output": "No trigger phrase was said. Because the request is expensive (multi-stage pipeline), reusable, and ambiguous (\"however makes sense\", unspecified sources, unspecified summary shape), the skill offers itself unprompted before building — either by opening the interview directly or naming in one line why alignment is warranted first. Does not silently proceed to build a guessed pipeline.",
+      "expected_output": "No trigger phrase. The request is expensive, reusable and ambiguous, so the skill opens the interview before building. Does not build a guessed pipeline.",
       "files": [],
       "assertions": []
     },
     {
       "id": 5,
-      "name": "ask-me-until-you-understand-trigger",
+      "name": "lock-lines-and-check",
       "prompt": "Ask me until you understand exactly what I want for this onboarding email sequence — don't guess.",
-      "expected_output": "Triggers intent-lock. No question is ever asked in prose — every Phase 1 question goes through the option-picker with a mandatory escape option. Never proposes a bigger or better version of the onboarding sequence than what was asked. Never emits a portable prompt/spec artifact for the user to copy elsewhere.",
+      "expected_output": "After the interview the output opens with 3 to 5 lock lines written as plain sentences with no lead-in labels: the locked goal with kind, use and depth, the assumptions if any, and the result of the comparison between the work and the lock. Never proposes a bigger or better sequence than asked. Never emits a prompt or spec for use elsewhere.",
       "files": [],
       "assertions": []
     },
     {
       "id": 6,
-      "name": "negative-precise-one-line-request",
-      "prompt": "Rename the variable `usrId` to `userId` in src/auth.ts.",
-      "expected_output": "Does NOT trigger intent-lock. The request already has exactly one reading — cost of a wrong reading is near zero and there is nothing to interrogate. FAILS if an interview, option-picker, or ledger read is initiated for a request this precise and cheap.",
+      "name": "drift-is-fixed-and-logged",
+      "prompt": "Interview me, then write a whole-disorder review of intermittent explosive disorder.",
+      "expected_output": "If the draft is treatment-heavy or treatment-only, the check before delivery finds the drift against the locked kind (whole-disorder review), fixes it, reports the fix in the lock lines, and writes one drift entry to the Misread Ledger in a single write.",
       "files": [],
       "assertions": []
     },
     {
       "id": 7,
-      "name": "negative-post-delivery-complaint-routes-to-misread-capture",
-      "prompt": "You wasted my time — that's not even close to what I asked for.",
-      "expected_output": "Does NOT trigger intent-lock (no forward-looking build to interrogate). This is a post-delivery complaint about work already shipped, so it routes to misread-capture instead: two questions (what was actually wanted, when the tell arrived), captured in the user's own words, with no self-diagnosis or defense of the prior work. FAILS if intent-lock's interview protocol (picker rounds, cold read, convergence gates) is invoked here.",
+      "name": "unattended-run-asks-nothing",
+      "prompt": "[scheduled run] Write this week's comprehensive review of the top watchlist topic.",
+      "expected_output": "Nobody can answer a picker. The skill asks nothing, fills every slot with its default, and states each unconfirmed default as an assumption in the lock lines. FAILS if a picker is opened.",
       "files": [],
       "assertions": []
     },
     {
       "id": 8,
-      "name": "negative-scaffolding-request-plugin-creator-territory",
-      "prompt": "/new-plugin — I want to scaffold a new plugin for tracking client invoices.",
-      "expected_output": "Does NOT trigger intent-lock. This is a plugin-scaffolding request that belongs to plugin-creator's own elicitation flow, not a pre-build alignment gate on an arbitrary task. FAILS if intent-lock's option-picker interview protocol is invoked instead of deferring to plugin-creator.",
+      "name": "negative-precise-one-line-request",
+      "prompt": "Rename the variable `usrId` to `userId` in src/auth.ts.",
+      "expected_output": "Does NOT trigger intent-lock. The request has one reading and a wrong reading costs almost nothing. FAILS if an interview, picker or ledger read is started.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 9,
+      "name": "negative-post-delivery-complaint-routes-to-misread-capture",
+      "prompt": "You wasted my time — that's not even close to what I asked for.",
+      "expected_output": "Does NOT trigger intent-lock. This is a correction of delivered work, so misread-capture handles it. FAILS if an intent-lock interview is opened.",
       "files": [],
       "assertions": []
     }

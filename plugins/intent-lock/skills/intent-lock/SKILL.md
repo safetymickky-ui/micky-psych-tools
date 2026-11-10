@@ -1,250 +1,193 @@
 ---
 name: intent-lock
 description: >-
-  Interrogates a request until it has exactly one reading, then executes it as written. Use when the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ", "ล็อคเป้าหมาย" — and unprompted, offer it whenever a wrong reading of an expensive, reusable, or ambiguous request would waste substantial work. The user may background the thread and return only to finished output, so the interview is the ONLY correction window. Rounds are uncapped: interrogate until saturation or the user says LOCK / stop asking. Never propose a better version of the request, never emit a portable prompt artifact, never publish the convergence gates, never ask permission to proceed — after GOAL UNIFIED, work. Not for quick throwaway or already-precise requests, mid-task execution forks (decision-interview), critiquing or improving an existing plan (plan-critique), or a past misread after delivery (misread-capture).
+  Locks what the user wants before expensive work, then checks the finished work against that lock. Use when the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ", "ล็อคเป้าหมาย", and unprompted when a wrong reading of an expensive, reusable or ambiguous request would waste much work. Asks picker questions on kind of output, use, and depth and breadth, in at most 3 rounds. Then works without asking permission, puts 3-5 lock lines on top of the output, checks it against the lock before delivery, and logs drift and interview errors to the Misread Ledger. Never proposes a better request and never emits a prompt for use elsewhere. Not for quick or already-precise requests, mid-task execution forks (decision-interview), critiquing or improving an existing plan (plan-critique), or a correction after delivery (misread-capture).
 ---
 
 # Intent Lock
 
-The user will not watch you work. They ask, close the tab, and return when the output exists. Every assumption you make after the interview ends is unauditable until the money is already spent.
+This skill prevents two failures:
 
-So: **the interview is the only correction window.** Not a warm-up, not a courtesy. The last place a misread can be caught for free.
+1. **The questions miss the point.** The interview asks about details and never asks what
+   kind of output is wanted, what it is for, or how deep and wide it goes.
+2. **The work drifts.** The goal was locked correctly, and the output still does not follow it.
 
-This produces no artifact. It ends with the goal locked — silently — and then you build.
+The user often leaves the thread while the work runs. So the interview is short, the lock is
+written down, and the finished work is checked against the lock before delivery.
 
-## What the user sees — the output contract
+## What the user sees
 
-This skill runs its reasoning **silently**. Exactly three things reach the user, and nothing else:
+Only these three things:
 
-1. **The option-picker clarifying questions** (Phase 1) — the one visible surface of the whole interview.
-2. **One compact assumptions line** (Phase 3), and only when a material default was actually made.
-3. **The work.**
+1. Picker questions, in at most 3 rounds.
+2. The lock lines, on top of the output (3 to 5 lines).
+3. The work.
 
-Everything else this document describes is **internal** — perform it as reasoning, never print it: the cold read, prediction v0, the divergent readings, the defaults list, the per-round price, the revised prediction, the survival probe's wording, the three convergence gates, the `GOAL UNIFIED` marker, and any "applying intent-lock / locking" narration. Where a phase below says *write, show, open with, state, publish,* or *emit* anything other than the three items above, read it as **compute, silently.**
+Do everything else silently. Do not narrate the steps, announce the skill, show a draft
+reading, or print a checklist.
 
-The prediction and readings lose nothing by going dark: they become the picker's options, which is where the user was always meant to shoot them down. The picker *is* the cold read, made tappable. `GOAL UNIFIED` is now a private green light, not an announcement — pass the gates in your head and go straight to the work.
+## Step 1. Load the checks
 
-## What relentless means
+Read the active checks from the Misread Ledger before reading the request a second time.
+`references/ledger.md` says where the ledger is and how to read it. This is one query.
 
-Not thoroughness, and not ambition. **Depth on the axis that decides the output, silence everywhere else.**
+Each check is a sentence of the form "When <trigger>, <thing to verify or ask>". For each
+check whose trigger matches this request, do what it says: it either fills a slot in Step 2
+or forces a question in Step 3. Remember which checks matched; Step 7 records them.
 
-Relentless about *reading*, never about *rewriting*. The request is the request. Your job is to reduce it to one reading — not to find a better one. Two failure modes:
+If the ledger cannot be reached, use `references/checks-snapshot.md` and continue.
 
-- Asking a small question that a stated default could have covered.
-- Answering a question the user did not ask, because you decided it was the better question.
+## Step 2. Draft the lock
 
-The first costs a turn. The second costs the work. Interrogate the reading; leave the goal alone.
+Fill these slots from the request, the conversation, attached files and memory. Do not ask
+for anything these sources already answer.
 
-**Where pushback is still owed.** Exactly one case: the instruction, executed literally, defeats the outcome the user themselves stated for it. Then name both sides in one line and ask which governs. Once. If they hold, log it and execute as written.
+- **Goal**: the user's instruction in the user's own vocabulary, one sentence.
+- **Kind**: what type of output this is. Examples: a whole-topic review, a treatment
+  verdict, a speculative model, a tool, the work itself or a prompt for later.
+- **Use**: what the user will do with the output.
+- **Depth and breadth**: how deep, how wide, and at what level.
+- **Out**: what is excluded, if the user said so.
+- **Form**: file type, layout, length, where it lives.
+- **Caller slots**: any points the calling plugin says it needs locked.
 
-A contradiction flag is not a reframe. It is assembled from two things the user has already said, and it proposes nothing. The moment you are supplying the better goal, you have left the skill.
+Then find the open slots. Imagine two finished outputs that both satisfy the request as
+written and that differ from each other. Each slot where they differ is **open**. If you
+cannot build two different outputs, nothing is open: skip Step 3.
 
-## Phase 0 — Cold read (before any question)
+Take Form from the user's standing preferences and the calling plugin's defaults. Ask about
+Form only when two forms would need materially different work.
 
-Five moves, in order. No questions yet.
+## Step 3. Ask
 
-### 0. Read the ledger first
+**Round 1 covers the open slots in this order: Kind, Use, Depth and breadth.** A caller slot
+or a ledger check may take a place only after these three are settled or already answered.
 
-Open `references/misreads.md` before you read the request a second time. It is a record, written by the user in their own words, of how you have previously misread *them* — not users in general.
+Rules for every question:
 
-The `Active priors` block at the top is the operative part. Each prior is a check to run against this request, now. If one fires, say so in one line and let it shape the divergent readings. The ledger is the only asset in this system that compounds; ignoring it makes the interview a fresh start every time, which is the condition it was built to escape.
+- Ask only when the possible answers lead to materially different work: a different
+  structure, different sources, a different deliverable, or more than about a fifth of the
+  effort. Give everything else a default and carry it to the lock as an assumption.
+- Use the picker tool. Ask at most 3 questions in a round, in one call.
+- Write each option as a concrete output: say what would be delivered, not an abstract
+  label. "A full review of the disorder, all domains" is an option. "Comprehensive" is not.
+- Offer 2 to 4 options. Every option is a reading of what the user said. Never offer
+  something larger or better than what was asked.
+- Make each question stand alone. The user may see only the picker and not earlier text.
+- The picker's free-text choice is the escape. Add an explicit "None of these" option only
+  when the picker has no free-text choice.
+- Match the user's language. Use short plain sentences.
 
-If the file has no entries, say nothing about it. Do not narrate the absence.
+Rounds:
 
-### 1. Prediction v0 — the output their sentence produces today
+- **The limit is 3 rounds.** Use round 2 or 3 only for a slot that is still open, a new fork
+  that an answer opened, a free-text answer that has two readings, or a contradiction
+  between two things the user said. For a contradiction, name both sides and ask which one
+  governs. Ask once.
+- Stop early when no slot is open. Most requests need one round.
+- Stop at once when the user says LOCK, "stop asking", "พอ" or anything with that meaning.
+- After the last round, every slot that is still open takes its default and becomes an
+  assumption.
 
-Before a single question: write 5–10 lines of the **actual first output**, with real texture, in the real voice. Not a description of it. Not a plan for it. The thing.
+Never do these:
 
-Predict what the request produces **read literally**, not what you suspect it should produce. If a literal reading yields something obviously unwanted, you have found the load-bearing ambiguity without spending a question — which is the entire reason this moves first. A prediction the user cannot shoot at is a summary, and a summary teaches nothing.
+- Ask permission to start, or ask the user to confirm the lock.
+- Propose a better, larger or differently shaped request.
+- Produce a prompt, spec or brief for the user to carry elsewhere.
+- Ask a fourth round.
 
-The prediction is a draft of the *work*, never a draft of a better request.
+**When nobody can answer** (a scheduled or unattended run, or the user gave an explicit
+opt-out such as "just do it", "don't interview me", "ไม่ต้องถาม"): ask nothing. Fill every
+slot with its default and state the unconfirmed ones as assumptions. When the user is
+present and no picker tool exists, ask the same questions as plain text under the same limits.
 
-### 2. Divergent readings
+## Step 4. Lock
 
-Restate the strongest version of what was asked, including what they likely want but did not say. Then produce 2–4 **mutually incompatible** interpretations.
+Write the lock when the questions end, and start the work in the same turn.
 
-Killing a wrong reading is cheaper for the user than describing the right one. Incompatible is the operative word: readings that could both be true teach nothing.
-
-Hard constraint: **every reading must be something their sentence could actually mean.** A reading the user's words cannot bear is a proposal wearing a question mark. If you cannot construct incompatible readings, the request is unambiguous — say so, and go straight to the gates.
-
-### 3. Admission threshold — the filter that makes this bearable
-
-An unknown earns a question **only if the competing readings produce materially different work**: different structure, different sources, different deliverable, or more than roughly a fifth of the total effort.
-
-Everything below the line gets a stated default and no question:
-
-```
-Default: X. Say so if wrong.
-```
-
-Never silently assume. Never ask about what a default can cover. The ledger is for forks, not for preferences.
-
-If prior conversation, uploaded files, or memory already resolve an item, resolve it there and name the source. Never make the user repeat themselves.
-
-### 4. Open the ledger
-
-One line per item, status first. An item that would not change the output does not belong in it — delete it, don't demote it.
-
-```
-[OPEN]     2. Deliverable shape — in-thread work vs standalone file. Decides everything downstream.
-[RESOLVED] 1. Language → Thai–English code-switch (user preferences, not asked)
-[ASSUMED]  5. Length → ~800 words (unanswered at LOCK; surfaced in the preface)
-```
-
-After round 1, show only the **delta**.
-
-The cold read does not get a turn of its own, and now it does not get *ink* either. Compute it silently; the only thing that leaves the turn is round 1's picker. A turn spent showing your homework is a turn the user may not come back from — so show none of it.
-
-## Phase 1 — Rounds
-
-**At most 3 questions per round. Rounds are unbounded.** The question cap is hard and stays — beyond three questions the user answers the easy ones and abandons the rest. The round cap is gone. You ask until you are done or until you are told to stop.
-
-Removing a budget does not remove the obligation the budget was crudely enforcing. **The round cap was a proxy for a real terminator. Now you need the real one.**
-
-The interview ends on exactly three conditions, and no others:
-
-1. **Saturation.** Zero `[OPEN]` items above the admission threshold remain, *and* the prediction has survived — either a round left it unrevised, or the survival probe came back **"None — it stands."** This is what *satisfied* means here, and it is a count you can perform on the ledger, not a feeling you can report. *I think I understand now* is not a terminator. It is the sensation of being about to misread someone.
-2. **The user stops it.** `LOCK`, "stop asking", or silence. Sovereign, instant, mid-round, unargued.
-3. **Degenerate loop.** The guard below fires. Stop and say so.
-
-**Price every round — to yourself.** Keep the count each round: how many items resolved, how many prediction lines died, how many remain open. This is now an *internal* ledger, never a printed one — the user no longer sees a running price, so the whole discipline it enforced falls on you. A round that bought nothing — *resolved nothing, prediction still standing* — must be named in your own reasoning and fed straight to the degenerate-loop guard. The user still holds the brake without the number: every round is a picker they can answer or abandon, and an abandoned picker is a stop.
-
-**The admission threshold is now the only cap.** This is the pressure point. With rounds unbounded, the standing temptation is to keep the interview alive by promoting sub-threshold items into questions — preferences dressed as forks. Hold the line at Phase 0.3: an unknown earns a question only if the competing readings produce materially different work. **An item that would not change the output is not an item.** Extending the interview by lowering the bar is not thoroughness. It is the interview eating the work it was built to protect.
-
-**Every round re-derives the prediction, revised — internally.** Track which lines changed and what killed them; none of it prints. Questions are the residue of what the revised prediction still cannot settle — they are not the road to it. A round that changed nothing in the prediction is, in your own count, a round that bought nothing, and it feeds the degenerate-loop guard.
-
-Cycle across these dimensions between rounds — never exhaust one before touching the others, because the load-bearing item is usually the one you haven't reached:
-
-- **Literal-execution check.** Run their sentence exactly as written. What does it produce that they don't want? Highest yield now that the prediction leads, and it costs them nothing to answer.
-- **Prior failed attempts.** What was tried and rejected, and why? Almost never asked.
-- **The goal behind the goal.** What changes downstream if this succeeds? Their goal, surfaced — never yours, substituted.
-- **Anti-goals.** What output satisfies the literal request and still fails?
-- **Success criteria.** What observation, by whom, separates success from failure? Checkable, not felt.
-- **The tell.** When they knew a past attempt was wrong — at the first sentence, at the structure, or only at the end? Decides whether the fix is an earlier prediction or a better cold read.
-- **Scope boundary.** What is explicitly out?
-- **Output contract.** Format, length, audience, register, where it lives.
-- **Edge cases.** The adversarial input that breaks the naive version.
-
-### Protocol
-
-- **No vague answer survives.** If a reply leans on *good, clean, better, professional, comprehensive, robust, natural* — ask what observation distinguishes it from its negation. A criterion that cannot fail is not a criterion.
-- **Consequences are not tells.** "It wasted my time" names the cost, not the observation. Re-ask for the moment of recognition.
-- **Generalize examples.** State the rule you extracted and check the rule, not the example. Examples underdetermine.
-- **No upgrades in the option set.** Options are readings of what the user said. An option naming something better than what they asked for is a proposal on a tap target, and a tap is not consent to a goal they never chose.
-- **Dropped questions are the load-bearing ones.** If one of three goes unanswered, re-ask it verbatim, alone, next round.
-- **Surface contradictions.** Name both sides and ask which governs. A reconciliation you invent is a misunderstanding with extra steps.
-- **Escalate on the second miss.** When a hypothesis set comes back killed, do not re-offer neighbours of the dead readings. Replace them — sharper, further apart, built out of whatever the kill revealed.
-- **Every Phase 1 question goes through the option-picker.** No exceptions, no prose questions, no judgement call about whether this particular fork "deserves" a tool. See *The tool contract*.
-- **Push once, then respect.** Contest an answer you believe is wrong exactly once, with the reason — never as a counter-proposal. If the user holds, log it and move on. Relentless about clarity, never about being right.
-- **No affirmation.** No "great question," no validating answers. Praise ends interviews. Reflect back only to sharpen or to catch a contradiction.
-- **Ration your own words.** The user should out-produce you. If you are explaining, you have stopped interviewing.
-- **Register.** Match language and technical level per message, including code-switching. The interview phase overrides any standing preference against scaffolding, restatement, or structure — the ledger *is* the product here. The work phase reverts to the user's normal preferences entirely.
-
-### The tool contract
-
-Every question in Phase 1 is asked with the interactive option-picker. Never in prose. The user is usually on a phone; the tool ends your turn either way; a tapped kill costs a thumb where a typed one costs a session.
-
-This does not license inventing an answer space. The safeguard that once required prose is preserved by inverting what the options *are*:
-
-> **The options are not the answer space. They are your guesses, laid out to be killed.**
-
-Which is what this skill already believes — killing a wrong reading is cheaper for the user than describing the right one (Phase 0.2). The picker is the native instrument of that belief, not a violation of it. Four invariants keep it honest:
-
-1. **The open question lives in the preamble, verbatim.** Two lines maximum. Options hang beneath it as readings; they never replace it. A user who ignores every option must still be able to answer by typing.
-2. **An escape option is mandatory, in every question, always.** *"None of these — I'll say it."* It consumes a slot, so hypotheses cap at **three**. Its presence is the whole difference between a probe and an enumeration.
-3. **Label options as readings of the user, not as instructions to you, and never as improvements on them.** *"You mean X"* — not *"Do X,"* and not *"Wouldn't X be better."* They are judging your model of them.
-4. **A killed set is information, not a miss.** Three dead readings usually narrow the space further than one open answer. State what the kill ruled out before asking again.
-
-Mapping to the tool:
-
-- The caps that remain align by construction: **3 questions per round** is this skill's own hard cap, sitting inside the tool's four-question ceiling; **3 hypotheses + 1 escape** is the tool's four-option ceiling. Rounds have no ceiling, so the tool imposes none.
-- Divergent-reading forks → `single_select`.
-- Anti-goals, scope boundary, edge cases — where several may hold at once → `multi_select`.
-- Trade-off forks with no dominant answer (depth vs breadth vs speed) → `rank_priorities`.
-- **One call per round.** Never two. Never a call plus leftover prose questions.
-
-**Where the picker is forbidden**, and why each carve-out is load-bearing rather than an exception grudgingly made:
-
-- **Phase 0.** No question exists yet. The cold read and the prediction are prose, and end *in the same message* as round 1's call.
-- **`Default: X. Say so if wrong.`** A default is not a question. Sub-threshold items must never reach the picker; they would eat the three slots the real fork needs. The admission threshold is what keeps the picker from becoming a preference survey.
-- **Phase 2 gates.** They are never shown, so there is nothing to tap. The survival probe is the one thing a user gets to shoot at, and it is a Phase 1 question on a saturation round — inside the question cap, inside one call — not a gate wearing a picker.
-- **Phase 4.** Offering the user options for how you misread them is self-diagnosis wearing the user's voice. `misread-capture` governs there, and its rule is stricter: a picker only to disambiguate two readings of words the user has *already spoken*.
-
-### The survival probe — how a prediction earns the gate
-
-Gate 1 demands a prediction that a round left untouched. Nothing guarantees a round will oblige. So stop waiting for survival to happen to you and go ask for it.
-
-- **Survival can happen for free.** The moment a round's answers leave the prediction unrevised, it has survived.
-- **Otherwise, offer the probe on the first round where no above-threshold `[OPEN]` item remains.** A `single_select` whose options are the prediction's two or three **load-bearing** lines — the ones the whole account rests on, not the ones you happen to be least sure of — plus the mandatory escape, worded here as **"None — it stands."**
-  - **Escape tapped → survived.** The loudest answer in the set. Go to the gates.
-  - **A line killed → revise it, and the killed line reopens as an `[OPEN]` item.** Then keep going. Rounds are unbounded now, so a dead line gets re-probed rather than shipped; *do not re-probe* was a concession to a cap that no longer exists. A prediction that dies twice on the same line is not a prediction, it is a wish, and the guard will catch it.
-  - **Probe abandoned → silence, which is a stop.** The whole prediction ships `[UNTESTED]`.
-- **The probe consumes a question slot.** Three questions per round is still hard. On a probe round, the probe *is* one of the three.
-
-**`[UNTESTED]` is a label with a cost.** It says: *this line is doing structural work and you never got to shoot at it.* Under an uncapped interview it is now reachable by exactly one route — the user stopped you before the prediction survived. That is legitimate and it is theirs to do. It sits in the preface, in the user's line of sight, on its own line. Never inside the body. Never dropped because the account reads better without it.
-
-What this forbids is the ad-hoc hatch: telling the user you have run out of road, therefore convergence is waived, therefore proceed. There is no road to run out of. If you are not converged, ask.
-
-### Exit
-
-- **`LOCK` is sovereign.** Any moment, mid-round, no argument. Stop. So is **"stop asking"**, in any wording, in any language. You do not get to ask what they meant by it.
-- **Silence is a stop.** A short or non-committal reply is departure, not consent. Do not re-ask. An abandoned picker is silence. A *tapped* escape option is not — it is a kill, and the loudest answer in the set.
-- **Saturation is the only ending you are allowed to declare.** Zero above-threshold `[OPEN]` items, plus a prediction that survived. Anything else and the ending belongs to the user.
-- Every `[OPEN]` item at a stop becomes `[ASSUMED]` — a decision made on the user's behalf, surfaced in Phase 3. An unsurvived prediction becomes `[UNTESTED]`.
-- **Degenerate-loop guard.** With no round cap, this is the *only* structural protection against an interview that eats its own work. It fires on two consecutive rounds that resolve zero items *and* leave the prediction unrevised, or that come back with every hypothesis killed. When it fires: stop asking, say plainly that the last two rounds bought nothing, and name the residue. The residue is something the user does not know yet. Convert it to an assumption, or to an experiment — *we find this out by building v1.*
-  - The conjunction is load-bearing. A round that resolves items and still leaves the prediction standing is not a degenerate loop; it is **survival**, and it is the outcome the probe exists to manufacture. Resolution without revision is the prediction being right, not the round being wasted.
-  - The guard is not a suggestion and it is not overridden by the user's permission to keep asking. *Keep asking until satisfied* is not a licence to ask questions that cannot resolve anything.
-- **Stakes calibration.** Scope by *reuse count × cost of a wrong reading*. A throwaway rarely earns a second round. A skill that will run a hundred times earns as many as saturation takes. The ceiling is no longer a number; it is the user's patience, and you are obliged to price it for them at the top of every round.
-
-## Phase 2 — Convergence gates, performed and never published
-
-Agreement is worthless: a person nods at a restatement of their own words and remains misunderstood. Test by trying to fail.
-
-**The gates are a self-test, and a self-test is not output.** Work ships in the same turn the gates pass, so the user cannot object to a gate before the thing it guards already exists. Printed, they are ceremony — a checklist performed at someone who has no move left to make. Run all three. Publish none of them. What reaches the user is the one compact assumptions line — only if a material default was made — and the work. No `GOAL UNIFIED`, no gates, no preface block.
-
-Nothing is lost to the silence, because each gate is already visible somewhere the user has been:
-
-1. **Prediction, final.** The revision the last round left standing — which the user read at the top of that round and has already shot at. Reprinting it at the gate tells them nothing they did not just tap on. If it never survived a round and never carried the probe, it does not pass; see *The survival probe*.
-2. **Falsification.** Name three specific things you will **not** do. An objection to any exposes a hidden requirement — which is why it is run against your own draft, *before that draft exists*, and not recited to a user who cannot yet see what it would have excluded. Its residue reaches them as the `Skipped:` line of the preface, where scope belongs.
-3. **Their instruction, unambiguous.** Restate the user's instruction in the user's own vocabulary, with every resolved ambiguity written into it. Additions are permitted only where they close a fork, and each must trace to something the user actually said.
-
-   The old bar — *"yes, and I couldn't have said it better"* — was an invitation to say it better. The bar is now: **"Yes. That is what I said."** Anything the user did not say, and would not have said, is contraband no matter how good it is. Held silently, this restatement is the thing the work gets written against. Printed, it is one more invitation to say it better — and *saying it better* is the move this skill exists to prevent.
-
-Pass all three → the goal is locked as a private marker, never a printed line. Emit the compact assumptions line if a material default was made, then the work, in the same turn. Do not print `GOAL UNIFIED`. Do not ask whether to proceed. Permission was the interview.
-
-Fail any → the ledger reopens and you run another round. There is no budget to plead. The only gate that can fail unrepaired is one the user stopped you from repairing, and that one becomes an `[UNTESTED]` item in the preface while the work ships. **A gate that cannot be paid for is declared, never waived** — and declared as a label on the output, not as an excuse addressed to the user.
-
-## Phase 3 — Work, with the assumptions on top
-
-The user returns to finished output. What you assumed must be the first thing they read, not something they discover.
-
-Preface the delivered work with **one compact line**, and only when a material default was actually made — never a four-field block, never ceremony. Fold the assumptions, any untested prediction line, and any load-bearing skip into a single sentence the user can scan in one beat:
-
-```
-Assumed: <the material default(s), plainly> — say if wrong.
-```
-
-If nothing material was assumed, guessed, or skipped, emit no line at all and ship the work clean. There is no `Reframed:` line, because there is no reframe. Never bury an assumption inside the body, and never present a guess in the voice of a fact — the one line exists so a wrong default is still catchable after the fact, which is the only reason it survives the cut.
-
-Execution will surface decisions this interview could not have seen — forks inside the locked goal, not readings of it. Those belong to the `decision-interview` skill: sweep them, batch them, resolve them there. Reopening this interview for them re-interrogates a goal that is already locked.
-
-## Phase 4 — When the work comes back wrong
-
-The user returns, reads the output, and says it isn't what they wanted. This is the only moment the system learns anything, because it is the only moment a real tell exists.
-
-Do not defend the work. Do not explain what you understood. Do not draft a diagnosis — yours is the least trustworthy account of your own failure, and offering one anchors the user to it before they've formed their own.
-
-Route immediately to the `misread-capture` skill. Its entire job is to make the user's diagnosis cheap to write down. Its tool rule governs and overrides this one: a picker only to choose between two readings of words the user has already said. The always-rule stops at the edge of Phase 1 for exactly this reason — options here would be you handing the user your account of your own failure and calling their tap a confession.
-
-## Failure conditions
-
-This skill has failed if:
-
-- A convergence gate was printed, or the `GOAL UNIFIED` marker, cold read, prediction v0, divergent readings, defaults list, revised prediction, or per-round price reached the user's output — only the picker questions, one compact assumptions line, and the work may.
-- A larger, better, or differently-shaped version of the request was proposed.
-- An option, question, or restatement contained something the user never said and would not have said.
-- The user said LOCK / stop asking / went quiet, and was asked one more question.
-- The degenerate-loop guard fired and the interview continued anyway.
-- A prompt, spec, or instruction was emitted as an artifact for the user to carry elsewhere.
-
-Full list: `references/failure-conditions.md`.
+- For work with more than a few steps, save the full slot list to `intent-lock.md` in the
+  working folder. Reread it before each major stage and before Step 6. Long work loses
+  early instructions; the file does not.
+- Give the lock, word for word, to every subagent that produces part of the work.
+- Hand the assumptions to the calling plugin. They are its `[ASSUMED]` items. Callers that
+  wait for `GOAL UNIFIED` continue here: the lock is that point.
+
+## Step 5. Work to the lock
+
+- Treat every answer the user gave as a requirement. An answer is never a suggestion.
+- When the work raises a decision that the lock does not settle, do not reopen the
+  interview. Use the `decision-interview` skill when it is installed. Otherwise choose the
+  option closest to the lock and add it to the assumptions.
+- Do not add sections, analyses or deliverables that the lock does not ask for.
+
+## Step 6. Check before delivery
+
+Compare the finished work with the lock, line by line, before the user sees it.
+
+1. For the Goal, for each slot and for each picker answer, point to the specific part of
+   the output that satisfies it. If you cannot point to a part, that is a drift.
+2. Check that the structure fits the Kind. A whole-topic review covers the whole topic. A
+   verdict states the verdict. A speculative model is not an evidence summary.
+3. Check depth, breadth and level against the lock.
+4. Check that nothing in the Out slot is present, and that nothing unrequested was added.
+
+Fix every drift you find, then check that part again. If a drift cannot be fixed, such as a
+missing source or a tool that failed, keep it for the lock lines.
+
+Do the comparison for real. Never report a match without doing it. For long or reusable
+work, when a subagent tool exists, give a fresh subagent only the lock and the output and
+let it do this comparison.
+
+## Step 7. Log
+
+Do this before the final reply, in one write. `references/ledger.md` has the fields and rules.
+
+- Log one `drift` entry for each drift found in Step 6, fixed or not.
+- Audit the interview and log one `process` entry for each of these:
+  - A question was asked whose answer did not change the work.
+  - Kind, Use or Depth and breadth reached the lock as an assumption while a question was
+    spent on something else.
+  - An option proposed something the user never said.
+  - An answer was given and the work did not use it.
+- Add or sharpen a check for each entry, following the ledger rules.
+- Update `fires` and `last_fired` on each check that matched in Step 1.
+
+If there is nothing to log and no check matched, write nothing.
+
+## The lock lines
+
+Put 3 to 5 lines on top of the output, in the user's language:
+
+1. The locked goal in one or two sentences, in the user's own words, including the kind,
+   the use, and the depth and breadth.
+2. The assumptions, with "say if wrong". Leave this line out when there are none.
+3. The check result: the work matches the lock, or which drifts were fixed before
+   delivery, or which drift is not fixed and why.
+
+Write them as plain sentences. Do not start a line with a label such as "Goal:",
+"Assumed:" or "Check:"; the user's standing preferences forbid lead-in labels. Example:
+
+> You asked for a whole-disorder review of intermittent explosive disorder for your own
+> study, at specialist depth, across all ten domains.
+> I assumed English with Thai terms kept and about 3,000 words. Say if wrong.
+> I compared the review with this before delivery and fixed one drift: the treatment
+> section had grown to half the text, so I cut it to fit the other domains.
+
+When the output is a file or an artifact, put the lock lines in the chat reply that
+delivers it.
+
+## After delivery
+
+When the user's reply shows that the work missed what they wanted, use the
+`misread-capture` skill. Do not defend the work.
+
+## This skill has failed if
+
+- Round 1 did not settle Kind, Use, and Depth and breadth, and none of them was already answered.
+- A question was asked that could not change the work.
+- A fourth round was asked, or a question came after the user said stop.
+- Work started without a written lock, or the output was delivered without lock lines.
+- The check line reported a match and the comparison was not done.
+- A drift or an interview error was found and not logged.
+- A better version of the request was proposed, or a prompt was emitted for use elsewhere.
+- The user was asked for permission to start.

@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.0.0 — 2026-11-10
+
+A rewrite. Both skills were written again from an interview with the owner (2026-11-10).
+
+- **Round 1 has fixed targets.** It settles what kind of output, what it is for, and how
+  deep and wide, in that order. Each option must describe a concrete output.
+- **Rounds are capped at 3.** The uncapped interview, the saturation rule, the survival
+  probe and the degenerate-loop guard are gone.
+- **The lock is written down.** For long work it is saved to `intent-lock.md` and reread
+  before each stage.
+- **Check before delivery.** The finished work is compared with the lock line by line, and
+  drift is fixed before the user sees the output.
+- **Lock lines on top of the output.** 3 to 5 plain sentences: the locked goal, the
+  assumptions, the check result. This replaces the silent run and the one-line preface.
+- **The ledger moved to an artifact page with a database** ("Misread Ledger"). The plugin
+  file lost every new entry at the end of a cloud session. The three existing entries were
+  moved over, including the September 2026 entry that the old file never kept.
+  `references/misreads.md` is replaced by `references/ledger.md` (where the ledger is and
+  how to use it) and `references/checks-snapshot.md` (a fallback copy).
+- **Claude writes ledger entries.** Drifts, interview errors and the user's corrections are
+  logged without being asked, and each becomes a check. The July rule that only the user
+  writes the diagnosis is dropped.
+- **misread-capture asks at most one question** and logs automatically. It separates a
+  misread from an ordinary follow-up edit.
+- **A rule for runs where nobody can answer.** Scheduled runs and explicit opt-outs ask
+  nothing and state every default.
+- **Removed:** the tool names `single_select`, `multi_select` and `rank_priorities` (not in
+  the current picker), and `references/failure-conditions.md` (a short list now sits in
+  each SKILL.md).
+- **Unchanged for callers:** the skill names, every locked trigger phrase, the explicit
+  opt-out, `[ASSUMED]` items, the boundaries with decision-interview and plan-critique, and
+  the rules against proposing a better request, asking permission, or emitting a prompt artifact.
+
 ## 0.4.3 — 2026-10-19
 
 - **Frontmatter parses again.** The `intent-lock` skill description is now a YAML folded

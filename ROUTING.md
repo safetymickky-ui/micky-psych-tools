@@ -10,7 +10,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | --- | --- | --- |
 | when asked to "research", "what does the literature say about", "search PubMed for", "is X true", "should I use X for Y" — or whether a drug or intervention is worth using, building a service on, or… | pubmed-research-note | skill `pubmed-research-note` |
 | when the user says "interview me", "ask me until you understand", "make sure you don't misunderstand", "lock the goal", "craft my prompt", "what do I actually want", "ถามจนกว่าจะเข้าใจ"… | intent-lock | skill `intent-lock` |
-| when the user signals that delivered work missed their intent — "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time"… | intent-lock | skill `misread-capture` |
+| when the user corrects delivered work: "this isn't what I wanted", "you misunderstood", "that's not it", "I asked for X and got Y", "you wasted my time", "ไม่ใช่ที่ผมต้องการ", "เข้าใจผิด"… | intent-lock | skill `misread-capture` |
 | when the user says "make me a plugin", "create a plugin", "scaffold a plugin", "scaffold a skill/command/agent", "new plugin", "add a plugin to the marketplace", or runs /new-plugin. | plugin-creator | skill `plugin-creator` |
 | when the user says "improve my plugin", "refine this skill", "audit my plugin", "audit this skill", "tighten the trigger description", "review my plugin", "fix version parity", "polish this skill"… | plugin-creator | skill `refine-plugin` |
 | Scaffold a new plugin into the micky-psych-tools marketplace | plugin-creator | `/new-plugin` |
@@ -72,12 +72,12 @@ Keywords: pubmed, clinical-trials, psychiatry, evidence
 
 ### intent-lock — productivity
 
-Interrogate a request until it has exactly one reading, then build it. Uncapped rounds, a compounding misread ledger, silent convergence gates.
+Lock what you want before expensive work: picker questions on kind of output, use, and depth in at most 3 rounds, then work. The finished work is checked against the lock before delivery, and misreads are logged to a ledger page that survives between chats.
 
 Keywords: prompting, alignment, elicitation
 
-- **skill `intent-lock`** (skill) — Interrogates a request until it has exactly one reading, then executes it as written.
-- **skill `misread-capture`** (skill) — Captures a misread in the user's own words and appends it to the misread ledger.
+- **skill `intent-lock`** (skill) — Locks what the user wants before expensive work, then checks the finished work against that lock.
+- **skill `misread-capture`** (skill) — Logs a misread to the Misread Ledger when the user's reply shows that delivered work missed what they wanted, then redoes the work.
 
 ### plugin-creator — productivity
 

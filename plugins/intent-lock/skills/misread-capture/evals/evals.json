@@ -5,39 +5,55 @@
       "id": 1,
       "name": "trigger-this-isnt-what-i-wanted",
       "prompt": "This isn't what I wanted.",
-      "expected_output": "Triggers misread-capture. Does not defend the work, does not explain what was understood, does not draft a diagnosis. Asks exactly two questions in the user's language: (1) what did you actually want that I didn't give you, (2) when did you know it was wrong. No option-picker unless the user has already named the axis and only two readings of their own words remain.",
+      "expected_output": "Triggers misread-capture. Does not defend the work or explain what was understood. The reply does not say what was wanted instead, so exactly one question asks for it. No second question.",
       "files": [],
       "assertions": []
     },
     {
       "id": 2,
-      "name": "trigger-you-misunderstood",
+      "name": "trigger-you-misunderstood-with-the-want-stated",
       "prompt": "You misunderstood — the report was supposed to be for clinicians, not patients.",
-      "expected_output": "Triggers misread-capture. Captures 'clinicians, not patients' as the axis missed in the user's own words, does not rephrase it into Claude's own summary. Asks for the tell-arrival moment (first line / structure / only at the end) before writing the entry. Appends to the misreads.md ledger with the fixed grammar (Asked for / Got / Axis missed / Tell arrived / Prior).",
+      "expected_output": "Triggers misread-capture. Asks nothing, because the want is stated. Writes one correction entry to the Misread Ledger that quotes 'for clinicians, not patients', adds or sharpens one check with a concrete trigger, tells the user the check in one sentence, then redoes the report with corrected lock lines on top.",
       "files": [],
       "assertions": []
     },
     {
       "id": 3,
-      "name": "trigger-thai-mai-chai-thi-phom-tongkan",
+      "name": "trigger-thai",
       "prompt": "ไม่ใช่ที่ผมต้องการ",
-      "expected_output": "Triggers on the Thai phrase. Runs the same two-question capture in Thai (or Thai-English code-switch matching the user). Does not silently translate the entry into English before confirming the axis with the user.",
+      "expected_output": "Triggers on the Thai phrase. Asks one question in Thai for what was wanted instead.",
       "files": [],
       "assertions": []
     },
     {
       "id": 4,
-      "name": "trigger-you-wasted-my-time",
-      "prompt": "You wasted my time with that draft.",
-      "expected_output": "Triggers misread-capture. 'You wasted my time' is treated as a complaint about the cost, not a stated want or a tell — so the skill asks once more for the want behind it rather than recording 'wasted time' as the Axis missed line. Does not draft the axis on the user's behalf.",
+      "name": "implicit-correction-different-kind",
+      "prompt": "I wanted a speculative mechanism review, not an evidence report with verdicts.",
+      "expected_output": "Triggers misread-capture with no complaint phrase: the work was the wrong kind of output. Logs a correction entry and a check without being asked, then redoes the work as a speculative mechanism review.",
       "files": [],
       "assertions": []
     },
     {
       "id": 5,
+      "name": "negative-ordinary-follow-up-edit",
+      "prompt": "Nice. Can you add a short section on pediatric dosing?",
+      "expected_output": "Does NOT trigger misread-capture. This is a new wish on work that matched the request. The edit is made and nothing is logged. FAILS if a ledger entry is written.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 6,
       "name": "negative-mid-interview-clarification",
       "prompt": "Wait, actually I meant the staging database, not production — while we're still going back and forth on this.",
-      "expected_output": "Does NOT trigger misread-capture. This is a live, mid-interview correction during an active intent-lock round, not a post-delivery misread — intent-lock handles it in the current round (re-ask or fold into the ledger) rather than routing to misread-capture. FAILS if a ledger entry is appended or the two-question capture protocol is invoked before any work has been delivered.",
+      "expected_output": "Does NOT trigger misread-capture. No work has been delivered; intent-lock handles it in the current round. FAILS if a ledger entry is written.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 7,
+      "name": "show-my-checks",
+      "prompt": "Show me my misread checks.",
+      "expected_output": "Reads the active checks from the Misread Ledger, lists them, and gives the ledger page link.",
       "files": [],
       "assertions": []
     }

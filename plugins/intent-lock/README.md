@@ -1,43 +1,61 @@
 # intent-lock
 
-A pre-build alignment gate. Interrogate a request until it has exactly one reading, then execute it as written.
+Locks what you want before expensive work, checks the finished work against that lock,
+and keeps a ledger of misreads that survives between chats.
 
 Two skills:
 
-- **`intent-lock`** — the interview. Cold read, a prediction of the actual output written before any question, mutually incompatible readings offered to be killed, then rounds of option-picker questions until saturation. Ends silently — `GOAL UNIFIED` is a private gate, never printed — with the work landing in the same turn.
-- **`misread-capture`** — the ledger. When work comes back wrong, the user's diagnosis is written down in the user's own words. `skills/intent-lock/references/misreads.md` is the only asset here that compounds.
+- **`intent-lock`**: interview, lock, work, check, log.
+- **`misread-capture`**: logs a correction you make after delivery, then redoes the work.
 
-## Design commitments
+## What a run looks like
 
-- **The interview is the only correction window.** The user may background the thread and return to finished output.
-- **Relentless about reading, never about rewriting.** The request is the request. No better version is ever proposed.
-- **The prediction leads.** Every round opens with the actual first output, revised, with what killed the dead lines.
-- **Options are guesses laid out to be killed**, never an enumeration of the answer space. Every question carries an escape.
-- **Gates are performed, never published.** Convergence is a self-test, not a ceremony.
-- **Rounds are uncapped.** The interview ends on saturation, on `LOCK` / "stop asking" / silence, or on the degenerate-loop guard.
+1. It reads your active checks from the Misread Ledger.
+2. It asks picker questions in at most 3 rounds. Round 1 settles what kind of output you
+   want, what you will use it for, and how deep and wide it goes. It asks nothing when the
+   request already answers these.
+3. It writes the lock and starts work. It does not ask permission.
+4. Before delivery it compares the work with the lock and fixes every drift it finds.
+5. It logs drifts and interview errors to the ledger.
+6. You get 3 to 5 lock lines on top of the output: the locked goal, what was assumed, and
+   what the check found.
 
-## Ending conditions
+## The Misread Ledger
 
-- **Saturation** — zero open items above the admission threshold, and a prediction that survived a round or a probe.
-- **Stop** — `LOCK`, "stop asking", or silence. Sovereign, instant, unargued.
-- **Degenerate loop** — two consecutive rounds resolved nothing and left the prediction unrevised.
+The ledger is a pinned artifact page with its own database:
+https://claude.ai/artifact/6JeVKcDeh53yvFsNcMt73f
 
-Anything unresolved at a stop ships labelled: `[ASSUMED]` for open items, `[UNTESTED]` for a prediction that was never shot at.
+- **Checks** are sentences that the next run reads first: "When <trigger>, <thing to verify
+  or ask>". At most 10 are active.
+- **Log entries** are of three kinds: a drift caught before delivery, a correction you made
+  after delivery, and an interview error found by the audit.
+- Claude writes entries and checks without asking. You can edit, retire, restore and delete
+  them on the page.
 
-## The ledger
+Version 0.4.3 kept the ledger in a plugin file. That file is a per-session copy, so new
+entries were lost. Nothing is stored in plugin files now.
 
-There is exactly one ledger file, at `skills/intent-lock/references/misreads.md`. Both skills share it: `misread-capture` appends to it — addressing it via `${CLAUDE_PLUGIN_ROOT}/skills/intent-lock/references/misreads.md` since the file lives in intent-lock's directory — and `intent-lock` reads it at Phase 0, before the request is read a second time. It holds `## Active priors` — checks to run against the *next* request, written by the user, in the user's words. Entries are appended by `misread-capture`, never drafted by Claude.
+## Limits
+
+- A picker that is never answered produces no work. The app gives Claude no turn until you
+  answer. This is why round 1 is short and asks the questions that decide the output.
+- In a scheduled run nobody can answer, so the skill asks nothing and states every
+  unconfirmed default in the lock lines.
+- The check before delivery is done by the same model that did the work, unless a subagent
+  tool is available. It catches structural drift well and subtle drift less well.
+
+## Plugins that call intent-lock
+
+comprehensive-review, pubmed-research-note, concept-animation, ml-concept-lab,
+vi-stock-screen-research, tutor and code-explainer call this skill as their first step.
+Its siblings are `decision-interview`, which owns decisions that appear during the work,
+and `plan-critique`, which owns critique of an existing plan.
+The interface they rely on is unchanged: the skill name, the explicit opt-out, and the
+assumptions returned as `[ASSUMED]` items.
 
 ## Install
 
 ```
 /plugin marketplace add <owner>/micky-psych-tools
-/plugin install intent-lock@micky-psych-tools
-```
-
-Local development:
-
-```
-/plugin marketplace add .
 /plugin install intent-lock@micky-psych-tools
 ```
