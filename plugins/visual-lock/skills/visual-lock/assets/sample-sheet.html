@@ -1,0 +1,117 @@
+<title>Look Samples</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="visual-lock" content="sample-sheet">
+<style>
+/* Layout: a contact sheet. One labelled panel per variant, side by side when wide and stacked on a phone. Each panel holds a stage drawn at the true canvas width and scaled down to fit, so a variant is never reflowed into a layout the build will not have. The frame is neutral; the variants bring their own colours. */
+:root {
+  --bg: #F5F7F8;
+  --panel: #FFFFFF;
+  --line: #DCE2E6;
+  --ink: #1B232B;
+  --ink-2: #4A5561;
+  --accent: #0E7C86;
+  --on-accent: #FFFFFF;
+  --font-ui: "Leelawadee UI", "Atkinson Hyperlegible", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1519; --panel: #151D22; --line: #26313A; --ink: #E3E9EC; --ink-2: #A9B4BB;
+    --accent: #3DB1BA; --on-accent: #0F1519;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1519; --panel: #151D22; --line: #26313A; --ink: #E3E9EC; --ink-2: #A9B4BB;
+  --accent: #3DB1BA; --on-accent: #0F1519;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+.sheet { max-width: 1400px; margin-inline: auto; display: grid; gap: 24px; }
+.sheet-head h1 { margin: 0; font-size: 1.4375rem; line-height: 1.25; text-wrap: balance; }
+.sheet-head p { margin: 4px 0 0; color: var(--ink-2); max-width: 65ch; }
+.panels { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: start; }
+.panel { min-width: 0; display: grid; gap: 8px; }
+.panel-head { display: flex; gap: 12px; align-items: baseline; }
+.letter {
+  flex: none; width: 2.25rem; height: 2.25rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 1.1875rem;
+}
+.caption { margin: 0; color: var(--ink-2); min-width: 0; }
+.frame { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; position: relative; }
+.stage { transform-origin: 0 0; position: absolute; top: 0; left: 0; }
+
+/* ---- Variant styles: prefix every class with the variant's letter (.a-…, .b-…). ---- */
+.a-root { background: #FFFFFF; color: #1B232B; padding: 24px; font-family: var(--font-ui); }
+.a-title { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+.a-body { margin: 0; font-size: 16px; line-height: 1.55; }
+.b-root { background: #10181C; color: #E3E9EC; padding: 24px; font-family: var(--font-ui); }
+.b-title { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+.b-body { margin: 0; font-size: 16px; line-height: 1.55; }
+</style>
+
+<div class="sheet">
+  <header class="sheet-head">
+    <!-- Name the build and the choice in one line each. -->
+    <h1>REPLACE: the build these samples are for</h1>
+    <p>REPLACE: what differs between the variants. Everything else is the same in each.</p>
+  </header>
+
+  <div class="panels">
+    <!-- One .panel per variant. Delete the panels you do not use. Set --canvas-w to the canvas width of the spec, in pixels without a unit. -->
+    <section class="panel" aria-labelledby="cap-a">
+      <div class="panel-head"><span class="letter">A</span><p class="caption" id="cap-a">REPLACE: what differs in A, with its values</p></div>
+      <div class="frame"><div class="stage" style="--canvas-w: 390">
+        <div class="a-root">
+          <h2 class="a-title">REPLACE: the real title of this build</h2>
+          <p class="a-body">REPLACE: the real first paragraph of this build.</p>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="panel" aria-labelledby="cap-b">
+      <div class="panel-head"><span class="letter">B</span><p class="caption" id="cap-b">REPLACE: what differs in B, with its values</p></div>
+      <div class="frame"><div class="stage" style="--canvas-w: 390">
+        <div class="b-root">
+          <h2 class="b-title">REPLACE: the real title of this build</h2>
+          <p class="b-body">REPLACE: the real first paragraph of this build.</p>
+        </div>
+      </div></div>
+    </section>
+  </div>
+</div>
+
+<script>
+/* Draw each stage at its true canvas width, then scale it to the width of its frame. */
+(function () {
+  "use strict";
+  var stages = Array.prototype.slice.call(document.querySelectorAll(".stage"));
+  function fit() {
+    stages.forEach(function (stage) {
+      var frame = stage.parentElement;
+      var w = parseFloat(getComputedStyle(stage).getPropertyValue("--canvas-w")) || 390;
+      stage.style.width = w + "px";
+      frame.style.maxWidth = w + "px";
+      var k = Math.min(1, frame.clientWidth / w);
+      stage.style.transform = "scale(" + k + ")";
+      frame.style.height = Math.ceil(stage.offsetHeight * k) + "px";
+    });
+  }
+  fit();
+  window.addEventListener("resize", fit);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(fit);
+    stages.forEach(function (s) { ro.observe(s); });
+  }
+  try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit); } catch (e) {}
+})();
+</script>

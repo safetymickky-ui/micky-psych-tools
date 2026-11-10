@@ -1,0 +1,424 @@
+<title>Look Book</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="visual-lock" content="look-book">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap">
+<style>
+/* Layout: a swatch book. One reading column. Saved guidance first, grouped by the kind of output it applies to; each rule is one row with its slot glyph, the choice in words, and the colours it names drawn as swatches. Builds follow as a log that opens one build at a time. Palette: Clinical Minimal (white page, one clinical-teal accent). */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F5F7F8;
+  --sunken: #ECEFF2;
+  --line: #DCE2E6;
+  --line-strong: #C3CCD3;
+  --ink: #1B232B;
+  --ink-2: #4A5561;
+  --ink-3: #636E7A;
+  --accent: #0E7C86;
+  --accent-ink: #0B6A73;
+  --accent-tint: #E8F4F5;
+  --on-accent: #FFFFFF;
+  --warn: #A15C07;
+  --warn-tint: #FBF1E1;
+  --danger: #A8322D;
+  --font-ui: "Leelawadee UI", "Atkinson Hyperlegible", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.4375rem;
+  --step-3: 1.75rem;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+    --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+    --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C; --on-accent: #0F1519;
+    --warn: #E0A458; --warn-tint: #2E2414; --danger: #EE8A84;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+  --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+  --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C; --on-accent: #0F1519;
+  --warn: #E0A458; --warn-tint: #2E2414; --danger: #EE8A84;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 760px; margin-inline: auto; display: grid; gap: 40px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.25; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-size: 0.875em; }
+
+.masthead { display: grid; gap: 8px; }
+.masthead h1 { font-size: var(--step-3); }
+.masthead p { color: var(--ink-2); max-width: 60ch; }
+.counts { color: var(--ink-3); font-size: var(--step--1); }
+
+.block { display: grid; gap: 16px; }
+.block > h2 { font-size: var(--step-2); }
+#rules-body { display: grid; gap: 28px; }
+.group { display: grid; gap: 8px; }
+.group > h3 {
+  font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 700; padding-bottom: 6px; border-bottom: 1px solid var(--line);
+}
+.rules { list-style: none; margin: 0; padding: 0; display: grid; }
+.rule {
+  display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); column-gap: 12px; row-gap: 6px;
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+}
+.rule:last-child { border-bottom: 0; }
+.glyph {
+  width: 2.25rem; height: 2.25rem; border-radius: 6px; background: var(--accent-tint);
+  color: var(--accent-ink); display: grid; place-items: center; grid-row: span 2;
+}
+.glyph svg { width: 20px; height: 20px; display: block; }
+.rule-main { min-width: 0; display: grid; gap: 4px; }
+.slot { font-size: var(--step--1); color: var(--accent-ink); font-weight: 700; }
+.choice { overflow-wrap: anywhere; }
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 2px; }
+.swatch { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-2); }
+.chip { width: 1.125rem; height: 1.125rem; border-radius: 4px; border: 1px solid var(--line-strong); }
+.rule-foot { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; min-width: 0; }
+.meta { color: var(--ink-3); font-size: var(--step--1); flex: 1 1 12rem; min-width: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  min-height: 44px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--line-strong);
+  background: var(--bg); cursor: pointer; font-size: var(--step--1); font-weight: 700;
+}
+.btn:hover { background: var(--panel); }
+.btn[disabled] { opacity: 0.55; cursor: default; }
+.btn.danger { color: var(--danger); }
+.retired .choice { color: var(--ink-2); }
+.retired .glyph { background: var(--sunken); color: var(--ink-3); }
+
+details.fold { border-top: 1px solid var(--line); padding-top: 12px; }
+details.fold > summary { cursor: pointer; color: var(--ink-2); font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+
+.builds { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.build { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.build > summary {
+  cursor: pointer; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center;
+  min-height: 44px; box-sizing: border-box;
+}
+.build-what { font-weight: 700; flex: 1 1 12rem; min-width: 0; overflow-wrap: anywhere; }
+.build-meta { color: var(--ink-3); font-size: var(--step--1); }
+.build-body { padding: 0 14px 14px; display: grid; gap: 12px; }
+.spec { margin: 0; display: grid; gap: 8px; }
+.spec div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 12px; }
+.spec dt { color: var(--ink-3); font-size: var(--step--1); font-weight: 700; padding-top: 2px; }
+.spec dd { margin: 0; overflow-wrap: anywhere; }
+.check { font-size: var(--step--1); color: var(--ink-2); }
+.check.flag { color: var(--warn); }
+
+.empty { border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 20px; display: grid; gap: 6px; color: var(--ink-2); }
+.empty strong { color: var(--ink); }
+.notice { background: var(--warn-tint); color: var(--warn); border-radius: 6px; padding: 10px 14px; font-size: var(--step--1); }
+@media (max-width: 480px) {
+  .spec div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: background-color 120ms ease; }
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1>Look Book</h1>
+    <p>The look choices you made when Claude interviewed you. Claude reuses them in every visual build, so it asks you less each time.</p>
+    <p class="counts num" id="counts" hidden></p>
+  </header>
+
+  <p class="notice" id="notice" role="status" hidden></p>
+
+  <section class="block" aria-labelledby="h-rules">
+    <h2 id="h-rules">Saved guidance</h2>
+    <div id="rules-body">
+      <div class="empty"><strong>Loading your saved guidance…</strong></div>
+    </div>
+    <details class="fold" id="retired-fold" hidden>
+      <summary id="retired-summary">Not in use</summary>
+      <ul class="rules" id="retired-list"></ul>
+    </details>
+  </section>
+
+  <section class="block" aria-labelledby="h-builds">
+    <h2 id="h-builds">Builds</h2>
+    <div id="builds-body">
+      <div class="empty"><strong>Loading your builds…</strong></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SCOPES = [
+    ["any", "Every build"], ["page", "Pages"], ["dashboard", "Dashboards"], ["app", "Apps and tools"],
+    ["slides", "Slides"], ["figure", "Figures and diagrams"], ["infographic", "Infographics"], ["document", "Documents"]
+  ];
+  var SLOTS = ["canvas", "layout", "density", "emphasis", "colour", "type", "graphics", "motion"];
+  var SLOT_NAME = {
+    canvas: "Canvas", layout: "Layout", density: "Density", emphasis: "Emphasis",
+    colour: "Colour", type: "Type", graphics: "Graphics", motion: "Motion", other: "Other"
+  };
+  var SOURCE_NAME = {
+    picker: "picked from options", sample: "picked from samples", "free-text": "typed by you",
+    request: "said in a request", correction: "from your correction", standing: "set as a standing rule"
+  };
+  /* One 20x20 glyph per slot, drawn with strokes in the current colour. */
+  var GLYPH = {
+    canvas: '<rect x="5.5" y="2.5" width="9" height="15" rx="1.5"/><path d="M8.5 15h3"/>',
+    layout: '<rect x="2.5" y="3.5" width="15" height="13" rx="1.5"/><path d="M2.5 8h15M9 8v8.5"/>',
+    density: '<path d="M3 5h14M3 8.5h14M3 12h14M3 15.5h14"/>',
+    emphasis: '<path d="M3 6h14" stroke-width="3"/><path d="M3 11.5h10M3 15h7"/>',
+    colour: '<circle cx="7.5" cy="8" r="4.5"/><circle cx="12.5" cy="12" r="4.5"/>',
+    type: '<path d="M4 16 10 4l6 12M6.5 12h7"/>',
+    graphics: '<path d="M3 16.5V10l3.5-3 3.5 4 3-6.5 4 5.5v6.5z"/>',
+    motion: '<path d="M3 10h9M9 6l4 4-4 4"/><path d="M16 5v10"/>',
+    other: '<circle cx="5" cy="10" r="1"/><circle cx="10" cy="10" r="1"/><circle cx="15" cy="10" r="1"/>'
+  };
+
+  var S = { rules: null, builds: null, canWrite: null, db: null, busy: {}, confirm: null };
+  var rulesBody = document.getElementById("rules-body");
+  var retiredFold = document.getElementById("retired-fold");
+  var retiredList = document.getElementById("retired-list");
+  var retiredSummary = document.getElementById("retired-summary");
+  var buildsBody = document.getElementById("builds-body");
+  var counts = document.getElementById("counts");
+  var notice = document.getElementById("notice");
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function str(v) { return typeof v === "string" ? v : ""; }
+  function say(text) { notice.textContent = text; notice.hidden = !text; }
+  function glyph(slot) {
+    var box = el("span", { class: "glyph", "aria-hidden": "true" });
+    box.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + (GLYPH[slot] || GLYPH.other) + "</svg>";
+    return box;
+  }
+  /* The colours a choice names, each shown as a swatch beside its hex value. */
+  function swatches(text) {
+    var found = text.match(/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g);
+    if (!found) return null;
+    var seen = {}, row = el("div", { class: "swatches" });
+    found.forEach(function (hex) {
+      var key = hex.toUpperCase();
+      if (seen[key]) return;
+      seen[key] = true;
+      var chip = el("span", { class: "chip" });
+      chip.style.background = hex;
+      row.appendChild(el("span", { class: "swatch" }, [chip, document.createTextNode(key)]));
+    });
+    return row;
+  }
+  function metaLine(r) {
+    var parts = [];
+    var src = SOURCE_NAME[str(r.source)];
+    if (src) parts.push(src);
+    var uses = typeof r.uses === "number" ? r.uses : 0;
+    parts.push(uses === 1 ? "used in 1 build" : "used in " + uses + " builds");
+    if (str(r.last_used)) parts.push("last " + r.last_used);
+    else if (str(r.created)) parts.push("saved " + r.created);
+    return parts.join(" · ");
+  }
+
+  function write(id, job) {
+    if (S.busy[id]) return;
+    S.busy[id] = true; say(""); render();
+    job().then(function () {
+      delete S.busy[id]; S.confirm = null; render();
+    }, function () {
+      delete S.busy[id]; S.confirm = null;
+      say("That change was not saved. You may have view-only access to this page.");
+      render();
+    });
+  }
+  function actionsFor(id, r) {
+    if (S.canWrite === false || !S.db) return null;
+    var ref = S.db.doc("rules/" + id);
+    var busy = !!S.busy[id];
+    var box = el("div", { class: "actions" });
+    function btn(label, cls, fn) {
+      var b = el("button", { class: "btn" + (cls ? " " + cls : ""), type: "button", text: label });
+      if (busy) b.disabled = true;
+      b.addEventListener("click", fn);
+      box.appendChild(b);
+    }
+    if (str(r.status) === "active") {
+      btn("Stop using", "", function () { write(id, function () { return ref.update({ status: "retired" }); }); });
+    } else if (S.confirm === id) {
+      btn("Delete for good", "danger", function () { write(id, function () { return ref.delete(); }); });
+      btn("Keep", "", function () { S.confirm = null; render(); });
+    } else {
+      btn("Use again", "", function () { write(id, function () { return ref.update({ status: "active" }); }); });
+      btn("Delete", "danger", function () { S.confirm = id; render(); });
+    }
+    return box;
+  }
+  function ruleRow(id, r) {
+    var choice = str(r.choice);
+    var slot = str(r.slot) || "other";
+    var li = el("li", { class: "rule" + (str(r.status) === "active" ? "" : " retired") }, [
+      glyph(slot),
+      el("div", { class: "rule-main" }, [
+        el("span", { class: "slot", text: SLOT_NAME[slot] || SLOT_NAME.other }),
+        el("p", { class: "choice", text: choice || "(no choice recorded)" }),
+        swatches(choice)
+      ]),
+      el("div", { class: "rule-foot" }, [
+        el("span", { class: "meta num", text: metaLine(r) }),
+        actionsFor(id, r)
+      ])
+    ]);
+    return li;
+  }
+  function bySlot(a, b) {
+    var ia = SLOTS.indexOf(str(a[1].slot)), ib = SLOTS.indexOf(str(b[1].slot));
+    if (ia < 0) ia = 99; if (ib < 0) ib = 99;
+    return ia - ib || (a[0] < b[0] ? -1 : 1);
+  }
+
+  function renderRules() {
+    if (!S.rules) return;
+    var active = [], retired = [];
+    S.rules.forEach(function (pair) { (str(pair[1].status) === "active" ? active : retired).push(pair); });
+    rulesBody.textContent = "";
+    if (!active.length) {
+      rulesBody.appendChild(el("div", { class: "empty" }, [
+        el("strong", { text: "No saved guidance yet" }),
+        el("p", { text: "The next time Claude interviews you about how a page, slide or figure should look, each choice you make appears here." })
+      ]));
+    }
+    var known = {};
+    SCOPES.forEach(function (s) { known[s[0]] = true; });
+    var groups = SCOPES.slice();
+    if (active.some(function (p) { return !known[str(p[1].scope)]; })) groups.push(["", "Other"]);
+    groups.forEach(function (g) {
+      var rows = active.filter(function (p) {
+        var sc = str(p[1].scope);
+        return g[0] ? sc === g[0] : !known[sc];
+      }).sort(bySlot);
+      if (!rows.length) return;
+      var ul = el("ul", { class: "rules" });
+      rows.forEach(function (p) { ul.appendChild(ruleRow(p[0], p[1])); });
+      rulesBody.appendChild(el("div", { class: "group" }, [el("h3", { text: g[1] }), ul]));
+    });
+    retiredFold.hidden = !retired.length;
+    retiredSummary.textContent = "Not in use (" + retired.length + ")";
+    retiredList.textContent = "";
+    retired.sort(bySlot).forEach(function (p) { retiredList.appendChild(ruleRow(p[0], p[1])); });
+    counts.hidden = false;
+    counts.textContent = active.length + (active.length === 1 ? " rule in use" : " rules in use") +
+      (S.builds ? " · " + S.builds.length + (S.builds.length === 1 ? " build" : " builds") : "");
+  }
+
+  function renderBuilds() {
+    if (!S.builds) return;
+    var open = {};
+    Array.prototype.forEach.call(buildsBody.querySelectorAll("details[open]"), function (d) { open[d.getAttribute("data-id")] = true; });
+    buildsBody.textContent = "";
+    if (!S.builds.length) {
+      buildsBody.appendChild(el("div", { class: "empty" }, [
+        el("strong", { text: "No builds yet" }),
+        el("p", { text: "Each build that used a look interview is listed here with the look it was built to." })
+      ]));
+      return;
+    }
+    var ul = el("ul", { class: "builds" });
+    S.builds.slice(0, 30).forEach(function (pair) {
+      var id = pair[0], b = pair[1];
+      var spec = (b.spec && typeof b.spec === "object") ? b.spec : {};
+      var dl = el("dl", { class: "spec" });
+      SLOTS.forEach(function (slot) {
+        if (!str(spec[slot])) return;
+        dl.appendChild(el("div", null, [el("dt", { text: SLOT_NAME[slot] }), el("dd", { text: spec[slot] })]));
+      });
+      var check = str(b.check);
+      var asked = Array.isArray(b.asked) ? b.asked.filter(function (x) { return typeof x === "string"; }) : [];
+      var facts = [];
+      if (asked.length) facts.push("Asked: " + asked.join(", "));
+      if (Array.isArray(b.from_rules) && b.from_rules.length) facts.push(b.from_rules.length + " from saved guidance");
+      if (b.sample === true) facts.push("samples shown");
+      var d = el("details", { class: "build", "data-id": id }, [
+        el("summary", null, [
+          el("span", { class: "build-what", text: str(b.what) || id }),
+          el("span", { class: "build-meta num", text: [str(b.date), str(b.scope)].filter(Boolean).join(" · ") })
+        ]),
+        el("div", { class: "build-body" }, [
+          dl,
+          facts.length ? el("p", { class: "check", text: facts.join(" · ") }) : null,
+          check ? el("p", { class: "check" + (check === "matched" ? "" : " flag"), text: check === "matched" ? "The render matched this look." : (check === "not rendered" ? "Not checked on a render." : "Check: " + check) }) : null
+        ])
+      ]);
+      if (open[id]) d.open = true;
+      ul.appendChild(el("li", null, [d]));
+    });
+    buildsBody.appendChild(ul);
+  }
+  function render() { renderRules(); renderBuilds(); }
+
+  function unavailable() {
+    [rulesBody, buildsBody].forEach(function (box) { box.textContent = ""; });
+    rulesBody.appendChild(el("div", { class: "empty" }, [
+      el("strong", { text: "Your saved guidance is not available in this view" }),
+      el("p", { text: "This page reads from its own database, which opens only inside Claude while you are signed in. Open the page from your artifacts on claude.ai." })
+    ]));
+  }
+  function pairs(snap) {
+    var out = [];
+    snap.docs.forEach(function (d) { if (d.exists) out.push([d.id, d.data() || {}]); });
+    return out;
+  }
+
+  async function boot() {
+    var use = (window.claude && typeof window.claude.use === "function") ? window.claude.use : null;
+    var db = null, user = null;
+    try { db = use ? await use("db") : null; } catch (e) { db = null; }
+    if (!db) { unavailable(); return; }
+    try { user = await use("user"); } catch (e) { user = null; }
+    try { S.canWrite = user ? await user.can("data.write") : null; } catch (e) { S.canWrite = null; }
+    S.db = db;
+
+    var slow = setTimeout(function () { say("Your saved guidance cannot be reached yet. This page keeps trying."); }, 10000);
+    function landed(snap) { if (!snap.metadata || !snap.metadata.fromCache) { clearTimeout(slow); if (notice.textContent.indexOf("cannot be reached") >= 0) say(""); } }
+    function failed() { clearTimeout(slow); say("The Look Book could not load. Reload the page to try again."); }
+
+    db.collection("rules").onSnapshot(function (snap) { landed(snap); S.rules = pairs(snap); renderRules(); }, failed);
+    db.collection("builds").onSnapshot(function (snap) {
+      landed(snap);
+      S.builds = pairs(snap).sort(function (a, b) {
+        var da = str(a[1].date), dbb = str(b[1].date);
+        return da === dbb ? (a[0] < b[0] ? 1 : -1) : (da < dbb ? 1 : -1);
+      });
+      render();
+    }, failed);
+  }
+  boot();
+})();
+</script>

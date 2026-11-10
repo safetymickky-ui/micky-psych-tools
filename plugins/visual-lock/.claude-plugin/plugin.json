@@ -1,0 +1,16 @@
+{
+  "name": "visual-lock",
+  "version": "0.1.0",
+  "description": "Interviews the user on how a visual build should look before it is built (canvas, layout, density, emphasis, colour, type, graphics, motion): picker questions in words first, one sheet of rendered sample variants only when words cannot settle a choice. Writes a measurable look spec, checks the rendered result against it, and saves each choice to the \"Look Book\" artifact so later builds ask less.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "visual-interview",
+    "look-spec",
+    "design-preferences",
+    "sample-variants",
+    "alignment"
+  ]
+}
