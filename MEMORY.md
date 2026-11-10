@@ -17,7 +17,7 @@ a milestone.
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.8.1   |
-| intent-lock           | 0.4.3   |
+| intent-lock           | 1.0.0   |
 | plugin-creator        | 0.3.1   |
 | vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.1   |
@@ -57,9 +57,11 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   paragraphs, mechanism woven in, sources capped by relevance never count; the two failure
   directions are the unanswered survey and the hollowed answer). Delegates vault writes to
   vault-keeper.
-- **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
-  Ships `intent-lock` (the interview) + `misread-capture` (the compounding misread ledger).
-  Mid-task execution forks route onward to decision-interview.
+- **intent-lock** — pre-build alignment gate. Picker questions on kind of output, use, and depth
+  and breadth in at most 3 rounds, then work; a written lock; a check of the finished work against
+  the lock before delivery; 3–5 lock lines on top of the output. Ships `intent-lock` +
+  `misread-capture`. The ledger is the "Misread Ledger" artifact (collections `checks`, `entries`),
+  written by Claude without asking. Mid-task execution forks route onward to decision-interview.
 - **plugin-creator** — meta-plugin: `/new-plugin` scaffolds, `/refine-plugin` audits/refines,
   `/route` regenerates `ROUTING.md` and routes a request to the owning skill/command. Create and
   refine keep the router in sync automatically.
@@ -212,6 +214,19 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `/learning-map`.
 
 ## Recent milestones
+
+- **2026-11-10** — **intent-lock 1.0.0**, a rewrite from an owner interview (3 picker rounds). The
+  owner's two complaints: the questions miss the point, and the work drifts from a goal that was
+  locked correctly. Decisions: round 1 targets kind / use / depth and breadth; a hard cap of 3
+  rounds; a check of the work against the lock before delivery; lock lines on top of the output
+  (plain sentences, no lead-in labels); one ledger that Claude may write (the July "only the user
+  diagnoses" rule is dropped); the ledger lives on the pinned "Misread Ledger" artifact
+  (slug `2af470bc-0d78-4d63-abe3-0cd473022fca`), seeded with the 3 known entries. Found on the way:
+  ledger writes to the plugin tree never persisted in cloud sessions (the Sep 2026 entry was
+  missing), and an unanswered picker gives Claude no turn, so "silence = stop, then work" could
+  not run. Main SKILL.md 26 KB → 10 KB. Not yet run on a real request. **Differs from the rewrite
+  plan:** H03 (`state/misreads.md` + `ledger.py`) is solved by the artifact instead;
+  `docs/plugin-rewrite/` and `h-coverage.md` were not edited.
 
 - **2026-10-26** — **egm-conductor 0.1.0** added. EGM skills set `disable-model-invocation: true`, so the conductor reads each EGM `SKILL.md` from the install path in `installed_plugins.json` and follows it, substituting EGM's root for `${CLAUDE_PLUGIN_ROOT}`. Status script tested on empty / design-doc / saved-state projects; no full end-to-end EGM run yet.
 

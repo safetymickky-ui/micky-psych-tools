@@ -86,7 +86,11 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   fixed shape); runs intent-lock first to build a bespoke decision brief; five engines
   (PubMed backbone, CT.gov, Open Library, Wikipedia, firecrawl for general-web documents —
   labels, guidelines); delegates vault saving to vault-keeper.
-- **intent-lock** — pre-build alignment gate; interrogate a request to one reading, then build.
+- **intent-lock** — pre-build alignment gate: picker questions on kind of output, use, and depth
+  and breadth in at most 3 rounds, then work; the finished work is checked against the written
+  lock before delivery and 3–5 lock lines sit on top of the output. Drifts, interview errors and
+  corrections are logged to the "Misread Ledger" artifact (database collections `checks` and
+  `entries`), never to plugin files. Two skills (`intent-lock`, `misread-capture`), no commands.
 - **plugin-creator** — meta-plugin: scaffolds new customized plugins into THIS marketplace
   (manifest + skill/command/agent/hooks/mcp-wiring skeleton + catalog entry + validation), and
   refines existing ones. Two skills (`plugin-creator`, `refine-plugin`) + three commands
