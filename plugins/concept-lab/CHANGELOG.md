@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.3.0 — 2026-11-10
+
+Third round of owner feedback: more to do inside each step. He picked three kinds of tap and
+lively motion in a picker.
+
+- **Tap a part of the picture:** every unit and line opens a pop-up with its name, value and
+  what it does at this point, written from the computed model and the reader's progress.
+- **Tap a term or symbol:** dotted terms in the text and every formula symbol open a short
+  definition from one glossary table.
+- **Tap to reveal the calculation:** the number work is hidden until tapped, one line per tap,
+  and the picture follows the reveal.
+- **Lively motion with meaning:** spring-in pop-ups and lines, results that count up, a unit
+  that bumps when it gets its value, a dot that travels once along a line.
+- **verify.mjs** checks every step in each reveal state, opens a term pop-up and a part pop-up
+  per step (opens, has text, on screen, closes on Escape), and exempts inline terms from the
+  44 px rule.
+- Example `examples/backprop.html` rebuilt with all of it.
+
 ## 1.2.0 — 2026-11-10
 
 Second round of owner feedback on the backpropagation page: right track; make the picture and

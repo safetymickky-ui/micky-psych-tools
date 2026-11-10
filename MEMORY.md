@@ -26,7 +26,7 @@ a milestone.
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | code-explainer        | 0.1.0   |
-| concept-lab           | 1.2.0   |
+| concept-lab           | 1.3.0   |
 | decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
 | clinical-minimal      | 0.1.0   |
@@ -212,6 +212,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `/learning-map`.
 
 ## Recent milestones
+
+- **2026-11-10** — **concept-lab 1.3.0**: third feedback round ("a bit more interactivity in each section"). The owner picked in a picker: tap a part of the picture, tap a term or symbol, tap to reveal the calculation (not: nudge a value), and lively motion. Contract gained "Things to tap inside every step" (pop-up rules, glossary table, reveal that the picture follows, four meaningful motions); `verify.mjs` walks every reveal state and tests a term pop-up and a part pop-up per step. Example rebuilt.
 
 - **2026-11-10** — Added **visual-lock 0.1.0** and **session-recap 0.1.0**. The owner's request came through dictation as "interview users for Visual Precision, or Guide Dance"; one picker round settled it: the interview pins down the look of a visual build and saves the choices for reuse; questions in words first, rendered samples only when needed; the session summary is one private artifact page per session, on request only. Tested in the cloud session: `build_recap.py` has 45 unit tests; the recap page, the Look Book page (with a mock db: retire, use again, delete) and the sample sheet were rendered headless at 390 and 1280 px in light and dark with no overflow. **Not yet done:** neither skill has run on a real request, the "Look Book" artifact does not exist yet (the skill creates it at its first save), and the eval cases have not been run.
 

@@ -64,6 +64,15 @@
   .view tspan.sub{font-size:11px}
   .lblbg{fill:var(--panel); pointer-events:none}
   .off{opacity:0; visibility:hidden}
+  .part{cursor:pointer; outline:none}
+  .part:focus-visible .node, .part:focus-visible .edge{stroke:var(--ink)}
+  .asked .node, .asked .edge{stroke:var(--ink) !important}
+  .hit{stroke:transparent; stroke-width:24; fill:none; pointer-events:stroke}
+  .bump{animation:bump .55s cubic-bezier(.34,1.56,.64,1)}
+  .bump, .node-g{transform-box:fill-box; transform-origin:50% 50%}
+  @keyframes bump{40%{transform:scale(1.18)}}
+  .runner{fill:var(--ink); stroke:var(--panel); stroke-width:2; pointer-events:none}
+  .runner.back{fill:var(--update)}
 
   /* the step card */
   #status{background:var(--panel); border-radius:20px; padding:13px 16px 14px; min-height:272px;
@@ -83,6 +92,24 @@
   .nums{font-size:14.5px; color:var(--muted); font-variant-numeric:tabular-nums; line-height:1.5}
   .mx{color:var(--data)} .mw{color:var(--weight)} .md{color:var(--update)} .mr{color:var(--focus)} .mn{color:var(--ok)}
   .nums b.mr, .nums b.md, .nums b.mn{font-weight:700}
+  button.term{display:inline; padding:0; margin:0; background:none; color:inherit; font:inherit; line-height:inherit;
+    border-bottom:1.5px dotted var(--muted); border-radius:0}
+  button.term:active{color:var(--focus)}
+  math [data-term]{cursor:pointer}
+  .nums .line{display:block; transform-origin:0 50%}
+  .nums .line.pop{animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes popIn{from{opacity:0; transform:scale(.7) translateY(6px)}}
+  #reveal{display:flex; align-items:center; gap:8px; width:100%; min-height:44px; margin:-11px 0; padding:0;
+    background:none; color:var(--focus); font-size:14.5px; font-weight:600; text-align:left}
+  #reveal::before{content:""; width:9px; height:9px; border-radius:50%; background:var(--focus); animation:breathe 1.4s ease-in-out infinite}
+  #pop{position:fixed; z-index:20; width:max-content; max-width:min(290px, calc(100vw - 24px)); background:#40352f; color:var(--ink);
+    border-radius:16px; padding:11px 14px 12px; font-size:14.5px; line-height:1.4;
+    box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 0 1.5px var(--line)}
+  #pop[hidden]{display:none}
+  #pop.show{animation:spring .4s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes spring{from{opacity:0; transform:scale(.55)}}
+  #pop strong{display:block; font:600 16px/1.25 var(--serif); margin-bottom:3px}
+  #pop .v{color:var(--focus); font-weight:700}
   .hint{color:var(--muted); font-size:14px}
   .src{color:var(--faint); font-size:13px}
   .cases{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
@@ -115,6 +142,7 @@
 
   <section id="status" aria-live="polite"></section>
 </div>
+<div id="pop" role="status" hidden></div>
 <nav class="bar"><div>
   <button id="prev">Back</button>
   <button id="next"></button>
@@ -131,7 +159,8 @@
   const sig = (z) => 1 / (1 + Math.exp(-z));
 
   // ---------- state: the step, and the inputs of the current case ----------
-  const S = { k:0, x1:1, y:1, sc:1, preset:"normal", m:null };
+  const S = { k:0, x1:1, y:1, sc:1, preset:"normal", m:null, done:{} };   // done[k] = lines of step k's calculation already revealed
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // ---------- the model: the whole pass is computed here ----------
   function forward(W1, w2, x, y){
@@ -187,92 +216,128 @@
   const f3 = (v) => v === 0 ? "0" : (Math.abs(v) < 0.0005 ? neg(v.toExponential(0)) : neg(v.toFixed(3)));
   const par = (s) => s.startsWith("−") ? `(${s})` : s;                 // (−0.40) inside a product
   const c = (cls, s) => `<span class="${cls}">${s}</span>`;             // a coloured number
-  const res = (cls, s) => `<b class="${cls}">${s}</b>`;                 // the result of a line
+  const FMT = { f2, f3 };
+  const res = (cls, v, f = "f3") => `<b class="${cls}" data-v="${v}" data-f="${f}">${FMT[f](v)}</b>`;   // the result of a line; it counts up when revealed
+  const T = (key, text) => `<button class="term" data-term="${key}">${text}</button>`;                   // a tappable term
   // MathML pieces. Colours: x and unit values = sage, weights = rose, blame and gradients = terracotta.
-  const mi = (cls, ch) => `<mi class="${cls}">${ch}</mi>`;
-  const sub = (cls, ch, s) => `<msub><mi class="${cls}">${ch}</mi><mn class="${cls}">${s}</mn></msub>`;
+  // Every symbol carries data-term, so tapping it opens its definition.
+  const TERM_OF = { z:"sum", "σ":"sigmoid", x:"input", w:"weight", h:"hidden", "δ":"delta", g:"gradient", L:"loss", y:"target", "η":"eta" };
+  const dt = (ch) => TERM_OF[ch] ? ` data-term="${TERM_OF[ch]}"` : "";
+  const mi = (cls, ch) => `<mi class="${cls}"${dt(ch)}>${ch}</mi>`;
+  const sub = (cls, ch, s) => `<msub${dt(ch)}><mi class="${cls}">${ch}</mi><mn class="${cls}">${s}</mn></msub>`;
   const mo = (ch) => `<mo>${ch}</mo>`;
-  const yhat = `<mover accent="true"><mi class="mx">y</mi><mo>^</mo></mover>`;
+  const yhat = `<mover accent="true" data-term="answer"><mi class="mx">y</mi><mo>^</mo></mover>`;
   const gap = `<mspace width="1em"></mspace>`;
   const M = (...parts) => `<math displaystyle="true">${parts.join("")}</math>`;
-  const slopeOf = (arg) => `<msup><mi>σ</mi><mo>′</mo></msup>${mo("(")}${arg}${mo(")")}`;
+  const slopeOf = (arg) => `<mrow data-term="slope"><msup><mi>σ</mi><mo>′</mo></msup>${mo("(")}${arg}${mo(")")}</mrow>`;
+
+  // ---------- short definitions for the tappable terms and symbols ----------
+  const GLOSS = {
+    input:    ["Input (x)", "A number given to the network for this case. It stays fixed during the pass."],
+    weight:   ["Weight (w)", "A number on a line. It scales the signal that passes along the line. Training changes the weights and nothing else."],
+    sum:      ["Sum (z)", "A unit's total input: each incoming value times its weight, added up. It can be any number, negative or large."],
+    sigmoid:  ["Squash, or sigmoid (σ)", "σ(z) = 1 / (1 + e⁻ᶻ). It turns any number into one between 0 and 1: very negative gives almost 0, zero gives 0.5, very positive gives almost 1."],
+    hidden:   ["Hidden value (h)", "The value of a hidden unit after the squash. It is an input for the next layer."],
+    answer:   ["Answer (ŷ)", "The value of the output unit: what the network says for this case."],
+    forward:  ["Forward pass", "Working out every unit's value from the inputs to the output, left to right."],
+    target:   ["Target (y)", "The correct answer for this case. It comes from the training data."],
+    loss:     ["Loss (L)", "One number for how wrong the answer is. Here it is half the squared gap between answer and target. Training tries to make it small."],
+    delta:    ["Blame signal (δ)", "For one unit: how much the loss changes when that unit's sum z grows a little. A negative δ means a larger sum would lower the loss."],
+    slope:    ["Slope of the squash (σ′)", "How fast a unit's value changes when its sum changes. For the sigmoid it is value × (1 − value): largest (0.25) at 0.5, and almost 0 when the value is near 0 or 1."],
+    gradient: ["Gradient (g)", "For one weight: how much the loss changes when that weight grows a little. Its sign gives the direction; its size says how much this weight matters right now."],
+    partial:  ["∂L/∂w", "Calculus notation for the same gradient: the change in L for a small change in w, with everything else held fixed."],
+    chain:    ["Chain rule", "When A changes B and B changes C, the effect of A on C is the two effects multiplied. Backpropagation uses it along every path from a weight to the loss."],
+    backward: ["Backward pass", "Passing blame from the output back toward the inputs, right to left, to get the gradient of every weight."],
+    eta:      ["Learning rate (η)", "The step size of the update. Too small and learning is slow. Too large and the loss can jump up instead of going down."],
+  };
 
   // ---------- the steps ----------
   // focus: glows.  lit: full strength.  everything else is dimmed.
-  // label: the one number each line carries now [kind, subscript].  flow: lines with moving dots, and their direction.
+  // nums: the lines of the calculation; the reader reveals them one tap at a time (r = lines revealed so far).
+  // label(r): the one number each line of the picture carries now [kind, subscript].
+  // gives: the unit whose value appears when the calculation is fully revealed.
   const E1 = ["e00","e01"], E2 = ["e10","e11"], EO = ["eo0","eo1"];
   const STEPS = [
-    { phase:0, focus:["x1","x2"], lit:[], label:{},
+    { phase:0, focus:["x1","x2"], lit:[], label:() => ({}),
       title:"The inputs",
       body:() => `Two numbers go into the network. Think of them as two measurements of one case, like two test scores. Each circle fills up to show its value, from 0 (empty) to 1 (full).`,
-      hint:`Each card explains the glowing part of the picture. Tap Next, or swipe the card.` },
-    { phase:0, focus:E1, lit:["x1","x2","h1"], label:{ e00:["w","1"], e01:["w","2"] },
+      hint:`Each card explains the glowing part. Tap a dotted word, a symbol, or any part of the picture to ask what it is.` },
+    { phase:0, focus:E1, lit:["x1","x2","h1"], label:() => ({ e00:["w","1"], e01:["w","2"] }),
       title:"The weights",
-      body:() => `Every line has a weight, <b class="mw">w</b>. A positive weight passes a signal on; a negative weight turns it against. A thicker line is a stronger weight.`,
+      body:() => `Every line has a ${T("weight","weight")}, <b class="mw">w</b>. A positive weight passes a signal on; a negative weight turns it against. A thicker line is a stronger weight.`,
       hint:`Learning means changing these numbers. Backpropagation works out how.` },
-    { phase:1, focus:["h1"], lit:["x1","x2",...E1], label:{ e00:["w","1"], e01:["w","2"] }, flow:[E1,"fwd"], fig:(m) => ({ z:m.zh[0] }),
+    { phase:1, focus:["h1"], lit:["x1","x2",...E1], label:() => ({ e00:["w","1"], e01:["w","2"] }), flow:[E1,"fwd"], travel:1, gives:"h1",
+      fig:(m) => ({ z:m.zh[0] }),
       title:"Hidden unit h1",
-      body:() => `h1 multiplies each input by the weight on its line and adds the results. The sum z can be any size, so the unit squashes it into 0–1 with the S-shaped curve σ (sigmoid).`,
+      body:() => `h1 multiplies each input by the weight on its line and adds the results. The ${T("sum","sum z")} can be any size, so the unit squashes it into 0–1 with the S-shaped curve σ (${T("sigmoid","sigmoid")}).`,
       math:() => M(mi("","z"), mo("="), sub("mx","x","1"), mo("·"), sub("mw","w","1"), mo("+"), sub("mx","x","2"), mo("·"), sub("mw","w","2"), gap, sub("mr","h","1"), mo("="), mi("","σ"), mo("("), mi("","z"), mo(")")),
-      nums:(m) => [`${c("mx",f2(m.x[0]))} × ${c("mw",par(f2(m.W1[0][0])))} + ${c("mx",f2(m.x[1]))} × ${c("mw",par(f2(m.W1[0][1])))} = ${f2(m.zh[0])}`, `σ(${f2(m.zh[0])}) = ${res("mr",f3(m.h[0]))}`] },
-    { phase:1, focus:["h2"], lit:["x1","x2",...E2], label:{ e10:["w","1"], e11:["w","2"] }, flow:[E2,"fwd"], fig:(m) => ({ z:m.zh[1] }),
+      nums:(m) => [`${c("mx",f2(m.x[0]))} × ${c("mw",par(f2(m.W1[0][0])))} + ${c("mx",f2(m.x[1]))} × ${c("mw",par(f2(m.W1[0][1])))} = ${res("", m.zh[0], "f2")}`, `σ(${f2(m.zh[0])}) = ${res("mr", m.h[0])}`] },
+    { phase:1, focus:["h2"], lit:["x1","x2",...E2], label:() => ({ e10:["w","1"], e11:["w","2"] }), flow:[E2,"fwd"], travel:1, gives:"h2",
+      fig:(m) => ({ z:m.zh[1] }),
       title:"Hidden unit h2",
       body:(m) => `h2 does the same job with its own two weights, so it reacts to a different mix of the inputs.` + (m.slopeH[1] < 0.02 ? ` Its sum is large, so the squash pushes it almost to 1, where the curve is flat.` : ``),
       math:() => M(mi("","z"), mo("="), sub("mx","x","1"), mo("·"), sub("mw","w","1"), mo("+"), sub("mx","x","2"), mo("·"), sub("mw","w","2"), gap, sub("mr","h","2"), mo("="), mi("","σ"), mo("("), mi("","z"), mo(")")),
-      nums:(m) => [`${c("mx",f2(m.x[0]))} × ${c("mw",par(f2(m.W1[1][0])))} + ${c("mx",f2(m.x[1]))} × ${c("mw",par(f2(m.W1[1][1])))} = ${f2(m.zh[1])}`, `σ(${f2(m.zh[1])}) = ${res("mr",f3(m.h[1]))}`] },
-    { phase:1, focus:["o"], lit:["h1","h2",...EO], label:{ eo0:["w","1"], eo1:["w","2"] }, flow:[EO,"fwd"], fig:(m) => ({ z:m.zo }),
+      nums:(m) => [`${c("mx",f2(m.x[0]))} × ${c("mw",par(f2(m.W1[1][0])))} + ${c("mx",f2(m.x[1]))} × ${c("mw",par(f2(m.W1[1][1])))} = ${res("", m.zh[1], "f2")}`, `σ(${f2(m.zh[1])}) = ${res("mr", m.h[1])}`] },
+    { phase:1, focus:["o"], lit:["h1","h2",...EO], label:() => ({ eo0:["w","1"], eo1:["w","2"] }), flow:[EO,"fwd"], travel:1, gives:"o",
+      fig:(m) => ({ z:m.zo }),
       title:"The output",
-      body:() => `The output unit treats h1 and h2 as its inputs and does the same again. Its value ŷ is the network's answer. Values moving left to right like this are the forward pass.`,
+      body:() => `The output unit treats h1 and h2 as its inputs and does the same again. Its value ŷ is the network's ${T("answer","answer")}. Values moving left to right like this are the ${T("forward","forward pass")}.`,
       math:() => M(mi("","z"), mo("="), sub("mx","h","1"), mo("·"), sub("mw","w","1"), mo("+"), sub("mx","h","2"), mo("·"), sub("mw","w","2"), gap, yhat.replace("mx","mr"), mo("="), mi("","σ"), mo("("), mi("","z"), mo(")")),
-      nums:(m) => [`${c("mx",f3(m.h[0]))} × ${c("mw",par(f2(m.w2[0])))} + ${c("mx",f3(m.h[1]))} × ${c("mw",par(f2(m.w2[1])))} = ${f2(m.zo)}`, `σ(${f2(m.zo)}) = ${res("mr",f3(m.yh))}`] },
-    { phase:2, focus:["o"], lit:[], label:{}, aim:true,
+      nums:(m) => [`${c("mx",f3(m.h[0]))} × ${c("mw",par(f2(m.w2[0])))} + ${c("mx",f3(m.h[1]))} × ${c("mw",par(f2(m.w2[1])))} = ${res("", m.zo, "f2")}`, `σ(${f2(m.zo)}) = ${res("mr", m.yh)}`] },
+    { phase:2, focus:["o"], lit:[], label:() => ({}), aim:true, lossAt:1,
       title:"The error",
       body:(m) => Math.abs(m.yh - m.y) < 1e-9
-        ? `The answer already equals the target y, so the loss L is 0. Watch what that does to the backward pass.`
-        : `The answer should have been the target y. The loss L turns the gap into one number: 0 is perfect, larger is worse. Training wants L small, so we now ask which weights caused it.`,
+        ? `The answer already equals the ${T("target","target y")}, so the ${T("loss","loss L")} is 0. Watch what that does to the backward pass.`
+        : `The answer should have been the ${T("target","target y")}. The ${T("loss","loss L")} turns the gap into one number: 0 is perfect, larger is worse. Training wants L small, so we now ask which weights caused it.`,
       math:() => M(mi("mr","L"), mo("="), `<mfrac><mn>1</mn><mn>2</mn></mfrac>`, `<msup><mrow>${mo("(")}${yhat}${mo("−")}${mi("","y")}${mo(")")}</mrow><mn>2</mn></msup>`),
-      nums:(m) => [`½ × (${c("mx",f3(m.yh))} − ${f2(m.y)})² = ${res("mr",f3(m.L))}`] },
-    { phase:2, focus:["o"], lit:[], label:{}, aim:true, delta:["o"], fig:(m) => ({ z:m.zo, slope:m.slopeO }),
+      nums:(m) => [`½ × (${c("mx",f3(m.yh))} − ${f2(m.y)})² = ${res("mr", m.L)}`] },
+    { phase:2, focus:["o"], lit:[], label:() => ({}), aim:true, delta:(r) => r >= 2 ? ["o"] : [],
+      fig:(m, r) => ({ z:m.zo, slope: r >= 1 ? m.slopeO : null }),
       title:"Blame at the output",
       body:(m) => Math.abs(m.yh - m.y) < 1e-9
-        ? `δ (delta) is the blame signal. The gap is 0, so the blame is 0, and every step after this gives 0.`
-        : `<b class="md">δ</b> (delta) is the blame signal: how much the loss changes if this unit's sum z moves a little. It is the gap times the slope of the squash curve, σ′. A flat curve gives a small δ.`,
+        ? `δ (delta) is the ${T("delta","blame signal")}. The gap is 0, so the blame is 0, and every step after this gives 0.`
+        : `<b class="md">δ</b> (delta) is the ${T("delta","blame signal")}: how much the loss changes if this unit's sum z moves a little. It is the gap times the ${T("slope","slope")} of the squash curve, σ′. A flat curve gives a small δ.`,
       math:() => M(mi("md","δ"), mo("="), mo("("), yhat, mo("−"), mi("","y"), mo(")"), mo("·"), slopeOf(mi("","z"))),
-      nums:(m) => [`slope = ${c("mx",f3(m.yh))} × (1 − ${c("mx",f3(m.yh))}) = ${f3(m.slopeO)}`, `(${c("mx",f3(m.yh))} − ${f2(m.y)}) × ${f3(m.slopeO)} = ${res("md",f3(m.dO))}`] },
-    { phase:2, focus:EO, lit:["h1","h2","o"], label:{ eo0:["g","1"], eo1:["g","2"] }, delta:["o"],
+      nums:(m) => [`slope = ${c("mx",f3(m.yh))} × (1 − ${c("mx",f3(m.yh))}) = ${res("", m.slopeO)}`, `(${c("mx",f3(m.yh))} − ${f2(m.y)}) × ${f3(m.slopeO)} = ${res("md", m.dO)}`] },
+    { phase:2, focus:EO, lit:["h1","h2","o"], label:(r) => ({ eo0:[r >= 1 ? "g" : "w","1"], eo1:[r >= 2 ? "g" : "w","2"] }), delta:() => ["o"],
       title:"Gradient of a weight",
-      body:() => `A weight's gradient <b class="md">g</b> says how the loss changes if that weight grows. One rule gives it: the blame at the end of the line times the value at its start. In calculus this is ∂L/∂w.`,
-      math:() => M(sub("md","g","1"), mo("="), `<mfrac><mrow>${mo("∂")}${mi("","L")}</mrow><mrow>${mo("∂")}${sub("mw","w","1")}</mrow></mfrac>`, mo("="), mi("md","δ"), mo("·"), sub("mx","h","1")),
-      nums:(m) => [`g₁ = ${c("md",par(f3(m.dO)))} × ${c("mx",f3(m.h[0]))} = ${res("md",f3(m.g2[0]))}`, `g₂ = ${c("md",par(f3(m.dO)))} × ${c("mx",f3(m.h[1]))} = ${res("md",f3(m.g2[1]))}`] },
-    { phase:2, focus:["h1","h2"], lit:["o",...EO], label:{ eo0:["w","1"] }, delta:["o","h1","h2"], flow:[EO,"back"], fig:(m) => ({ z:m.zh[0], slope:m.slopeH[0] }),
+      body:() => `A weight's ${T("gradient","gradient")} <b class="md">g</b> says how the loss changes if that weight grows. One rule gives it: the blame at the end of the line times the value at its start. In calculus this is ${T("partial","∂L/∂w")}.`,
+      math:() => M(sub("md","g","1"), mo("="), `<mfrac data-term="partial"><mrow>${mo("∂")}<mi>L</mi></mrow><mrow>${mo("∂")}<msub><mi class="mw">w</mi><mn class="mw">1</mn></msub></mrow></mfrac>`, mo("="), mi("md","δ"), mo("·"), sub("mx","h","1")),
+      nums:(m) => [`g₁ = ${c("md",par(f3(m.dO)))} × ${c("mx",f3(m.h[0]))} = ${res("md", m.g2[0])}`, `g₂ = ${c("md",par(f3(m.dO)))} × ${c("mx",f3(m.h[1]))} = ${res("md", m.g2[1])}`] },
+    { phase:2, focus:["h1","h2"], lit:["o",...EO], label:() => ({ eo0:["w","1"] }), delta:(r) => r >= 2 ? ["o","h1","h2"] : ["o"], flow:[EO,"back"], travel:2,
+      fig:(m, r) => ({ z:m.zh[0], slope: r >= 1 ? m.slopeH[0] : null }),
       title:"Blame travels back",
       body:(m) => { const j = m.slopeH.findIndex(s => s < 0.02);
-        return `Each hidden unit gets a share of the output's blame: the blame, times the weight of the line between them, times the slope of its own squash. This is the chain rule.` +
+        return `Each hidden unit gets a share of the output's blame: the blame, times the weight of the line between them, times the slope of its own squash. This is the ${T("chain","chain rule")}.` +
           (j >= 0 ? ` h${j+1} is almost ${m.h[j] > 0.5 ? 1 : 0}, where the curve is flat, so almost no blame gets through.` : ``); },
       math:() => M(sub("md","δ","1"), mo("="), mi("md","δ"), mo("·"), sub("mw","w","1"), mo("·"), slopeOf(sub("","z","1"))),
-      nums:(m) => [`slope = ${c("mx",f3(m.h[0]))} × (1 − ${c("mx",f3(m.h[0]))}) = ${f3(m.slopeH[0])}`, `${c("md",par(f3(m.dO)))} × ${c("mw",par(f2(m.w2[0])))} × ${f3(m.slopeH[0])} = ${res("md",f3(m.dH[0]))}`] },
-    { phase:2, focus:E1, lit:["x1","x2","h1"], label:{ e00:["g","1"], e01:["g","2"] }, delta:["h1"],
+      nums:(m) => [`slope = ${c("mx",f3(m.h[0]))} × (1 − ${c("mx",f3(m.h[0]))}) = ${res("", m.slopeH[0])}`, `${c("md",par(f3(m.dO)))} × ${c("mw",par(f2(m.w2[0])))} × ${f3(m.slopeH[0])} = ${res("md", m.dH[0])}`] },
+    { phase:2, focus:E1, lit:["x1","x2","h1"], label:(r) => ({ e00:[r >= 1 ? "g" : "w","1"], e01:[r >= 2 ? "g" : "w","2"] }), delta:() => ["h1"],
       title:"The same rule again",
       body:(m) => `Now h1 has its own blame δ₁, so the gradient rule works for the lines that end at h1: blame at the end times value at the start.` + (m.x[0] === 0 ? ` x1 is 0, so its line gets gradient 0: an input that sent nothing gets no blame.` : ` Deeper networks need no new idea; these two rules repeat layer by layer.`),
       math:() => M(sub("md","g","1"), mo("="), sub("md","δ","1"), mo("·"), sub("mx","x","1"), gap, sub("md","g","2"), mo("="), sub("md","δ","1"), mo("·"), sub("mx","x","2")),
-      nums:(m) => [`g₁ = ${c("md",par(f3(m.dH[0])))} × ${c("mx",f2(m.x[0]))} = ${res("md",f3(m.g1[0][0]))}`, `g₂ = ${c("md",par(f3(m.dH[0])))} × ${c("mx",f2(m.x[1]))} = ${res("md",f3(m.g1[0][1]))}`] },
-    { phase:2, focus:E2, lit:["x1","x2","h2"], label:{ e10:["g","1"], e11:["g","2"] }, delta:["h2"],
+      nums:(m) => [`g₁ = ${c("md",par(f3(m.dH[0])))} × ${c("mx",f2(m.x[0]))} = ${res("md", m.g1[0][0])}`, `g₂ = ${c("md",par(f3(m.dH[0])))} × ${c("mx",f2(m.x[1]))} = ${res("md", m.g1[0][1])}`] },
+    { phase:2, focus:E2, lit:["x1","x2","h2"], label:(r) => ({ e10:[r >= 1 ? "g" : "w","1"], e11:[r >= 2 ? "g" : "w","2"] }), delta:() => ["h2"],
       title:"And for h2",
-      body:() => `The same rule for the two lines that end at h2. Now every weight has its gradient. That is all backpropagation computes: one forward pass, then one backward pass.`,
+      body:() => `The same rule for the two lines that end at h2. Now every weight has its gradient. That is all backpropagation computes: one forward pass, then one ${T("backward","backward pass")}.`,
       math:() => M(sub("md","g","1"), mo("="), sub("md","δ","2"), mo("·"), sub("mx","x","1"), gap, sub("md","g","2"), mo("="), sub("md","δ","2"), mo("·"), sub("mx","x","2")),
-      nums:(m) => [`g₁ = ${c("md",par(f3(m.dH[1])))} × ${c("mx",f2(m.x[0]))} = ${res("md",f3(m.g1[1][0]))}`, `g₂ = ${c("md",par(f3(m.dH[1])))} × ${c("mx",f2(m.x[1]))} = ${res("md",f3(m.g1[1][1]))}`] },
-    { phase:3, focus:[...E1,...E2,...EO], lit:[], label:{ e00:["wn"], e01:["wn"], e10:["wn"], e11:["wn"], eo0:["wn"], eo1:["wn"] },
+      nums:(m) => [`g₁ = ${c("md",par(f3(m.dH[1])))} × ${c("mx",f2(m.x[0]))} = ${res("md", m.g1[1][0])}`, `g₂ = ${c("md",par(f3(m.dH[1])))} × ${c("mx",f2(m.x[1]))} = ${res("md", m.g1[1][1])}`] },
+    { phase:3, focus:[...E1,...E2,...EO], lit:[], label:(r) => Object.fromEntries([...E1,...E2,...EO].map(id => [id, [r >= 1 ? "wn" : "w"]])),
       title:"The update",
-      body:(m) => m.flat ? `Every gradient is 0, so no weight moves.` : `Each weight takes a small step against its gradient, because the gradient points toward a larger loss. The learning rate η (eta) sets the step size; here η = 0.5. The green numbers are the new weights.`,
+      body:(m) => m.flat ? `Every gradient is 0, so no weight moves.` : `Each weight takes a small step against its gradient, because the gradient points toward a larger loss. The ${T("eta","learning rate η")} sets the step size; here η = 0.5. The new weights appear in green.`,
       math:() => M(`<msub>${mi("mn","w")}<mtext class="mn">new</mtext></msub>`, mo("="), mi("mw","w"), mo("−"), mi("","η"), mo("·"), mi("md","g")),
-      nums:(m) => [`${c("mw",f2(m.w2[0]))} − 0.5 × ${c("md",par(f3(m.g2[0])))} = ${res("mn",f3(m.w2n[0]))}  (h1 → ŷ)`] },
-    { phase:3, focus:["o"], lit:[], label:{}, aim:true, after:true, cases:true,
+      nums:(m) => [`${c("mw",f2(m.w2[0]))} − 0.5 × ${c("md",par(f3(m.g2[0])))} = ${res("mn", m.w2n[0])}  (h1 → ŷ)`] },
+    { phase:3, focus:["o"], lit:[], label:() => ({}), aim:true, after:true, cases:true,
       title:"One pass, done",
       body:(m) => m.flat ? `The loss stays at ${f3(m.L)}. Nothing was wrong, so nothing changed.`
                          : `With the new weights the loss falls from ${f3(m.L)} to <b class="mr">${f3(m.Ln)}</b>. Training repeats this pass thousands of times, on many cases.` },
   ];
   const LAST = STEPS.length - 1;
   const PHASES = ["Parts", "Forward", "Backward", "Update"];
+  const lines = (k) => STEPS[k].nums ? STEPS[k].nums(S.m).length : 0;
+  const shown = (k) => k < S.k ? lines(k) : k > S.k ? 0 : Math.min(lines(k), S.done[k] || 0);   // lines of step k revealed so far
+  const reached = (k, need) => shown(k) >= need && (k < S.k || (k === S.k));                     // has the reader seen line `need` of step k?
+  const STEP_OF = { h1:2, h2:3, o:4 };                                                           // the step that gives each unit its value
 
   // ---------- the picture: built once, then only restyled, so changes animate ----------
   const R = 24;
@@ -280,8 +345,21 @@
   const EDGES = { e00:["x1","h1",122,60], e01:["x2","h1",146,110], e10:["x1","h2",146,144], e11:["x2","h2",122,201],
                   eo0:["h1","o",268,84], eo1:["h2","o",260,176] };        // from, to, label x, label y
   const DELTA_AT = { o:[346,174,"middle",""], h1:[226,44,"start","1"], h2:[226,222,"start","2"] };
+  const NAME = { x1:"x₁", x2:"x₂", h1:"h₁", h2:"h₂", o:"ŷ" };
   const el = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); if(text != null) e.textContent = text; return e; };
   const V = { edge:{}, node:{}, delta:{} };
+
+  function tappable(g, id, label){                          // a part of the picture that answers "what is this?"
+    g.dataset.part = id; g.classList.add("part");
+    g.setAttribute("role", "button"); g.setAttribute("tabindex", "0"); g.setAttribute("aria-label", label);
+    // the pop-up opens beside the part, never on top of it: at the tap point for a line, at the circle for a unit
+    const where = (e) => { const c = g.querySelector(".node"); if(c) return c.getBoundingClientRect();
+      const b = g.getBoundingClientRect(), x = e && e.clientX ? e.clientX : b.left + b.width/2, y = e && e.clientY ? e.clientY : b.top + b.height/2;
+      return { left:x - 12, right:x + 12, top:y - 12, bottom:y + 12, width:24, height:24 }; };
+    const ask = (e) => { openPop(partInfo(id), where(e), g); };
+    g.addEventListener("click", (e) => { e.stopPropagation(); ask(e); });
+    g.addEventListener("keydown", (e) => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); e.stopPropagation(); ask(null); } });
+  }
 
   function build(){
     const svg = $("#view");
@@ -296,37 +374,43 @@
     for(const id in EDGES){
       const [a, b] = EDGES[id], [x1,y1] = P[a], [x2,y2] = P[b];
       const len = Math.hypot(x2-x1, y2-y1), ux = (x2-x1)/len, uy = (y2-y1)/len;
-      const g = el("g", {});
+      const g = el("g", {}), wrap = el("g", {});
       const line = (cls) => el("line", { class:cls, x1, y1, x2, y2 });
-      const glow = line("glow"), edge = line("edge"), flow = el("line", { class:"flow" });
-      g.append(glow, edge, flow); svg.append(g);
-      V.edge[id] = { g, edge, flow, ends:[[x1+ux*(R+7), y1+uy*(R+7)], [x2-ux*(R+9), y2-uy*(R+9)]] };
+      const edge = line("edge"), flow = el("line", { class:"flow" });
+      wrap.append(line("glow"), edge, flow); g.append(line("hit"), wrap); svg.append(g);
+      tappable(g, id, `The weight on the line from ${a} to ${b === "o" ? "the output" : b}`);
+      V.edge[id] = { g:wrap, edge, flow, ends:[[x1+ux*(R+7), y1+uy*(R+7)], [x2-ux*(R+9), y2-uy*(R+9)]], full:[[x1,y1],[x2,y2]] };
     }
     for(const id in EDGES){
       const [, , lx, ly] = EDGES[id];
       const bg = el("rect", { class:"lblbg off", rx:8 }), t = el("text", { class:"off", x:lx, y:ly, "text-anchor":"middle" });
       const sym = el("tspan", {}), sb = el("tspan", { class:"sub", dy:4 }), val = el("tspan", { dy:-4 });
       t.append(sym, sb, val); svg.append(bg, t);
+      t.addEventListener("click", (e) => { e.stopPropagation(); openPop(partInfo(id), t.getBoundingClientRect()); });
       Object.assign(V.edge[id], { bg, t, sym, sb, val });
     }
     for(const id in P){
-      const [x, y] = P[id], input = id[0] === "x", g = el("g", {});
+      const [x, y] = P[id], input = id[0] === "x", g = el("g", {}), wrap = el("g", { class:"node-g" });
       const halo = el("circle", { class:"halo", cx:x, cy:y, r:R+8 });
       const node = el("circle", { class:"node" + (input ? " in" : ""), cx:x, cy:y, r:R });
       const level = el("rect", { class:"level" + (input ? " in" : ""), x:x-R, y:y-R+2, width:2*R, height:2*R-4, "clip-path":`url(#clip-${id})` });
       const name = el("text", { class:"name", x, y:y-R-9, "text-anchor":"middle" }, id === "o" ? "ŷ" : id);
       const val = el("text", { class:"val", x, y:y+5, "text-anchor":"middle" });
-      g.append(halo, node, level, name, val); svg.append(g);
-      V.node[id] = { g, node, level, val };
+      wrap.append(halo, node, level, name, val); g.append(wrap); svg.append(g);
+      tappable(g, id, id === "o" ? "The output unit" : input ? `Input ${id}` : `Hidden unit ${id}`);
+      V.node[id] = { g:wrap, node, level, val, known:null };
     }
     for(const id in DELTA_AT){
       const [x, y, anchor, s] = DELTA_AT[id], t = el("text", { class:"d off", x, y, "text-anchor":anchor });
       const val = el("tspan", { dy: s ? -4 : 0 });
       t.append(el("tspan", {}, "δ"), ...(s ? [el("tspan", { class:"sub", dy:4 }, s)] : []), val);
+      t.addEventListener("click", (e) => { e.stopPropagation(); openPop(GLOSS.delta, t.getBoundingClientRect()); });
       svg.append(t); V.delta[id] = { t, val };
     }
     V.target = el("text", { class:"aim off", x:344, y:44, "text-anchor":"middle" });
     V.loss = el("text", { class:"val off", x:344, y:64, "text-anchor":"middle" });
+    V.target.addEventListener("click", (e) => { e.stopPropagation(); openPop(GLOSS.target, V.target.getBoundingClientRect()); });
+    V.loss.addEventListener("click", (e) => { e.stopPropagation(); openPop(GLOSS.loss, V.loss.getBoundingClientRect()); });
     svg.append(V.target, V.loss);
     for(const [x, s] of [[50,"inputs"],[196,"hidden units"],[332,"output"]]) svg.append(el("text", { class:"cap", x, y:243, "text-anchor":"middle" }, s));
 
@@ -337,14 +421,39 @@
 
   const edgeValue = (id, kind, m) => { const out = id[1] === "o", j = out ? +id[2] : +id[1], i = +id[2];
     return kind === "w" ? (out ? m.w2[j] : m.W1[j][i]) : kind === "g" ? (out ? m.g2[j] : m.g1[j][i]) : (out ? m.w2n[j] : m.W1n[j][i]); };
+  // what the reader has been shown so far
+  const nodeKnown = (id) => id[0] === "x" || shown(STEP_OF[id]) >= lines(STEP_OF[id]) && S.k >= STEP_OF[id];
+  const gradKnown = (id) => id[1] === "o" ? reached(7, +id[2] + 1) && S.k >= 7 : id[1] === "0" ? reached(9, +id[2] + 1) && S.k >= 9 : reached(10, +id[2] + 1) && S.k >= 10;
+  const deltaKnown = (id) => id === "o" ? reached(6, 2) && S.k >= 6 : reached(8, 2) && S.k >= 8;
+  const updated = () => reached(11, 1) && S.k >= 11;
+
+  // a number that counts up to its value (set at once under reduced motion)
+  function countUp(node, to, fmt, lead = ""){
+    const done = () => { node.textContent = lead + fmt(to); };
+    if(REDUCED || !Number.isFinite(to)) return done();
+    const t0 = performance.now(), token = node.__c = {};
+    const tick = (t) => { if(node.__c !== token) return; const u = Math.min(1, (t - t0)/600), e = 1 - Math.pow(1 - u, 3);
+      if(u < 1){ node.textContent = lead + fmt(to*e); requestAnimationFrame(tick); } else done(); };
+    requestAnimationFrame(tick);
+  }
+  // a dot that travels along a line once: a value passed forward, or blame passed back
+  function travel(ids, dir){
+    if(REDUCED) return;
+    for(const id of ids){
+      const [a, b] = dir === "back" ? [V.edge[id].full[1], V.edge[id].full[0]] : V.edge[id].full;
+      const dot = el("circle", { class:"runner" + (dir === "back" ? " back" : ""), r:6.5, cx:0, cy:0 });
+      $("#view").append(dot);
+      dot.animate([{ transform:`translate(${a[0]}px,${a[1]}px)` }, { transform:`translate(${b[0]}px,${b[1]}px)` }], { duration:750, easing:"cubic-bezier(.5,0,.3,1)" }).onfinish = () => dot.remove();
+    }
+  }
 
   function renderView(){
-    const m = S.m, k = S.k, st = STEPS[k];
+    const m = S.m, k = S.k, st = STEPS[k], r = shown(k);
     const focus = new Set(st.focus), lit = new Set(st.lit), state = (id) => focus.has(id) ? "focus" : lit.has(id) ? "lit" : "dim";
-    const [flowIds, dir] = st.flow || [[], ""];
+    const [flowIds, dir] = st.flow || [[], ""], labels = st.label(r);
 
     for(const id in V.edge){
-      const e = V.edge[id], w = edgeValue(id, k >= LAST - 1 ? "wn" : "w", m);
+      const e = V.edge[id], w = edgeValue(id, updated() ? "wn" : "w", m);
       e.g.setAttribute("class", state(id));
       e.edge.style.strokeWidth = (2 + 2.4*Math.min(Math.abs(w), 1.6)).toFixed(2);     // thicker line = stronger weight
       const on = flowIds.includes(id), [a, b] = dir === "back" ? [e.ends[1], e.ends[0]] : e.ends;
@@ -352,33 +461,42 @@
       if(on){ e.flow.setAttribute("x1", a[0]); e.flow.setAttribute("y1", a[1]); e.flow.setAttribute("x2", b[0]); e.flow.setAttribute("y2", b[1]);
               e.flow.setAttribute("marker-end", `url(#${dir === "back" ? "arrB" : "arrF"})`); }
       else e.flow.removeAttribute("marker-end");
-      const lab = st.label[id];
+      const lab = labels[id];
       e.t.classList.toggle("off", !lab); e.bg.classList.toggle("off", !lab);
       if(lab){
-        const [kind, s] = lab, v = edgeValue(id, kind, m), old = edgeValue(id, "w", m);
+        const [kind, s] = lab, v = edgeValue(id, kind, m), old = edgeValue(id, "w", m), was = e.kind;
         e.sym.textContent = kind === "g" ? "g" : "w"; e.sb.textContent = s || "";
         e.sb.setAttribute("dy", s ? 4 : 0); e.val.setAttribute("dy", s ? -4 : 0);
-        e.val.textContent = " " + (kind === "g" ? f3(v) : f2(v)) + (kind === "wn" ? (v > old + 5e-4 ? " ↑" : v < old - 5e-4 ? " ↓" : "") : "");
+        const text = " " + (kind === "g" ? f3(v) : f2(v)) + (kind === "wn" ? (v > old + 5e-4 ? " ↑" : v < old - 5e-4 ? " ↓" : "") : "");
+        e.val.__c = null; e.val.textContent = text;
         e.t.setAttribute("class", kind === "g" ? "cg" : kind === "wn" ? "cn" : "cw");
         const bb = e.t.getBBox();
         e.bg.setAttribute("x", bb.x - 6); e.bg.setAttribute("y", bb.y - 1); e.bg.setAttribute("width", bb.width + 12); e.bg.setAttribute("height", bb.height + 2);
+        if(was && was !== kind && kind !== "w" && !REDUCED){ e.t.classList.remove("bump"); void e.t.getBBox(); e.t.classList.add("bump"); }
       }
+      e.kind = lab ? lab[0] : null;
     }
-    const known = { x1:true, x2:true, h1:k >= 2, h2:k >= 3, o:k >= 4 };
     const value = { x1:m.x[0], x2:m.x[1], h1:m.h[0], h2:m.h[1], o:m.yh };
     for(const id in V.node){
-      const n = V.node[id];
-      n.g.setAttribute("class", state(id));
-      n.node.classList.toggle("empty", !known[id]);
-      n.val.textContent = known[id] ? (id[0] === "x" ? f2(value[id]) : f3(value[id])) : "";
-      n.level.style.transform = `scaleY(${known[id] ? Math.max(0, Math.min(1, value[id])).toFixed(3) : 0})`;   // fill level = value
+      const n = V.node[id], known = nodeKnown(id), fmt = id[0] === "x" ? f2 : f3;
+      n.g.setAttribute("class", "node-g " + state(id));
+      n.node.classList.toggle("empty", !known);
+      n.level.style.transform = `scaleY(${known ? Math.max(0, Math.min(1, value[id])).toFixed(3) : 0})`;   // fill level = value
+      if(known && n.known === false && st.gives === id){       // the value has just been worked out: pop and count up
+        if(!REDUCED){ n.g.classList.remove("bump"); void n.g.getBBox(); n.g.classList.add("bump"); }
+        countUp(n.val, value[id], fmt);
+      } else { n.val.__c = null; n.val.textContent = known ? fmt(value[id]) : ""; }
+      n.known = known;
     }
+    const deltas = st.delta ? st.delta(r) : [];
     for(const id in V.delta){
-      const d = V.delta[id], show = (st.delta || []).includes(id);
+      const d = V.delta[id], show = deltas.includes(id), was = !d.t.classList.contains("off");
       d.t.classList.toggle("off", !show);
       d.val.textContent = " " + f3(id === "o" ? m.dO : m.dH[+id[1]-1]);
+      if(show && !was && !REDUCED && r > 0){ d.t.classList.remove("bump"); void d.t.getBBox(); d.t.classList.add("bump"); }
     }
-    V.target.classList.toggle("off", !st.aim); V.loss.classList.toggle("off", !st.aim);
+    const showLoss = !!st.aim && (!st.lossAt || r >= st.lossAt);
+    V.target.classList.toggle("off", !st.aim); V.loss.classList.toggle("off", !showLoss);
     V.target.textContent = "target " + f2(m.y);
     V.loss.textContent = "loss " + f3(st.after ? m.Ln : m.L);
   }
@@ -396,12 +514,19 @@
       <circle cx="${px}" cy="${py}" r="5" fill="#f0c36b" stroke="#2a2320" stroke-width="2"/></svg>${slope != null ? `slope <b class="md">${f3(slope)}</b>` : `the squash σ`}</div>`;
   }
 
-  function renderCard(animate){
-    const m = S.m, k = S.k, st = STEPS[k], card = $("#status");
-    let html = `<h2>${st.title}</h2><div class="body">${st.fig ? figure(st.fig(m)) : ""}<p>${st.body(m)}</p></div>`;
-    if(st.math) html += `<div class="formula">${st.math(m)}<div class="nums">${st.nums(m).join("<br>")}</div></div>`;
+  function renderCard(animate, popLine){
+    const m = S.m, k = S.k, st = STEPS[k], card = $("#status"), r = shown(k);
+    let html = `<h2>${st.title}</h2><div class="body">${st.fig ? figure(st.fig(m, r)) : ""}<p>${st.body(m)}</p></div>`;
+    if(st.math){
+      const all = st.nums(m);
+      html += `<div class="formula">${st.math(m)}<div class="nums">` +
+        all.slice(0, r).map((t, i) => `<span class="line${popLine && i === r - 1 ? " pop" : ""}">${t}</span>`).join("") +
+        (r < all.length ? `<button id="reveal">${r === 0 ? "Tap to work it out" : "Tap for the next line"}</button>` : "") + `</div></div>`;
+    }
     if(st.hint) html += `<p class="hint">${st.hint}</p>`;
     card.innerHTML = html;
+    if(popLine) card.querySelectorAll(".line.pop b[data-v]").forEach(b => countUp(b, +b.dataset.v, FMT[b.dataset.f]));
+    const rb = card.querySelector("#reveal"); if(rb) rb.addEventListener("click", reveal);
     if(st.cases){
       const row = document.createElement("div"); row.className = "cases";
       const lead = document.createElement("span"); lead.className = "hint"; lead.textContent = "What if… pick a case and walk through it again:"; row.append(lead);
@@ -413,7 +538,7 @@
       const src = document.createElement("p"); src.className = "src"; src.textContent = "Computed in this page. Toy network: one case, no biases.";
       card.append(row, src);
     }
-    if(animate){ card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); }
+    if(animate){ card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); } else card.classList.remove("in");
 
     $("#count").textContent = `Step ${k+1} of ${STEPS.length}`;
     [...$("#phases").children].forEach((d, i) => {
@@ -423,15 +548,76 @@
     $("#prev").disabled = k === 0;
     $("#next").innerHTML = k === LAST ? "Start again" : `Next<small>${STEPS[k+1].title}</small>`;
   }
-  const render = (animate) => { renderView(); renderCard(animate); };
+  const render = (animate, popLine) => { renderView(); renderCard(animate, popLine); };
+
+  // ---------- tap to reveal the calculation, one line per tap ----------
+  function reveal(){
+    const k = S.k, st = STEPS[k], r = shown(k);
+    if(r >= lines(k)) return;
+    S.done[k] = r + 1;
+    if(st.travel === r + 1) travel(st.flow[0], st.flow[1]);
+    closePop(); render(false, true);
+  }
+
+  // ---------- pop-ups: what is this part, what does this word mean ----------
+  const dirWord = (v) => v < 0 ? "lower" : "raise";
+  function partInfo(id){
+    const m = S.m, v = (s) => `<span class="v">${s}</span>`;
+    if(id[0] === "x") return [`Input ${NAME[id]} = ${f2(m.x[+id[1]-1])}`, `A number given to the network for this case. It stays fixed during the pass.`];
+    if(id in P){
+      const out = id === "o", val = out ? m.yh : m.h[+id[1]-1], d = out ? m.dO : m.dH[+id[1]-1];
+      if(!nodeKnown(id)) return [`${out ? "Output" : "Hidden unit"} ${NAME[id]}`, `Not worked out yet. Step ${STEP_OF[id] + 1} gives it its value.`];
+      let t = out ? `The network's answer for this case. The target is ${v(f2(m.y))}.` : `It mixes the two inputs through its weights and squashes the sum into 0–1.`;
+      if(deltaKnown(id)) t += ` Its blame δ is ${v(f3(d))}` + (Math.abs(d) < 1e-12 ? `: changing its sum would not change the loss.` : `: a larger sum here would ${dirWord(d)} the loss.`);
+      return [`${out ? "Output" : "Hidden unit"} ${NAME[id]} = ${f3(val)}`, t];
+    }
+    const [a, b] = EDGES[id], w = edgeValue(id, "w", m), g = edgeValue(id, "g", m), wn = edgeValue(id, "wn", m);
+    let t = w > 0 ? `Positive: when ${NAME[a]} goes up, it pushes ${NAME[b]} up.` : w < 0 ? `Negative: when ${NAME[a]} goes up, it pushes ${NAME[b]} down.` : `Zero: ${NAME[a]} has no effect on ${NAME[b]}.`;
+    if(gradKnown(id)) t += ` Its gradient is ${v(f3(g))}` + (Math.abs(g) < 1e-12 ? `: changing this weight would not change the loss now.` : `: a larger weight would ${dirWord(g)} the loss.`);
+    if(updated()) t += ` The update moved it to ${v(f3(wn))}.`;
+    return [`Weight ${NAME[a]} → ${NAME[b]} = ${f2(w)}`, t];
+  }
+  const pop = $("#pop");
+  let asked = null;
+  function openPop([title, text], anchor, part){
+    closePop();
+    pop.innerHTML = `<strong>${title}</strong>${text}`;
+    pop.hidden = false; pop.classList.remove("show");
+    if(part){ asked = part; part.classList.add("asked"); }
+    const pw = pop.offsetWidth, phh = pop.offsetHeight, vw = innerWidth, cx = anchor.left + anchor.width/2;
+    const left = Math.max(10, Math.min(vw - pw - 10, cx - pw/2));
+    // a pop-up about a part of the picture sits just under the picture, so it never hides the picture;
+    // a pop-up about a word or symbol sits above it when there is room
+    const view = $("#view").getBoundingClientRect();
+    const above = !part && anchor.top - phh - 10 >= 8;
+    const top = part ? Math.min(innerHeight - phh - 8, view.bottom - 12) : above ? anchor.top - phh - 10 : Math.min(innerHeight - phh - 8, anchor.bottom + 10);
+    pop.style.left = left + "px"; pop.style.top = Math.max(8, top) + "px";
+    pop.style.transformOrigin = `${Math.max(0, Math.min(pw, cx - left))}px ${above ? "100%" : "0%"}`;        // it springs out of the thing that was tapped
+    void pop.offsetWidth; pop.classList.add("show");
+  }
+  function closePop(){ pop.hidden = true; if(asked){ asked.classList.remove("asked"); asked = null; } }
+  document.addEventListener("click", (e) => {
+    const term = e.target.closest ? e.target.closest("[data-term]") : null;
+    if(term && GLOSS[term.dataset.term]) return openPop(GLOSS[term.dataset.term], term.getBoundingClientRect());
+    const math = e.target.closest ? e.target.closest("math") : null;
+    if(math){                                                // a tap near a small symbol still counts
+      let best = null, bd = 28;
+      for(const t of math.querySelectorAll("[data-term]")){ const b = t.getBoundingClientRect();
+        const d = Math.hypot(Math.max(b.left - e.clientX, 0, e.clientX - b.right), Math.max(b.top - e.clientY, 0, e.clientY - b.bottom));
+        if(d < bd){ bd = d; best = t; } }
+      if(best) return openPop(GLOSS[best.dataset.term], best.getBoundingClientRect());
+    }
+    closePop();
+  });
+  document.addEventListener("keydown", (e) => { if(e.key === "Escape") closePop(); });
 
   // ---------- moving through the steps ----------
-  const go = (k) => { S.k = Math.max(0, Math.min(LAST, k)); render(true); };
+  const go = (k) => { closePop(); S.k = Math.max(0, Math.min(LAST, k)); render(true); };
   const forwardStep = () => { if(S.k === LAST) loadCase("normal"); else go(S.k + 1); };   // "Start again" returns to the first case
-  $("#next").addEventListener("click", forwardStep);
-  $("#prev").addEventListener("click", () => go(S.k - 1));
+  $("#next").addEventListener("click", (e) => { e.stopPropagation(); forwardStep(); });
+  $("#prev").addEventListener("click", (e) => { e.stopPropagation(); go(S.k - 1); });
   document.addEventListener("keydown", (e) => {
-    if(e.target.matches("button")) return;
+    if(e.target.matches("button, .part")) return;
     if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); if(S.k < LAST) go(S.k + 1); }
     else if(e.key === "ArrowLeft"){ e.preventDefault(); go(S.k - 1); }
   });
@@ -451,7 +637,7 @@
   };
   function loadCase(name){
     const cs = CASES[name]();
-    Object.assign(S, { x1:cs.x1, y:cs.y, sc:cs.sc, preset:name });
+    Object.assign(S, { x1:cs.x1, y:cs.y, sc:cs.sc, preset:name, done:{} });
     compute(); go(cs.at);
   }
 

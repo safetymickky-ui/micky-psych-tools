@@ -76,7 +76,7 @@ function probe() {
   }
   const outside = vr ? boxes.filter(b => b.l < vr.left - 1 || b.r > vr.right + 1 || b.t < vr.top - 1 || b.b > vr.bottom + 1).map(b => b.s) : [];
   const covered = boxes.filter(b => { const top = document.elementFromPoint((b.l + b.r) / 2, (b.t + b.b) / 2); return top && top !== b.el && !b.el.contains(top) && view.contains(top); }).map(b => b.s);
-  const controls = [...document.querySelectorAll('button, input:not([type=hidden]), select')].filter(vis);
+  const controls = [...document.querySelectorAll('button, input:not([type=hidden]), select')].filter(vis).filter(el => !el.matches('.term'));   // a term inside a sentence is exempt from the 44 px rule
   const hit = (el) => (el.matches('input[type=checkbox], input[type=radio]') ? (el.closest('label') || el) : el).getBoundingClientRect();
   const small = controls.map(el => ({ n: el.id || el.dataset.preset || el.textContent.trim().slice(0, 20), r: hit(el) })).filter(c => c.r.height < 43.5 || c.r.width < 43.5).map(c => `${c.n} ${Math.round(c.r.width)}×${Math.round(c.r.height)}`);
   const offscreen = controls.filter(el => { const r = el.getBoundingClientRect(); return r.bottom > innerHeight + 1 || r.top < -1; }).map(el => el.id || el.dataset.preset || el.textContent.trim().slice(0, 20));
@@ -91,6 +91,7 @@ function probe() {
     sideways: document.documentElement.scrollWidth > innerWidth + 1,
     tall: document.documentElement.scrollHeight - innerHeight,
     presets: [...document.querySelectorAll('[data-preset]')].filter(vis).map(b => b.dataset.preset),
+    reveal: (() => { const b = document.querySelector('#reveal'); return !!(b && vis(b)); })(),
   };
 }
 
@@ -162,9 +163,41 @@ for (const size of SIZES) {
       return P;
     };
     const settle = () => page.waitForTimeout(motion === 'reduce' ? 80 : 350);
+    const settleLong = () => page.waitForTimeout(motion === 'reduce' ? 80 : 800);
+    // a pop-up opened by tapping a term or a part: it must appear, hold text, stay on screen, and close
+    const checkPop = async (label, what) => {
+      const R = await page.evaluate(() => { const p = document.querySelector('#pop'); if (!p || p.hidden) return null; const r = p.getBoundingClientRect();
+        return { text: p.innerText.trim(), in: r.left >= 0 && r.top >= 0 && r.right <= innerWidth + 1 && r.bottom <= innerHeight + 1 }; });
+      if (!R) fail(where, `${label}: tapping ${what} opened no #pop`);
+      else { if (!R.text) fail(where, `${label}: the pop-up for ${what} is empty`); if (!R.in) fail(where, `${label}: the pop-up for ${what} runs off the screen`);
+             if (BAD_TEXT.test(R.text)) fail(where, `${label}: bad number in the pop-up for ${what}: ${R.text.slice(0, 60)}`); }
+      await page.keyboard.press('Escape');
+      if (await page.evaluate(() => { const p = document.querySelector('#pop'); return !!p && !p.hidden; })) fail(where, `${label}: Escape did not close the pop-up`);
+    };
+    let partTurn = 0;
+    // one step, in every state the reader can put it in: before the calculation, after each revealed line, with pop-ups
+    const fullStep = async (label, shot) => {
+      let P = await checkStep(`${label} (start)`, null);
+      for (let i = 0; i < 6 && P.reveal; i++) {
+        await page.click('#reveal'); await settleLong();
+        P = await checkStep(`${label} (line ${i + 1} revealed)`, null);
+      }
+      if (P.reveal) fail(where, `${label}: #reveal is still there after 6 taps`);
+      const term = await page.$('#status .term');
+      if (term) { await term.click(); await settle(); await checkPop(label, 'a term'); }
+      const nParts = await page.evaluate(() => document.querySelectorAll('.view [data-part]').length);
+      if (nParts) {
+        const which = partTurn++ % nParts;
+        await page.evaluate((i) => document.querySelectorAll('.view [data-part]')[i].dispatchEvent(new MouseEvent('click', { bubbles: true })), which);
+        await settle(); await checkPop(label, `picture part ${which + 1}`);
+      }
+      if (shot) await page.screenshot({ path: path.join(outDir, `shot-${tag}-${shot}.png`) });
+      return P;
+    };
     const walkToEnd = async (label, shootEach) => {
       for (let guard = 0; guard < 40; guard++) {
-        const P = await checkStep(`${label} step ${((await page.evaluate(() => window.__lab.at())) + 1)}`, shootEach ? `${label === 'base' ? '' : label + '-'}step${String((await page.evaluate(() => window.__lab.at())) + 1).padStart(2, '0')}` : null);
+        const at = await page.evaluate(() => window.__lab.at());
+        const P = await fullStep(`${label} step ${at + 1}`, shootEach ? `${label === 'base' ? '' : label + '-'}step${String(at + 1).padStart(2, '0')}` : null);
         if (P.at >= steps - 1) return P;
         await page.click('#next'); await settle();
         const now = await page.evaluate(() => window.__lab.at());

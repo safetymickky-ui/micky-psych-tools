@@ -32,6 +32,9 @@ page. Do not drift from it:
   reader moves with Back and Next (or a swipe). No Play button.
 - **Maths looks like maths.** Formulas are typeset with native MathML and colour-coded: one
   colour per kind of quantity, the same in the formula, in the numbers and on the picture.
+- **Something to tap in every step.** Any part of the picture and any dotted term or symbol
+  opens a short pop-up; a step that computes something hides its number work until the reader
+  taps to reveal it, line by line. Motion is lively and each motion means something.
 - **A picture that means something.** Fill, thickness and arrows encode values, strength and
   direction; highlights and levels change smoothly between steps.
 - **Never the whole picture at once.** Parts and numbers appear at the step that introduces
@@ -144,6 +147,8 @@ In text, before the file exists:
    lines carry direction arrows. The first steps introduce the
    parts; the last sums up.
 5. The "what if" cases (0–4), each with the step it jumps to and what the steps will say.
+   Also: the glossary entries (each term and symbol, one to three sentences), and for each
+   kind of picture part the sentence its pop-up says in each state.
 6. Checks: the invariants `window.__lab.checks()` will assert (contract, "Checks").
 7. Source line.
 
@@ -166,6 +171,8 @@ Full rules are in `references/build-contract.md`. The load-bearing ones:
   number on the page is read from the computed model.
 - Focus elements get the focus colour and a halo; the rest is dimmed; labels of dimmed parts
   are hidden. At most 10 pieces of full-strength text in the view; no overlapping labels.
+- The three kinds of tap from the contract: picture parts, terms and symbols, and the
+  calculation revealed line by line, with the picture following the reveal.
 - The warm palette and serif headings from the contract; formulas in MathML with the colour
   code; the SVG built once and restyled per step so changes animate.
 - Checks run in the page but are not shown: `window.__lab` exposes `mode`, `steps`, `at()` and
@@ -231,6 +238,10 @@ This skill has failed if:
 - A step's text assumes a term it has not explained, is a bare one-liner with nothing to
   learn from, or runs past three short sentences.
 - A formula is shown as plain text, or its colours do not match the picture.
+- A step offers nothing to tap but Next: no tappable parts, no tappable terms, or a
+  calculation that is already worked out when the step opens.
+- A pop-up hides the part it explains, runs off the screen, or states something the reader
+  has not been shown yet.
 - On a phone the page needs scrolling, Back/Next are not in thumb reach, or a control is too
   small to touch.
 - The view is crowded: overlapping or covered labels, more than 10 pieces of full-strength

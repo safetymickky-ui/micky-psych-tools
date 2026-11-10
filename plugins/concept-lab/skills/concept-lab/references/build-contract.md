@@ -113,6 +113,41 @@ body { margin: 0; background: var(--bg); color: var(--ink); }
 - A **phase bar** under the title names the stages of the walkthrough ("Parts · Forward ·
   Backward · Update") and fills as the reader moves. It is orientation, not a control.
 
+## Things to tap inside every step
+
+A walkthrough is not a slide show. Every step gives the reader something to do besides Next.
+The owner picked these three kinds on 2026-11-10; a lab has all three unless one cannot apply.
+
+- **Tap a part of the picture.** Every unit and line is tappable (`data-part`, `role="button"`,
+  `tabindex="0"`, an `aria-label`; lines get a wide transparent hit stroke). A pop-up names the
+  part, gives its current value, and says in one or two sentences what it does *now*: text
+  chosen from the computed model and from what the reader has been shown so far (a unit not
+  yet worked out says which step fills it; a weight whose gradient is known says which way it
+  would move the loss). The tapped part is outlined while its pop-up is open.
+- **Tap a term or a symbol.** Terms in the card text are inline buttons (`class="term"`, dotted
+  underline), and every symbol in a formula carries `data-term`. Tapping opens a short
+  definition from one `GLOSS` table: a title and one to three sentences. A tap near a small
+  symbol counts (nearest symbol within about 28 px).
+- **Tap to reveal the calculation.** A step that computes something shows its formula first and
+  a button (`id="reveal"`: "Tap to work it out"). Each tap reveals one line of the number
+  work. The picture follows the reveal: the unit's value, a gradient label or a blame label
+  appears when the line that produces it is revealed, not before. Next still works without
+  revealing; a step the reader has passed counts as fully revealed.
+
+**The pop-up** (`id="pop"`, one element, reused): it springs out of the thing tapped; a pop-up
+about a picture part sits just under the picture so it never hides the picture; a pop-up about
+a word sits above the word when there is room. It stays inside the screen, closes on a tap
+anywhere, on Escape and on a step change, and has no buttons of its own.
+
+**Lively motion, each with a meaning:**
+
+- a pop-up and a revealed line spring in (overshoot easing, about 0.4–0.5 s);
+- a result counts up to its value, in the card and in the picture;
+- a unit bumps when it gets its value, and its fill rises;
+- a dot travels along a line once when a value is passed forward or blame is passed back.
+
+Under `prefers-reduced-motion` all of these happen at once, with no movement.
+
 ## Controls — few, and built for a thumb
 
 - **Back / Next** (`id="prev"`, `id="next"`): real buttons, at least 48 px tall. Next is the
@@ -126,6 +161,8 @@ body { margin: 0; background: var(--bg); color: var(--ink); }
 - **Sliders and other inputs: none for a beginner or intermediate reader.** At most 2 in a
   free-play lab, full width, with the live value and unit shown.
 - Every button and chip is at least 44×44 px, with a visible focus ring. No clickable `<div>`.
+  A term inside a sentence is the one exception to the size rule. The reveal button may look
+  like one line of text, but its hit area is still 44 px tall.
 - Keyboard: → and Space go forward, ← goes back. Not printed on the page.
 - Canvases that take input use pointer events and `touch-action: none` on the canvas only.
 
@@ -248,7 +285,10 @@ It finds Playwright itself (local or global) and the Chromium under
 2. checks structure: doctype, viewport tag, one `<h1>`, `.view`, `#status`, `#prev`, `#next`,
    `window.__lab` with 5–14 steps, at most 2 inputs, at most 4 presets, no Play button outside
    watch mode;
-3. walks every step with Next and, at each one, fails on: an empty card; `NaN`, `Infinity` or
+3. walks every step with Next. At each step it checks the start state, taps `#reveal` until
+   the calculation is complete and checks again after every line, taps one term and one part
+   of the picture and checks the pop-up (it opens, has text, stays on screen, closes on
+   Escape). In every state it fails on: an empty card; `NaN`, `Infinity` or
    `undefined` on screen; sideways scroll; on phone, a page taller than the screen or a button
    outside it; a touch target under 44 px; **two overlapping text labels in the view, or a
    label outside it or covered by a shape**; more than 10 pieces of full-strength text;
