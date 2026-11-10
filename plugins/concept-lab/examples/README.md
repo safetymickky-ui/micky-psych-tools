@@ -1,16 +1,19 @@
 # Examples
 
-## `learning-rate.html` — computed mode
+## `backprop.html` — guided walkthrough, computed mode
 
-*When does gradient descent converge, and when does it blow up?*
+*How does one backward pass find the gradient of every weight?*
 
-- **Model** — least squares `y = w·x + b` on 40 seeded points, exact gradient, momentum update.
-  The stability limit `2/λmax` and the closed-form optimum are computed from the data.
-- **Main view** — the loss surface over (w, b) with the descent path on it.
-- **Controls (3)** — learning rate (log slider, reaches divergence) · momentum · standardize x.
-- **Presets (4)** — Converges · Too large (diverges, reported in the status line) · Unscaled x
-  (the ravine: correct direction, too slow) · + momentum (same learning rate, reaches the optimum).
-- **Checks** (`window.__lab.checks()`) — gradient vs finite difference, closed-form optimum is
-  stationary, loss never rises inside the stable range, no non-finite value.
+- **Model** — a 2-2-1 network, sigmoid units, squared-error loss, no biases. `compute()` runs
+  the forward pass, the backward pass and one update; the steps only decide what is shown.
+- **13 steps** — inputs → weights → h1 → h2 → output → error → blame at the output → gradient
+  of a weight → blame travels back → the same rule for each hidden unit → update → summary.
+- **Focus** — each step highlights its nodes or lines in honey with a halo; the rest is dimmed.
+- **"What if" cases (3)** — Already right (blame 0, nothing moves) · Zero input (its weight
+  gets gradient 0) · Big weights (a saturated unit lets almost no blame through).
+- **Checks** — all 6 gradients vs finite difference, output inside 0–1, a step against the
+  gradient does not raise the loss, all values finite.
 
-Verify it: `node ../scripts/verify.mjs learning-rate.html`
+Verify it: `node ../scripts/verify.mjs backprop.html`
+
+There is no free-play, authored-mode or watch-mode example yet.

@@ -1,5 +1,5 @@
 ---
-description: Build one interactive page for one concept (any field) — phone-first, minimal, dark; the real model runs live, or authored content when there is no model; published as its own artifact
+description: Build one step-by-step page for one concept (any field) — a guided walkthrough on one phone screen; the real model is computed in the page, or authored content when there is no model; published as its own artifact
 argument-hint: [concept — e.g. "gradient descent", "receptor occupancy", "defense mechanisms"]
 ---
 

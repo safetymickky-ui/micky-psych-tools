@@ -55,15 +55,50 @@ if (external) fail('file', `loads from outside the file: ${external.slice(0, 3).
 if (/Math\.random\s*\(/.test(html)) fail('file', 'uses Math.random() — route randomness through the seeded generator');
 
 const SIZES = [
-  { name: 'phone', width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
+  { name: 'phone', width: 390, height: 700, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },
   { name: 'desktop', width: 1280, height: 800, isMobile: false, hasTouch: false, deviceScaleFactor: 1 },
 ];
 const BAD_TEXT = /\b(NaN|Infinity|undefined)\b/;
+const MAX_STRONG_TEXT = 10;
+
+// Runs in the page: everything the script needs to know about the current step.
+function probe() {
+  const vis = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none'; };
+  const strength = (el) => { let o = 1; for (let e = el; e && e.nodeType === 1; e = e.parentElement) o *= parseFloat(getComputedStyle(e).opacity || '1'); return o; };
+  const view = document.querySelector('.view');
+  const vr = view ? view.getBoundingClientRect() : null;
+  const texts = view ? [...view.querySelectorAll('text')].filter(t => t.textContent.trim() && vis(t) && strength(t) > 0.05) : [];
+  const boxes = texts.map(t => { const r = t.getBoundingClientRect(); return { s: t.textContent.trim().slice(0, 24), l: r.left, t: r.top, r: r.right, b: r.bottom, o: strength(t), el: t }; });
+  const overlaps = [];
+  for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+    const a = boxes[i], b = boxes[j];
+    if (Math.min(a.r, b.r) - Math.max(a.l, b.l) > 2 && Math.min(a.b, b.b) - Math.max(a.t, b.t) > 2) overlaps.push(`"${a.s}" and "${b.s}"`);
+  }
+  const outside = vr ? boxes.filter(b => b.l < vr.left - 1 || b.r > vr.right + 1 || b.t < vr.top - 1 || b.b > vr.bottom + 1).map(b => b.s) : [];
+  const covered = boxes.filter(b => { const top = document.elementFromPoint((b.l + b.r) / 2, (b.t + b.b) / 2); return top && top !== b.el && !b.el.contains(top) && view.contains(top); }).map(b => b.s);
+  const controls = [...document.querySelectorAll('button, input:not([type=hidden]), select')].filter(vis);
+  const hit = (el) => (el.matches('input[type=checkbox], input[type=radio]') ? (el.closest('label') || el) : el).getBoundingClientRect();
+  const small = controls.map(el => ({ n: el.id || el.dataset.preset || el.textContent.trim().slice(0, 20), r: hit(el) })).filter(c => c.r.height < 43.5 || c.r.width < 43.5).map(c => `${c.n} ${Math.round(c.r.width)}×${Math.round(c.r.height)}`);
+  const offscreen = controls.filter(el => { const r = el.getBoundingClientRect(); return r.bottom > innerHeight + 1 || r.top < -1; }).map(el => el.id || el.dataset.preset || el.textContent.trim().slice(0, 20));
+  const status = document.querySelector('#status');
+  return {
+    at: window.__lab && typeof window.__lab.at === 'function' ? window.__lab.at() : null,
+    card: status ? status.innerText.trim() : '',
+    body: document.body.innerText,
+    overlaps, outside, covered, small, offscreen,
+    strong: boxes.filter(b => b.o > 0.85).length,
+    viewH: vr ? vr.height : 0,
+    sideways: document.documentElement.scrollWidth > innerWidth + 1,
+    tall: document.documentElement.scrollHeight - innerHeight,
+    presets: [...document.querySelectorAll('[data-preset]')].filter(vis).map(b => b.dataset.preset),
+  };
+}
 
 const browser = await launch();
 for (const size of SIZES) {
   for (const motion of ['no-preference', 'reduce']) {
     const where = `${size.name}/${motion === 'reduce' ? 'reduced' : 'motion'}`;
+    const tag = `${size.name}${motion === 'reduce' ? '-reduced' : ''}`;
     const ctx = await browser.newContext({
       viewport: { width: size.width, height: size.height }, isMobile: size.isMobile,
       hasTouch: size.hasTouch, deviceScaleFactor: size.deviceScaleFactor, reducedMotion: motion,
@@ -75,119 +110,117 @@ for (const size of SIZES) {
     await page.goto('file://' + abs);
     await page.waitForTimeout(300);
 
-    const badText = async (after) => {
-      const t = await page.evaluate(() => document.body.innerText);
-      const m = t.match(BAD_TEXT);
-      if (m) fail(where, `"${m[0]}" on screen after ${after}`);
+    // ---- structure ----
+    const T = await page.evaluate(() => ({
+      h1: document.querySelectorAll('h1').length,
+      view: !!document.querySelector('.view'),
+      status: !!document.querySelector('#status[aria-live]'),
+      prev: !!document.querySelector('#prev'), next: !!document.querySelector('#next'),
+      play: !!document.querySelector('#play'),
+      inputs: [...document.querySelectorAll('input:not([type=hidden]), select, textarea')].length,
+      nPresets: document.querySelectorAll('[data-preset]').length,
+      lab: window.__lab ? { mode: window.__lab.mode, steps: window.__lab.steps, at: typeof window.__lab.at, checks: typeof window.__lab.checks } : null,
+    }));
+    if (T.h1 !== 1) fail(where, `expected one <h1>, found ${T.h1}`);
+    if (!T.view) fail(where, 'no .view element (the main view)');
+    if (!T.status) fail(where, 'no #status element with aria-live (the step card)');
+    if (!T.lab || T.lab.checks !== 'function') fail(where, 'window.__lab.checks() is missing');
+    const mode = T.lab && T.lab.mode;
+    if (T.lab && !['computed', 'authored', 'mixed', 'watch'].includes(mode)) fail(where, `__lab.mode is "${mode}"`);
+    const watch = mode === 'watch';
+    const walk = T.prev && T.next;                       // guided walkthrough or watch page
+    if (T.inputs > 2) fail(where, `${T.inputs} inputs/sliders (limit 2, and none for a beginner page)`);
+    if (T.nPresets > 4) fail(where, `${T.nPresets} "what if" cases (limit 4)`);
+    if (T.play && !watch && walk) fail(where, 'a walkthrough has a Play button (the reader sets the pace with Back/Next)');
+    if (walk) {
+      if (!(T.lab && T.lab.steps >= 5 && T.lab.steps <= 14) && !(watch && T.lab && T.lab.steps >= 3 && T.lab.steps <= 8)) fail(where, `__lab.steps is ${T.lab && T.lab.steps} (walkthrough 5–14, watch 3–8)`);
+      if (T.lab && T.lab.at !== 'function') fail(where, 'window.__lab.at() is missing (it returns the current step, from 0)');
+    } else if (!watch) {
+      if (!T.inputs) fail(where, 'no #prev/#next and no input: the page is neither a walkthrough nor a free-play lab');
+    }
+    const steps = (T.lab && T.lab.steps) || 0;
+
+    // ---- one step's checks ----
+    const seen = new Set();
+    const checkStep = async (label, shot) => {
+      const P = await page.evaluate(probe);
+      const say = (m) => { const k = `${label}: ${m}`; if (!seen.has(k)) { seen.add(k); fail(where, k); } };
+      if (!P.card) say('the step card is empty');
+      const bad = P.body.match(BAD_TEXT); if (bad) say(`"${bad[0]}" on screen`);
+      if (P.viewH < 120) say(`main view is only ${Math.round(P.viewH)} px tall`);
+      if (P.sideways) say('page scrolls sideways');
+      for (const o of P.overlaps) say(`labels overlap: ${o}`);
+      for (const o of P.outside) say(`label outside the view: "${o}"`);
+      for (const o of P.covered) say(`label covered by a shape: "${o}"`);
+      if (P.strong > MAX_STRONG_TEXT) say(`${P.strong} pieces of full-strength text in the view (limit ${MAX_STRONG_TEXT}) — dim or hide what this step does not need`);
+      for (const c of P.small) say(`touch target under 44 px: ${c}`);
+      if (size.name === 'phone') {
+        if (P.tall > 1) say(`page is ${Math.round(P.tall)} px taller than the phone screen (no-scroll rule)`);
+        for (const c of P.offscreen) say(`control off screen: ${c}`);
+      }
+      if (shot) await page.screenshot({ path: path.join(outDir, `shot-${tag}-${shot}.png`) });
+      return P;
+    };
+    const settle = () => page.waitForTimeout(motion === 'reduce' ? 80 : 350);
+    const walkToEnd = async (label, shootEach) => {
+      for (let guard = 0; guard < 40; guard++) {
+        const P = await checkStep(`${label} step ${((await page.evaluate(() => window.__lab.at())) + 1)}`, shootEach ? `${label === 'base' ? '' : label + '-'}step${String((await page.evaluate(() => window.__lab.at())) + 1).padStart(2, '0')}` : null);
+        if (P.at >= steps - 1) return P;
+        await page.click('#next'); await settle();
+        const now = await page.evaluate(() => window.__lab.at());
+        if (now !== P.at + 1) { fail(where, `${label}: Next went from step ${P.at + 1} to step ${now + 1}`); return P; }
+      }
+    };
+    const runChecks = async (label) => {
+      const checks = await page.evaluate(() => window.__lab.checks());
+      if (!Array.isArray(checks) || !checks.length) fail(where, `${label}: __lab.checks() returned no checks`);
+      else for (const c of checks) if (c.pass !== true) fail(where, `${label}: check failed: ${c.name}${c.detail ? ' — ' + c.detail : ''}`);
     };
 
-    // ---- structure and layout ----
-    const L = await page.evaluate(() => {
-      const box = (el) => { const r = el.getBoundingClientRect(); return { w: r.width, h: r.height, top: r.top + scrollY, bottom: r.bottom + scrollY }; };
-      const vis = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };
-      const view = document.querySelector('.view');
-      const params = [...document.querySelectorAll('input:not([type=hidden]), select, textarea')].filter(vis);
-      const presets = [...document.querySelectorAll('[data-preset]')].filter(vis);
-      const buttons = [...document.querySelectorAll('button')].filter(vis);
-      const firstControl = [...document.querySelectorAll('button, input, select')].filter(vis)[0];
-      const hit = (el) => {                       // a checkbox or radio is judged by its label
-        const t = el.matches('input[type=checkbox], input[type=radio]') ? (el.closest('label') || el) : el;
-        return box(t);
-      };
-      const small = [...buttons, ...params].map(el => ({ el: el.id || el.dataset.preset || el.textContent.trim().slice(0, 20) || el.tagName, ...hit(el) }))
-        .filter(b => b.h < 43.5 || b.w < 43.5);
-      return {
-        h1: document.querySelectorAll('h1').length,
-        hasView: !!view, view: view && box(view),
-        firstControl: firstControl && box(firstControl),
-        nParams: params.length, nPresets: presets.length, small,
-        hasStatus: !!document.querySelector('#status[aria-live]'),
-        hasLab: !!(window.__lab && typeof window.__lab.checks === 'function'),
-        sideways: document.documentElement.scrollWidth > innerWidth + 1,
-        innerH: innerHeight,
-      };
-    });
-    if (L.h1 !== 1) fail(where, `expected one <h1>, found ${L.h1}`);
-    if (!L.hasView) fail(where, 'no .view element (the main view)');
-    else if (L.view.h < 120) fail(where, `main view is only ${Math.round(L.view.h)} px tall (collapsed)`);
-    if (!L.hasStatus) fail(where, 'no #status element with aria-live');
-    if (!L.hasLab) fail(where, 'window.__lab.checks() is missing');
-    const lab = L.hasLab ? await page.evaluate(() => ({ mode: window.__lab.mode, scenes: window.__lab.scenes })) : {};
-    const watch = lab.mode === 'watch';
-    if (L.hasLab && !['computed', 'authored', 'mixed', 'watch'].includes(lab.mode)) fail(where, `__lab.mode is "${lab.mode}" (computed | authored | mixed | watch)`);
-    if (watch) {
-      if (L.nParams > 0) fail(where, `watch mode has ${L.nParams} parameter controls (a page with controls is computed or authored mode)`);
-      if (L.nPresets > 0) fail(where, 'watch mode has presets');
-      for (const id of ['play', 'prev', 'next', 'restart']) if (!(await page.$('#' + id))) fail(where, `watch mode needs a #${id} button`);
-      if (!(lab.scenes >= 3 && lab.scenes <= 8)) fail(where, `__lab.scenes is ${lab.scenes} (need 3–8)`);
+    if (walk && T.lab && T.lab.at === 'function' && steps) {
+      const first = await page.evaluate(probe);
+      if (first.at !== 0) fail(where, `page opens on step ${first.at + 1}, not step 1`);
+      if (first.presets.length && !watch) fail(where, '"what if" cases are visible on step 1 (show them on the last step)');
+      await walkToEnd('base', true);
+      await runChecks('base');
+      // Back returns to the first state
+      for (let i = 0; i < steps - 1; i++) { await page.click('#prev'); }
+      await settle();
+      const back = await page.evaluate(probe);
+      if (back.at !== 0) fail(where, `Back ${steps - 1} times ends on step ${back.at + 1}`);
+      else if (back.card !== first.card) fail(where, 'after going Back to step 1 the card differs from the first load');
+      for (let i = 0; i < steps - 1; i++) { await page.click('#next'); }
+      await settle();
+      // every "what if" case, walked to its end
+      const names = (await page.evaluate(probe)).presets;
+      if (T.nPresets && !names.length) fail(where, 'no "what if" case is visible on the last step');
+      for (const name of names) {
+        await page.click(`[data-preset="${name}"]`); await settle();
+        const end = await walkToEnd(name, false);
+        await runChecks(`case "${name}"`);
+        await page.screenshot({ path: path.join(outDir, `shot-${tag}-case-${name}.png`) });
+        if (end && end.at < steps - 1) break;
+      }
+      if (watch && T.play) { await page.click('#restart').catch(() => {}); await page.click('#play'); await page.waitForTimeout(600); await page.click('#play'); await checkStep('play/pause', null); }
     } else {
-      if (L.nParams > 3) fail(where, `${L.nParams} parameter controls (limit 3)`);
-      if (L.nPresets < 2 || L.nPresets > 4) fail(where, `${L.nPresets} presets (need 2–4)`);
-    }
-    if (L.sideways) fail(where, 'page scrolls sideways');
-    for (const s of L.small) fail(where, `touch target "${s.el}" is ${Math.round(s.w)}×${Math.round(s.h)} px (minimum 44×44)`);
-    if (size.name === 'phone') {
-      if (L.view && L.view.bottom > L.innerH) fail(where, `main view ends at ${Math.round(L.view.bottom)} px, below the first screen (${L.innerH} px)`);
-      if (L.firstControl && L.firstControl.bottom > L.innerH) fail(where, `first control ends at ${Math.round(L.firstControl.bottom)} px, below the first screen`);
-    }
-    await badText('load');
-
-    // ---- presets ----
-    for (const b of await page.$$('[data-preset]')) {
-      const name = await b.getAttribute('data-preset');
-      await b.click(); await page.waitForTimeout(motion === 'reduce' ? 200 : 3000);
-      await page.screenshot({ path: path.join(outDir, `shot-${size.name}${motion === 'reduce' ? '-reduced' : ''}-${name}.png`) });
-      await badText(`preset "${name}"`);
-    }
-
-    // ---- every control to both ends ----
-    for (const r of await page.$$('input[type=range]')) {
-      const id = (await r.getAttribute('id')) || 'range';
-      for (const end of ['min', 'max']) {
-        const v = await r.getAttribute(end);
-        await r.evaluate((el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }, v);
-        if (await page.$('#play')) { await page.click('#play'); await page.waitForTimeout(500); }
-        await badText(`${id} at ${end}`);
+      // ---- free-play lab: presets, every input to both ends, transport ----
+      await checkStep('load', 'load');
+      for (const b of await page.$$('[data-preset]')) {
+        const name = await b.getAttribute('data-preset');
+        await b.click(); await page.waitForTimeout(motion === 'reduce' ? 200 : 3000);
+        await checkStep(`case "${name}"`, `case-${name}`);
+        if (T.lab) await runChecks(`case "${name}"`);
       }
-    }
-    for (const c of await page.$$('input[type=checkbox]')) {
-      for (let i = 0; i < 2; i++) { await c.evaluate(el => el.click()); await page.waitForTimeout(150); await badText('checkbox toggle'); }
-    }
-    for (const s of await page.$$('select')) {
-      const values = await s.evaluate(el => [...el.options].map(o => o.value));
-      for (const v of values) { await s.selectOption(v); await page.waitForTimeout(150); await badText(`select ${v}`); }
-    }
-
-    // ---- watch mode: walk every scene, shoot its hold, then play it through ----
-    if (watch && await page.$('#next')) {
-      await page.click('#restart'); await page.waitForTimeout(200);
-      for (let i = 1; i <= (lab.scenes || 0); i++) {
-        await page.waitForTimeout(motion === 'reduce' ? 200 : 2500);
-        const cap = (await page.textContent('#status') || '').trim();
-        if (!cap) fail(where, `scene ${i} has an empty caption`);
-        await page.screenshot({ path: path.join(outDir, `shot-${size.name}${motion === 'reduce' ? '-reduced' : ''}-scene${i}.png`) });
-        await badText(`scene ${i}`);
-        if (i < lab.scenes) await page.click('#next');
+      for (const r of await page.$$('input[type=range]')) {
+        for (const end of ['min', 'max']) {
+          const v = await r.getAttribute(end);
+          await r.evaluate((el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }, v);
+          if (T.play) { await page.click('#play'); await page.waitForTimeout(500); }
+          await checkStep(`${(await r.getAttribute('id')) || 'range'} at ${end}`, null);
+        }
       }
-      await page.click('#prev'); await page.click('#restart');
-      await page.click('#play'); await page.waitForTimeout(600); await page.click('#play'); await badText('play/pause');
-    }
-
-    // ---- transport, when the lab has it ----
-    if (await page.$('#reset')) {
-      await page.click('#reset');
-      if (await page.$('#step')) { await page.click('#step'); await page.click('#step'); await badText('step'); }
-      if (await page.$('#play')) { await page.click('#play'); await page.waitForTimeout(400); await page.click('#play'); await badText('play/pause'); }
-      await page.click('#reset'); await badText('reset');
-    }
-
-    // ---- the lab's own checks, on the values actually running ----
-    if (L.hasLab) {
-      const firstPreset = await page.$('[data-preset]');
-      if (firstPreset) { await firstPreset.click(); await page.waitForTimeout(300); }
-      const checks = await page.evaluate(() => window.__lab.checks());
-      if (!Array.isArray(checks) || checks.length === 0) fail(where, '__lab.checks() returned no checks');
-      else for (const c of checks) if (c.pass !== true) fail(where, `check failed: ${c.name}${c.detail ? ' — ' + c.detail : ''}`);
+      for (const c of await page.$$('input[type=checkbox]')) for (let i = 0; i < 2; i++) { await c.evaluate(el => el.click()); await page.waitForTimeout(150); await checkStep('checkbox', null); }
+      if (T.lab) await runChecks('after controls');
     }
     await ctx.close();
   }
@@ -195,9 +228,10 @@ for (const size of SIZES) {
 await browser.close();
 
 if (failures.length) {
-  console.error(`verify: FAIL (${failures.length})`);
-  for (const f of [...new Set(failures)]) console.error('  ' + f);
+  const uniq = [...new Set(failures)];
+  console.error(`verify: FAIL (${uniq.length})`);
+  for (const f of uniq) console.error('  ' + f);
   process.exit(1);
 }
 console.log(`verify: OK — phone and desktop, motion on and reduced. Screenshots in ${outDir}`);
-console.log('Now look at the phone screenshots: does each preset (or scene) show what its name (or caption) says?');
+console.log('Now look at the phone screenshots, step by step: is it clear where to look, does the card say what the highlight shows, is anything cramped?');

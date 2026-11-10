@@ -103,10 +103,11 @@ Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/ma
   source in a VS Code-styled editor on the left, the explanation on the right, cross-linked
   line by line, with a step-through walkthrough and a flow diagram. Reproduces the source
   verbatim and never invents a runtime value.
-- **concept-lab** — one page for one concept, any field: phone-first, minimal and dark, with
-  one main view, at most three controls and a few presets. Computed mode runs the real model
-  live in the page; authored mode covers concepts with no model; watch mode is a scene-by-scene
-  animation (it replaces the former concept-animation plugin). Clinical facts come
+- **concept-lab** — one page for one concept, any field: a guided step-by-step walkthrough on
+  one phone screen. Each step highlights one thing and explains it in beginner words; Back and
+  Next sit at the bottom; a few "what if" cases come at the end. Computed mode runs the real
+  model in the page; authored mode covers concepts with no model; watch mode is a
+  scene-by-scene animation (it replaces the former concept-animation plugin). Clinical facts come
   only from sourced reports. Verified by `scripts/verify.mjs`, then published as its own artifact.
 - **decision-interview** — mid-task decision gate: sweeps the task for every decision only the
   user can make and resolves them all in one batched option-picker interview, recorded in a

@@ -150,16 +150,21 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   `skills/code-explainer/references/`.
 - **concept-lab** (1.0.0 renamed ml-concept-lab and merged concept-animation into it) — one page
   for one concept, any field (ML, statistics, computational psychiatry, pharmacology, clinical).
-  Shape locked by the owner on 2026-11-10: phone first (one column, scroll allowed, 44 px touch
-  targets), minimal (one main view, at most 3 controls, 2–4 presets, one status line, one-line
-  footer), dark, and published as its own artifact (no vault filing unless asked). Three modes:
-  **computed** (the real model runs live; nothing drawn by hand), **authored** (reveal / branch /
-  sort / compare for concepts with no model, labelled with its source) and **watch** (a
-  scene-by-scene animation with captions and a player; motion must explain, never decorate).
+  Shape locked by the owner on 2026-11-10 and corrected the same day (1.1.0) after the first
+  real page: a **guided walkthrough** — the page opens on step 1, each step highlights one
+  focus and dims the rest, a step card explains it in one or two beginner sentences plus one
+  calculation line, Back/Next sit in a fixed bottom bar, the whole page fits one phone screen
+  (390×700, no scrolling), no Play button, no sliders by default, 0–4 "what if" cases on the
+  last step, a warm dark palette with serif headings; published as its own artifact (no vault
+  filing unless asked). Free-play (≤2 sliders) only on request. Three modes: **computed** (the
+  model is computed in the page; nothing drawn by hand), **authored** (reveal / branch / sort /
+  compare for concepts with no model, labelled with its source) and **watch** (a
+  scene-by-scene animation; motion must explain, never decorate).
   Clinical facts come only from a sourced report (session / vault / generated first via
   comprehensive-review or pubmed-research-note). Checks run in the page but are not shown
-  (`window.__lab.checks()`); `scripts/verify.mjs` drives the page at phone and desktop size in
-  both motion modes and must exit 0 before publishing. Intent-lock is the mandatory Step 0
+  (`window.__lab.checks()`); `scripts/verify.mjs` walks every step and case at phone and desktop
+  size in both motion modes (no-scroll, touch size, overlapping or covered labels, text
+  budget) and must exit 0 before publishing, and the step screenshots must then be looked at. Intent-lock is the mandatory Step 0
   gate. One skill + `/visualize [concept]` and `/animate [concept-or-source]`; build contract,
   pattern catalog (12 families) and animation grammar under `skills/concept-lab/references/`,
   worked lab under `examples/`. Boundary: static clinical one-pagers stay with

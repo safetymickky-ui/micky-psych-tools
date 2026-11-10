@@ -26,7 +26,7 @@ a milestone.
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | code-explainer        | 0.1.0   |
-| concept-lab           | 1.0.0   |
+| concept-lab           | 1.1.0   |
 | decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
 | clinical-minimal      | 0.1.0   |
@@ -199,6 +199,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `/learning-map`.
 
 ## Recent milestones
+
+- **2026-11-10** — **concept-lab 1.1.0**: the owner tested 1.0.0 with a backpropagation page and corrected the shape: he did not know where to look first, it was not step by step, the controls needed a long scroll, the view was crowded, and the look was "very AI-generated". Now: guided walkthrough by default (one highlighted focus per step, the rest dimmed, parts revealed in order), a step card with beginner text and one calculation line, Back/Next in a fixed bottom bar, no scrolling at 390×700, no Play button, no sliders by default, "what if" cases on the last step, warm dark palette with serif headings. `verify.mjs` walks every step and case and catches overlapping or covered labels and pages taller than the screen. Example is now `examples/backprop.html`; the free-play learning-rate example was removed. No free-play, authored or watch example yet.
 
 - **2026-11-10** — **intent-lock 1.0.0**, a rewrite from an owner interview (3 picker rounds). The
   owner's two complaints: the questions miss the point, and the work drifts from a goal that was

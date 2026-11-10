@@ -4,9 +4,10 @@ Each entry is a **menu**, not a build list. It names the **state**, candidate **
 candidate **controls with the question each asks**, the **invariants** for
 `window.__lab.checks()`, and the **instructive regime** the controls must reach.
 
-From each menu a lab takes **one main view** (a second only when the lesson is the link
-between two pictures), **at most 3 controls**, and **2–4 presets**. Choose the ones that carry
-the single question the page answers, and leave the rest out.
+From each menu a walkthrough takes **one main view** and turns it into **5–14 steps**: the
+first steps introduce the parts, the middle steps run the mechanism one piece at a time, the
+last sums up. The menu's controls and instructive regimes become the **"what if" cases** on
+the last step (0–4). Sliders are used only in a free-play lab (see the build contract).
 
 A concept not listed here still follows the method:
 
@@ -302,7 +303,7 @@ each item with its source. The footer says the page is authored.
 - **Compare** — two or three options with one switch that changes the case (age, comorbidity,
   severity) and shows what changes between them. The question: *what makes these differ here?*
 
-Rules for all four: one pattern per lab; at most 3 controls still holds (a set of cards is the
+Rules for all four: one pattern per lab; the control limits still hold (a set of cards is the
 view, not a control); the status line says what the last action showed; nothing is scored,
 timed, or graded unless the user asked for a quiz.
 

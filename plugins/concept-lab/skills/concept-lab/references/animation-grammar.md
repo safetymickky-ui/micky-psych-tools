@@ -39,7 +39,7 @@ data** — easing is style, position and order are semantics.
 
 ## Technical contract
 
-- **Page:** the five-part page of the build contract. The main view (`.view`) is one inline SVG
+- **Page:** the four-part page of the build contract (header, view, card, bottom bar). The main view (`.view`) is one inline SVG
   with a ≈4:3 `viewBox` and `preserveAspectRatio="xMidYMid meet"`. The caption is the status
   line (`#status`, `aria-live`). There are no presets and no parameter controls.
 - **Player:** `Play/Pause` (`id="play"`), `Prev` (`id="prev"`), `Next` (`id="next"`),
@@ -51,7 +51,7 @@ data** — easing is style, position and order are semantics.
 - **Autoplay off.** The page loads on scene 1 at rest.
 - **`prefers-reduced-motion: reduce`:** animation off; each scene renders as a static frame
   that Prev/Next step through, carrying the full argument without motion.
-- **Hooks for `verify.mjs`:** `window.__lab = { mode: 'watch', scenes: <count>, checks() }`.
+- **Hooks for `verify.mjs`:** `window.__lab = { mode: 'watch', steps: <scene count>, at(), checks() }`.
   `checks()` asserts at least: every scene has a caption; the final scene shows every labelled
   element; in the clinical lane, every number on screen is in the `SOURCED` list.
 

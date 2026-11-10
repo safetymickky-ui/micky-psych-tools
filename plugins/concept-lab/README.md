@@ -3,7 +3,10 @@
 Builds one interactive page that teaches one concept by letting you drive it. Any field:
 machine learning, statistics, computational psychiatry, pharmacology, clinical concepts.
 
-- **Phone first, minimal, dark.** One main view, 1–3 controls, 2–4 presets, one status line.
+- **A guided walkthrough.** The page opens on step 1; each step highlights one thing and
+  explains it in beginner words; Back and Next sit at the bottom. No Play button, no sliders
+  by default, a few "what if" cases on the last step.
+- **Phone first, no scrolling, warm dark look.**
 - **Computed mode** — the real model runs live in the page; nothing is drawn by hand.
 - **Authored mode** — for concepts with no model (reveal, branch, sort, compare); labelled as
   authored, with its source.
@@ -16,6 +19,6 @@ machine learning, statistics, computational psychiatry, pharmacology, clinical c
 Use: `/visualize <concept>` or `/animate <concept>`, or say "make an interactive page for …". Intent-lock runs first.
 
 `scripts/verify.mjs` drives a finished page at phone and desktop size and fails on any
-contract breach. `examples/learning-rate.html` is a worked lab.
+contract breach. `examples/backprop.html` is a worked lab.
 
 Renamed from `ml-concept-lab` in 1.0.0, which also merged `concept-animation` into it.

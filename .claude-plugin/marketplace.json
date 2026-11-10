@@ -141,7 +141,7 @@
     {
       "name": "concept-lab",
       "source": "./plugins/concept-lab",
-      "description": "Builds one page that teaches one concept, any field: an interactive page the user drives, or a watch-only animation. Phone-first, minimal, dark. Computed mode runs the real model live; authored mode covers concepts with no model; watch mode unfolds the concept scene by scene. Intent-lock gated; clinical facts from sourced reports only; each page is published as its own artifact. Replaces ml-concept-lab and concept-animation.",
+      "description": "Builds one page that teaches one concept, any field: a step-by-step walkthrough on one phone screen, or a watch-only animation. Each step highlights one thing and explains it in beginner words; Back/Next, no sliders by default, a few what-if cases at the end; warm dark look. Computed mode runs the real model; authored mode covers concepts with no model. Intent-lock gated; clinical facts from sourced reports only; each page is its own artifact.",
       "category": "education",
       "keywords": [
         "interactive",

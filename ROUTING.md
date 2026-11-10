@@ -31,7 +31,7 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram | code-explainer | `/explain-code` |
 | when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "make it interactive", "interactive page", "explorable", "let me play with the parameters"… | concept-lab | skill `concept-lab` |
 | Create a watch-only animation of a concept (concept-lab watch mode) — scene by scene with captions and a player; intent-lock gated; clinical facts only from sourced reports; published as its own arti… | concept-lab | `/animate` |
-| Build one interactive page for one concept (any field) — phone-first, minimal, dark; the real model runs live, or authored content when there is no model; published as its own artifact | concept-lab | `/visualize` |
+| Build one step-by-step page for one concept (any field) — a guided walkthrough on one phone screen; the real model is computed in the page, or authored content when there is no model; published as it… | concept-lab | `/visualize` |
 | when, mid-task, the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", or runs… | decision-interview | skill `decision-interview` |
 | Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
 | when the user presents a plan and says "critique this plan", "review my plan", "improve this plan", "วิจารณ์แผน", "ช่วยปรับแผนให้ดีขึ้น", "find weaknesses in my plan", "poke holes in my plan"… | plan-critique | skill `plan-critique` |
@@ -154,13 +154,13 @@ Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highl
 
 ### concept-lab — education
 
-Builds one page that teaches one concept, any field: an interactive page the user drives, or a watch-only animation. Phone-first, minimal, dark. Computed mode runs the real model live; authored mode covers concepts with no model; watch mode unfolds the concept scene by scene. Intent-lock gated; clinical facts from sourced reports only; each page is published as its own artifact. Replaces ml-concept-lab and concept-animation.
+Builds one page that teaches one concept, any field: a step-by-step walkthrough on one phone screen, or a watch-only animation. Each step highlights one thing and explains it in beginner words; Back/Next, no sliders by default, a few what-if cases at the end; warm dark look. Computed mode runs the real model; authored mode covers concepts with no model. Intent-lock gated; clinical facts from sourced reports only; each page is its own artifact.
 
 Keywords: interactive, explorable, animation, concept, visualization, education
 
-- **skill `concept-lab`** (skill) — Builds one page that teaches one concept, any field (ML, statistics, computational psychiatry, pharmacology, clinical): an interactive page the user drives, or a watch-only animation.
+- **skill `concept-lab`** (skill) — Builds one page that teaches one concept, any field (ML, statistics, computational psychiatry, pharmacology, clinical): a step-by-step walkthrough on one phone screen, where each step highlights one thing and explains i…
 - **`/animate`** (command) — Create a watch-only animation of a concept (concept-lab watch mode) — scene by scene with captions and a player; intent-lock gated; clinical facts only from sourced reports; published as its own artifact
-- **`/visualize`** (command) — Build one interactive page for one concept (any field) — phone-first, minimal, dark; the real model runs live, or authored content when there is no model; published as its own artifact
+- **`/visualize`** (command) — Build one step-by-step page for one concept (any field) — a guided walkthrough on one phone screen; the real model is computed in the page, or authored content when there is no model; published as its own artifact
 
 ### decision-interview — productivity
 

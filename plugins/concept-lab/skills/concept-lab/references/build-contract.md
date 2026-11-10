@@ -1,84 +1,117 @@
 # Build contract — how a lab page is made
 
 SKILL.md decides *what* to build. This file decides *how*, so every lab feels like the same
-instrument. The shape (phone first, minimal, dark, own artifact) was locked by the owner on
-2026-11-10.
+instrument. The owner locked the shape on 2026-11-10 and corrected it the same day after the
+first real page (backpropagation): he did not know where to look first, the page was not
+step by step, the controls were below a long scroll, the view was crowded, and the look was
+generic. Every rule below answers one of those.
 
-## The page — five parts, in this order
+## The default form is a guided walkthrough
 
-1. **Title** — the concept as an `<h1>`, and one line under it: the question the page answers.
-2. **Main view** — one canvas or SVG. A second view only when the lesson is the link between
-   two pictures.
-3. **Status line** — one sentence in plain words about what is happening now, with at most two
-   numbers ("Diverged at step 38: learning rate 1.2 is above the limit 1.0."). It is the
-   `aria-live="polite"` region. It replaces the readout row, the banner, and the check chips.
-4. **Controls** — presets first (2–4 chips), then at most 3 parameter controls, then transport
-   (Play · Step · Reset) only when the model advances in time.
-5. **Footer** — one or two short sentences (below).
+A lab is a sequence of **steps**. The page opens on step 1. Each step shows one new thing,
+points at it, and says in plain words what it is. The reader moves with **Back** and **Next**.
 
-**Watch mode** uses the same five parts: the main view is the animated SVG, the status line is
-the scene caption, and the controls are only the player (Play · Prev · Next · Restart and a
-scene indicator). See [animation-grammar.md](animation-grammar.md).
+- **One focus per step.** The one or few elements the step is about are highlighted (the focus
+  colour plus a soft halo). Everything else on the view is dimmed. The reader always knows
+  where to look.
+- **Progressive disclosure.** A value, label or part appears at the step that introduces it,
+  not before. Step 1 never shows the finished picture.
+- **The first steps introduce the parts** (what an input is, what a weight is) before anything
+  is computed. The level decides how many such steps; a beginner gets one per kind of part.
+- **5–14 steps.** Fewer is a single picture; more is two labs.
+- **No Play button.** The reader sets the pace. Play is allowed only in watch mode, and in a
+  free-play lab whose model runs for many iterations.
+- **The last step sums up** in two sentences and offers the "what if" cases (below).
 
-Nothing else is on the page. No readout row, no self-check panel, no keyboard legend, no seed
-field, no speed selector, no side notes. If a number matters, it goes in the status line or on
-the view as a label.
+**Free-play form** (sliders that re-run the model) is the exception: only when the user asks
+to "play with the parameters", or the level is advanced and the lesson is a regime change that
+needs a continuous control. It follows every other rule here.
 
-## Layout — phone first, scroll allowed
+## The page — four parts, all on one phone screen
+
+1. **Header** — the concept as a small `<h1>` and a step counter ("Step 3 of 12").
+2. **Main view** (`.view`) — one SVG or canvas.
+3. **Step card** (`#status`, `aria-live="polite"`) — a short title, one or two short sentences,
+   and at most one calculation line.
+4. **Bottom bar** — Back and Next, always visible, fixed to the bottom of the screen.
+
+Nothing else. No readout row, no check chips, no legend block, no footer paragraph, no
+shortcut list. The source line (see "Source line") sits inside the last step's card.
+
+**No-scroll rule:** at 390×700 (a phone inside the app's viewer) the whole page fits and every
+control can be reached without scrolling, at every step. Desktop gets the same column, centred.
 
 ```css
 html { color-scheme: dark; }
 body { margin: 0; background: var(--bg); color: var(--ink); }
-.wrap {
-  max-width: 720px; margin: 0 auto;
-  padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
-  display: flex; flex-direction: column; gap: 12px;
-}
-.view { width: 100%; aspect-ratio: 4 / 3; max-height: 52svh; }   /* never flex: 1 */
+.wrap { max-width: 560px; margin: 0 auto; min-height: 100svh;
+        padding: 12px 16px calc(84px + env(safe-area-inset-bottom));   /* room for the bar */
+        display: flex; flex-direction: column; gap: 10px; }
+.view { width: 100%; aspect-ratio: 4 / 3; max-height: 44svh; }      /* never flex: 1 */
+.bar  { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 10px;
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg); }
 ```
 
 - The document starts with `<!DOCTYPE html>`, sets `lang`, and has
   `<meta name="viewport" content="width=device-width, initial-scale=1">`.
-- **The view sizes itself** with `aspect-ratio` and a `max-height`. Do not give the wrapper a
-  fixed `height` and let the view take "the rest": in an embedded frame that collapses the
-  view to zero height.
-- **First-screen rule:** at 390×844 the title, the whole main view, and the first control are
-  visible without scrolling. Everything else may sit below.
-- No sideways scroll at 390 px. Preset chips wrap; they never overflow.
-- Desktop gets the same column, centred. No second layout.
-- Body text 16 px, secondary text no smaller than 13 px.
+- The view sizes itself with `aspect-ratio` and `max-height`. Never let it take "the rest" of
+  a fixed-height wrapper; in an embedded frame that collapses it to zero.
+- The step card has a fixed `min-height` sized for the longest step, so the bar and the view
+  do not jump between steps.
+- No sideways scroll at 390 px.
 
-## Controls — built for a thumb
+## The step card — beginner text
 
-- Every button, chip, and slider has a hit area of at least **44×44 px**.
-- Sliders are full-width, one per row: label on the left, live value with its unit on the right,
-  the `<input type="range">` under them.
-- Real `<button>` and `<input>` elements with labels and a visible focus ring. No clickable `<div>`.
-- Presets are `<button data-preset="name">` and show `aria-pressed`. Loading a preset sets the
-  controls, resets the run, and plays it (or shows its end state under reduced motion).
-- Canvases that take input use **pointer events** (`pointerdown` / `pointermove` / `pointerup`)
-  and `touch-action: none` on the canvas only, so the rest of the page still scrolls.
-- Keyboard still works (Space = play/pause, → = step, R = reset) but is not printed on the page.
-- Values that span orders of magnitude use a log slider (`value = 10 ** t`).
+- **Title:** two to five words naming the part or the action ("Hidden unit h1", "The error").
+- **Body:** one or two short sentences. Say what the part *does* before any symbol. Common
+  words. A term appears with its meaning the first time ("δ, the blame signal").
+- **Calculation line** (optional): the actual arithmetic of this step with the live numbers
+  (`1.00 × 0.50 + 0.50 × (−0.40) = 0.30`). One line. It carries the numbers so the view does
+  not have to.
+- Body 15–16 px; nothing under 13 px.
 
-## The engine — one state, one step, one render
+## An uncrowded view
+
+- **At most 10 pieces of text are at full strength in the view at once** (names, values and
+  labels together). A line shows one label at a time (its weight, or its gradient, never
+  both); the calculation line carries the rest. Labels of dimmed lines are hidden, not dimmed.
+- **No two labels overlap, and no label is covered by a shape.** Give every label an explicit
+  position; do not rely on a formula along the edge. `verify.mjs` fails on overlapping text.
+- Spread the parts over the whole view; leave at least a label's height between neighbours.
+- Text in the view is at least 13 px on a 390 px screen (for a 400-wide `viewBox`, 15 units).
+- Dimmed elements sit at about 30% opacity. Focus elements get the focus colour, a thicker
+  stroke and a halo; the halo may pulse slowly, and does not move under reduced motion.
+
+## Controls — few, and built for a thumb
+
+- **Back / Next** (`id="prev"`, `id="next"`): real buttons, at least 48 px tall. Next is the
+  primary button and the wider one. On the last step Next reads "Start again".
+- **"What if" cases** (`<button data-preset="name">`, 0–4; three fit one row on a phone): shown
+  on the last step only. "Start again" returns to the first case. Each
+  changes the inputs and jumps back to the step where its effect first shows. Each is named
+  for the situation ("Input is zero"), and the steps it affects say what changed and why.
+- **Sliders and other inputs: none for a beginner or intermediate reader.** At most 2 in a
+  free-play lab, full width, with the live value and unit shown.
+- Every button and chip is at least 44×44 px, with a visible focus ring. No clickable `<div>`.
+- Keyboard: → and Space go forward, ← goes back. Not printed on the page.
+- Canvases that take input use pointer events and `touch-action: none` on the canvas only.
+
+## The engine — one state, computed, then shown step by step
 
 ```js
-const S = { /* everything that defines a frame */ };
-function reset()  { /* rebuild S from the controls */ }
-function step()   { /* advance S by exactly one unit; touch no DOM */ }
-function render() { /* draw S; mutate nothing */ }
+const S = { k: 0, /* inputs of the current case */ };
+function compute() { /* run the whole model for the current case; touch no DOM */ }
+const STEPS = [ { focus: [...], title, body(m), calc(m) }, ... ];
+function render()  { /* draw what steps 0..k have introduced; highlight STEPS[k].focus */ }
 ```
 
-- `step()` is one unit of the model (one update, one iteration, one comparison, one dose).
-- Every view renders from `S` on the same tick.
-- The loop is `requestAnimationFrame` with a logical rate, so speed does not depend on the display.
-- **A control change re-runs from a defined point** (normally `reset()`). No stale state.
-- **A breakdown is a reported state.** When a tracked value stops being finite or passes a sane
-  bound, set `S.status`, stop the loop, keep the last finite frame, and say what broke in the
-  status line. `NaN`, `Infinity`, and `undefined` never reach the screen.
-- **Randomness** goes through one seeded generator (`mulberry32` below), re-created in `reset()`.
-  `Math.random()` is not used.
+- The model is computed in full by `compute()`. A step only decides what is *shown*. Every
+  number in a card or on the view is read from the computed model, never typed in.
+- Step text that depends on the case is chosen by a computed condition ("the output equals the
+  target, so the blame is 0"), not hard-coded per preset.
+- A breakdown is a reported state: `NaN`, `Infinity` and `undefined` never reach the screen.
+- Randomness goes through one seeded generator (`mulberry32`); `Math.random()` is not used.
+- Authored mode uses the same shape: `CONTENT` items with a `source` each; a step shows one.
 
 ```js
 function mulberry32(a) {
@@ -91,116 +124,106 @@ function mulberry32(a) {
 }
 ```
 
-Authored mode uses the same engine: `S` holds which item is open, which branch was taken, or
-where each card sits; `step()` is one user action; `render()` draws it. The content lives in
-one `const CONTENT = [...]` array, each item with its `source` field.
-
 ## Canvas or SVG
 
-- **Canvas** for anything redrawn every frame, fields and heat maps, more than about 200 marks.
-  Scale it for the device pixel ratio or it is blurry on every phone:
-
-```js
-function fit(cv) {                         // call from render(), and from a ResizeObserver
-  const dpr = window.devicePixelRatio || 1, r = cv.getBoundingClientRect();
-  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
-  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { ctx, w: r.width, h: r.height };   // draw in CSS pixels
-}
-```
-
-- **SVG** for structure with labels: graphs, trees, small matrices, pathways, cards.
-- Heavy fields are recomputed only when their inputs change, cached, and blitted per frame.
-- Labels drawn on a canvas are at least 12 px.
+- **SVG** for structure with labels (networks, pathways, cards, small matrices). It is the
+  default for a walkthrough, because parts must be highlighted and dimmed one by one.
+- **Canvas** for fields, heat maps and more than about 200 marks. Scale it for the device
+  pixel ratio (`canvas.width = cssWidth * devicePixelRatio`, then `setTransform(dpr,0,0,dpr,0,0)`).
 
 ## Checks — in the page, not on the page
 
-Every lab exposes its checks for the verify script and shows none of them:
-
 ```js
 window.__lab = {
-  mode: 'computed',                        // or 'authored', 'mixed', 'watch' (then also scenes: n)
-  checks() { return [ { name: 'gradient vs finite difference', pass: true, detail: '3.6e-7' } ]; }
+  mode: 'computed',            // 'computed' | 'authored' | 'mixed' | 'watch'
+  steps: STEPS.length,         // walkthrough and watch pages
+  at: () => S.k,               // the current step, counted from 0
+  checks() { return [ { name: 'gradients vs finite difference', pass: true, detail: '3e-11' } ]; }
 };
 ```
 
-`checks()` asserts on the values actually running. What to assert:
+`checks()` asserts on the values actually running:
 
-- **Anything with gradients** — analytic gradient against a central finite difference, compared
-  as an **absolute** difference with a noise floor: pass when
-  `diff <= max(1e-6 * scale, 20 * EPSILON * max(1, |f|) / h)`. A relative error fails falsely at
-  an optimum, where the gradient itself is zero.
-- **Probabilities** — sum to 1 within 1e-9; still finite with extreme inputs.
-- **Closed forms** — where one exists (least squares, a steady state, a half-life), the running
-  model agrees with it.
-- **Monotone quantities** — a loss or objective that theory says cannot rise does not rise.
-- **Sorting / search / paths** — output is ordered and a permutation of the input; no edge can
-  still be relaxed.
-- **Pharmacology and dose–response** — the curve passes through its defining points (50% effect
-  at EC50, half the concentration after one half-life) and stays inside its bounds (0–100%).
-- **Authored content** — every item has a non-empty `source`; every branch ends at an outcome;
-  every sortable card has exactly one correct place.
-- **Always** — no tracked value is non-finite unless the status says so.
+- **Gradients** — analytic against a central finite difference, as an **absolute** difference
+  with a noise floor: `diff <= max(1e-6 * scale, 20 * EPSILON * max(1, |f|) / h)`.
+- **Probabilities** — sum to 1 within 1e-9; finite with extreme inputs.
+- **Closed forms** — where one exists, the running model agrees with it.
+- **Monotone quantities** — what theory says cannot rise does not rise.
+- **Sorting / search / paths** — output ordered and a permutation of the input.
+- **Pharmacology** — the curve passes through its defining points and stays in its bounds.
+- **Authored content** — every item has a `source`; every branch ends at an outcome.
+- **Always** — no tracked value is non-finite unless the state says so.
 
 A failing check is a bug in the lab. Fix the lab; never drop the check.
 
-## Palette — dark, and each colour means one thing
+## Look — warm and hand-made, not a dashboard
+
+The page should feel like a notebook by lamplight: warm, soft, quiet.
 
 | Role | Token | Hex |
 | --- | --- | --- |
-| Background / panel / line | `--bg` / `--panel` / `--line` | `#0a1020` / `#0f1830` / `#22345c` |
-| Text / muted / faint | `--ink` / `--muted` / `--faint` | `#eaf0ff` / `#a9b7d6` / `#7f8fb4` |
-| Data — the inputs, the world, the patient | `--data` | `#3fd6dc` (cyan) |
-| Model — the parameter, the thing the user sets | `--model` | `#ffb84d` (amber) |
-| Change — the step just taken, the current selection | `--update` | `#c39cff` (violet) |
-| Good — converged, correct, in range | `--ok` | `#5fe39a` (green) |
-| Bad — broke, wrong, out of range | `--bad` | `#ff6b6b` (red) |
+| Background / card / raised / line | `--bg` / `--panel` / `--panel2` / `--line` | `#1f1a17` / `#2a2320` / `#352c28` / `#4d4139` |
+| Text / muted / faint | `--ink` / `--muted` / `--faint` | `#f3e9dc` / `#cdbba8` / `#a08e7e` |
+| Focus — where to look now | `--focus` | `#f0c36b` (honey) |
+| Data — the inputs, the world, the patient | `--data` | `#9cc3b1` (sage) |
+| Change — the signal, the gradient, the step taken | `--update` | `#e59572` (terracotta) |
+| Good — the new value, correct, in range | `--ok` | `#b3cf8a` (moss) |
+| Bad — broke, wrong, out of range | `--bad` | `#e57f6f` (clay red) |
 
-Colour is never the only signal: a series also has a label or a shape, and a bad state also has
-words in the status line. All text meets WCAG AA on its background. System font stack only.
+- **Type:** headings and step titles in a serif stack
+  (`"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif`); body in the system sans
+  stack. No monospace, no all-caps labels, no letter-spacing tricks.
+- **Shapes:** radius 16–20 px on cards, pill buttons, strokes 2.5–3 px with round caps.
+- **Not allowed:** neon cyan or violet, navy-black backgrounds, gradients, glows on text,
+  glass panels, chips that look like status badges, emoji as icons.
+- Each colour means one thing across the page. Colour is never the only signal: a focus also
+  has a halo and a thicker stroke, and a bad state also has words.
+- All text meets WCAG AA on its background.
 
 ## Motion and accessibility
 
-- `prefers-reduced-motion: reduce` — no autoplay and no transitions. A preset shows its end
-  state at once, and Step still advances one unit. No information exists only in motion.
-- The status line is `aria-live="polite"`, updated at most once per second while running.
-- Canvases and informative SVG have `role="img"` and an `aria-label` that says what is shown.
-- Real headings; one `<h1>`.
+- `prefers-reduced-motion: reduce` — no pulsing, no transitions. Nothing is lost, because the
+  reader steps by hand anyway.
+- The step card is the `aria-live="polite"` region.
+- The view has `role="img"` and an `aria-label` that says what it shows.
+- One `<h1>`; real buttons.
 
-## Footer — one or two sentences
+## Source line
 
-- **Computed:** "Computed live in this page: `{the model, in a few words}`. `{Toy-scale note if
-  any.}`"
-- **Authored:** "Authored content, not computed. Source: `{report title, date}`."
+One short sentence inside the last step's card, in the faint colour:
+
+- **Computed:** "Everything here is computed in this page: `{model in a few words}`. `{Toy note.}`"
+- **Authored:** "Written content, not computed. Source: `{report title, date}`."
 - **Watch:** "Animation, illustrative." or "Animation from: `{report title, date}`."
-- **Clinical content, any mode,** adds: "Teaching aid, not a substitute for clinical
-  judgment or local protocol."
+- **Clinical content** adds: "Teaching aid, not a substitute for clinical judgment or local protocol."
+
+## Watch mode
+
+Same page and look. The step card is the scene caption, and the bar holds Back, Play/Pause
+(`id="play"`), Next and Restart (`id="restart"`). See [animation-grammar.md](animation-grammar.md).
 
 ## Verify — `scripts/verify.mjs`
 
 `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.mjs" ./lab.html [--out DIR]`
 
-The script finds Playwright itself (local or global install) and the Chromium under
-`PLAYWRIGHT_BROWSERS_PATH`; never run `playwright install`. For each of phone (390×844) and
-desktop (1280×800), with motion on and reduced, it:
+It finds Playwright itself (local or global) and the Chromium under
+`PLAYWRIGHT_BROWSERS_PATH`; never run `playwright install`. For phone (390×700) and desktop
+(1280×800), with motion on and reduced, it:
 
-1. loads the page and collects console errors;
-2. checks structure: doctype, one `<h1>`, at most 3 parameter controls, 2–4 presets (watch
-   mode: no controls or presets, the four player buttons, 3–8 scenes), nothing loaded from
-   outside the file;
-3. checks layout: no sideways scroll; on phone, the main view (`.view`) and the first control
-   end inside the first screen; every button, chip, and slider is at least 44 px tall;
-4. clicks every preset, waits, and saves `shot-<size>-<preset>.png` (watch mode: steps through
-   every scene and saves `shot-<size>-scene<n>.png`);
-5. moves every slider to both ends, toggles every checkbox, and runs Play → Pause → Step → Reset
-   when those buttons exist;
-6. after each action, fails on `NaN`, `Infinity`, or `undefined` in the page text;
-7. calls `window.__lab.checks()` and fails on any `pass: false` or a missing `__lab`.
+1. loads the page and collects console errors and network requests;
+2. checks structure: doctype, viewport tag, one `<h1>`, `.view`, `#status`, `#prev`, `#next`,
+   `window.__lab` with 5–14 steps, at most 2 inputs, at most 4 presets, no Play button outside
+   watch mode;
+3. walks every step with Next and, at each one, fails on: an empty card; `NaN`, `Infinity` or
+   `undefined` on screen; sideways scroll; on phone, a page taller than the screen or a button
+   outside it; a touch target under 44 px; **two overlapping text labels in the view, or a
+   label outside it or covered by a shape**; more than 10 pieces of full-strength text;
+4. saves `shot-<size>-step<n>.png` for every step;
+5. clicks every "what if" case, walks it to the end the same way, and saves its last step;
+6. goes Back to step 1 and checks the page returns to its first state;
+7. calls `window.__lab.checks()` for the base case and for every preset, and fails on any
+   `pass: false`.
 
-Exit code 0 means every check held in all four runs. The screenshots still need eyes: the
-script cannot tell whether a preset shows what its name says.
-
-The page must use these hooks so the script can find things: `.view` on the main view,
-`data-preset` on preset buttons, `id="play"`, `id="step"`, `id="reset"` on transport buttons
-that exist (watch mode: `id="play"`, `id="prev"`, `id="next"`, `id="restart"`), `id="status"`
-on the status line, and `window.__lab`.
+Exit code 0 means all of it held. Then look at the phone screenshots yourself, step by step:
+is it clear where to look, does the card say what the highlight shows, is anything cramped?
+The script cannot judge that.

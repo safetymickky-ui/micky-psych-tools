@@ -2,17 +2,17 @@
 name: concept-lab
 description: >-
   Builds one page that teaches one concept, any field (ML, statistics, computational
-  psychiatry, pharmacology, clinical): an interactive page the user drives, or a watch-only
-  animation. Phone-first, minimal, dark. Computed mode runs the real model live; authored
-  mode covers concepts with no model; watch mode unfolds the concept scene by scene. Use
-  when the user says "visualize this concept", "interactive visualization", "make an
-  interactive demo", "make it interactive", "interactive page", "explorable", "let me play
-  with the parameters", "ทำภาพอธิบายแบบโต้ตอบ", "ทำแบบโต้ตอบ", "animate this concept",
-  "create an animation", "make an animation of X", "animated explainer", "show it moving",
-  "ทำแอนิเมชัน", "ภาพเคลื่อนไหว", or runs /visualize or /animate. Intent-lock runs first; clinical facts
-  come only from a sourced report; each page is its own artifact. NOT for: a static
-  one-page summary (clinical-infographic), a chart of the user's own data (dataviz), or
-  explaining a code listing (code-explainer).
+  psychiatry, pharmacology, clinical): a step-by-step walkthrough on one phone screen, where
+  each step highlights one thing and explains it in beginner words, or a watch-only
+  animation. Computed mode runs the real model; authored mode covers concepts with no
+  model. Use when the user says "visualize this concept", "interactive visualization",
+  "make an interactive demo", "make it interactive", "interactive page", "explorable", "let
+  me play with the parameters", "ทำภาพอธิบายแบบโต้ตอบ", "ทำแบบโต้ตอบ", "animate this
+  concept", "create an animation", "make an animation of X", "animated explainer", "show it
+  moving", "ทำแอนิเมชัน", "ภาพเคลื่อนไหว", or runs /visualize or /animate. Intent-lock runs
+  first; clinical facts come only from a sourced report; each page is its own artifact. NOT
+  for: a static one-page summary (clinical-infographic), a chart of the user's own data
+  (dataviz), or explaining a code listing (code-explainer).
 ---
 
 # Concept Lab — one concept, one page
@@ -21,23 +21,30 @@ You turn one concept into one **page**: a single self-contained `.html` file tha
 opens on a phone. Usually the user drives it and learns from what the page does in response;
 when they ask for an animation, the page plays the concept scene by scene.
 
-The owner locked this shape on 2026-11-10. Do not drift from it:
+The owner locked this shape on 2026-11-10, and corrected it the same day after the first real
+page. Do not drift from it:
 
 - **Any concept is in scope.** ML, statistics, computational psychiatry, pharmacology,
   clinical concepts, anything else.
-- **Phone first.** One column, page scroll allowed, touch-size controls. Desktop gets the same
-  column, centred.
-- **Minimal.** One main view, 1–3 controls, 2–4 presets, one status line, a one-line footer.
-  No readout row, no self-check chips, no keyboard-shortcut legend, no long footer.
-- **Dark.** The palette in the build contract; no light theme.
+- **A guided walkthrough, step by step.** The page opens on step 1. Each step shows one new
+  thing, highlights it so the reader knows where to look, and explains it in one or two short
+  beginner-friendly sentences. The reader moves with Back and Next. No Play button.
+- **Never the whole picture at once.** Parts and numbers appear at the step that introduces
+  them; everything a step is not about is dimmed. The view is never crowded.
+- **Phone first, no scrolling.** The whole page fits one phone screen; Back and Next sit in a
+  bar at the bottom, always in thumb reach.
+- **Few controls.** No sliders for a beginner or intermediate reader. Up to three or four
+  "what if" cases appear on the last step.
+- **Warm, not generic.** A warm dark palette, serif headings, soft shapes. No neon, no
+  dashboard chrome.
 - **Its own artifact.** Each lab is published as a separate artifact page. Nothing goes to the
   vault unless the user asks.
 
 Read [references/build-contract.md](references/build-contract.md) before writing code and
 [references/concept-patterns.md](references/concept-patterns.md) before choosing the view. For
 watch mode, also read [references/animation-grammar.md](references/animation-grammar.md).
-`${CLAUDE_PLUGIN_ROOT}/examples/learning-rate.html` is a worked lab built to both; start from
-its shape.
+`${CLAUDE_PLUGIN_ROOT}/examples/backprop.html` is a worked lab built to both; start from its
+shape.
 
 ## Three modes — pick by the request and the concept
 
@@ -62,16 +69,22 @@ footer names both.
 Never present authored content as computed, and never fake a computation: if a view cannot be
 produced by the model, it is authored and labelled, or it is cut.
 
-## Two rules that make it teach
+## Three rules that make it teach
 
-- **Every control is a question.** Name the question before adding the control ("what if the
-  learning rate is too big?", "what if occupancy passes 80%?", "which defense is this?"). A
-  control with no question is cut. Three controls is the ceiling; speed and zoom do not count
-  and are usually left out.
-- **The instructive regime is reachable, and a preset jumps to it.** In computed mode the
-  controls reach the place where the model breaks or changes behaviour, and a breakdown is
-  reported in the status line, never rendered as `NaN`. In authored mode the presets jump to
-  the cases people confuse. A user who touches nothing but one preset must still meet the point.
+- **One focus per step.** Before writing a step, name the one thing the reader should look at
+  and the one sentence that says what it does. If a step needs two focuses, it is two steps.
+- **Words before symbols, numbers in the calculation line.** Say what a part does in common
+  words first. Show the actual arithmetic with the live numbers in the step's one calculation
+  line, so the view does not have to carry every number.
+- **The instructive case is one tap away.** The "what if" cases on the last step jump to the
+  situations that change the lesson (the answer is already right, an input is zero, a unit is
+  saturated; or, in authored mode, the items people confuse). Each jumps back to the step
+  where its effect first shows, and those steps say what changed and why. A breakdown is
+  reported in words, never rendered as `NaN`.
+
+**Free-play form** (sliders that re-run the model, at most two) is the exception: only when the
+user asks to "play with the parameters", or the level is advanced and the lesson needs a
+continuous control. It keeps every other rule.
 
 ## Content fidelity
 
@@ -115,21 +128,22 @@ One main view. A second view is allowed only when the lesson is the link between
 
 ## Step 2 — Write the lab spec before any code
 
-About ten lines, in text:
+In text, before the file exists:
 
 1. The concept and the question the page answers.
 2. Mode. Computed: the model as it will be typed (update rule, formula, recurrence). Authored:
    the content items and the source of each.
-3. The main view, and what it draws.
-4. Controls (at most 3), each with its question and its range, including the instructive end.
-5. Presets (2–4), each named for what it shows.
-6. The status line: the sentence it shows in the normal case and in the broken case.
-7. Checks: the invariants `window.__lab.checks()` will assert (contract, "Checks").
-8. Footer line.
+3. The main view: its parts, and an explicit position for every part and every label.
+4. **The step list** (5–14 steps). For each step: the focus, a two-to-five-word title, the one
+   or two sentences, and the calculation line if it has one. The first steps introduce the
+   parts; the last sums up.
+5. The "what if" cases (0–4), each with the step it jumps to and what the steps will say.
+6. Checks: the invariants `window.__lab.checks()` will assert (contract, "Checks").
+7. Source line.
 
-Watch mode replaces items 4–6 with a **storyboard**: 3–8 scenes, and for each one what enters,
-what moves, the caption, and the claim the motion makes. Name the signature moment. Every
-clinical fact in the storyboard maps to the source report before any HTML exists.
+Watch mode replaces items 4–5 with a **storyboard**: 3–8 scenes, and for each one what enters,
+what moves, the caption, and the claim the motion makes. Every clinical fact in the spec maps
+to the source report before any HTML exists.
 
 If the update rule cannot be written down here, it cannot be implemented honestly. Stop and
 resolve that before coding.
@@ -140,17 +154,17 @@ Full rules are in `references/build-contract.md`. The load-bearing ones:
 
 - One self-contained HTML file starting with `<!DOCTYPE html>`; inline CSS and JS; no
   libraries, fonts, images, or CDN.
-- Phone-first single column; page scroll is allowed; the main view keeps a fixed aspect ratio
-  and, with the title and the first control, fits the first phone screen.
-- Touch targets at least 44 px; real `<button>` and `<input>` elements; pointer events on
-  canvases.
-- One state object, one `step()`, one `render()`. A control change re-runs from a defined point.
-- One status line (`aria-live`), in plain words with at most two numbers.
-- Checks run in the page but are not shown: `window.__lab.checks()` returns them for the
-  verify script.
-- `prefers-reduced-motion`: no autoplay; presets show their end state at once.
+- Four parts on one phone screen: header with a step counter, the main view, the step card,
+  the bottom bar with Back and Next. No scrolling at 390×700.
+- `compute()` runs the whole model; a step only decides what is shown and highlighted. Every
+  number on the page is read from the computed model.
+- Focus elements get the focus colour and a halo; the rest is dimmed; labels of dimmed parts
+  are hidden. At most 10 pieces of full-strength text in the view; no overlapping labels.
+- The warm palette and serif headings from the contract.
+- Checks run in the page but are not shown: `window.__lab` exposes `mode`, `steps`, `at()` and
+  `checks()` for the verify script.
 - Watch mode: the motion vocabulary, scene pacing and player are in
-  `references/animation-grammar.md`; the caption is the status line.
+  `references/animation-grammar.md`.
 
 ## Step 4 — Drive it and verify
 
@@ -160,13 +174,19 @@ Run the bundled script; do not paste a verify script into the session:
 node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.mjs" ./lab.html
 ```
 
-It drives the page at phone (390×844) and desktop (1280×800) sizes, in both motion modes, and
-exits non-zero on any failure: console errors, sideways scroll, a touch target under 44 px,
-the main view or first control outside the first phone screen, more than 3 controls or 4
-presets, `NaN`/`Infinity`/`undefined` on screen, or a failing check. It saves one screenshot
-per preset, or per scene in watch mode. Then **look at the phone screenshots yourself** and
-confirm each preset shows what its name says, and each scene what its caption says. Fix and re-run until it exits 0. This pass changes how the page runs and
-sits on screen, never what the model computes or what the source says.
+It drives the page at phone (390×700) and desktop (1280×800) sizes, in both motion modes. It
+walks every step and every "what if" case and exits non-zero on any failure: console errors, a
+page taller than the phone screen, a control off screen or under 44 px, overlapping, covered or
+clipped labels, too much full-strength text, a Play button in a walkthrough, sliders beyond the
+limit, `NaN`/`Infinity`/`undefined` on screen, or a failing check. It saves one screenshot per
+step.
+
+Then **look at the phone screenshots yourself, every step**, and ask the owner's three
+questions: is it clear where to look first, does the card explain what is highlighted in
+beginner words, and is anything cramped? The script passed a first backpropagation page whose
+labels sat behind the nodes; only the screenshots showed it. Fix and re-run until it exits 0
+and the screenshots hold. This pass changes how the page runs and sits on screen, never what
+the model computes or what the source says.
 
 ## Step 5 — Publish
 
@@ -181,7 +201,7 @@ Never claim a publish or a save that did not happen.
 
 ## Reply in chat
 
-Short: the concept and the question the page answers, the preset to try first, and the mode
+Short: the concept and the question the page answers, the "what if" case to try first, and the mode
 (with the source report when authored or clinical). The page is the deliverable; do not
 restate the concept as prose.
 
@@ -199,15 +219,22 @@ restate the concept as prose.
 
 This skill has failed if:
 
-- The page shows more than one screen of panels: a readout row, check chips, a shortcut legend,
-  a multi-line footer, more than 3 controls, or more than 4 presets.
-- On a phone the page scrolls sideways, a control is too small to touch, or the main view and
-  first control are not on the first screen.
+- The page opens on the finished picture, or a step has no single highlighted focus, so the
+  reader does not know where to look.
+- A step's text assumes a term it has not explained, or runs past two short sentences.
+- On a phone the page needs scrolling, Back/Next are not in thumb reach, or a control is too
+  small to touch.
+- The view is crowded: overlapping or covered labels, more than 10 pieces of full-strength
+  text, a line carrying two labels at once.
+- A walkthrough has a Play button, or a beginner page has sliders.
+- The page looks like a generic dashboard: neon accents, navy-black, monospace readouts,
+  all-caps labels.
 - In computed mode, anything on screen was drawn by hand to look like output, or the
   implemented model does not match the concept's definition.
 - Authored content is presented as computed, or carries no source line.
 - A clinical drug, dose, threshold, or number is not traceable to the source report.
-- No control or preset reaches the instructive regime, or a control's question cannot be named.
+- No "what if" case reaches the situation that changes the lesson, or a case does not say what
+  changed.
 - In watch mode, a motion decorates (its claim cannot be named), the sequence implies an order
   or cause the source does not support, the last scene is not a complete labelled summary, or
   a schematic lacks its *illustrative* label.
