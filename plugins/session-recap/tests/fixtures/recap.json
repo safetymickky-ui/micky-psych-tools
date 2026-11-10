@@ -1,0 +1,54 @@
+{
+  "title": "Upload client recap",
+  "date": "2026-11-10",
+  "lang": "en",
+  "focus": "",
+  "outcome": "The upload client now retries a failed request three times, and a pull request is open. The retry is tested; the timeout change is not.",
+  "open": [
+    {"what": "Decide whether the timeout stays at 30 s or goes to 60 s.", "kind": "question", "owner": "user"},
+    {"what": "The timeout change in `client.py` has no test.", "kind": "risk", "owner": "claude"},
+    {"what": "Review and merge the pull request.", "kind": "todo", "owner": "user"}
+  ],
+  "done": [
+    {"what": "Added a retry with backoff to `upload()` in `client.py`.", "type": "change", "status": "done",
+     "verified": "yes", "check": "c1", "detail": "",
+     "evidence": [{"kind": "file", "ref": "src/client.py"}, {"kind": "commit", "ref": "a1b2c3d"}]},
+    {"what": "Raised the request timeout from 10 s to 30 s.", "type": "change", "status": "partial",
+     "verified": "no", "detail": "The value is changed. No test covers it, and the 60 s option was not decided.",
+     "evidence": [{"kind": "file", "ref": "src/client.py"}]},
+    {"what": "Explained why the old client dropped uploads over 5 MB.", "type": "answer", "status": "done",
+     "verified": "n/a", "detail": "", "evidence": []},
+    {"what": "Ran the integration suite against staging.", "type": "change", "status": "failed",
+     "verified": "no", "detail": "The staging host refused the connection, so no integration test ran.",
+     "evidence": [{"kind": "command", "ref": "pytest tests/integration"}]},
+    {"what": "Opened a pull request for the retry.", "type": "change", "status": "done", "verified": "no",
+     "detail": "", "evidence": [{"kind": "pr", "ref": "Retry failed uploads", "url": "https://github.com/example/app/pull/12"}],
+     "from": "summary"}
+  ],
+  "decisions": [
+    {"what": "Three retries with a doubling wait, starting at 1 s.", "by": "user", "why": "You picked it over five retries to keep the worst case under 10 s."},
+    {"what": "The retry covers only 5xx responses and network errors.", "by": "claude", "why": "A 4xx response will fail again the same way."},
+    {"what": "The log level for a retry is `WARNING`.", "by": "default", "why": ""}
+  ],
+  "checks": [
+    {"id": "c1", "what": "pytest tests/unit -q", "result": "passed", "detail": "14 passed in 0.8 s"},
+    {"id": "c2", "what": "pytest tests/integration", "result": "failed", "detail": "ConnectionRefusedError on the staging host"},
+    {"id": "c3", "what": "ruff check src", "result": "not run", "detail": ""}
+  ],
+  "changes": {
+    "files": [
+      {"path": "src/client.py", "change": "modified"},
+      {"path": "tests/unit/test_retry.py", "change": "added"},
+      {"path": "src/legacy_upload.py", "change": "deleted"}
+    ],
+    "commits": [{"sha": "a1b2c3d4e5f6", "subject": "feat: retry failed uploads with backoff"}],
+    "prs": [{"title": "Retry failed uploads", "url": "https://github.com/example/app/pull/12", "state": "open"}],
+    "artifacts": [],
+    "external": []
+  },
+  "asked": [
+    {"text": "The upload keeps failing on big files. Can you make it retry?"},
+    {"text": "Also bump the time out", "note": "Raise the request timeout; the new value was not given, so 30 s was used."}
+  ],
+  "notes": {"compacted": true, "gaps": ["The pull request's CI result was not read."]}
+}
