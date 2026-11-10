@@ -1,0 +1,133 @@
+<title>{{TITLE}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="session-recap" content="recap-page">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap">
+<style>
+/* Layout: a handover note. One reading column. The outcome and the open items lead, because the reader decides what to do next from them; the record of what was done follows as a ruled list where each row starts with its status. Palette: Clinical Minimal (white page, one clinical-teal accent); status colours are separate from the accent and always come with a word and a mark. */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F5F7F8;
+  --sunken: #ECEFF2;
+  --line: #DCE2E6;
+  --line-strong: #C3CCD3;
+  --ink: #1B232B;
+  --ink-2: #4A5561;
+  --ink-3: #636E7A;
+  --accent: #0E7C86;
+  --accent-ink: #0B6A73;
+  --accent-tint: #E8F4F5;
+  --ok: #1F6F43;
+  --ok-tint: #E6F2EB;
+  --warn: #8A5A06;
+  --warn-tint: #FBF1E1;
+  --bad: #A8322D;
+  --bad-tint: #FAE9E8;
+  --font-ui: "Leelawadee UI", "Atkinson Hyperlegible", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.4375rem;
+  --step-3: 1.75rem;
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+    --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+    --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C;
+    --ok: #7CCB9B; --ok-tint: #14271C; --warn: #E0A458; --warn-tint: #2E2414; --bad: #EE8A84; --bad-tint: #311917;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1519; --panel: #151D22; --sunken: #1B252B; --line: #26313A; --line-strong: #364450;
+  --ink: #E3E9EC; --ink-2: #A9B4BB; --ink-3: #8A969E;
+  --accent: #3DB1BA; --accent-ink: #6CC9D0; --accent-tint: #13292C;
+  --ok: #7CCB9B; --ok-tint: #14271C; --warn: #E0A458; --warn-tint: #2E2414; --bad: #EE8A84; --bad-tint: #311917;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 720px; margin-inline: auto; display: grid; gap: 40px; }
+h1, h2 { text-wrap: balance; margin: 0; line-height: 1.25; }
+p { margin: 0; }
+a { color: var(--accent-ink); text-underline-offset: 2px; overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+code { font-family: var(--font-mono); font-size: 0.875em; background: var(--sunken); padding: 0.1em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+.num { font-variant-numeric: tabular-nums; }
+
+.masthead { display: grid; gap: 12px; }
+.eyebrow { font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.masthead h1 { font-size: var(--step-3); }
+.outcome { font-size: var(--step-1); line-height: 1.5; max-width: 62ch; }
+.tally { color: var(--ink-2); font-size: var(--step--1); }
+.focus { color: var(--ink-2); font-size: var(--step--1); }
+
+.block { display: grid; gap: 12px; }
+.block > h2 { font-size: var(--step-2); }
+.rows { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--line-strong); }
+.row { display: grid; grid-template-columns: 6.75rem minmax(0, 1fr); gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.row-main { min-width: 0; display: grid; gap: 6px; }
+.what { overflow-wrap: anywhere; }
+.detail { color: var(--ink-2); overflow-wrap: anywhere; }
+.sub { color: var(--ink-3); font-size: var(--step--1); overflow-wrap: anywhere; }
+
+/* A status is a mark, a word and a colour together, never colour alone. */
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: var(--step--1); font-weight: 700; line-height: 1.3; padding-top: 3px; align-self: start; }
+.tag::before { content: ""; flex: none; width: 0.625rem; height: 0.625rem; border-radius: 50%; border: 2px solid currentColor; box-sizing: border-box; }
+.tag.ok { color: var(--ok); } .tag.ok::before { background: currentColor; }
+.tag.warn { color: var(--warn); } .tag.warn::before { border-radius: 2px; }
+.tag.bad { color: var(--bad); } .tag.bad::before { border-radius: 0; transform: rotate(45deg); background: currentColor; }
+.tag.plain { color: var(--ink-3); } .tag.plain::before { border-style: dashed; }
+.tag.accent { color: var(--accent-ink); }
+
+.open-box { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 16px; }
+.open-box .rows { border-top: 0; }
+.open-box .row:last-child { border-bottom: 0; }
+.none { padding: 14px 0; color: var(--ink-2); }
+
+.evidence { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.evidence li { font-size: var(--step--1); color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 2px 8px; min-width: 0; overflow-wrap: anywhere; }
+.evidence .k { color: var(--ink-3); font-weight: 700; margin-right: 6px; }
+.evidence .mono, .mono { font-family: var(--font-mono); font-size: 0.9375em; }
+
+.sub-block { display: grid; gap: 8px; }
+.sub-block h3 { margin: 0; font-size: var(--step--1); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.plain-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.plain-list li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 12px; overflow-wrap: anywhere; }
+.plain-list .lead { color: var(--ink-3); font-size: var(--step--1); font-weight: 700; padding-top: 3px; }
+.plain-list .lead.mono { font-weight: 600; }
+.plain-list .add { color: var(--ok); } .plain-list .del { color: var(--bad); } .plain-list .mod { color: var(--warn); }
+
+.asked { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: ask; }
+.asked li { counter-increment: ask; display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: 8px; }
+.asked li::before { content: counter(ask); color: var(--ink-3); font-size: var(--step--1); font-weight: 700; font-variant-numeric: tabular-nums; padding-top: 3px; }
+.asked blockquote { margin: 0; padding-left: 12px; border-left: 2px solid var(--line-strong); overflow-wrap: anywhere; }
+.gaps { margin: 0; padding-left: 1.25rem; color: var(--ink-2); display: grid; gap: 6px; }
+.foot { color: var(--ink-3); font-size: var(--step--1); border-top: 1px solid var(--line); padding-top: 16px; }
+
+@media (max-width: 520px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .plain-list li { grid-template-columns: 4.5rem minmax(0, 1fr); }
+}
+@media print {
+  body { padding-block: 0; }
+  .open-box { background: none; }
+  .row, .asked li { break-inside: avoid; }
+}
+</style>
+
+<div class="wrap" lang="{{LANG}}">
+{{BODY}}
+</div>

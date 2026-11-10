@@ -1,0 +1,16 @@
+{
+  "name": "session-recap",
+  "version": "0.1.0",
+  "description": "Writes a summary of what was done in this session as one page: what is still open, what was done with its evidence (files, commits, pull requests, artifacts), what was decided and by whom, what was checked, and what was asked. One private artifact page per session, or a self-contained HTML file. Only on request. Reports only what the session record shows; nothing is called verified without a check that ran.",
+  "author": {
+    "name": "Thanawat Suharit (Micky)"
+  },
+  "license": "MIT",
+  "keywords": [
+    "session-summary",
+    "recap",
+    "handoff",
+    "work-log",
+    "html-report"
+  ]
+}

@@ -58,6 +58,10 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | Map a material's prerequisite knowledge (dependency ladder), its learning pearls and what to explore next, saved to Learn | learning-map | `/learning-map` |
 | when the user says "run EGM end to end", "take this idea through EGM", "egm pipeline", "spec-driven this feature", "continue the EGM flow", "next EGM step", or runs /egm-conductor:conduct. | egm-conductor | skill `conduct` |
 | when the user asks "EGM status", "where am I in EGM", "what's the next EGM step", or runs /egm-conductor:status. | egm-conductor | skill `status` |
+| when the user says "interview me about the look", "ask me how it should look", "lock the look", "show me options first", "remember this look", "ถามเรื่องหน้าตาก่อน", "ล็อคหน้าตา", or runs… | visual-lock | skill `visual-lock` |
+| Interview me on how a visual build should look before it is built, or show and manage my saved look guidance | visual-lock | `/visual-lock` |
+| when the user says "summarize this session", "session summary", "recap this session", "what did we do in this session", "summary of what was done", "wrap up this session", "handoff summary", "สรุป… | session-recap | skill `session-recap` |
+| Summarize what was done in this session as one page (a private artifact, or an HTML file) | session-recap | `/recap` |
 
 ## Plugins
 
@@ -257,3 +261,21 @@ Keywords: egm, spec-driven-development, design-docs, goldfish-review, orchestrat
 
 - **skill `conduct`** (skill) — Drives the whole Elephant-Goldfish Model (EGM) spec-driven workflow end to end from one entry point: preflight, optional codebase bootstrap, brainstorm, draft, Goldfish review and resolve, human PR gate, implementation…
 - **skill `status`** (skill) — Shows where the current project stands in the Elephant-Goldfish Model (EGM) workflow: whether egm@egm is installed and enabled, which EGM artifacts exist (concepts brief, design draft, design docs, review and drift repo…
+
+### visual-lock — design
+
+Interviews you on how a visual build should look before it is built (canvas, layout, density, emphasis, colour, type, graphics, motion): picker questions in words first, one sheet of rendered sample variants only when words cannot settle a choice. Writes a measurable look spec, checks the rendered result against it, and saves each choice to the "Look Book" artifact so later builds ask less. One skill + /visual-lock.
+
+Keywords: visual-interview, look-spec, design-preferences, sample-variants, alignment
+
+- **skill `visual-lock`** (skill) — Locks how a visual build should look before it is built, and saves each choice as guidance for later builds.
+- **`/visual-lock`** (command) — Interview me on how a visual build should look before it is built, or show and manage my saved look guidance
+
+### session-recap — productivity
+
+Writes a summary of what was done in this session as one page: what is still open, what was done with its evidence (files, commits, pull requests, artifacts), what was decided and by whom, what was checked, and what was asked. One private artifact page per session, or a self-contained HTML file. Only on request. Reports only what the session record shows; nothing is called verified without a check that ran. One skill + /recap.
+
+Keywords: session-summary, recap, handoff, work-log, html-report
+
+- **skill `session-recap`** (skill) — Writes a summary of what was done in this session as one page: what is still open, what was done with its evidence (files, commits, pull requests, artifacts), what was decided and by whom, what was checked, and what was…
+- **`/recap`** (command) — Summarize what was done in this session as one page (a private artifact, or an HTML file)

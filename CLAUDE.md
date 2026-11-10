@@ -272,6 +272,31 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   `SKILL.md` from the install path in `installed_plugins.json` (`scripts/egm_status.py`) and
   follows it, spawning the registered `egm:egm-*` agents. `--auto` skips only its own
   confirmations. Two skills (`conduct`, `status`), no commands.
+- **visual-lock** — the look interview before a visual build, fourth gate in the alignment family
+  (intent-lock owns what is wanted; this owns how it looks). Eight slots (canvas, layout, density,
+  emphasis, colour, type, graphics, motion), each filled from the user's words, then a fixed look
+  (a plugin's design contract, a project `DESIGN.md`, the page being edited), then a saved rule,
+  and asked only when still open. Shape locked by the owner on 2026-11-10: choices are saved for
+  reuse, and questions come in words first — picker, at most 2 rounds (1 after intent-lock), no
+  recommendation on taste — with one sample sheet of 2–4 rendered variants (real content, true
+  canvas size, at most two slots varied) only when words cannot settle a choice. The spec holds
+  measurable values; the render is checked against it before delivery; 2–4 look lines go with
+  the delivery. The user's choices and later corrections are saved to the "Look Book" artifact
+  (database collections `rules` and `builds`; found by exact title + `visual-lock` meta marker,
+  created from `assets/look-book.html` at the first save), never to plugin files. A rule is
+  scoped to a kind of output and widens to `any` when the same choice is made for a second kind.
+  One skill + `/visual-lock [what to build | show | forget | reset]`; slots, sample-sheet and
+  Look Book references under `skills/visual-lock/references/`.
+- **session-recap** — one page that says what was done in this session, made only on request
+  (shape locked by the owner on 2026-11-10: one private artifact page per session; an HTML file
+  when asked or when no Artifact tool exists). Order: outcome → still open → done (status,
+  evidence, the check that verified it) → decisions (by the user, Claude or a default) → checks →
+  what changed → what was asked. Accuracy contract: only what the session record shows, exact
+  status words, "verified" only behind a check that passed, no praise, no secrets, no
+  patient-identifiable detail. `build_recap.py` checks `recap.json` and renders nothing when a
+  rule is broken (exit 0 required before delivery); English and Thai headings; no tables. No
+  intent-lock gate and no vault filing. One skill + `/recap [focus | file]`; contract under
+  `skills/session-recap/references/`, script tests under the plugin's `tests/`.
 
 ## Style
 
