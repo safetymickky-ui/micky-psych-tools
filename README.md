@@ -122,3 +122,12 @@ Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/ma
   dependency ladder (foundations, core, what the material assumes), learning pearls anchored to
   the material with numbers checked against its text, and an ordered path of concepts to
   explore next. Every map is saved to one phone-readable "Learn" page.
+- **visual-lock** — asks how a visual build should look before it is built (canvas, layout,
+  density, emphasis, colour, type, graphics, motion): picker questions in words first, one sheet
+  of rendered sample variants only when words cannot settle a choice. Writes a measurable look
+  spec, checks the rendered result against it, and saves each choice to the "Look Book" page so
+  later builds ask less.
+- **session-recap** — writes a summary of what was done in this session as one page, on request:
+  what is still open, what was done with its evidence, what was decided and by whom, what was
+  checked, and what was asked. One private artifact page per session, or one HTML file. Reports
+  only what the session record shows.

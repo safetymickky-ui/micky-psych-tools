@@ -37,6 +37,8 @@ a milestone.
 | idea-to-3d            | 2.1.0   |
 | learning-map          | 0.1.0   |
 | egm-conductor         | 0.1.0   |
+| visual-lock           | 0.1.0   |
+| session-recap         | 0.1.0   |
 
 The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 `.claude-plugin/marketplace.json` entry carries none. Never hand-edit versions; bump with
@@ -189,6 +191,17 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   user scope from marketplace `egm` = google/elephant-goldfish-model). Runs brainstorm → draft →
   Goldfish review/resolve → human gate → implement → drift end to end, state in the project's
   `.egm-conductor/state.json`. Two skills (`conduct`, `status`) + `scripts/egm_status.py`.
+- **visual-lock** — look interview before a visual build (category `design`). Eight slots; a slot
+  is asked only when the user's words, a fixed look and the saved rules all leave it open. Words
+  first (picker, ≤2 rounds), one sample sheet of 2–4 variants only when words cannot settle it.
+  Measurable spec, render check before delivery, look lines with the delivery. Choices and
+  corrections live on the "Look Book" artifact (collections `rules`, `builds`), found by exact
+  title and a `visual-lock` meta marker. One skill + `/visual-lock`.
+- **session-recap** — one page per session, on request only (category `productivity`): outcome,
+  still open, done with evidence, decisions, checks, changes, requests. `build_recap.py` checks
+  the data (exact statuses, a passed check behind "verified", evidence behind changes, no
+  secrets) and renders the page from `assets/recap.template.html`; English and Thai headings.
+  Published as a private artifact, or sent as an HTML file. One skill + `/recap`.
 
 - **learning-map** — one material in, one learning map out (category `education`): the prerequisite
   knowledge as a dependency ladder (Level 0 foundations → Level 1 core → Level 2 what the material
@@ -199,6 +212,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `/learning-map`.
 
 ## Recent milestones
+
+- **2026-11-10** — Added **visual-lock 0.1.0** and **session-recap 0.1.0**. The owner's request came through dictation as "interview users for Visual Precision, or Guide Dance"; one picker round settled it: the interview pins down the look of a visual build and saves the choices for reuse; questions in words first, rendered samples only when needed; the session summary is one private artifact page per session, on request only. Tested in the cloud session: `build_recap.py` has 45 unit tests; the recap page, the Look Book page (with a mock db: retire, use again, delete) and the sample sheet were rendered headless at 390 and 1280 px in light and dark with no overflow. **Not yet done:** neither skill has run on a real request, the "Look Book" artifact does not exist yet (the skill creates it at its first save), and the eval cases have not been run.
 
 - **2026-11-10** — **concept-lab 1.2.0**: second feedback round on the backpropagation page ("on the right track"). Added to the contract: formulas in native MathML, colour-coded by kind of quantity and matched to the picture's labels, with a live number line; step cards of two or three sentences plus an optional small model-drawn figure; a picture that encodes values (fill level, line thickness) and direction (arrows, moving dots), built once so changes animate; a phase bar; swipe and a Next button that previews the next step. Example rebuilt.
 
