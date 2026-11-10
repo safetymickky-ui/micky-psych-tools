@@ -37,7 +37,7 @@
       "id": 5,
       "name": "does-not-fire-outside-its-lane",
       "prompt": "Refactor this function to be cleaner, review it for bugs, and then make me an animation of how event loops work.",
-      "expected_output": "None of the three fires this skill. Refactoring and bug-hunting are not this skill's job — it explains what is there; if a defect surfaces during an explanation it is named in a card and the fix is offered as separate work. Explaining an idea that merely involves code (how event loops work) is concept-animation's lane, not this one. It names the right owners and hands off instead of building an explainer. FAILS if it rewrites the code, produces a review report, or animates a general concept under this skill.",
+      "expected_output": "None of the three fires this skill. Refactoring and bug-hunting are not this skill's job — it explains what is there; if a defect surfaces during an explanation it is named in a card and the fix is offered as separate work. Explaining an idea that merely involves code (how event loops work) is concept-lab's lane, not this one. It names the right owners and hands off instead of building an explainer. FAILS if it rewrites the code, produces a review report, or animates a general concept under this skill.",
       "files": [],
       "assertions": []
     },

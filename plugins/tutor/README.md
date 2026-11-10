@@ -23,7 +23,7 @@ neuroscience, psychotherapy) are out of scope.
   1. Deeper: why γ < 1 keeps values finite
   2. Next: cp-2.5 Q-learning
   3. Show it in code
-  4. Visualize: drag γ and α and watch δ move to the cue (short interview in ml-concept-lab)
+  4. Visualize: drag γ and α and watch δ move to the cue (short interview in concept-lab)
 ```
 
 ## The contract
@@ -98,7 +98,7 @@ evals/tutor/                                trigger and near-miss cases
 
 ## Boundaries
 
-Live explorables (ml-concept-lab) and animations (concept-animation) are offered as numbered
+Live explorables and animations (both concept-lab) are offered as numbered
 options, never run unasked. A whole code file explained as a page goes to code-explainer. A
 clinical evidence question goes to pubmed-research-note. Lessons are not filed to the vault;
 the tracker page is their home.

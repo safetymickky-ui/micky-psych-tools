@@ -10,7 +10,7 @@ description: >-
   walkthrough in execution order, and an inline SVG flow diagram. Explains only what the
   code actually does — source reproduced verbatim, real defects named, no invented runtime
   values. NOT for: writing or refactoring code, auditing it for bugs, static clinical
-  one-pagers (clinical-infographic), or concept animations (concept-animation).
+  one-pagers (clinical-infographic), or concept animations (concept-lab).
 ---
 
 # Code Explainer — the code on the left, the reason on the right
@@ -140,7 +140,7 @@ explanation against the code.
 
 - **intent-lock** — the Step 0 gate when the ask has more than one reading.
 - **vault-keeper** — every vault write, on request only.
-- **concept-animation** — explaining an *idea* that happens to have code in it (how a
+- **concept-lab** (watch mode) — explaining an *idea* that happens to have code in it (how a
   scheduler works, what backpressure is) belongs there; explaining *this* code belongs
   here.
 - **clinical-infographic** — static one-page clinical summaries, not code.

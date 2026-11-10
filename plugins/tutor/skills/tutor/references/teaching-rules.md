@@ -111,8 +111,8 @@ chunk the tutor teaches.
   monospace text diagram right next to the example it shows; both read the same in the chat and
   on the tracker page. In the chat you may also draw a richer inline chart or diagram, but the
   saved lesson keeps the table or text version. For a figure he wants to keep, offer a PNG plus
-  an editable SVG. For a parameter he should drag, offer ml-concept-lab as a numbered option;
-  for a process he should watch unfold, offer concept-animation.
+  an editable SVG. For a parameter he should drag, offer concept-lab as a numbered option;
+  for a process he should watch unfold, offer concept-lab in watch mode.
 
 ## Numbered next options
 

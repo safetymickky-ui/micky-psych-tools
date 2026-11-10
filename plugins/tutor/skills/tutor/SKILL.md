@@ -11,7 +11,7 @@ description: >-
   "อธิบายตั้งแต่พื้นฐาน", or runs /tutor; use it instead of the built-in learn skill. Not for his
   specialist fields (clinical psychiatry, psychopharmacology, neuroscience, psychotherapy),
   evidence questions (pubmed-research-note), a code file explained as a page (code-explainer),
-  live explorables (ml-concept-lab), or building his tools.
+  live explorables (concept-lab), or building his tools.
 ---
 # Tutor
 
@@ -59,7 +59,7 @@ spaced review), the contract wins.
   in-scope chunk, specialist content (dopamine physiology, a clinical phenotype) is stated
   briefly at specialist level; he owns it.
 - **Hand-offs, offered as numbered options and never run unasked:** a live explorable
-  (ml-concept-lab), an animation (concept-animation), a whole code file explained as a page
+  (concept-lab), an animation (concept-lab watch mode), a whole code file explained as a page
   (code-explainer), a full evidence report on a clinical claim (pubmed-research-note).
 
 ## Step 0 — Route by scope, not by verb
@@ -147,7 +147,7 @@ Full rules: [references/teaching-rules.md](references/teaching-rules.md), "The i
    - `code: yes` chunks: `Give me an exercise`
    - `code: no` chunks where a simulation would help: `Show it in code`
    - When a parameter or a process fits: `Visualize: <what to drag or watch> (short interview
-     in ml-concept-lab or concept-animation)`; when he picks it, pass the chunk's concept, the
+     in concept-lab)`; when he picks it, pass the chunk's concept, the
      parameters and the regime to show, so that interview can lock in one round
    - Another option that fits the moment is allowed, within the 4 lines
 
@@ -191,6 +191,6 @@ For a topic he owns at an introductory level, use fewer steps.
 ## Not for
 
 His specialist fields; evidence and treatment decisions (pubmed-research-note); a whole code
-file explained as an interactive page (code-explainer); live explorables (ml-concept-lab) and
-animations (concept-animation), which are offered but not run unasked; building or fixing his
+file explained as an interactive page (code-explainer); live explorables (concept-lab) and
+animations (concept-lab watch mode), which are offered but not run unasked; building or fixing his
 own tools.

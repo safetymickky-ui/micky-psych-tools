@@ -30,8 +30,8 @@ a local path. Serving `marketplace.json` from a bare URL breaks them silently.
 
 The examples above install `pubmed-research-note`; swap in any of the other thirteen —
 `intent-lock`, `plugin-creator`, `vault-keeper`, `psych-paper-digest`, `comprehensive-review`,
-`clinical-infographic`, `firecrawl`, `concept-animation`, `gridgeist`, `code-explainer`,
-`ml-concept-lab`, `decision-interview`, or `plan-critique` (or any future plugin) by name —
+`clinical-infographic`, `firecrawl`, `gridgeist`, `code-explainer`,
+`concept-lab`, `decision-interview`, or `plan-critique` (or any future plugin) by name —
 the commands are identical for all of them.
 
 ## Update it
@@ -97,20 +97,17 @@ Fourteen plugins, all vendored under `plugins/` and listed in `.claude-plugin/ma
   (regulator labels, guideline full texts — fetch-only, adjudication stays with the caller);
   deliverables gate through `intent-lock` and vault via `vault-keeper` on request. Biomedical
   literature stays with the PubMed-facing plugins, and API keys stay in the environment.
-- **concept-animation** — turns a concept into a self-contained HTML animation that unfolds it
-  scene by scene, with captions, player controls, and a reduced-motion fallback. Motion must
-  explain, never decorate; clinical facts come only from sourced reports.
 - **gridgeist** — design, redesign, and review web interfaces with a strong grid, precise
   typography, and product-specific visual systems. Vendored from upstream under MIT.
 - **code-explainer** — explains given code as one self-contained interactive HTML page: the
   source in a VS Code-styled editor on the left, the explanation on the right, cross-linked
   line by line, with a step-through walkthrough and a flow diagram. Reproduces the source
   verbatim and never invents a runtime value.
-- **ml-concept-lab** — the interactive sibling of `concept-animation` for machine-learning, AI,
-  and computer-science concepts: a self-contained HTML explorable in which the real algorithm
-  runs live and the learner drives it. Every number is computed rather than drawn, a self-check
-  panel asserts the algorithm's invariants on screen, and the controls reach the regime where it
-  breaks. Verified by being driven headless, then filed as a vault asset via `vault-keeper`.
+- **concept-lab** — one page for one concept, any field: phone-first, minimal and dark, with
+  one main view, at most three controls and a few presets. Computed mode runs the real model
+  live in the page; authored mode covers concepts with no model; watch mode is a scene-by-scene
+  animation (it replaces the former concept-animation plugin). Clinical facts come
+  only from sourced reports. Verified by `scripts/verify.mjs`, then published as its own artifact.
 - **decision-interview** — mid-task decision gate: sweeps the task for every decision only the
   user can make and resolves them all in one batched option-picker interview, recorded in a
   decision ledger. The execution-phase sibling of `intent-lock`.

@@ -26,13 +26,12 @@ Match the request to the row whose **Use when** fits, then take its **Route**. S
 | when the user says "make an infographic", "medical summary infographic", "clinical reference infographic", "turn this review/report into an infographic", "one-page visual summary"… | clinical-infographic | skill `clinical-infographic` |
 | Render a professional medical summary infographic (self-contained HTML) for clinical reference from a sourced report, review, or topic | clinical-infographic | `/infographic` |
 | when the user says "firecrawl", "scrape this page/site/URL", "search the web", "crawl these docs", "map a site", needs live web data in-session, wants Firecrawl in app code, or wants a web-powered… | firecrawl | skill `firecrawl` |
-| when the user says "animate this concept", "create an animation", "make an animation of X", "animated explainer", "show it moving", "ทำแอนิเมชัน", "ภาพเคลื่อนไหว", or runs /animate. | concept-animation | skill `concept-animation` |
-| Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper | concept-animation | `/animate` |
 | when the user says "redesign this page", "make this UI less generic", "review this interface", "needs a stronger grid", "Swiss style", "editorial layout", or asks to create, restyle, or critique a… | gridgeist | skill `gridgeist` |
 | when the user says "explain this code", "explain the given code", "walk me through this function", "annotate this code", "code walkthrough", "what does this code do", "อธิบายโค้ดนี้", or runs… | code-explainer | skill `code-explainer` |
 | Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram | code-explainer | `/explain-code` |
-| when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "explorable", "let me play with the parameters", "show me how X works", "animate this algorithm"… | ml-concept-lab | skill `ml-concept-lab` |
-| Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the v… | ml-concept-lab | `/visualize` |
+| when the user says "visualize this concept", "interactive visualization", "make an interactive demo", "make it interactive", "interactive page", "explorable", "let me play with the parameters"… | concept-lab | skill `concept-lab` |
+| Create a watch-only animation of a concept (concept-lab watch mode) — scene by scene with captions and a player; intent-lock gated; clinical facts only from sourced reports; published as its own arti… | concept-lab | `/animate` |
+| Build one interactive page for one concept (any field) — phone-first, minimal, dark; the real model runs live, or authored content when there is no model; published as its own artifact | concept-lab | `/visualize` |
 | when, mid-task, the user says "resolve all decisions", "ask me everything at once", "batch your questions", "what do you need from me", "collect your questions", "ถามมาทีเดียวให้ครบ", or runs… | decision-interview | skill `decision-interview` |
 | Sweep the current task for every open decision that needs the user and resolve them all in one batched interview | decision-interview | `/resolve-decisions` |
 | when the user presents a plan and says "critique this plan", "review my plan", "improve this plan", "วิจารณ์แผน", "ช่วยปรับแผนให้ดีขึ้น", "find weaknesses in my plan", "poke holes in my plan"… | plan-critique | skill `plan-critique` |
@@ -136,15 +135,6 @@ Keywords: firecrawl, web-scraping, web-search, crawl, web-data, onboarding
 
 - **skill `firecrawl`** (skill) — Routes any general-web data request to the right Firecrawl path: live CLI tools (search, scrape, interact, crawl, map), app-code integration with the SDK, workflow deliverables, credential auth, REST-only, or the keyles…
 
-### concept-animation — education
-
-Creates an animation that illustrates a concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds it scene by scene with synced captions, player controls, and a reduced-motion fallback. Intent-lock is the Step 0 gate. Any concept is in scope, but clinical facts come only from sourced reports (session, vault, or generated first by comprehensive-review / pubmed-research-note). Files the animation to the vault via vault-keeper.
-
-Keywords: animation, concept-explainer, html, svg, motion, visual-teaching
-
-- **skill `concept-animation`** (skill) — Creates an animation that illustrates a given concept — one self-contained HTML file (inline CSS/SVG/JS, nothing external) that plays in any browser, unfolding the concept scene by scene: mechanisms, pathways, processes…
-- **`/animate`** (command) — Create a self-contained HTML animation that illustrates a concept — intent-lock gated, clinical facts only from sourced reports, filed to the vault via vault-keeper
-
 ### gridgeist — design
 
 Design, redesign, and review distinctive web interfaces with a strong grid, precise typography, and product-specific visual systems.
@@ -162,14 +152,15 @@ Keywords: code-explanation, vscode, interactive, html, walkthrough, syntax-highl
 - **skill `code-explainer`** (skill) — Explains given code as one interactive, self-contained HTML page — the original code on the left in a VS Code-styled editor (Dark+ theme, line numbers, syntax highlighting), the explanation on the right, cross-linked li…
 - **`/explain-code`** (command) — Explain given code as an interactive HTML page — VS Code-styled source on the left, cross-linked explanation on the right, step-through walkthrough and flow diagram
 
-### ml-concept-lab — education
+### concept-lab — education
 
-Builds an interactive explorable for a machine-learning, AI, or CS concept — one self-contained HTML file where the real algorithm runs live and the learner drives it (gradient descent, backprop, attention, k-means, Dijkstra, Q-learning). Intent-lock is the Step 0 gate. Every number is computed, not drawn; a self-check panel tests invariants; controls reach the regime where it breaks. Verified headless, filed to the vault via vault-keeper.
+Builds one page that teaches one concept, any field: an interactive page the user drives, or a watch-only animation. Phone-first, minimal, dark. Computed mode runs the real model live; authored mode covers concepts with no model; watch mode unfolds the concept scene by scene. Intent-lock gated; clinical facts from sourced reports only; each page is published as its own artifact. Replaces ml-concept-lab and concept-animation.
 
-Keywords: machine-learning, ai, computer-science, interactive-visualization, explorable, algorithm
+Keywords: interactive, explorable, animation, concept, visualization, education
 
-- **skill `ml-concept-lab`** (skill) — Builds an interactive explorable that illustrates a machine-learning, AI, or computer-science concept — one self-contained HTML file (inline CSS/SVG/Canvas/JS) in which the real algorithm runs live and the learner drive…
-- **`/visualize`** (command) — Build an interactive, live-computed explorable (one self-contained HTML file) for a machine-learning, AI, or computer-science concept — intent-lock gated, driven and verified headless, filed to the vault via vault-keeper
+- **skill `concept-lab`** (skill) — Builds one page that teaches one concept, any field (ML, statistics, computational psychiatry, pharmacology, clinical): an interactive page the user drives, or a watch-only animation.
+- **`/animate`** (command) — Create a watch-only animation of a concept (concept-lab watch mode) — scene by scene with captions and a player; intent-lock gated; clinical facts only from sourced reports; published as its own artifact
+- **`/visualize`** (command) — Build one interactive page for one concept (any field) — phone-first, minimal, dark; the real model runs live, or authored content when there is no model; published as its own artifact
 
 ### decision-interview — productivity
 

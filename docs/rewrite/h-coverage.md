@@ -47,8 +47,8 @@ in the wave's tag step: `python3 scripts/rewrite_gate.py h-coverage close --id <
 - [ ] H37 clinical-infographic-2 — `.mech` cramps on phones — closed: no — wave: W1
 - [ ] H38 concept-animation-1 — stage-collapse layout rule — closed: no — wave: W2
 - [ ] H39 concept-animation-2 — single-viewport fit check — closed: no — wave: W2
-- [ ] H40 ml-concept-lab-1 — stage-collapse layout rule — closed: no — wave: W2
-- [ ] H41 ml-concept-lab-2 — verify recipe fails (ESM playwright) — closed: no — wave: W2
+- [x] H40 ml-concept-lab-1 — stage-collapse layout rule — closed: yes (concept-lab 1.0.0) — wave: W2
+- [x] H41 ml-concept-lab-2 — verify recipe fails (ESM playwright) — closed: yes (concept-lab 1.0.0) — wave: W2
 - [ ] H42 code-explainer-1 — template never existed — closed: no — wave: W1
 - [ ] H43 concept-animation (learn-hub copy)-1 — invalid strict YAML — closed: no — wave: W1
 - [ ] H44 pubmed-research-note-1 — Reframed preface stale — closed: no — wave: W2

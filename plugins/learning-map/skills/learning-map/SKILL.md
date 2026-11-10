@@ -126,8 +126,7 @@ language: "Not saved: this session cannot reach the Learn page." / "ยังไ
   - `Check: <the pearl that carries a clinical claim> against the literature`
     (pubmed-research-note), when one does
   - `Bullets: reconstruct this material` (bullet-reconstruct), for a dense paper or chapter
-  - `Visualize: <a path step or ladder item with a process or parameter>` (ml-concept-lab or
-    concept-animation), when one fits
+  - `Visualize: <a path step or ladder item with a process or parameter>` (concept-lab), when one fits
 - When Learn could not be written: after the first line, the whole map as bullets: the ladder
   by level (Level 0 first), each item with its primer and why; the pearls in order with their
   `where`; the path in order with its question. No tables.

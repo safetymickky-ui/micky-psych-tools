@@ -111,20 +111,6 @@
       ]
     },
     {
-      "name": "concept-animation",
-      "source": "./plugins/concept-animation",
-      "description": "Creates an animation that illustrates a concept — one self-contained HTML file (inline CSS/SVG/JS) that unfolds it scene by scene with synced captions, player controls, and a reduced-motion fallback. Intent-lock is the Step 0 gate. Any concept is in scope, but clinical facts come only from sourced reports (session, vault, or generated first by comprehensive-review / pubmed-research-note). Files the animation to the vault via vault-keeper.",
-      "category": "education",
-      "keywords": [
-        "animation",
-        "concept-explainer",
-        "html",
-        "svg",
-        "motion",
-        "visual-teaching"
-      ]
-    },
-    {
       "name": "gridgeist",
       "source": "./plugins/gridgeist",
       "description": "Design, redesign, and review distinctive web interfaces with a strong grid, precise typography, and product-specific visual systems.",
@@ -153,17 +139,17 @@
       ]
     },
     {
-      "name": "ml-concept-lab",
-      "source": "./plugins/ml-concept-lab",
-      "description": "Builds an interactive explorable for a machine-learning, AI, or CS concept — one self-contained HTML file where the real algorithm runs live and the learner drives it (gradient descent, backprop, attention, k-means, Dijkstra, Q-learning). Intent-lock is the Step 0 gate. Every number is computed, not drawn; a self-check panel tests invariants; controls reach the regime where it breaks. Verified headless, filed to the vault via vault-keeper.",
+      "name": "concept-lab",
+      "source": "./plugins/concept-lab",
+      "description": "Builds one page that teaches one concept, any field: an interactive page the user drives, or a watch-only animation. Phone-first, minimal, dark. Computed mode runs the real model live; authored mode covers concepts with no model; watch mode unfolds the concept scene by scene. Intent-lock gated; clinical facts from sourced reports only; each page is published as its own artifact. Replaces ml-concept-lab and concept-animation.",
       "category": "education",
       "keywords": [
-        "machine-learning",
-        "ai",
-        "computer-science",
-        "interactive-visualization",
+        "interactive",
         "explorable",
-        "algorithm"
+        "animation",
+        "concept",
+        "visualization",
+        "education"
       ]
     },
     {

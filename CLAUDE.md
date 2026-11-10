@@ -137,16 +137,6 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   biomedical literature stays with pubmed-research-note / comprehensive-review /
   psych-paper-digest — mixed requests are split, not grabbed. Keys never enter the repo —
   `FIRECRAWL_API_KEY` lives in the environment. One skill, no commands.
-- **concept-animation** — creates an animation that illustrates a given concept: one
-  self-contained HTML file (inline CSS/SVG/JS, no external anything) that unfolds the concept
-  scene by scene with synchronized captions, player controls, and a mandatory reduced-motion
-  fallback. Motion must explain, never decorate — every animated property makes a nameable
-  claim, and the final frame is a complete labelled summary. Intent-lock is the mandatory
-  Step 0 gate; any concept is in scope, but clinical facts come only from sourced reports
-  (session / vault / generated first via comprehensive-review or pubmed-research-note) —
-  never invented. Files the animation as an asset via vault-keeper. One skill + `/animate
-  [concept-or-source]` command; motion grammar under its
-  `skills/concept-animation/references/`.
 - **code-explainer** — explains given code as one self-contained interactive HTML page:
   the source on the left in a VS Code-styled editor (Dark Modern, gutter, pre-tokenised
   syntax), the explanation on the right, cross-linked over one `data-range` id space.
@@ -158,19 +148,22 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   vault is opt-in, not the default. Not a review or a refactor. One skill +
   `/explain-code [code-or-path]`; shell + contract + working template under its
   `skills/code-explainer/references/`.
-- **ml-concept-lab** — the interactive sibling of concept-animation, for machine-learning, AI,
-  and computer-science concepts: one self-contained HTML **explorable** in which the real
-  algorithm runs live in the page and the learner drives it (visualization + interaction +
-  animation in one artifact). Prime directive: **the picture is computed, not drawn** — no
-  canned frames, seeded randomness with the seed on screen, a live self-check panel asserting
-  the algorithm's invariants (gradients vs finite differences, closed forms, sort/path
-  correctness), and controls that must reach the regime where the algorithm breaks. Intent-lock
-  is the mandatory Step 0 gate; verification means *driving* the page headless, not just
-  screenshotting it; files the HTML as an asset via vault-keeper. One skill + `/visualize
-  [concept]` command; build contract + a per-family pattern catalog under its
-  `skills/ml-concept-lab/references/`, worked lab under `examples/`. Boundary: watch-only
-  animations and clinical topics stay with concept-animation, charts of the user's own data
-  with dataviz.
+- **concept-lab** (1.0.0 renamed ml-concept-lab and merged concept-animation into it) — one page
+  for one concept, any field (ML, statistics, computational psychiatry, pharmacology, clinical).
+  Shape locked by the owner on 2026-11-10: phone first (one column, scroll allowed, 44 px touch
+  targets), minimal (one main view, at most 3 controls, 2–4 presets, one status line, one-line
+  footer), dark, and published as its own artifact (no vault filing unless asked). Three modes:
+  **computed** (the real model runs live; nothing drawn by hand), **authored** (reveal / branch /
+  sort / compare for concepts with no model, labelled with its source) and **watch** (a
+  scene-by-scene animation with captions and a player; motion must explain, never decorate).
+  Clinical facts come only from a sourced report (session / vault / generated first via
+  comprehensive-review or pubmed-research-note). Checks run in the page but are not shown
+  (`window.__lab.checks()`); `scripts/verify.mjs` drives the page at phone and desktop size in
+  both motion modes and must exit 0 before publishing. Intent-lock is the mandatory Step 0
+  gate. One skill + `/visualize [concept]` and `/animate [concept-or-source]`; build contract,
+  pattern catalog (12 families) and animation grammar under `skills/concept-lab/references/`,
+  worked lab under `examples/`. Boundary: static clinical one-pagers stay with
+  clinical-infographic, charts of the user's own data with dataviz.
 - **plan-critique** — adversarial critique of an existing plan that ends in a better plan:
   nine lenses (goal-fit, completeness, sequencing, feasibility, risk, hidden assumptions,
   verifiability, simplicity, alternatives) find where it breaks, every finding carries a
@@ -262,7 +255,7 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   pearl numbers found in the material's text). Every map is saved to the "Learn" artifact
   (database collection `maps`; found by exact title + `learning-map` meta marker, created from
   `assets/learn.html`), not to the vault. Hand-offs (tutor, pubmed-research-note,
-  bullet-reconstruct, ml-concept-lab) are numbered options, never run unasked. One skill +
+  bullet-reconstruct, concept-lab) are numbered options, never run unasked. One skill +
   `/learning-map [material]`.
 - **egm-conductor** — master controller for Google's Elephant-Goldfish Model (`egm@egm`, a
   separate upstream plugin it depends on, never vendored): preflight → optional bootstrap →

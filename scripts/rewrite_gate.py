@@ -765,7 +765,7 @@ def measure(repo, wave="W0", plugin_dirs=None, learn_hub=None, claude="auto",
 
     out += ["", "Named skills (body = SKILL.md after frontmatter; references = every file under "
             "`references/`):", "", "| Skill | body lines | body tok | references tok |", "|---|---|---|---|"]
-    for skill in ("intent-lock", "pubmed-research-note", "firecrawl", "ml-concept-lab"):
+    for skill in ("intent-lock", "pubmed-research-note", "firecrawl", "concept-lab"):
         hits = [p for p in mk_skills if os.path.basename(os.path.dirname(p)) == skill]
         if not hits:
             out.append(f"| {skill} | absent | — | — |")

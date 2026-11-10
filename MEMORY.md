@@ -25,9 +25,8 @@ a milestone.
 | clinical-infographic  | 0.3.0   |
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
-| concept-animation     | 0.1.1   |
 | code-explainer        | 0.1.0   |
-| ml-concept-lab        | 0.1.0   |
+| concept-lab           | 1.0.0   |
 | decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
 | clinical-minimal      | 0.1.0   |
@@ -109,13 +108,6 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   not chained. Boundary: biomedical literature stays with the PubMed-facing plugins;
   `FIRECRAWL_API_KEY` lives in the environment, never the repo. One skill + 8 evals,
   no commands.
-- **concept-animation** — creates an animation that illustrates a given concept: one
-  self-contained HTML file (inline CSS/SVG/JS) unfolding the concept scene by scene with
-  synchronized captions, player controls, and a mandatory reduced-motion fallback. Prime
-  directive: motion must explain, never decorate. Intent-lock is the mandatory Step 0 gate;
-  any concept in scope, clinical facts only from sourced reports (session / vault / generated
-  via comprehensive-review or pubmed-research-note); files the animation as a vault asset via
-  vault-keeper. Skill + `/animate [concept-or-source]`; motion grammar in references.
 - **code-explainer** — explains given code as one self-contained interactive HTML page: source
   left in a VS Code shell (Dark Modern palette, gutter with breakpoint dots + `▶` execution
   arrow, tab bar, breadcrumb, bottom FLOW/STATE panel, `#007acc` status bar, floating
@@ -126,19 +118,12 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   byte-for-byte verbatim, defects named not smoothed, no invented runtime values, `& < >`
   escaped before tokenising. Conditional intent-lock gate (fires only on multi-reading asks);
   vault opt-in. Skill + `/explain-code [code-or-path]`; shell/contract/template in references.
-- **ml-concept-lab** — the *interactive* sibling of concept-animation, scoped to machine-learning,
-  AI, and computer-science concepts. Deliverable is one self-contained HTML **explorable**:
-  visualization + interaction + animation in a single artifact, with the real algorithm running
-  in the page. Prime directive **the picture is computed, not drawn** (no canned frames, seeded
-  PRNG with the seed on screen, published numbers sourced or absent, toy scale labelled); second
-  directive **every control is a question and one of them must break it** (sliders reach
-  divergence/worst case; 3–5 named presets jump to the instructive regimes). Correctness is
-  enforced by a visible self-check panel asserting invariants live (∇ vs finite differences,
-  closed forms, sort/path/normalization checks). Intent-lock is the mandatory Step 0 gate; Step
-  3.5 *drives* the page headless (every control to both extremes, every preset, console clean,
-  no non-finite value rendered, fits 1366×768, both motion modes) before vault-keeper files it as
-  an asset. Skill + `/visualize [concept]`; build contract + 8-family pattern catalog in
-  references; a verified worked lab in `examples/`.
+- **concept-lab** (was ml-concept-lab until 1.0.0) — one interactive page for one concept, any
+  field. Phone first, minimal (one view, ≤3 controls, 2–4 presets, one status line), dark, own
+  artifact per lab. Computed mode (model runs live), authored mode (reveal / branch / sort /
+  compare, labelled) or watch mode (scene-by-scene animation; concept-animation was merged in). Clinical facts from sourced reports only. Checks live in
+  `window.__lab.checks()`; `scripts/verify.mjs` must exit 0 before publishing. Intent-lock is
+  Step 0. Skill + `/visualize [concept]` + `/animate`.
 - **decision-interview** — mid-task decision gate, the execution-phase sibling of intent-lock:
   collects every open decision the agent cannot make for the user (blockers, silent defaults,
   lookahead) and resolves them all in one batched option-picker interview. Admission threshold
@@ -227,6 +212,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   not run. Main SKILL.md 26 KB → 10 KB. Not yet run on a real request. **Differs from the rewrite
   plan:** H03 (`state/misreads.md` + `ledger.py`) is solved by the artifact instead;
   `docs/plugin-rewrite/` and `h-coverage.md` were not edited.
+
+- **2026-11-10** — **concept-lab 1.0.0**: ml-concept-lab redesigned and renamed. The owner picked, in two picker rounds: problems = output hard to use + scope too narrow; scope = any concept; destination = its own artifact per lab; screen = phone first; no-model concepts = authored interactive; density = minimal; theme = dark; name = concept-lab. Closed the nine `ml-concept-lab-*` defects (layout collapse, verify recipe, gradient check, clinical routing, example path, doctype, evals). The rebuilt example passes `verify.mjs` at 390×844 and 1280×800 in both motion modes. Trigger lock: old skill's phrases retired, concept-lab's extracted. Later the same day the owner chose to **merge concept-animation into concept-lab** as watch mode: `/animate` and the animation grammar moved over, the concept-animation plugin and its catalog entry were removed, and its old example (built to the fixed-height layout) was dropped. Authored mode and watch mode have no worked example yet.
 
 - **2026-10-26** — **egm-conductor 0.1.0** added. EGM skills set `disable-model-invocation: true`, so the conductor reads each EGM `SKILL.md` from the install path in `installed_plugins.json` and follows it, substituting EGM's root for `${CLAUDE_PLUGIN_ROOT}`. Status script tested on empty / design-doc / saved-state projects; no full end-to-end EGM run yet.
 
