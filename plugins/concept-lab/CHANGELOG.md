@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0 — 2026-11-10
+
+Second round of owner feedback on the backpropagation page: right track; make the picture and
+the interaction more appealing, typeset and colour the maths, add a little more substance.
+
+- **Maths:** formulas in native MathML, colour-coded by kind of quantity, with a matching
+  number line under each; labels on the picture use the same symbols and colours.
+- **Step card:** two or three sentences (was one or two), a formula block, and an optional
+  small figure drawn from the model.
+- **Picture:** values and strength encoded in the drawing (fill level, line thickness),
+  direction arrows with moving dots, SVG built once so changes animate, a phase bar.
+- **Interaction:** swipe the card, the Next button previews the next step's title, the card
+  eases in.
+- New palette role `--weight`. Example `examples/backprop.html` rebuilt to these rules.
+
 ## 1.1.0 — 2026-11-10
 
 Owner feedback on the first real page (backpropagation): no guide to where to look, not step

@@ -155,7 +155,9 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   focus and dims the rest, a step card explains it in one or two beginner sentences plus one
   calculation line, Back/Next sit in a fixed bottom bar, the whole page fits one phone screen
   (390×700, no scrolling), no Play button, no sliders by default, 0–4 "what if" cases on the
-  last step, a warm dark palette with serif headings; published as its own artifact (no vault
+  last step, a warm dark palette with serif headings; since 1.2.0 formulas are native MathML,
+  colour-coded to match the picture, cards run two or three sentences, and the picture encodes
+  values and direction and animates between steps; published as its own artifact (no vault
   filing unless asked). Free-play (≤2 sliders) only on request. Three modes: **computed** (the
   model is computed in the page; nothing drawn by hand), **authored** (reveal / branch / sort /
   compare for concepts with no model, labelled with its source) and **watch** (a

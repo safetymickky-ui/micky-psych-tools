@@ -1,6 +1,6 @@
 {
   "name": "concept-lab",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Builds one page that teaches one concept, any field: a step-by-step walkthrough on one phone screen, or a watch-only animation. Each step highlights one thing and explains it in beginner words; Back/Next, no sliders by default, a few what-if cases at the end; warm dark look. Computed mode runs the real model; authored mode covers concepts with no model. Intent-lock gated; clinical facts from sourced reports only; each page is its own artifact.",
   "author": {
     "name": "Thanawat Suharit (Micky)"

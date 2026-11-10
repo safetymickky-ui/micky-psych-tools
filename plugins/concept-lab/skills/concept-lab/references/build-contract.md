@@ -29,10 +29,10 @@ needs a continuous control. It follows every other rule here.
 
 ## The page — four parts, all on one phone screen
 
-1. **Header** — the concept as a small `<h1>` and a step counter ("Step 3 of 12").
+1. **Header** — the concept as a small `<h1>`, a step counter ("Step 3 of 12") and the phase bar.
 2. **Main view** (`.view`) — one SVG or canvas.
-3. **Step card** (`#status`, `aria-live="polite"`) — a short title, one or two short sentences,
-   and at most one calculation line.
+3. **Step card** (`#status`, `aria-live="polite"`) — a short title, two or three short
+   sentences, and for a step that computes something its formula and numbers.
 4. **Bottom bar** — Back and Next, always visible, fixed to the bottom of the screen.
 
 Nothing else. No readout row, no check chips, no legend block, no footer paragraph, no
@@ -60,15 +60,33 @@ body { margin: 0; background: var(--bg); color: var(--ink); }
   do not jump between steps.
 - No sideways scroll at 390 px.
 
-## The step card — beginner text
+## The step card — enough to learn from, not more
 
 - **Title:** two to five words naming the part or the action ("Hidden unit h1", "The error").
-- **Body:** one or two short sentences. Say what the part *does* before any symbol. Common
-  words. A term appears with its meaning the first time ("δ, the blame signal").
-- **Calculation line** (optional): the actual arithmetic of this step with the live numbers
-  (`1.00 × 0.50 + 0.50 × (−0.40) = 0.30`). One line. It carries the numbers so the view does
-  not have to.
-- Body 15–16 px; nothing under 13 px.
+- **Body:** two or three short sentences. Say what the part *does* in common words, then one
+  sentence of substance: why it is so, what it is called, or what it means for the next step.
+  A term appears with its meaning the first time ("δ, the blame signal").
+- **Formula** (when the step computes something): the rule in symbols, typeset as real maths,
+  then the same rule with the live numbers under it. See "Maths" below.
+- **Small figure** (optional, at most 104 px wide, floated right of the body): one curve or
+  picture that the words lean on, such as the squash curve with this unit's point and slope.
+  It is drawn from the model, like everything else.
+- Body 15–16 px; nothing under 13 px. The card has a fixed `min-height` for the longest step.
+
+## Maths — typeset and colour-coded
+
+- **Symbols are typeset with native MathML** (`<math>`, `<mfrac>`, `<msub>`, `<mover>`), not
+  plain text and not a library. It renders fractions, subscripts and hats properly on a phone
+  and keeps the page self-contained. Font stack:
+  `"STIX Two Math", "Cambria Math", "Latin Modern Math", math, serif`, about 19 px.
+- **One colour per kind of quantity, the same in the formula, in the numbers under it and on
+  the picture:** values of units and inputs in `--data`, weights in `--weight`, blame and
+  gradients in `--update`, the result of the step in `--focus`, new values in `--ok`.
+- **The number line** repeats the formula with the live values, coloured the same way, with
+  the result in bold. It is HTML text, so it wraps on a narrow screen.
+- A symbol in the formula carries the same name as its label on the picture (`w₁` in the
+  formula is the line labelled `w₁`).
+- Calculus notation (∂L/∂w) may appear once, next to the plain-words rule, never instead of it.
 
 ## An uncrowded view
 
@@ -82,10 +100,25 @@ body { margin: 0; background: var(--bg); color: var(--ink); }
 - Dimmed elements sit at about 30% opacity. Focus elements get the focus colour, a thicker
   stroke and a halo; the halo may pulse slowly, and does not move under reduced motion.
 
+## A picture that carries meaning, and moves gently
+
+- **Encode values in the drawing, and say so once in a card:** a circle fills to its value, a
+  thicker line is a stronger weight. No decoration that means nothing.
+- **Show direction.** When something travels (values forward, blame backward), the lines it
+  travels on carry an arrowhead and slowly moving dots, coloured for what travels. The
+  arrowhead stays under reduced motion; the dots stop.
+- **Build the SVG once and restyle it per step** (classes, text, transforms). Then highlights,
+  dimming and fill levels fade and grow between steps. A view rebuilt on every step cannot.
+- **The card eases in** on each step (a short fade and rise). Buttons press down slightly.
+- A **phase bar** under the title names the stages of the walkthrough ("Parts · Forward ·
+  Backward · Update") and fills as the reader moves. It is orientation, not a control.
+
 ## Controls — few, and built for a thumb
 
 - **Back / Next** (`id="prev"`, `id="next"`): real buttons, at least 48 px tall. Next is the
-  primary button and the wider one. On the last step Next reads "Start again".
+  primary button and the wider one, and shows the next step's title in small type under
+  "Next". On the last step it reads "Start again".
+- **Swipe** the card left for the next step and right for the previous one.
 - **"What if" cases** (`<button data-preset="name">`, 0–4; three fit one row on a phone): shown
   on the last step only. "Start again" returns to the first case. Each
   changes the inputs and jumps back to the step where its effect first shows. Each is named
@@ -166,7 +199,8 @@ The page should feel like a notebook by lamplight: warm, soft, quiet.
 | Text / muted / faint | `--ink` / `--muted` / `--faint` | `#f3e9dc` / `#cdbba8` / `#a08e7e` |
 | Focus — where to look now | `--focus` | `#f0c36b` (honey) |
 | Data — the inputs, the world, the patient | `--data` | `#9cc3b1` (sage) |
-| Change — the signal, the gradient, the step taken | `--update` | `#e59572` (terracotta) |
+| Weights — the numbers that learning changes | `--weight` | `#e0a9bd` (dusty rose) |
+| Change — the signal, the blame, the gradient | `--update` | `#e59572` (terracotta) |
 | Good — the new value, correct, in range | `--ok` | `#b3cf8a` (moss) |
 | Bad — broke, wrong, out of range | `--bad` | `#e57f6f` (clay red) |
 

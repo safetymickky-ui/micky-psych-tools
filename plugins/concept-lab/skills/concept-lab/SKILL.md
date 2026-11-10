@@ -27,8 +27,13 @@ page. Do not drift from it:
 - **Any concept is in scope.** ML, statistics, computational psychiatry, pharmacology,
   clinical concepts, anything else.
 - **A guided walkthrough, step by step.** The page opens on step 1. Each step shows one new
-  thing, highlights it so the reader knows where to look, and explains it in one or two short
-  beginner-friendly sentences. The reader moves with Back and Next. No Play button.
+  thing, highlights it so the reader knows where to look, and explains it in two or three
+  short beginner-friendly sentences: enough substance to learn from, not a textbook page. The
+  reader moves with Back and Next (or a swipe). No Play button.
+- **Maths looks like maths.** Formulas are typeset with native MathML and colour-coded: one
+  colour per kind of quantity, the same in the formula, in the numbers and on the picture.
+- **A picture that means something.** Fill, thickness and arrows encode values, strength and
+  direction; highlights and levels change smoothly between steps.
 - **Never the whole picture at once.** Parts and numbers appear at the step that introduces
   them; everything a step is not about is dimmed. The view is never crowded.
 - **Phone first, no scrolling.** The whole page fits one phone screen; Back and Next sit in a
@@ -73,9 +78,9 @@ produced by the model, it is authored and labelled, or it is cut.
 
 - **One focus per step.** Before writing a step, name the one thing the reader should look at
   and the one sentence that says what it does. If a step needs two focuses, it is two steps.
-- **Words before symbols, numbers in the calculation line.** Say what a part does in common
-  words first. Show the actual arithmetic with the live numbers in the step's one calculation
-  line, so the view does not have to carry every number.
+- **Words, then the rule, then the numbers.** Say what a part does in common words first. Then
+  show the rule as a typeset formula, and under it the same rule with the live numbers, in the
+  same colours. The view does not have to carry every number.
 - **The instructive case is one tap away.** The "what if" cases on the last step jump to the
   situations that change the lesson (the answer is already right, an input is zero, a unit is
   saturated; or, in authored mode, the items people confuse). Each jumps back to the step
@@ -134,8 +139,9 @@ In text, before the file exists:
 2. Mode. Computed: the model as it will be typed (update rule, formula, recurrence). Authored:
    the content items and the source of each.
 3. The main view: its parts, and an explicit position for every part and every label.
-4. **The step list** (5–14 steps). For each step: the focus, a two-to-five-word title, the one
-   or two sentences, and the calculation line if it has one. The first steps introduce the
+4. **The step list** (5–14 steps). For each step: the focus, a two-to-five-word title, the two
+   or three sentences, the formula and its number line if it computes something, and which
+   lines carry direction arrows. The first steps introduce the
    parts; the last sums up.
 5. The "what if" cases (0–4), each with the step it jumps to and what the steps will say.
 6. Checks: the invariants `window.__lab.checks()` will assert (contract, "Checks").
@@ -160,7 +166,8 @@ Full rules are in `references/build-contract.md`. The load-bearing ones:
   number on the page is read from the computed model.
 - Focus elements get the focus colour and a halo; the rest is dimmed; labels of dimmed parts
   are hidden. At most 10 pieces of full-strength text in the view; no overlapping labels.
-- The warm palette and serif headings from the contract.
+- The warm palette and serif headings from the contract; formulas in MathML with the colour
+  code; the SVG built once and restyled per step so changes animate.
 - Checks run in the page but are not shown: `window.__lab` exposes `mode`, `steps`, `at()` and
   `checks()` for the verify script.
 - Watch mode: the motion vocabulary, scene pacing and player are in
@@ -221,7 +228,9 @@ This skill has failed if:
 
 - The page opens on the finished picture, or a step has no single highlighted focus, so the
   reader does not know where to look.
-- A step's text assumes a term it has not explained, or runs past two short sentences.
+- A step's text assumes a term it has not explained, is a bare one-liner with nothing to
+  learn from, or runs past three short sentences.
+- A formula is shown as plain text, or its colours do not match the picture.
 - On a phone the page needs scrolling, Back/Next are not in thumb reach, or a control is too
   small to touch.
 - The view is crowded: overlapping or covered labels, more than 10 pieces of full-strength
