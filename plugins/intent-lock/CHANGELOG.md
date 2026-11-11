@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.0 — 2026-11-11
+
+Ledger entries and checks carry a mismatch `type`; checks record each fire date. The
+Misread Ledger page (rebuilt the same day) reads both.
+
+- **`type` on entries and checks**: `shape`, `frame`, `depth`, `structure` or `other`. A
+  check copies the type of the entry that produced it. The page uses it to group misreads
+  and to flag a check whose kind of misread still gets through.
+- **`fire_dates` on checks**: one date per fire, added together with `fires` and
+  `last_fired`. The page draws them on its timeline.
+- **Page-owned fields**: `merged_into`, `merged_from`, `merge_prev_text` and
+  `merge_prev_last_fired` belong to the page's merge and undo. The skills never write them.
+- **Snapshot**: `checks-snapshot.md` regenerated from the four active checks.
+
 ## 1.0.0 — 2026-11-10
 
 A rewrite. Both skills were written again from an interview with the owner (2026-11-10).

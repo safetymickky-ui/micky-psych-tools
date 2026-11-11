@@ -29,7 +29,13 @@ The tools may be deferred. Search the tool list for "artifact db" and load them 
 - `created`: `YYYY-MM-DD`.
 - `fires`: how many times the trigger matched a request.
 - `last_fired`: `YYYY-MM-DD`, or `""`.
+- `fire_dates`: list of `YYYY-MM-DD`, one per fire. `[]` for a check that never fired.
 - `entry`: id of the entry that produced it, or `""`.
+- `type`: what the check guards against: `shape`, `frame`, `depth`, `structure` or `other`.
+  Copy it from the entry that produced the check.
+
+The page also keeps `merged_into`, `merged_from`, `merge_prev_text` and
+`merge_prev_last_fired` on checks the user merged. Never write or remove them.
 
 `entries`: one document per logged mistake.
 
@@ -41,6 +47,9 @@ The tools may be deferred. Search the tool list for "artifact db" and load them 
 - `asked`: what the user asked for. Quote the user.
 - `got`: what was produced, as plain fact.
 - `mismatch`: what differed. Quote the user when the user said it.
+- `type`: the kind of mismatch, one of `shape` (wrong kind of deliverable), `frame` (wrong
+  breadth or frame), `depth` (too shallow or too deep), `structure` (wrong layout or order),
+  `other`. The page groups misreads and judges each check by it.
 - `tell`: when it was noticed: before delivery, first line, structure, or only at the end.
 - `check`: the text of the check this entry produced or sharpened, or `""`.
 - `fixed`: for `drift` entries, whether it was fixed before delivery.
@@ -57,6 +66,11 @@ during a normal run.
 - Send one `db_write` call per run, with all ops in it.
 - A new document needs no `ifVersion`. A change to an existing document needs the version
   from your read of it.
+- When a check fires, add 1 to `fires`, set `last_fired` to today, and send `fire_dates`
+  as the list you read with today's date added at the end. A list is replaced whole, so
+  never send only the new date.
+- Give every new entry a `type`, and every new check the `type` of its entry and
+  `fire_dates: []`.
 - Write a check only when it names a concrete trigger in the request. "Be more careful" is
   not a check. "When he asks to review a topic, ask whether he wants the whole disorder or
   one decision" is a check.
