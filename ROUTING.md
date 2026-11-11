@@ -162,7 +162,7 @@ Builds one page that teaches one concept, any field: a step-by-step walkthrough 
 
 Keywords: interactive, explorable, animation, concept, visualization, education
 
-- **skill `concept-lab`** (skill) — Builds one page that teaches one concept, any field (ML, statistics, computational psychiatry, pharmacology, clinical): a step-by-step walkthrough on one phone screen, where each step highlights one thing and explains i…
+- **skill `concept-lab`** (skill) — Builds one page that teaches one concept, any field (ML, statistics, pharmacology; field packs for psychiatry, computational psychiatry, endocrinology): a step-by-step walkthrough on one phone screen; each step highligh…
 - **`/animate`** (command) — Create a watch-only animation of a concept (concept-lab watch mode) — scene by scene with captions and a player; intent-lock gated; clinical facts only from sourced reports; published as its own artifact
 - **`/visualize`** (command) — Build one step-by-step page for one concept (any field) — a guided walkthrough on one phone screen; the real model is computed in the page, or authored content when there is no model; published as its own artifact
 

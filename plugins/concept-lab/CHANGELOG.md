@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.4.0 — 2026-11-11
+
+Field packs. The owner asked for the plugin to be specialised for three fields without a
+second plugin or a second set of triggers.
+
+- **Three packs** under `skills/concept-lab/references/fields/`: endocrinology, general
+  psychiatry and computational psychiatry. Each names, for its field, the picture that fits
+  each kind of concept, the misconception to remove, the "what if" cases, the default reader,
+  the colour roles, and which facts are clinical lane and where they must come from.
+- **Step 1** reads the field's pack first; the pack narrows the menu in
+  `concept-patterns.md` and points back to its families. The intent-lock gate offers the
+  pack's default reader first.
+- **Endocrinology sources:** society guidelines or primary papers through
+  pubmed-research-note; comprehensive-review covers psychiatric topics only.
+- **Description:** names the three fields; every trigger phrase is unchanged.
+- **Evals:** an endocrine and a clinical-psychiatry trigger case, and an endocrine evidence
+  question as a near miss.
+- The packs hold pictures and rules, not clinical numbers: cut-offs, doses and protocols
+  still come from a sourced report for each page.
+
 ## 1.3.0 — 2026-11-10
 
 Third round of owner feedback: more to do inside each step. He picked three kinds of tap and

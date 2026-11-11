@@ -26,7 +26,7 @@ a milestone.
 | firecrawl             | 0.2.0   |
 | gridgeist             | 0.1.0   |
 | code-explainer        | 0.1.0   |
-| concept-lab           | 1.3.0   |
+| concept-lab           | 1.4.0   |
 | decision-interview    | 0.1.1   |
 | plan-critique         | 0.1.0   |
 | clinical-minimal      | 0.1.0   |
@@ -214,6 +214,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
 ## Recent milestones
 
 - **2026-11-11** — **intent-lock 1.1.0**: the Misread Ledger page was rebuilt (three views: Overview timeline, Checks by health, Log; merge and undo for duplicate checks). The skills now write a mismatch `type` (`shape`, `frame`, `depth`, `structure`, `other`) on entries and checks and append each fire date to `fire_dates`. The page owns `merged_into`, `merged_from`, `merge_prev_text` and `merge_prev_last_fired`; the skills never write them. Page source and tests were built in a scratch session folder, not in this repo.
+
+- **2026-11-11** — **concept-lab 1.4.0**: field packs for endocrinology, general psychiatry and computational psychiatry under `references/fields/`, read first in Step 1. The owner first asked for a separate plugin for the three fields; a check of 210 skill descriptions showed concept-lab already owns "one concept, one interactive page, its own artifact", so he chose to nest the specialisation inside it: no new skill, command or trigger phrase (description 1019 of 1024 characters). Endocrinology is for his partner, an endocrine fellow, who opens the published pages by link. Packs hold pictures and source rules, not clinical numbers. Not yet judged on a real page by either reader.
 
 - **2026-11-10** — **concept-lab 1.3.0**: third feedback round ("a bit more interactivity in each section"). The owner picked in a picker: tap a part of the picture, tap a term or symbol, tap to reveal the calculation (not: nudge a value), and lively motion. Contract gained "Things to tap inside every step" (pop-up rules, glossary table, reveal that the picture follows, four meaningful motions); `verify.mjs` walks every reveal state and tests a term pop-up and a part pop-up per step. Example rebuilt.
 

@@ -18,6 +18,10 @@ Families 1–8 are machine learning and computer science. Families 9–11 are st
 pharmacology and clinical quantities, and computational psychiatry (all computed mode).
 Family 12 holds the authored-mode patterns for concepts with no runnable model.
 
+Three fields have a pack of their own under [fields/](fields/): endocrinology, general
+psychiatry and computational psychiatry. Read the pack first for a concept in one of them; it
+points back to the families here.
+
 ---
 
 ## 1. Optimization & training dynamics

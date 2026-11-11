@@ -171,8 +171,14 @@ description changes (`/new-plugin` and `/refine-plugin` do this automatically).
   budget) and must exit 0 before publishing, and the step screenshots must then be looked at. Intent-lock is the mandatory Step 0
   gate. One skill + `/visualize [concept]` and `/animate [concept-or-source]`; build contract,
   pattern catalog (12 families) and animation grammar under `skills/concept-lab/references/`,
-  worked lab under `examples/`. Boundary: static clinical one-pagers stay with
-  clinical-infographic, charts of the user's own data with dataviz.
+  worked lab under `examples/`. Since 1.4.0 three **field packs** under
+  `skills/concept-lab/references/fields/` (endocrinology, general psychiatry, computational
+  psychiatry) are read first in Step 1 for a concept in their field: each names the picture per
+  kind of concept, the misconception, the "what if" cases, the default reader, colour roles and
+  the field's source rules (endocrine clinical facts go through pubmed-research-note). Packs
+  hold no clinical numbers, and add no skill, command or trigger phrase. Boundary: static
+  clinical one-pagers stay with clinical-infographic, charts of the user's own data with
+  dataviz.
 - **plan-critique** — adversarial critique of an existing plan that ends in a better plan:
   nine lenses (goal-fit, completeness, sequencing, feasibility, risk, hidden assumptions,
   verifiability, simplicity, alternatives) find where it breaks, every finding carries a

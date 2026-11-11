@@ -1,9 +1,9 @@
 ---
 name: concept-lab
 description: >-
-  Builds one page that teaches one concept, any field (ML, statistics, computational
-  psychiatry, pharmacology, clinical): a step-by-step walkthrough on one phone screen, where
-  each step highlights one thing and explains it in beginner words, or a watch-only
+  Builds one page that teaches one concept, any field (ML, statistics, pharmacology; field
+  packs for psychiatry, computational psychiatry, endocrinology): a step-by-step walkthrough
+  on one phone screen; each step highlights one thing in plain words, or a watch-only
   animation. Computed mode runs the real model; authored mode covers concepts with no
   model. Use when the user says "visualize this concept", "interactive visualization",
   "make an interactive demo", "make it interactive", "interactive page", "explorable", "let
@@ -118,7 +118,8 @@ Run the **intent-lock** skill first; skip only on an explicit opt-out ("just bui
 topic holds many possible labs. The interview settles:
 
 - **The one question the page answers**, or the one wrong belief it removes. This is the spine.
-- **Level** — what maths, notation, or clinical background may appear unexplained.
+- **Level** — what maths, notation, or clinical background may appear unexplained. A field
+  pack's default reader is the option to offer first; the user's answer wins.
 - **Scope edge** — what stays out, so the lab does not grow into a course.
 
 In watch mode the question becomes the one "aha" the animation must produce.
@@ -126,6 +127,22 @@ In watch mode the question becomes the one "aha" the animation must produce.
 Mode, view, palette, and layout are decided by this skill and the contract, not by the interview.
 
 ## Step 1 — Choose mode and form
+
+**Field pack first.** When the concept belongs to one of these fields, read its pack before
+anything else in this step:
+
+| Field | Pack |
+|---|---|
+| Endocrinology | [references/fields/endocrinology.md](references/fields/endocrinology.md) |
+| General (clinical) psychiatry | [references/fields/general-psychiatry.md](references/fields/general-psychiatry.md) |
+| Computational psychiatry | [references/fields/computational-psychiatry.md](references/fields/computational-psychiatry.md) |
+
+A pack names, for its field, the picture that fits each kind of concept, the misconception to
+remove, the "what if" cases, the default reader, the colour roles, and which facts are
+clinical lane and where they must come from. It narrows the menu; it does not replace
+`references/concept-patterns.md` or the contract. A concept that sits in two fields (a
+hormone axis in depression) takes the picture from the field the question is about and the
+source rules of both.
 
 State the mode and why in one line. Then take the form from `references/concept-patterns.md`.
 For a concept not listed: *what is the state, what one action changes it, what single picture

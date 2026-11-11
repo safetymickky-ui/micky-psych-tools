@@ -15,6 +15,12 @@ machine learning, statistics, computational psychiatry, pharmacology, clinical c
 - **Clinical facts** come only from a sourced report (session, vault, or generated first by
   comprehensive-review / pubmed-research-note).
 - **Each lab is its own artifact.** Nothing is filed to the vault unless you ask.
+- **Field packs** (since 1.4.0) — endocrinology, general psychiatry and computational
+  psychiatry each have a pack under `skills/concept-lab/references/fields/`. For a concept in
+  one of those fields the skill reads the pack first: it names the picture that fits, the
+  misconception to remove, the "what if" cases, the default reader and where the field's
+  clinical facts must come from. Same commands, same triggers. The packs hold no clinical
+  numbers; cut-offs, doses and protocols still need a sourced report for each page.
 
 Use: `/visualize <concept>` or `/animate <concept>`, or say "make an interactive page for …". Intent-lock runs first.
 
