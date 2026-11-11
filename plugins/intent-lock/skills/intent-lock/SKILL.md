@@ -150,7 +150,7 @@ Do this before the final reply, in one write. `references/ledger.md` has the fie
   - An option proposed something the user never said.
   - An answer was given and the work did not use it.
 - Add or sharpen a check for each entry, following the ledger rules.
-- Update `fires` and `last_fired` on each check that matched in Step 1.
+- Update `fires`, `last_fired` and `fire_dates` on each check that matched in Step 1.
 
 If there is nothing to log and no check matched, write nothing.
 

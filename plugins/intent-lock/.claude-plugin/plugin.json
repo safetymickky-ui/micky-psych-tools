@@ -1,6 +1,6 @@
 {
   "name": "intent-lock",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Locks what the user wants before expensive work, checks the finished work against that lock before delivery, and logs misreads to a ledger that survives between chats. Ships intent-lock (interview, lock, check) and misread-capture (corrections after delivery).",
   "author": {
     "name": "Thanawat Suharit (Micky)"

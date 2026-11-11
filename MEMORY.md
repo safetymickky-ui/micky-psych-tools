@@ -17,7 +17,7 @@ a milestone.
 | --------------------- | ------- |
 | marketplace catalog   | 1.16.0  |
 | pubmed-research-note   | 1.8.1   |
-| intent-lock           | 1.0.0   |
+| intent-lock           | 1.1.0   |
 | plugin-creator        | 0.3.1   |
 | vault-keeper          | 0.5.0   |
 | psych-paper-digest    | 0.1.1   |
@@ -212,6 +212,8 @@ The version lives in `plugins/<name>/.claude-plugin/plugin.json` only; the
   `/learning-map`.
 
 ## Recent milestones
+
+- **2026-11-11** — **intent-lock 1.1.0**: the Misread Ledger page was rebuilt (three views: Overview timeline, Checks by health, Log; merge and undo for duplicate checks). The skills now write a mismatch `type` (`shape`, `frame`, `depth`, `structure`, `other`) on entries and checks and append each fire date to `fire_dates`. The page owns `merged_into`, `merged_from`, `merge_prev_text` and `merge_prev_last_fired`; the skills never write them. Page source and tests were built in a scratch session folder, not in this repo.
 
 - **2026-11-10** — **concept-lab 1.3.0**: third feedback round ("a bit more interactivity in each section"). The owner picked in a picker: tap a part of the picture, tap a term or symbol, tap to reveal the calculation (not: nudge a value), and lively motion. Contract gained "Things to tap inside every step" (pop-up rules, glossary table, reveal that the picture follows, four meaningful motions); `verify.mjs` walks every reveal state and tests a term pop-up and a part pop-up per step. Example rebuilt.
 
